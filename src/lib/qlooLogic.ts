@@ -70,6 +70,17 @@ function hasObjectContent(value: unknown) {
   );
 }
 
+function qlooTagRows(payload: unknown) {
+  if (payload && typeof payload === 'object') {
+    const results = (payload as AnyObject).results;
+    if (results && typeof results === 'object') {
+      const tags = (results as AnyObject).tags;
+      if (Array.isArray(tags)) return tags;
+    }
+  }
+  return findArray(payload, ['tags', 'results', 'data']);
+}
+
 export function extractResolved(query: string, payload: unknown): ResolvedAnchor | null {
   const rows = findArray(payload, ['results', 'entities', 'data']);
   for (const row of rows) {
@@ -98,7 +109,7 @@ export function extractResolved(query: string, payload: unknown): ResolvedAnchor
 }
 
 export function extractAffinities(payload: unknown): Affinity[] {
-  const rows = findArray(payload, ['tags', 'results', 'data']);
+  const rows = qlooTagRows(payload);
   const items: Affinity[] = [];
 
   for (const row of rows) {
@@ -118,7 +129,7 @@ export function extractAffinities(payload: unknown): Affinity[] {
 }
 
 export function extractExplainabilitySummary(payload: unknown): QlooExplainabilitySummary {
-  const rows = findArray(payload, ['tags', 'results', 'data']);
+  const rows = qlooTagRows(payload);
   let resultCount = 0;
 
   for (const row of rows) {
