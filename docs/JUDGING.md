@@ -7,8 +7,10 @@
 3. If the event credential is still pending, use **Preview interface**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
-   - resolved anchors;
-   - cross-category affinity scores;
+   - resolved Qloo entity IDs;
+   - cross-category taste evidence;
+   - the evidence basis: numeric score when Qloo supplies one, otherwise Qloo's affinity-ranked result order;
+   - the four-stage agent decision trace;
    - the four-step session;
    - each step's "why it fits" explanation.
 
@@ -16,16 +18,37 @@
 
 ### Technological Implementation
 
-Qloo is not an ornamental API call. It supplies the entity-resolution and cross-category affinity signals that drive the session. The server keeps the credential private, validates and bounds requests, times out upstream calls, and fails closed when the Qloo signal is insufficient.
+Qloo is not an ornamental API call. It supplies the entity-resolution and cross-category taste evidence that drives the agent.
+
+The implementation now matches current Qloo public documentation more defensibly:
+
+- Search results are resolved to Qloo entity UUIDs (with entity-URN fallback).
+- Those IDs are passed to `signal.interests.entities` for taste analysis.
+- Tag results are read from `results.tags`.
+- Numeric affinity values are used only if Qloo actually returns them.
+- If a tag result is rank-ordered but unscored, Resonance preserves that Qloo order and displays **Rank #N** instead of manufacturing a percentage.
+- Weak or sparse evidence fails closed.
+
+The server also keeps the event credential private, bounds inputs, times out upstream calls, and exposes an inspectable agent trace.
 
 ### Design
 
-The app is one focused, responsive flow with live connection-state awareness, visible provenance, loading/error handling, and a no-login path for judges.
+The app is one focused, responsive flow with live connection-state awareness, visible provenance, explicit rank-vs-score labeling, loading/error handling, keyboard-focus support, and a no-login path for judges.
 
 ### Potential Impact
 
-The product targets a concrete workflow: senior-living activity staff and families often know only fragments of a person's preferences. Resonance reduces the work required to translate those fragments into culturally coherent engagement ideas.
+The product targets a concrete workflow: senior-living activity staff and families often know only fragments of a person's preferences. Resonance reduces the work required to translate those fragments into culturally coherent engagement ideas while leaving the final choice with the human facilitator.
 
 ### Quality of the Idea
 
-Instead of using Qloo for conventional consumer recommendations, Resonance uses cultural affinity as an input to human-facilitated engagement. The output is not a prediction about a person; it is an explainable starting point that a facilitator can accept, modify, or reject.
+Instead of using Qloo for a conventional shopping or entertainment recommendation list, Resonance uses cultural affinity as evidence inside a human-facilitated engagement agent. The output is not a prediction about a person; it is an explainable starting point that a facilitator can accept, modify, or reject.
+
+## Reproducibility evidence
+
+- Public source: https://github.com/P00NSMASHER/resonance-qloo
+- Submission evidence: [SUBMISSION_EVIDENCE.md](SUBMISSION_EVIDENCE.md)
+- Known limitations: [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md)
+- API contract: [../openapi.yaml](../openapi.yaml)
+- Official Qloo MCP proof path: `npm run qloo:proof -- "classic jazz vocals"`
+
+The live Qloo path should not be treated as verified until the event-issued key arrives and a real end-to-end call is captured.
