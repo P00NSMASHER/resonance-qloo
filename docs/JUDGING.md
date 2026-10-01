@@ -29,6 +29,7 @@ The implementation now matches current Qloo public documentation more defensibly
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
 - Tag results are read from `results.tags`.
 - Numeric affinity values are used only if Qloo actually returns them.
+- Taste analysis requests Qloo's documented `feature.explainability=true`. Resonance reports how many returned taste results actually contain non-empty `query.explainability` metadata and whether aggregate explainability is present; it does not invent attribution when Qloo omits it.
 - If a tag result is rank-ordered but unscored, Resonance preserves that Qloo order and displays **Rank #N** instead of manufacturing a percentage.
 - Weak or sparse evidence fails closed.
 
