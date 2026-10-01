@@ -3,12 +3,11 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
-import { extractAffinities, extractResolved } from '../src/lib/qlooLogic';
-import { orchestrateSession } from '../src/lib/agentPlanner';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
+import { buildRecommendation } from '../src/lib/recommendationService';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -143,36 +142,24 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
 
   try {
     const qloo = new QlooClient(key, fetch, QLOO_BASE_URL);
-    const resolved = [];
+    const gateway = {
+      search: (query: string) => {
+        const normalized = `${QLOO_BASE_URL}|${query.toLocaleLowerCase('en-US')}`;
+        return searchCache.getOrLoad(normalized, () => qloo.search(query));
+      },
+      tasteAnalysis: (entityIds: string[]) => {
+        const tasteKey = `${QLOO_BASE_URL}|${[...entityIds].sort().join(',')}`;
+        return tasteCache.getOrLoad(tasteKey, () => qloo.tasteAnalysis(entityIds));
+      },
+    };
 
-    for (const query of anchors) {
-      const normalized = `${QLOO_BASE_URL}|${query.toLocaleLowerCase('en-US')}`;
-      const payload = await searchCache.getOrLoad(normalized, () => qloo.search(query));
-      const found = extractResolved(query, payload);
-      if (found) resolved.push(found);
-    }
-
-    if (resolved.length < 2) {
-      return json(res, 422, { error: 'Qloo could not confidently resolve enough anchors.' });
-    }
-
-    const entityIds = resolved.map(x => x.entityId);
-    const tasteKey = `${QLOO_BASE_URL}|${[...entityIds].sort().join(',')}`;
-    const tastePayload = await tasteCache.getOrLoad(
-      tasteKey,
-      () => qloo.tasteAnalysis(entityIds),
-    );
-    const affinities = extractAffinities(tastePayload);
-    const session = orchestrateSession(resolved, affinities, energy, setting);
-
-    return json(res, 200, {
-      summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.`,
-      resolvedAnchors: resolved,
-      affinities,
-      plan: session.plan,
-      agentTrace: session.agentTrace,
-      evidence: session.evidence,
+    const recommendation = await buildRecommendation(gateway, {
+      anchors,
+      energy,
+      setting,
     });
+
+    return json(res, 200, recommendation);
   } catch (error) {
     if (error instanceof Error && error.message === 'QLOO_TIMEOUT') {
       return json(res, 504, { error: 'Qloo took too long to respond. Please try again.' });
