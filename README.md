@@ -21,6 +21,12 @@ A generic LLM can generate plausible activities, but it cannot reliably ground t
 
 If Qloo returns too little reliable evidence, the agent fails closed instead of fabricating confidence.
 
+### Category-aware resolution
+
+Each anchor can optionally include a Qloo entity category such as Artist, Film, Book, Brand, Destination, Place, Podcast, TV Show, or Video Game. Resonance passes that hint through Qloo's documented `types` search parameter to reduce ambiguous matches. The chosen category is retained on the resolved-anchor evidence and counted in the agent trace, so judges can see when disambiguation was applied.
+
+Independent anchor lookups run concurrently, reducing live latency without increasing the number of Qloo calls.
+
 ## Live-mode truthfulness
 
 A configured secret is **not** treated as proof that Qloo works.
@@ -158,7 +164,11 @@ The preview smoke test verifies:
 
 ```json
 {
-  "anchors": ["Ella Fitzgerald", "Singin' in the Rain", "Italian food"],
+  "anchors": [
+    {"query":"Ella Fitzgerald","type":"artist"},
+    {"query":"Singin' in the Rain","type":"movie"},
+    {"query":"Italian food","type":"any"}
+  ],
   "energy": "calm",
   "setting": "small-group"
 }
@@ -166,7 +176,7 @@ The preview smoke test verifies:
 
 A successful live response includes:
 
-- resolved Qloo anchors,
+- resolved Qloo anchors and any category hints used,
 - affinity labels plus Qloo-provided scores when present, otherwise ranked result order,
 - a four-part session,
 - per-step rationale,
