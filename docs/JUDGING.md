@@ -4,7 +4,7 @@
 
 1. Open the live app: https://resonance-qloo.floot.app
 2. Confirm the header reports whether Qloo is actually connected.
-3. If the event credential is still pending, use **Preview interface**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
+3. If the event credential is still pending, use **Preview with example data**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
    - resolved Qloo entity IDs and the category hints used to disambiguate them;
@@ -12,7 +12,7 @@
    - the evidence basis: numeric score when Qloo supplies one, otherwise Qloo's affinity-ranked result order;
    - the four-stage agent decision trace;
    - the four-step session;
-   - each step's "why it fits" explanation.
+   - each step's "why it fits" explanation;\n   - the exported session audit trail, which preserves source mode, generation time, Qloo IDs, resolution path, evidence basis, explainability availability, selected-signal count, target duration, and agent trace.
 
 ## Judging-criteria mapping
 
