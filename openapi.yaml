@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.3.0
+  version: 0.4.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -20,9 +20,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [qlooConnected, mode, service]
+                required: [qlooConfigured, qlooConnected, qlooStatus, mode, service]
                 properties:
+                  qlooConfigured: { type: boolean }
                   qlooConnected: { type: boolean }
+                  qlooStatus: { type: string, enum: [preview, ready, degraded, rate-limited] }
                   mode: { type: string, enum: [live, preview] }
                   service: { type: string, const: resonance }
   /api/recommend:
