@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.6.0
+  version: 0.7.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -92,10 +92,22 @@ components:
           type: array
           minItems: 2
           maxItems: 4
-          uniqueItems: true
-          items: { type: string, minLength: 2, maxLength: 100 }
+          items:
+            oneOf:
+              - { type: string, minLength: 2, maxLength: 100 }
+              - $ref: '#/components/schemas/AnchorInput'
         energy: { type: string, enum: [calm, social, active] }
         setting: { type: string, enum: [one-on-one, small-group, community] }
+    AnchorInput:
+      type: object
+      required: [query]
+      additionalProperties: false
+      properties:
+        query: { type: string, minLength: 2, maxLength: 100 }
+        type:
+          type: string
+          enum: [any, artist, movie, book, brand, destination, place, podcast, tv_show, videogame]
+          description: Optional category hint mapped to Qloo's documented entity-type URNs.
     ResolvedAnchor:
       type: object
       required: [query, name, entityId]

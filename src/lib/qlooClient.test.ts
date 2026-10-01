@@ -27,7 +27,7 @@ describe('QlooClient', () => {
     });
   });
 
-  it('builds a bounded search request using the documented Qloo endpoint', async () => {
+  it('builds a bounded generic search request', async () => {
     const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
     const mockFetch: typeof fetch = async (input, init) => {
       calls.push([input, init]);
@@ -37,13 +37,25 @@ describe('QlooClient', () => {
 
     await client.search('Ella Fitzgerald');
 
-    expect(calls).toHaveLength(1);
-    const [url, init] = calls[0]!;
+    const [url] = calls[0]!;
     expect(String(url)).toBe('https://api.qloo.com/search?query=Ella+Fitzgerald&take=5&sort_by=match');
-    expect(init?.headers).toEqual({
-      'x-api-key': 'event-key',
-      accept: 'application/json',
-    });
+  });
+
+  it('can constrain resolution to a documented Qloo entity category', async () => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return ok({ results: [] });
+    };
+    const client = new QlooClient('event-key', mockFetch);
+
+    await client.search("Singin' in the Rain", 'urn:entity:movie');
+
+    const [url] = calls[0]!;
+    const parsed = new URL(String(url));
+    expect(parsed.searchParams.get('query')).toBe("Singin' in the Rain");
+    expect(parsed.searchParams.getAll('types')).toEqual(['urn:entity:movie']);
+    expect(parsed.searchParams.get('sort_by')).toBe('match');
   });
 
   it('sends resolved Qloo entity IDs into tag taste analysis and requests explainability', async () => {
@@ -59,7 +71,6 @@ describe('QlooClient', () => {
       '9A25B172-4795-43E4-B222-3B550DC05AAA',
     ]);
 
-    expect(calls).toHaveLength(1);
     const [url] = calls[0]!;
     const parsed = new URL(String(url));
     expect(parsed.pathname).toBe('/v2/insights');

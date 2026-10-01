@@ -53,9 +53,10 @@ export class QlooClient {
     return true;
   }
 
-  async search(query: string) {
+  async search(query: string, entityType?: string) {
     const url = new URL('/search', this.baseUrl);
     url.searchParams.set('query', query);
+    if (entityType) url.searchParams.append('types', entityType);
     url.searchParams.set('take', '5');
     url.searchParams.set('sort_by', 'match');
     return this.request('search', url);

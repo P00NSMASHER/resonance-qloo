@@ -8,6 +8,7 @@ import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 import { buildRecommendation } from '../src/lib/recommendationService';
+import { anchorTypeUrn, isAnchorType } from '../src/lib/anchorTypes';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -124,14 +125,26 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     return json(res, 400, { error: 'Request body must be valid JSON.' });
   }
 
-  const anchors = Array.isArray(body.anchors)
-    ? [...new Set(
-        body.anchors
-          .filter((x): x is string => typeof x === 'string')
-          .map(x => x.trim())
-          .filter(x => x.length >= 2 && x.length <= 100),
-      )].slice(0, 4)
-    : [];
+  const rawAnchors = Array.isArray(body.anchors) ? body.anchors : [];
+  const parsedAnchors = rawAnchors.flatMap((raw) => {
+    if (typeof raw === 'string') {
+      const query = raw.trim();
+      return query.length >= 2 && query.length <= 100 ? [{ query }] : [];
+    }
+    if (!raw || typeof raw !== 'object') return [];
+    const record = raw as Record<string, unknown>;
+    const query = typeof record.query === 'string' ? record.query.trim() : '';
+    if (query.length < 2 || query.length > 100) return [];
+    if (record.type !== undefined && !isAnchorType(record.type)) return [];
+    return [{
+      query,
+      typeUrn: anchorTypeUrn(isAnchorType(record.type) ? record.type : undefined),
+    }];
+  });
+
+  const anchors = [...new Map(
+    parsedAnchors.map(anchor => [`${anchor.typeUrn ?? 'any'}|${anchor.query.toLocaleLowerCase('en-US')}`, anchor])
+  ).values()].slice(0, 4);
 
   const energy = typeof body.energy === 'string' && ALLOWED_ENERGY.has(body.energy) ? body.energy : 'calm';
   const setting = typeof body.setting === 'string' && ALLOWED_SETTING.has(body.setting) ? body.setting : 'small-group';
@@ -143,9 +156,9 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   try {
     const qloo = new QlooClient(key, fetch, QLOO_BASE_URL);
     const gateway = {
-      search: (query: string) => {
-        const normalized = `${QLOO_BASE_URL}|${query.toLocaleLowerCase('en-US')}`;
-        return searchCache.getOrLoad(normalized, () => qloo.search(query));
+      search: (query: string, typeUrn?: string) => {
+        const normalized = `${QLOO_BASE_URL}|${typeUrn ?? 'any'}|${query.toLocaleLowerCase('en-US')}`;
+        return searchCache.getOrLoad(normalized, () => qloo.search(query, typeUrn));
       },
       tasteAnalysis: (entityIds: string[]) => {
         const tasteKey = `${QLOO_BASE_URL}|${[...entityIds].sort().join(',')}`;

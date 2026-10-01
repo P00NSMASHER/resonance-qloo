@@ -1,13 +1,18 @@
 import { extractAffinities, extractResolved } from './qlooLogic';
 import { orchestrateSession } from './agentPlanner';
 
+export type RecommendationAnchor = {
+  query: string;
+  typeUrn?: string;
+};
+
 export type RecommendationGateway = {
-  search(query: string): Promise<unknown>;
+  search(query: string, typeUrn?: string): Promise<unknown>;
   tasteAnalysis(entityIds: string[]): Promise<unknown>;
 };
 
 export type RecommendationInput = {
-  anchors: string[];
+  anchors: RecommendationAnchor[];
   energy: string;
   setting: string;
 };
@@ -17,8 +22,11 @@ export async function buildRecommendation(
   input: RecommendationInput,
 ) {
   const resolved = [];
-  for (const query of input.anchors) {
-    const found = extractResolved(query, await gateway.search(query));
+  for (const anchor of input.anchors) {
+    const found = extractResolved(
+      anchor.query,
+      await gateway.search(anchor.query, anchor.typeUrn),
+    );
     if (found) resolved.push(found);
   }
 

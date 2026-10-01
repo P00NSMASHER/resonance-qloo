@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/connectionState';
 import { formatSessionText } from './lib/sessionExport';
+import { ANCHOR_TYPE_OPTIONS, type AnchorType } from './lib/anchorTypes';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -66,6 +67,7 @@ const anchorExamples = ['Favorite artist', 'Favorite film', 'Favorite food, bran
 
 export default function App() {
   const [anchors, setAnchors] = useState(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
+  const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie','any']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
   const [qlooState, setQlooState] = useState<QlooUiState>('checking');
@@ -76,10 +78,13 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const resultRef = useRef<HTMLElement | null>(null);
 
-  const usableAnchors = useMemo(
-    () => [...new Set(anchors.map(x => x.trim()).filter(x => x.length >= 2))],
-    [anchors]
-  );
+  const usableAnchors = useMemo(() => {
+    const entries = anchors.map((query,index) => ({
+      query:query.trim(),
+      type:anchorTypes[index] ?? 'any',
+    })).filter(item => item.query.length >= 2);
+    return [...new Map(entries.map(item => [`${item.type}|${item.query.toLocaleLowerCase()}`,item])).values()];
+  }, [anchors,anchorTypes]);
   const qlooUi = qlooPresentation(qlooState);
   const canRun = usableAnchors.length >= 2 && qlooUi.liveReady && !loading;
 
@@ -143,17 +148,24 @@ export default function App() {
     setAnchors(current => current.map((item, itemIndex) => itemIndex === index ? value : item));
   }
 
+  function updateAnchorType(index: number, value: AnchorType) {
+    setAnchorTypes(current => current.map((item, itemIndex) => itemIndex === index ? value : item));
+  }
+
   function addAnchor() {
     setAnchors(current => current.length >= 4 ? current : [...current, '']);
+    setAnchorTypes(current => current.length >= 4 ? current : [...current, 'any']);
   }
 
   function removeAnchor(index: number) {
     setAnchors(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
+    setAnchorTypes(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
   }
 
   function previewDemo() {
     setError('');
     setAnchors(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
+    setAnchorTypes(['artist','movie','any']);
     setResult(demo);
     setSource('demo');
   }
@@ -199,6 +211,14 @@ export default function App() {
           {anchors.map((anchor,index)=><div className="anchorGroup" key={index}>
             <label className="anchorField" htmlFor={`anchor-${index}`}>
               <span>Cultural anchor {index + 1}</span>
+              <select
+                className="anchorType"
+                aria-label={`Category for cultural anchor ${index + 1}`}
+                value={anchorTypes[index] ?? 'any'}
+                onChange={e=>updateAnchorType(index,e.target.value as AnchorType)}
+              >
+                {ANCHOR_TYPE_OPTIONS.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
               <input
                 id={`anchor-${index}`}
                 value={anchor}

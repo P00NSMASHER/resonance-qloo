@@ -18,6 +18,26 @@ function gatewayWithTags(tags: Array<Record<string, unknown>>): RecommendationGa
 }
 
 describe('recommendation service', () => {
+  it('passes category hints into Qloo resolution', async () => {
+    const gateway = gatewayWithTags([
+      { name:'Jazz' },
+      { name:'Musicals' },
+      { name:'Classic cinema' },
+    ]);
+
+    await buildRecommendation(gateway, {
+      anchors:[
+        {query:'Ella Fitzgerald',typeUrn:'urn:entity:artist'},
+        {query:"Singin' in the Rain",typeUrn:'urn:entity:movie'},
+      ],
+      energy:'social',
+      setting:'small-group',
+    });
+
+    expect(gateway.search).toHaveBeenNthCalledWith(1,'Ella Fitzgerald','urn:entity:artist');
+    expect(gateway.search).toHaveBeenNthCalledWith(2,"Singin' in the Rain",'urn:entity:movie');
+  });
+
   it('runs the full Qloo-evidence-to-agent-session path', async () => {
     const gateway = gatewayWithTags([
       { name:'Jazz' },
@@ -27,7 +47,7 @@ describe('recommendation service', () => {
     ]);
 
     const result = await buildRecommendation(gateway, {
-      anchors:['Ella Fitzgerald',"Singin' in the Rain"],
+      anchors:[{query:'Ella Fitzgerald'},{query:"Singin' in the Rain"}],
       energy:'social',
       setting:'small-group',
     });
@@ -49,7 +69,7 @@ describe('recommendation service', () => {
     };
 
     await expect(buildRecommendation(gateway, {
-      anchors:['known','unknown'],
+      anchors:[{query:'known'},{query:'unknown'}],
       energy:'calm',
       setting:'one-on-one',
     })).rejects.toThrow('QLOO_EVIDENCE_TOO_SPARSE');
@@ -65,7 +85,7 @@ describe('recommendation service', () => {
     ]);
 
     const result = await buildRecommendation(gateway, {
-      anchors:['A','B'],
+      anchors:[{query:'A'},{query:'B'}],
       energy:'calm',
       setting:'one-on-one',
     });
