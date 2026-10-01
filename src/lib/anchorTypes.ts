@@ -34,3 +34,10 @@ export function anchorTypeUrn(value: AnchorType | undefined) {
   if (!value || value === 'any') return undefined;
   return ANCHOR_TYPES[value] ?? undefined;
 }
+
+
+export function anchorTypeLabelFromUrn(urn: string | undefined) {
+  if (!urn) return undefined;
+  const entry = ANCHOR_TYPE_OPTIONS.find(option => anchorTypeUrn(option.value) === urn);
+  return entry?.label;
+}

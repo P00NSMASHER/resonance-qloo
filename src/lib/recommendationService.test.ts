@@ -36,6 +36,18 @@ describe('recommendation service', () => {
 
     expect(gateway.search).toHaveBeenNthCalledWith(1,'Ella Fitzgerald','urn:entity:artist');
     expect(gateway.search).toHaveBeenNthCalledWith(2,"Singin' in the Rain",'urn:entity:movie');
+    const result = await buildRecommendation(gateway, {
+      anchors:[
+        {query:'Ella Fitzgerald',typeUrn:'urn:entity:artist'},
+        {query:"Singin' in the Rain",typeUrn:'urn:entity:movie'},
+      ],
+      energy:'social',
+      setting:'small-group',
+    });
+    expect(result.resolvedAnchors.map(x => x.requestedTypeUrn)).toEqual([
+      'urn:entity:artist',
+      'urn:entity:movie',
+    ]);
   });
 
   it('runs the full Qloo-evidence-to-agent-session path', async () => {

@@ -54,7 +54,7 @@ function looksLikeEntityId(value: string) {
     || value.startsWith('urn:entity:');
 }
 
-export type ResolvedAnchor = { query: string; name: string; entityId: string };
+export type ResolvedAnchor = { query: string; name: string; entityId: string; requestedTypeUrn?: string };
 export type Affinity = { label: string; score: number | null; rank: number };
 export type PlanItem = { title: string; duration: string; action: string; why: string };
 

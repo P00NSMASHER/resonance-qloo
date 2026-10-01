@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/connectionState';
 import { formatSessionText } from './lib/sessionExport';
-import { ANCHOR_TYPE_OPTIONS, type AnchorType } from './lib/anchorTypes';
+import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, type AnchorType } from './lib/anchorTypes';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -11,7 +11,7 @@ type AgentTraceStep = {
 
 type Result = {
   summary: string;
-  resolvedAnchors: { query:string; name:string; entityId:string }[];
+  resolvedAnchors: { query:string; name:string; entityId:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
   agentTrace: AgentTraceStep[];
@@ -282,7 +282,7 @@ export default function App() {
       {source==='demo' && <div className="warning" role="note">Demo mode: these affinity ranks and rationales are placeholders, not Qloo API results.</div>}
 
       <h3>Resolved anchors</h3>
-      <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}>{x.name}</span>)}</div>
+      <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}</span>)}</div>
 
       <h3>{source==='live'?'Qloo taste evidence':'Illustrative taste-evidence preview'}</h3>
       <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>)}</div>

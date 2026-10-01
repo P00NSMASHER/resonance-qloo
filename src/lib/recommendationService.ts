@@ -27,7 +27,7 @@ export async function buildRecommendation(
       anchor.query,
       await gateway.search(anchor.query, anchor.typeUrn),
     );
-    if (found) resolved.push(found);
+    if (found) resolved.push({ ...found, requestedTypeUrn: anchor.typeUrn });
   }
 
   if (resolved.length < 2) {
