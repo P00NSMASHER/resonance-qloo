@@ -27,12 +27,16 @@ export async function buildRecommendation(
         anchor.query,
         await gateway.search(anchor.query, anchor.typeUrn),
       );
-      return found ? { ...found, requestedTypeUrn: anchor.typeUrn } : null;
+      if (!found) return null;
+      return anchor.typeUrn
+        ? { ...found, requestedTypeUrn: anchor.typeUrn }
+        : found;
     }),
   );
-  const resolved = resolvedCandidates.filter(
-    (item): item is ResolvedAnchor => item !== null,
-  );
+  const resolved: ResolvedAnchor[] = [];
+  for (const item of resolvedCandidates) {
+    if (item) resolved.push(item);
+  }
 
   if (resolved.length < 2) {
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
