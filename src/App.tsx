@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/connectionState';
+import { formatSessionText } from './lib/sessionExport';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -65,6 +66,7 @@ export default function App() {
   const [source, setSource] = useState<'live'|'demo'|null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
   const resultRef = useRef<HTMLElement | null>(null);
 
   const usableAnchors = useMemo(
@@ -144,8 +146,28 @@ export default function App() {
 
   function previewDemo() {
     setError('');
+    setAnchors(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
     setResult(demo);
     setSource('demo');
+  }
+
+  async function copySession() {
+    if (!result || !source) return;
+    try {
+      await navigator.clipboard.writeText(formatSessionText(result, source));
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setError('Copy failed. You can still print the session.');
+    }
+  }
+
+  function startOver() {
+    setResult(null);
+    setSource(null);
+    setError('');
+    setCopied(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return <main className="page">
@@ -206,7 +228,7 @@ export default function App() {
           <button disabled={!canRun} onClick={runLive}>
             {loading?'Grounding with Qloo…':qlooUi.liveReady?'Build with live Qloo':'Live Qloo unavailable'}
           </button>
-          <button className="secondary" onClick={previewDemo} disabled={loading}>Preview interface</button>
+          <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
         </div>
         <small>{qlooUi.helper}</small>
         {usableAnchors.length < 2 && <div className="validation" role="status">Enter at least two distinct cultural anchors.</div>}
@@ -220,6 +242,12 @@ export default function App() {
 
     {result && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
       <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div><b>{source==='live'?'LIVE QLOO':'ILLUSTRATIVE DEMO'}</b></div>
+      <div className="resultActions" aria-label="Session actions">
+        <button type="button" className="secondary" onClick={copySession}>{copied ? 'Copied' : 'Copy session'}</button>
+        <button type="button" className="secondary" onClick={()=>window.print()}>Print</button>
+        <button type="button" className="secondary" onClick={startOver}>Start over</button>
+        <span className="copyStatus" role="status" aria-live="polite">{copied ? 'Session copied to clipboard.' : ''}</span>
+      </div>
       {source==='demo' && <div className="warning" role="note">Demo mode: these affinity ranks and rationales are placeholders, not Qloo API results.</div>}
 
       <h3>Resolved anchors</h3>
