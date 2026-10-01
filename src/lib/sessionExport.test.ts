@@ -30,6 +30,7 @@ describe('session export', () => {
       resolvedAnchorCount:2,
       categoryHintCount:2,
       selectedAffinityCount:2,
+      sessionDurationMinutes:45,
     },
   };
 
@@ -98,6 +99,11 @@ describe('session export', () => {
       'Selection evidence: 2 affinity signal(s) selected for the plan'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Selection evidence:');
+  });
+
+  it('keeps target session length in live exports', () => {
+    expect(formatSessionText(session, 'live')).toContain('Session target: 45 minutes');
+    expect(formatSessionText(session, 'demo')).not.toContain('Session target:');
   });
 
   it('keeps the agent decision trace in exports', () => {
