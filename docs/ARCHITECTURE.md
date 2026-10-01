@@ -6,7 +6,14 @@ Resonance is split into three trust zones plus an explicit agent-orchestration l
 
 The React client collects 2–4 cultural anchors plus an energy and setting preference. It never receives the Qloo credential.
 
-Before enabling the live action, the client calls `GET /api/status`. When the server has no event-issued credential, the live button remains disabled and the UI exposes only a clearly labeled illustrative preview.
+Before enabling the live action, the client calls `GET /api/status`. The server does not equate “secret exists” with “Qloo works”: when a credential is present, it performs a small cached verification request to Qloo. The UI receives a bounded state only:
+
+- `preview`;
+- `ready`;
+- `degraded`;
+- `rate-limited`.
+
+Only `ready` enables live recommendations.
 
 Live results expose:
 
@@ -20,7 +27,7 @@ Live results expose:
 
 The server owns the Qloo credential and provides two routes:
 
-- `GET /api/status`: reports only whether a credential is present.
+- `GET /api/status`: reports whether the key is configured and whether Qloo was actually verified; probe results are cached for five minutes.
 - `POST /api/recommend`: validates a bounded request, resolves anchors through Qloo Search, requests Qloo tag insights, hands the evidence to the agent planner, and returns the plan plus trace/evidence metadata.
 
 Safety/reliability controls:
@@ -29,6 +36,9 @@ Safety/reliability controls:
 - 2–4 distinct, trimmed anchors;
 - allowed-value validation for energy and setting;
 - 8-second upstream timeout;
+- per-client and global live-request ceilings;
+- bounded TTL caches for repeated Qloo searches/taste analysis;
+- cached credential verification so page loads do not repeatedly burn quota;
 - fail-closed behavior when too few anchors or affinities are resolved;
 - fail-closed behavior when explicit numeric evidence is too weak;
 - no invented affinity score when the Qloo response supplies only ranked tags;
@@ -45,6 +55,8 @@ The current live path uses:
 1. `GET /search` to resolve a cultural anchor.
 2. The returned Qloo entity UUID as `signal.interests.entities`.
 3. `GET /v2/insights?filter.type=urn:tag` for taste analysis.
+4. `feature.explainability=true` so Qloo may return attribution metadata when available.
+5. `GET /v2/tags/types?take=1` as the lightweight credential/connectivity probe.
 
 Qloo's taste-analysis documentation says tag results are returned under `results.tags`. Resonance keeps their result order. If the payload includes a numeric `affinity` / `score`, it is normalized and used; if no score exists, the rank is retained and the UI says **Rank #N**.
 
