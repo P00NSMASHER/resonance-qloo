@@ -41,6 +41,7 @@ describe('QlooClient', () => {
       'FCE8B172-4795-43E4-B222-3B550DC05FD9,9A25B172-4795-43E4-B222-3B550DC05AAA'
     );
     expect(parsed.searchParams.get('take')).toBe('8');
+    expect(parsed.searchParams.get('feature.explainability')).toBe('true');
   });
 
   it('returns a typed upstream error without exposing the credential', async () => {
