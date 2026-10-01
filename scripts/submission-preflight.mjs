@@ -1,0 +1,64 @@
+import { access, readFile } from 'node:fs/promises';
+
+const LIVE_URL = 'https://resonance-qloo.floot.app';
+const requiredFiles = [
+  'LICENSE',
+  'README.md',
+  'openapi.yaml',
+  'docs/JUDGING.md',
+  'docs/SUBMISSION_EVIDENCE.md',
+  'docs/KNOWN_LIMITATIONS.md',
+  'docs/DEVPOST_FIELDS.md',
+  'SECURITY.md',
+  'src/App.tsx',
+  'server/index.ts',
+];
+
+const failures = [];
+const notes = [];
+
+for (const path of requiredFiles) {
+  try {
+    await access(path);
+  } catch {
+    failures.push(`Missing required project artifact: ${path}`);
+  }
+}
+
+try {
+  const license = await readFile('LICENSE', 'utf8');
+  if (!/MIT License/i.test(license)) failures.push('LICENSE is not recognizably MIT.');
+} catch {}
+
+try {
+  const readme = await readFile('README.md', 'utf8');
+  if (!readme.includes(LIVE_URL)) failures.push('README does not include the public demo URL.');
+  if (!readme.includes('https://devpost.com/software/resonance-nud9ek')) {
+    failures.push('README does not include the Devpost project URL.');
+  }
+  if (!/illustrative demo/i.test(readme)) {
+    failures.push('README does not clearly document the illustrative-demo provenance state.');
+  }
+} catch {}
+
+if (!process.argv.includes('--offline')) {
+  try {
+    const response = await fetch(LIVE_URL, { redirect:'follow', signal:AbortSignal.timeout(8000) });
+    if (!response.ok) failures.push(`Public demo returned HTTP ${response.status}.`);
+    else notes.push(`Public demo reachable: HTTP ${response.status}.`);
+  } catch (error) {
+    failures.push(`Public demo could not be reached: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+notes.push('Demo video is not required by the current Qloo Devpost submission requirements.');
+notes.push('Final submission must remain blocked until the event-issued Qloo credential is connected and end-to-end live Qloo use is verified.');
+
+for (const note of notes) console.log('NOTE:', note);
+
+if (failures.length) {
+  for (const failure of failures) console.error('FAIL:', failure);
+  process.exit(1);
+}
+
+console.log('Submission preflight passed.');
