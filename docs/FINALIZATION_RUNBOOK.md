@@ -50,6 +50,8 @@ Confirm:
 - Qloo taste evidence is returned;
 - the agent decision trace is visible;
 - the evidence basis says either `normalized-score` or `ranked-order`;
+- `explainabilityResultCount` accurately reflects whether Qloo returned per-result `query.explainability` metadata;
+- `aggregateExplainabilityAvailable` is true only when the live payload actually includes non-empty aggregate Qloo explainability;
 - no numeric percentage is displayed unless Qloo actually supplied a numeric score;
 - all four activity steps render;
 - each activity has a why-it-fits explanation.
