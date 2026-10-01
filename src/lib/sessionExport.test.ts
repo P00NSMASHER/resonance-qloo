@@ -5,8 +5,8 @@ describe('session export', () => {
   const session = {
     summary:'A grounded session.',
     resolvedAnchors:[
-      {name:'Ella Fitzgerald',entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',requestedTypeUrn:'urn:entity:artist'},
-      {name:"Singin' in the Rain",entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA',requestedTypeUrn:'urn:entity:movie'}
+      {query:'Ella',name:'Ella Fitzgerald',entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',requestedTypeUrn:'urn:entity:artist'},
+      {query:"Singin' in the Rain",name:"Singin' in the Rain",entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA',requestedTypeUrn:'urn:entity:movie'}
     ],
     affinities:[
       {label:'Jazz',score:null,rank:1},
@@ -58,6 +58,12 @@ describe('session export', () => {
     const demo = formatSessionText(session, 'demo');
     expect(live).toContain('Qloo ID: FCE8B172-4795-43E4-B222-3B550DC05FD9');
     expect(demo).not.toContain('Qloo ID:');
+  });
+
+  it('keeps input-to-resolution evidence in live exports', () => {
+    const live = formatSessionText(session, 'live');
+    expect(live).toContain('Ella -> Ella Fitzgerald [Artist]');
+    expect(live).toContain("Singin' in the Rain [Film]");
   });
 
   it('keeps the live generation timestamp in exported evidence', () => {
