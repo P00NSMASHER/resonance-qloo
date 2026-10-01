@@ -45,6 +45,7 @@ const evidence = {
     resolvedAnchors:run.body.resolvedAnchors,
     affinities:run.body.affinities,
     evidence:run.body.evidence,
+    provenance:run.body.provenance,
     agentTrace:run.body.agentTrace,
     plan:run.body.plan,
   },

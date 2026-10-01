@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.5.0
+  version: 0.6.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -148,9 +148,19 @@ components:
           enum: [normalized-score, ranked-order]
         selectedAffinityCount: { type: integer, minimum: 3, maximum: 4 }
         resolvedAnchorCount: { type: integer, minimum: 2, maximum: 4 }
+    Provenance:
+      type: object
+      required: [source, generatedAt]
+      properties:
+        source:
+          type: string
+          const: qloo-live
+        generatedAt:
+          type: string
+          format: date-time
     RecommendationResponse:
       type: object
-      required: [summary, resolvedAnchors, affinities, plan, agentTrace, evidence]
+      required: [summary, resolvedAnchors, affinities, plan, agentTrace, evidence, provenance]
       properties:
         summary: { type: string }
         resolvedAnchors:
@@ -170,6 +180,7 @@ components:
           maxItems: 4
           items: { $ref: '#/components/schemas/AgentTraceStep' }
         evidence: { $ref: '#/components/schemas/Evidence' }
+        provenance: { $ref: '#/components/schemas/Provenance' }
     Error:
       type: object
       required: [error]

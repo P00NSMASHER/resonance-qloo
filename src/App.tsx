@@ -20,6 +20,10 @@ type Result = {
     selectedAffinityCount: number;
     resolvedAnchorCount: number;
   };
+  provenance: {
+    source:'qloo-live'|'illustrative-demo';
+    generatedAt?:string;
+  };
 };
 
 const demo: Result = {
@@ -52,6 +56,9 @@ const demo: Result = {
     evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
     resolvedAnchorCount:3
+  },
+  provenance: {
+    source:'illustrative-demo'
   }
 };
 
@@ -242,6 +249,10 @@ export default function App() {
 
     {result && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
       <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div><b>{source==='live'?'LIVE QLOO':'ILLUSTRATIVE DEMO'}</b></div>
+      <div className="provenanceLine">
+        <strong>{result.provenance.source === 'qloo-live' ? 'Verified live Qloo result' : 'Illustrative preview data'}</strong>
+        {result.provenance.generatedAt && <span>Generated {new Date(result.provenance.generatedAt).toLocaleString()}</span>}
+      </div>
       <div className="resultActions" aria-label="Session actions">
         <button type="button" className="secondary" onClick={copySession}>{copied ? 'Copied' : 'Copy session'}</button>
         <button type="button" className="secondary" onClick={()=>window.print()}>Print</button>

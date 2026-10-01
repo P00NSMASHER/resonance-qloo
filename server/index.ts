@@ -159,7 +159,13 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       setting,
     });
 
-    return json(res, 200, recommendation);
+    return json(res, 200, {
+      ...recommendation,
+      provenance: {
+        source: 'qloo-live',
+        generatedAt: new Date().toISOString(),
+      },
+    });
   } catch (error) {
     if (error instanceof Error && error.message === 'QLOO_TIMEOUT') {
       return json(res, 504, { error: 'Qloo took too long to respond. Please try again.' });
