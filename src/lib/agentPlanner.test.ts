@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { orchestrateSession } from './agentPlanner';
 
 const anchors = [
-  { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9' },
-  { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA' },
+  { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9', requestedTypeUrn:'urn:entity:artist' },
+  { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA', requestedTypeUrn:'urn:entity:movie' },
 ];
 
 describe('agent planner', () => {
@@ -24,6 +24,8 @@ describe('agent planner', () => {
     expect(session.agentTrace.map(x => x.stage)).toEqual(['resolve','evaluate','compose','explain']);
     expect(session.evidence.evidenceBasis).toBe('normalized-score');
     expect(session.evidence.meanNormalizedScore).toBeGreaterThan(.7);
+    expect(session.evidence.categoryHintCount).toBe(2);
+    expect(session.agentTrace[0].detail).toContain('2 used an explicit category hint');
   });
 
   it('uses Qloo rank order without manufacturing scores', () => {
