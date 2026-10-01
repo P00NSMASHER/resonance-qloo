@@ -2,7 +2,8 @@ import 'dotenv/config';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
-import { extractAffinities, extractResolved, planFromTags } from '../src/lib/qlooLogic';
+import { extractAffinities, extractResolved } from '../src/lib/qlooLogic';
+import { orchestrateSession } from '../src/lib/agentPlanner';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -25,9 +26,7 @@ async function readJson(req: import('node:http').IncomingMessage) {
   let raw = '';
   for await (const chunk of req) {
     raw += chunk;
-    if (Buffer.byteLength(raw, 'utf8') > MAX_BODY_BYTES) {
-      throw new Error('REQUEST_TOO_LARGE');
-    }
+    if (Buffer.byteLength(raw, 'utf8') > MAX_BODY_BYTES) throw new Error('REQUEST_TOO_LARGE');
   }
   try {
     return JSON.parse(raw || '{}') as Record<string, unknown>;
@@ -43,9 +42,7 @@ async function qlooFetch(url: URL, key: string) {
       signal: AbortSignal.timeout(QLOO_TIMEOUT_MS),
     });
   } catch (error) {
-    if (error instanceof Error && error.name === 'TimeoutError') {
-      throw new Error('QLOO_TIMEOUT');
-    }
+    if (error instanceof Error && error.name === 'TimeoutError') throw new Error('QLOO_TIMEOUT');
     throw error;
   }
 }
@@ -82,12 +79,8 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       )].slice(0, 4)
     : [];
 
-  const energy = typeof body.energy === 'string' && ALLOWED_ENERGY.has(body.energy)
-    ? body.energy
-    : 'calm';
-  const setting = typeof body.setting === 'string' && ALLOWED_SETTING.has(body.setting)
-    ? body.setting
-    : 'small-group';
+  const energy = typeof body.energy === 'string' && ALLOWED_ENERGY.has(body.energy) ? body.energy : 'calm';
+  const setting = typeof body.setting === 'string' && ALLOWED_SETTING.has(body.setting) ? body.setting : 'small-group';
 
   if (anchors.length < 2) {
     return json(res, 400, { error: 'Provide at least two distinct cultural anchors.' });
@@ -99,12 +92,8 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       const url = new URL('https://api.qloo.com/search');
       url.searchParams.set('query', query);
       url.searchParams.set('take', '5');
-
       const response = await qlooFetch(url, key);
-      if (!response.ok) {
-        return json(res, 502, { error: `Qloo search failed (${response.status}).` });
-      }
-
+      if (!response.ok) return json(res, 502, { error: `Qloo search failed (${response.status}).` });
       const found = extractResolved(query, await response.json());
       if (found) resolved.push(found);
     }
@@ -124,19 +113,22 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     }
 
     const affinities = extractAffinities(await insightsResponse.json());
-    if (affinities.length < 3) {
-      return json(res, 422, { error: 'Qloo returned too little affinity data for a useful session.' });
-    }
+    const session = orchestrateSession(resolved, affinities, energy, setting);
 
     return json(res, 200, {
       summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinities.`,
       resolvedAnchors: resolved,
       affinities,
-      plan: planFromTags(affinities, energy, setting),
+      plan: session.plan,
+      agentTrace: session.agentTrace,
+      evidence: session.evidence,
     });
   } catch (error) {
     if (error instanceof Error && error.message === 'QLOO_TIMEOUT') {
       return json(res, 504, { error: 'Qloo took too long to respond. Please try again.' });
+    }
+    if (error instanceof Error && (error.message === 'QLOO_EVIDENCE_TOO_SPARSE' || error.message === 'QLOO_EVIDENCE_TOO_WEAK')) {
+      return json(res, 422, { error: 'Qloo returned too little reliable evidence for a useful session. Try more specific anchors.' });
     }
     console.error('recommendation failure', error);
     return json(res, 502, { error: 'The Qloo request could not be completed.' });
