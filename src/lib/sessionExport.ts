@@ -2,7 +2,7 @@ import { anchorTypeLabelFromUrn } from './anchorTypes';
 
 export type ExportableSession = {
   summary: string;
-  resolvedAnchors: { name:string; entityId?:string; requestedTypeUrn?:string }[];
+  resolvedAnchors: { query?:string; name:string; entityId?:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
   provenance?: { generatedAt?: string };
@@ -45,7 +45,10 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ...session.resolvedAnchors.map(item => {
       const category = anchorTypeLabelFromUrn(item.requestedTypeUrn);
       const id = source === 'live' && item.entityId ? ` {Qloo ID: ${item.entityId}}` : '';
-      return `- ${item.name}${category ? ` [${category}]` : ''}${id}`;
+      const resolution = source === 'live' && item.query && item.query.trim().toLowerCase() !== item.name.trim().toLowerCase()
+        ? `${item.query} -> ${item.name}`
+        : item.name;
+      return `- ${resolution}${category ? ` [${category}]` : ''}${id}`;
     }),
     '',
     'Taste evidence:',
