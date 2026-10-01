@@ -11,7 +11,8 @@ export type AgentSession = {
   plan: PlanItem[];
   agentTrace: AgentTraceStep[];
   evidence: {
-    confidence: number;
+    meanNormalizedScore: number | null;
+    evidenceBasis: 'normalized-score' | 'ranked-order';
     selectedAffinityCount: number;
     resolvedAnchorCount: number;
   };
@@ -23,31 +24,32 @@ export function orchestrateSession(
   energy: string,
   setting: string,
 ): AgentSession {
-  if (resolvedAnchors.length < 2) {
+  if (resolvedAnchors.length < 2 || affinities.length < 3) {
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
   }
 
-  const ranked = [...affinities]
-    .filter(x => Number.isFinite(x.score))
+  const scored = affinities
+    .filter((x): x is Affinity & { score:number } => x.score !== null && Number.isFinite(x.score))
     .sort((a, b) => b.score - a.score);
 
-  if (ranked.length < 3) {
-    throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
-  }
+  const usingScores = scored.length >= 3;
+  const selected = (usingScores ? scored : [...affinities].sort((a,b) => a.rank - b.rank)).slice(0, 4);
+  const meanNormalizedScore = usingScores
+    ? scored.slice(0, 4).reduce((sum, x) => sum + x.score, 0) / scored.slice(0, 4).length
+    : null;
 
-  const selected = ranked.slice(0, 4);
-  const confidence = selected.reduce((sum, x) => sum + x.score, 0) / selected.length;
-
-  if (confidence < 0.2) {
+  if (meanNormalizedScore !== null && meanNormalizedScore < 0.2) {
     throw new Error('QLOO_EVIDENCE_TOO_WEAK');
   }
 
   const plan = planFromTags(selected, energy, setting);
+  const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
 
   return {
     plan,
     evidence: {
-      confidence,
+      meanNormalizedScore,
+      evidenceBasis,
       selectedAffinityCount: selected.length,
       resolvedAnchorCount: resolvedAnchors.length,
     },
@@ -55,12 +57,14 @@ export function orchestrateSession(
       {
         stage: 'resolve',
         status: 'ok',
-        detail: `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed evidence.`,
+        detail: `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed entity evidence.`,
       },
       {
         stage: 'evaluate',
-        status: confidence >= 0.55 ? 'ok' : 'warning',
-        detail: `Selected ${selected.length} highest-signal affinities; mean normalized confidence ${Math.round(confidence * 100)}%.`,
+        status: 'ok',
+        detail: usingScores
+          ? `Selected ${selected.length} highest-scoring affinities; mean normalized score ${Math.round((meanNormalizedScore ?? 0) * 100)}%.`
+          : `Selected the first ${selected.length} tags from Qloo's affinity-ranked result order. No numeric score was invented because this response did not provide one.`,
       },
       {
         stage: 'compose',
