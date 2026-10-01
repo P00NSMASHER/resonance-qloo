@@ -159,7 +159,7 @@ export function planFromTags(
 ): PlanItem[] {
   const names = tags.map(x => x.label);
   const [a='familiar favorites', b='warm nostalgia', c='shared storytelling', d='comforting ritual'] = names;
-  const [firstAnchor, secondAnchor, thirdAnchor] = anchorNames;
+  const [firstAnchor, secondAnchor, thirdAnchor, fourthAnchor] = anchorNames;
   const durations = durationMinutes === 30
     ? ['5 min','10 min','10 min','5 min']
     : durationMinutes === 60
@@ -214,11 +214,18 @@ export function planFromTags(
           action:`Offer two or three simple choices connected to “${c}” and let participants steer the next activity.`,
           why:`“${c}” extends the known tastes into a related domain while preserving participant choice.`,
         },
-    {
-      title:'Closing ritual',
-      duration:durations[3],
-      action:`Close with a snack, sensory cue, or conversation card inspired by “${d},” then ask what should return next time.`,
-      why:`“${d}” provides another Qloo-ranked adjacent signal so the plan ends in the same cultural neighborhood it started in.`,
-    }
+    fourthAnchor
+      ? {
+          title:'Closing ritual',
+          duration:durations[3],
+          action:`Close by reconnecting “${fourthAnchor}” with “${d}” through a snack, sensory cue, or conversation card, then ask what should return next time.`,
+          why:`The supplied favorite “${fourthAnchor}” remains visible in the final step while Qloo-ranked “${d}” provides the adjacent cultural signal.`,
+        }
+      : {
+          title:'Closing ritual',
+          duration:durations[3],
+          action:`Close with a snack, sensory cue, or conversation card inspired by “${d},” then ask what should return next time.`,
+          why:`“${d}” provides another Qloo-ranked adjacent signal so the plan ends in the same cultural neighborhood it started in.`,
+        }
   ];
 }
