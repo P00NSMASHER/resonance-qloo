@@ -28,6 +28,25 @@ describe('agent planner', () => {
     expect(session.agentTrace[0].detail).toContain('2 used an explicit category hint');
   });
 
+  it('exposes Qloo explainability availability without inventing attribution', () => {
+    const session = orchestrateSession(
+      anchors,
+      [
+        { label:'Jazz', score:null, rank:1 },
+        { label:'Musicals', score:null, rank:2 },
+        { label:'Classic cinema', score:null, rank:3 },
+      ],
+      'calm',
+      'small-group',
+      { resultCount:2, aggregateAvailable:true },
+    );
+
+    expect(session.evidence.explainabilityResultCount).toBe(2);
+    expect(session.evidence.aggregateExplainabilityAvailable).toBe(true);
+    expect(session.agentTrace[3].detail).toContain('2 taste result(s)');
+    expect(session.agentTrace[3].detail).toContain('aggregate explainability');
+  });
+
   it('uses Qloo rank order without manufacturing scores', () => {
     const session = orchestrateSession(
       anchors,
