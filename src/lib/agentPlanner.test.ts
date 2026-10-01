@@ -28,6 +28,8 @@ describe('agent planner', () => {
     expect(session.evidence.meanNormalizedScore).toBeGreaterThan(.7);
     expect(session.evidence.categoryHintCount).toBe(2);
     expect(session.evidence.sessionDurationMinutes).toBe(45);
+    expect(session.evidence.energy).toBe('social');
+    expect(session.evidence.setting).toBe('small-group');
     expect(session.agentTrace[0].detail).toContain('2 used an explicit category hint');
     expect(session.agentTrace[2].detail).toContain('resolved favorites visible');
   });
