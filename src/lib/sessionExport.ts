@@ -14,6 +14,7 @@ export type ExportableSession = {
     resolvedAnchorCount?: number;
     categoryHintCount?: number;
     selectedAffinityCount?: number;
+    sessionDurationMinutes?: number;
   };
 };
 
@@ -42,6 +43,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       : []),
     ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined
       ? [`Selection evidence: ${session.evidence.selectedAffinityCount} affinity signal(s) selected for the plan`]
+      : []),
+    ...(source === 'live' && session.evidence?.sessionDurationMinutes !== undefined
+      ? [`Session target: ${session.evidence.sessionDurationMinutes} minutes`]
       : []),
     '',
     session.summary,
