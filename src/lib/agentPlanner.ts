@@ -1,4 +1,4 @@
-import type { Affinity, PlanItem, ResolvedAnchor } from './qlooLogic';
+import type { Affinity, PlanItem, QlooExplainabilitySummary, ResolvedAnchor } from './qlooLogic';
 import { planFromTags } from './qlooLogic';
 
 export type AgentTraceStep = {
@@ -16,6 +16,8 @@ export type AgentSession = {
     selectedAffinityCount: number;
     resolvedAnchorCount: number;
     categoryHintCount: number;
+    explainabilityResultCount: number;
+    aggregateExplainabilityAvailable: boolean;
   };
 };
 
@@ -24,6 +26,7 @@ export function orchestrateSession(
   affinities: Affinity[],
   energy: string,
   setting: string,
+  qlooExplainability: QlooExplainabilitySummary = { resultCount:0, aggregateAvailable:false },
 ): AgentSession {
   if (resolvedAnchors.length < 2 || affinities.length < 3) {
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
@@ -55,6 +58,8 @@ export function orchestrateSession(
       selectedAffinityCount: selected.length,
       resolvedAnchorCount: resolvedAnchors.length,
       categoryHintCount,
+      explainabilityResultCount:qlooExplainability.resultCount,
+      aggregateExplainabilityAvailable:qlooExplainability.aggregateAvailable,
     },
     agentTrace: [
       {
@@ -77,7 +82,11 @@ export function orchestrateSession(
       {
         stage: 'explain',
         status: 'ok',
-        detail: 'Attached a visible why-it-fits rationale to every activity so the facilitator can review the evidence path.',
+        detail: qlooExplainability.resultCount > 0
+          ? `Attached a visible why-it-fits rationale to every activity. Qloo also returned per-result explainability metadata on ${qlooExplainability.resultCount} taste result(s)${qlooExplainability.aggregateAvailable ? ' plus aggregate explainability metadata.' : '.'}`
+          : qlooExplainability.aggregateAvailable
+            ? 'Attached a visible why-it-fits rationale to every activity. Qloo also returned aggregate explainability metadata for the result set.'
+            : 'Attached a visible why-it-fits rationale to every activity. Qloo explainability was requested, but this response did not include attribution metadata.',
       },
     ],
   };
