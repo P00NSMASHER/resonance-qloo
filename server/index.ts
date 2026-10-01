@@ -5,12 +5,14 @@ import { extname, resolve, sep } from 'node:path';
 import { extractAffinities, extractResolved } from '../src/lib/qlooLogic';
 import { orchestrateSession } from '../src/lib/agentPlanner';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
+import { createRateLimiter } from '../src/lib/rateLimiter';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
 const ALLOWED_ENERGY = new Set(['calm', 'social', 'active']);
 const ALLOWED_SETTING = new Set(['one-on-one', 'small-group', 'community']);
+const liveLimiter = createRateLimiter(12, 60_000);
 
 function json(res: import('node:http').ServerResponse, status: number, body: unknown) {
   res.writeHead(status, {
@@ -47,6 +49,17 @@ async function handleStatus(res: import('node:http').ServerResponse) {
 async function handleRecommend(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
   const key = process.env.QLOO_API_KEY?.trim();
   if (!key) return json(res, 503, { error: 'Live Qloo access is not connected yet.' });
+
+  const forwarded = req.headers['x-forwarded-for'];
+  const clientKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0])?.trim()
+    || req.socket.remoteAddress
+    || 'unknown';
+  const limit = liveLimiter.check(clientKey);
+  if (!limit.allowed) {
+    return json(res, 429, {
+      error: `Too many live Qloo requests. Try again in ${limit.retryAfterSeconds}s.`,
+    });
+  }
 
   let body: Record<string, unknown>;
   try {
