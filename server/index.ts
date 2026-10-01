@@ -14,6 +14,7 @@ const MAX_BODY_BYTES = 16 * 1024;
 const ALLOWED_ENERGY = new Set(['calm', 'social', 'active']);
 const ALLOWED_SETTING = new Set(['one-on-one', 'small-group', 'community']);
 const liveLimiter = createRateLimiter(12, 60_000);
+const globalLiveLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 
@@ -57,6 +58,13 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   const clientKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0])?.trim()
     || req.socket.remoteAddress
     || 'unknown';
+  const globalLimit = globalLiveLimiter.check('global');
+  if (!globalLimit.allowed) {
+    return json(res, 429, {
+      error: `The public Qloo demo is temporarily busy. Try again in ${globalLimit.retryAfterSeconds}s.`,
+    });
+  }
+
   const limit = liveLimiter.check(clientKey);
   if (!limit.allowed) {
     return json(res, 429, {
