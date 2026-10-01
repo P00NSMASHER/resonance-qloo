@@ -1,4 +1,4 @@
-import { extractAffinities, extractResolved, type ResolvedAnchor } from './qlooLogic';
+import { extractAffinities, extractExplainabilitySummary, extractResolved, type ResolvedAnchor } from './qlooLogic';
 import { orchestrateSession } from './agentPlanner';
 
 export type RecommendationAnchor = {
@@ -42,10 +42,16 @@ export async function buildRecommendation(
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
   }
 
-  const affinities = extractAffinities(
-    await gateway.tasteAnalysis(resolved.map(x => x.entityId))
+  const tastePayload = await gateway.tasteAnalysis(resolved.map(x => x.entityId));
+  const affinities = extractAffinities(tastePayload);
+  const qlooExplainability = extractExplainabilitySummary(tastePayload);
+  const session = orchestrateSession(
+    resolved,
+    affinities,
+    input.energy,
+    input.setting,
+    qlooExplainability,
   );
-  const session = orchestrateSession(resolved, affinities, input.energy, input.setting);
 
   return {
     summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.`,
