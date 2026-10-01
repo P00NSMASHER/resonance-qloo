@@ -54,7 +54,7 @@ const demo: Result = {
   }
 };
 
-const anchorLabels = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place'];
+const anchorExamples = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place', 'Another favorite'];
 
 export default function App() {
   const [anchors, setAnchors] = useState(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
@@ -130,6 +130,18 @@ export default function App() {
     }
   }
 
+  function updateAnchor(index: number, value: string) {
+    setAnchors(current => current.map((item, itemIndex) => itemIndex === index ? value : item));
+  }
+
+  function addAnchor() {
+    setAnchors(current => current.length >= 4 ? current : [...current, '']);
+  }
+
+  function removeAnchor(index: number) {
+    setAnchors(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
+  }
+
   function previewDemo() {
     setError('');
     setResult(demo);
@@ -155,17 +167,24 @@ export default function App() {
         <h2>Give the agent a few cultural anchors</h2>
         <p className="fieldHint">Use preferences only. No names, emails, health information, or other personal identifiers are needed.</p>
         <div className="inputs">
-          {anchors.map((a,i)=><label key={i} className="anchorField" htmlFor={`anchor-${i}`}>
-            <span>{anchorLabels[i]}</span>
-            <input
-              id={`anchor-${i}`}
-              value={a}
-              onChange={e=>setAnchors(v=>v.map((x,j)=>j===i?e.target.value:x))}
-              placeholder={anchorLabels[i]}
-              autoComplete="off"
-              maxLength={100}
-            />
-          </label>)}
+          {anchors.map((anchor,index)=><div className="anchorGroup" key={index}>
+            <label className="anchorField" htmlFor={`anchor-${index}`}>
+              <span>Cultural anchor {index + 1}</span>
+              <input
+                id={`anchor-${index}`}
+                value={anchor}
+                onChange={e=>updateAnchor(index, e.target.value)}
+                placeholder={anchorExamples[index] ?? 'Another favorite'}
+                autoComplete="off"
+                maxLength={100}
+              />
+            </label>
+            {anchors.length > 2 && <button type="button" className="anchorRemove" onClick={()=>removeAnchor(index)} aria-label={`Remove cultural anchor ${index + 1}`}>Remove</button>}
+          </div>)}
+        </div>
+        <div className="anchorControls">
+          <button type="button" className="anchorAdd" disabled={anchors.length >= 4 || loading} onClick={addAnchor}>+ Add another anchor</button>
+          <span>{anchors.length}/4 anchors</span>
         </div>
         <div className="selects">
           <label htmlFor="energy">Energy

@@ -22,12 +22,26 @@ const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
 
-function json(res: import('node:http').ServerResponse, status: number, body: unknown) {
+const SECURITY_HEADERS: import('node:http').OutgoingHttpHeaders = {
+  'content-security-policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+  'permissions-policy': 'camera=(), microphone=(), geolocation=()',
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'DENY',
+  'cross-origin-opener-policy': 'same-origin',
+};
+
+function json(
+  res: import('node:http').ServerResponse,
+  status: number,
+  body: unknown,
+  extraHeaders: import('node:http').OutgoingHttpHeaders = {},
+) {
   res.writeHead(status, {
+    ...SECURITY_HEADERS,
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store',
-    'x-content-type-options': 'nosniff',
     'referrer-policy': 'no-referrer',
+    ...extraHeaders,
   });
   res.end(JSON.stringify(body));
 }
@@ -91,14 +105,14 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   if (!globalLimit.allowed) {
     return json(res, 429, {
       error: `The public Qloo demo is temporarily busy. Try again in ${globalLimit.retryAfterSeconds}s.`,
-    });
+    }, { 'retry-after': String(globalLimit.retryAfterSeconds) });
   }
 
   const limit = liveLimiter.check(clientKey);
   if (!limit.allowed) {
     return json(res, 429, {
       error: `Too many live Qloo requests. Try again in ${limit.retryAfterSeconds}s.`,
-    });
+    }, { 'retry-after': String(limit.retryAfterSeconds) });
   }
 
   let body: Record<string, unknown>;
@@ -199,9 +213,13 @@ async function serveStatic(pathname: string, res: import('node:http').ServerResp
     const info = await stat(filePath);
     if (!info.isFile()) throw new Error('not file');
     const data = await readFile(filePath);
+    const cacheControl = relativePath.startsWith('assets/')
+      ? 'public, max-age=31536000, immutable'
+      : 'no-cache';
     res.writeHead(200, {
+      ...SECURITY_HEADERS,
       'content-type': mime[extname(filePath)] || 'application/octet-stream',
-      'x-content-type-options': 'nosniff',
+      'cache-control': cacheControl,
       'referrer-policy': 'same-origin',
     });
     res.end(data);
@@ -209,8 +227,9 @@ async function serveStatic(pathname: string, res: import('node:http').ServerResp
     try {
       const data = await readFile(resolve(DIST, 'index.html'));
       res.writeHead(200, {
+        ...SECURITY_HEADERS,
         'content-type': 'text/html; charset=utf-8',
-        'x-content-type-options': 'nosniff',
+        'cache-control': 'no-cache',
         'referrer-policy': 'same-origin',
       });
       res.end(data);
