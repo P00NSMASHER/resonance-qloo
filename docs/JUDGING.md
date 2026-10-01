@@ -7,7 +7,7 @@
 3. If the event credential is still pending, use **Preview interface**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
-   - resolved Qloo entity IDs;
+   - resolved Qloo entity IDs and the category hints used to disambiguate them;
    - cross-category taste evidence;
    - the evidence basis: numeric score when Qloo supplies one, otherwise Qloo's affinity-ranked result order;
    - the four-stage agent decision trace;
@@ -23,6 +23,9 @@ Qloo is not an ornamental API call. It supplies the entity-resolution and cross-
 The implementation now matches current Qloo public documentation more defensibly:
 
 - Search results are resolved to Qloo entity UUIDs (with entity-URN fallback).
+- Category-aware search can constrain ambiguous anchors through Qloo's documented `types` parameter.
+- The agent reports how many category hints were actually applied and preserves them beside the resolved anchors.
+- Independent anchor-resolution calls run concurrently to reduce live latency.
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
 - Tag results are read from `results.tags`.
 - Numeric affinity values are used only if Qloo actually returns them.
