@@ -59,6 +59,7 @@ export class QlooClient {
     url.searchParams.set('filter.type', 'urn:tag');
     url.searchParams.set('signal.interests.entities', entityIds.join(','));
     url.searchParams.set('take', '8');
+    url.searchParams.set('feature.explainability', 'true');
     return this.request('insights', url);
   }
 }
