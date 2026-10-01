@@ -23,6 +23,8 @@ describe('session export', () => {
       evidenceBasis:'ranked-order' as const,
       explainabilityResultCount:2,
       aggregateExplainabilityAvailable:true,
+      resolvedAnchorCount:2,
+      categoryHintCount:2,
     },
   };
 
@@ -71,6 +73,13 @@ describe('session export', () => {
       'Qloo explainability: 2 result(s) with attribution metadata; aggregate metadata present'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Qloo explainability:');
+  });
+
+  it('keeps anchor-resolution evidence in live exports', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Resolution evidence: 2 anchor(s) resolved; 2 category hint(s) used'
+    );
+    expect(formatSessionText(session, 'demo')).not.toContain('Resolution evidence:');
   });
 
   it('marks verified live exports as Live Qloo', () => {
