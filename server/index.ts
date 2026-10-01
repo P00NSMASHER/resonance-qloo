@@ -104,7 +104,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
 
     const insights = new URL('https://api.qloo.com/v2/insights');
     insights.searchParams.set('filter.type', 'urn:tag');
-    insights.searchParams.set('signal.interests.entities', resolved.map(x => x.urn).join(','));
+    insights.searchParams.set('signal.interests.entities', resolved.map(x => x.entityId).join(','));
     insights.searchParams.set('take', '8');
 
     const insightsResponse = await qlooFetch(insights, key);
@@ -116,7 +116,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     const session = orchestrateSession(resolved, affinities, energy, setting);
 
     return json(res, 200, {
-      summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinities.`,
+      summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.`,
       resolvedAnchors: resolved,
       affinities,
       plan: session.plan,
