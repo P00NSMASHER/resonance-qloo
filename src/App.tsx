@@ -1,10 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+type AgentTraceStep = {
+  stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
+  status: 'ok' | 'warning';
+  detail: string;
+};
+
 type Result = {
   summary: string;
   resolvedAnchors: { query:string; name:string; urn:string }[];
   affinities: { label:string; score:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
+  agentTrace: AgentTraceStep[];
+  evidence: {
+    confidence: number;
+    selectedAffinityCount: number;
+    resolvedAnchorCount: number;
+  };
 };
 
 const demo: Result = {
@@ -25,7 +37,18 @@ const demo: Result = {
     { title:'Story bridge', duration:'15 min', action:'Use a classic musical prompt to invite stories about theaters, dancing, or favorite performers.', why:'Illustrative rationale for the preview state.' },
     { title:'Shared choice', duration:'15 min', action:'Offer adjacent prompts across music, fashion, or travel and let the group choose.', why:'Illustrative rationale for the preview state.' },
     { title:'Closing ritual', duration:'10 min', action:'Close around an Italian comfort-food prompt and ask what should return next time.', why:'Illustrative rationale for the preview state.' }
-  ]
+  ],
+  agentTrace: [
+    { stage:'resolve', status:'ok', detail:'Illustrative: resolve three cultural anchors into Qloo-backed evidence.' },
+    { stage:'evaluate', status:'ok', detail:'Illustrative: retain the strongest cross-category affinities and discard weaker signals.' },
+    { stage:'compose', status:'ok', detail:'Illustrative: adapt the session to the selected energy and setting.' },
+    { stage:'explain', status:'ok', detail:'Illustrative: attach a visible rationale to each activity choice.' }
+  ],
+  evidence: {
+    confidence:.85,
+    selectedAffinityCount:4,
+    resolvedAnchorCount:3
+  }
 };
 
 const anchorLabels = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place'];
@@ -67,9 +90,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (result) {
-      window.requestAnimationFrame(() => resultRef.current?.focus());
-    }
+    if (result) window.requestAnimationFrame(() => resultRef.current?.focus());
   }, [result]);
 
   async function runLive() {
@@ -115,11 +136,7 @@ export default function App() {
   return <main className="page">
     <header>
       <div className="brand"><span aria-hidden="true">R</span>Resonance</div>
-      <div
-        className={qlooReady ? 'status live' : 'status pending'}
-        role="status"
-        aria-live="polite"
-      >
+      <div className={qlooReady ? 'status live' : 'status pending'} role="status" aria-live="polite">
         {qlooReady === null ? 'Checking Qloo connection…' : qlooReady ? 'Live Qloo connected' : 'Qloo access pending'}
       </div>
     </header>
@@ -127,7 +144,7 @@ export default function App() {
     <section className="hero" aria-labelledby="hero-title">
       <div className="eyebrow">Cultural intelligence for human connection</div>
       <h1 id="hero-title">Turn what someone loves into a moment that feels <em>like them.</em></h1>
-      <p>Resonance helps senior-living activity teams and families turn a few known favorites into a culturally coherent engagement session. Qloo provides the cross-category taste signal; the agent turns it into a practical plan.</p>
+      <p>Resonance helps senior-living activity teams and families turn a few known favorites into a culturally coherent engagement session. Qloo provides the cross-category taste signal; the agent evaluates the evidence, adapts the plan, and explains each choice.</p>
     </section>
 
     <section className="workspace" aria-label="Resonance session builder">
@@ -179,18 +196,40 @@ export default function App() {
         {usableAnchors.length < 2 && <div className="validation" role="status">Enter at least two distinct cultural anchors.</div>}
         {error && <div className="error" role="alert">{error}</div>}
       </div>
-      <aside className="trace" aria-label="Agent trace">
-        <h3>Agent trace</h3>
-        <ol><li>Resolve cultural anchors</li><li>Infer cross-category taste DNA</li><li>Compose the session</li><li>Explain why each step fits</li></ol>
+      <aside className="trace" aria-label="Agent loop">
+        <h3>Agent loop</h3>
+        <ol><li>Resolve cultural anchors</li><li>Evaluate evidence strength</li><li>Compose for the chosen context</li><li>Explain every recommendation</li></ol>
       </aside>
     </section>
 
     {result && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
       <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div><b>{source==='live'?'LIVE QLOO':'ILLUSTRATIVE DEMO'}</b></div>
-      {source==='demo' && <div className="warning" role="note">Demo mode: these affinities and rationales are placeholders, not Qloo API results.</div>}
-      <h3>Resolved anchors</h3><div className="chips">{result.resolvedAnchors.map(x=><span key={x.urn}>{x.name}</span>)}</div>
+      {source==='demo' && <div className="warning" role="note">Demo mode: these affinities, evidence scores, and rationales are placeholders, not Qloo API results.</div>}
+
+      <h3>Resolved anchors</h3>
+      <div className="chips">{result.resolvedAnchors.map(x=><span key={x.urn}>{x.name}</span>)}</div>
+
       <h3>{source==='live'?'Taste DNA inferred by Qloo':'Illustrative taste-DNA preview'}</h3>
       <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{Math.round(x.score*100)}%</b></div>)}</div>
+
+      <section className="decisionTrace" aria-labelledby="decision-trace-title">
+        <div>
+          <h3 id="decision-trace-title">Agent decision trace</h3>
+          <p>The agent exposes the evidence path instead of hiding how the session was assembled.</p>
+        </div>
+        <div className="evidenceMetrics">
+          <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
+          <span><b>{result.evidence.selectedAffinityCount}</b> affinities selected</span>
+          <span><b>{Math.round(result.evidence.confidence*100)}%</b> mean normalized score</span>
+        </div>
+        <ol className="agentTraceList">
+          {result.agentTrace.map(step=><li key={step.stage} className={step.status}>
+            <span>{step.stage}</span>
+            <p>{step.detail}</p>
+          </li>)}
+        </ol>
+      </section>
+
       <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3><p>{x.action}</p><div><b>Why it fits</b><br/>{x.why}</div></article>)}</div>
     </section>}
 
