@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/connectionState';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -59,7 +60,7 @@ export default function App() {
   const [anchors, setAnchors] = useState(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
-  const [qlooReady, setQlooReady] = useState<boolean | null>(null);
+  const [qlooState, setQlooState] = useState<QlooUiState>('checking');
   const [result, setResult] = useState<Result | null>(null);
   const [source, setSource] = useState<'live'|'demo'|null>(null);
   const [error, setError] = useState('');
@@ -70,7 +71,8 @@ export default function App() {
     () => [...new Set(anchors.map(x => x.trim()).filter(x => x.length >= 2))],
     [anchors]
   );
-  const canRun = usableAnchors.length >= 2 && qlooReady === true && !loading;
+  const qlooUi = qlooPresentation(qlooState);
+  const canRun = usableAnchors.length >= 2 && qlooUi.liveReady && !loading;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -81,8 +83,8 @@ export default function App() {
         if (!r.ok) throw new Error('status unavailable');
         return r.json();
       })
-      .then(x => setQlooReady(Boolean(x.qlooConnected)))
-      .catch(() => setQlooReady(false))
+      .then(x => setQlooState(normalizeQlooState(x)))
+      .catch(() => setQlooState('degraded'))
       .finally(() => window.clearTimeout(timer));
 
     return () => {
@@ -137,8 +139,8 @@ export default function App() {
   return <main className="page">
     <header>
       <div className="brand"><span aria-hidden="true">R</span>Resonance</div>
-      <div className={qlooReady ? 'status live' : 'status pending'} role="status" aria-live="polite">
-        {qlooReady === null ? 'Checking Qloo connection…' : qlooReady ? 'Live Qloo connected' : 'Qloo access pending'}
+      <div className={`status ${qlooState === 'ready' ? 'live' : qlooState === 'degraded' ? 'degraded' : 'pending'}`} role="status" aria-live="polite">
+        {qlooUi.label}
       </div>
     </header>
 
@@ -183,17 +185,11 @@ export default function App() {
         </div>
         <div className="actions">
           <button disabled={!canRun} onClick={runLive}>
-            {loading?'Grounding with Qloo…':qlooReady?'Build with live Qloo':'Live Qloo available when key arrives'}
+            {loading?'Grounding with Qloo…':qlooUi.liveReady?'Build with live Qloo':'Live Qloo unavailable'}
           </button>
           <button className="secondary" onClick={previewDemo} disabled={loading}>Preview interface</button>
         </div>
-        <small>
-          {qlooReady === null
-            ? 'Checking whether the event-issued Qloo credential is connected.'
-            : qlooReady
-              ? 'Live Qloo is connected. The preview remains available for comparison and is always labeled.'
-              : 'The event API credential is still pending. Preview data is illustrative and clearly labeled.'}
-        </small>
+        <small>{qlooUi.helper}</small>
         {usableAnchors.length < 2 && <div className="validation" role="status">Enter at least two distinct cultural anchors.</div>}
         {error && <div className="error" role="alert">{error}</div>}
       </div>
