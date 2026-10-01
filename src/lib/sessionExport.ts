@@ -13,6 +13,7 @@ export type ExportableSession = {
     aggregateExplainabilityAvailable?: boolean;
     resolvedAnchorCount?: number;
     categoryHintCount?: number;
+    selectedAffinityCount?: number;
   };
 };
 
@@ -38,6 +39,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       session.evidence?.categoryHintCount !== undefined
     )
       ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
+      : []),
+    ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined
+      ? [`Selection evidence: ${session.evidence.selectedAffinityCount} affinity signal(s) selected for the plan`]
       : []),
     '',
     session.summary,
