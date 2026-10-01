@@ -23,6 +23,7 @@ type Result = {
     categoryHintCount: number;
     explainabilityResultCount: number;
     aggregateExplainabilityAvailable: boolean;
+    sessionDurationMinutes: number;
   };
   provenance: {
     source:'qloo-live'|'illustrative-demo';
@@ -45,7 +46,7 @@ const demo: Result = {
   ],
   plan: [
     { title:'Opening cue', duration:'10 min', action:'Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.', why:'Illustrative rationale for the preview state.' },
-    { title:'Story bridge', duration:'15 min', action:'Use a classic musical prompt to invite stories about theaters, dancing, or favorite performers.', why:'Illustrative rationale for the preview state.' },
+    { title:'Story bridge', duration:'10 min', action:'Use a classic musical prompt to invite stories about theaters, dancing, or favorite performers.', why:'Illustrative rationale for the preview state.' },
     { title:'Shared choice', duration:'15 min', action:'Offer adjacent prompts across music, fashion, or travel and let the group choose.', why:'Illustrative rationale for the preview state.' },
     { title:'Closing ritual', duration:'10 min', action:'Close around an Italian comfort-food prompt and ask what should return next time.', why:'Illustrative rationale for the preview state.' }
   ],
@@ -62,7 +63,8 @@ const demo: Result = {
     resolvedAnchorCount:3,
     categoryHintCount:2,
     explainabilityResultCount:0,
-    aggregateExplainabilityAvailable:false
+    aggregateExplainabilityAvailable:false,
+    sessionDurationMinutes:45
   },
   provenance: {
     source:'illustrative-demo'
@@ -76,6 +78,7 @@ export default function App() {
   const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie','any']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
+  const [durationMinutes, setDurationMinutes] = useState(45);
   const [qlooState, setQlooState] = useState<QlooUiState>('checking');
   const [result, setResult] = useState<Result | null>(null);
   const [source, setSource] = useState<'live'|'demo'|null>(null);
@@ -131,7 +134,7 @@ export default function App() {
       const r = await fetch('/api/recommend', {
         method:'POST',
         headers:{'content-type':'application/json'},
-        body:JSON.stringify({anchors:usableAnchors,energy,setting}),
+        body:JSON.stringify({anchors:usableAnchors,energy,setting,durationMinutes}),
         signal:controller.signal
       });
       const data = await r.json();
@@ -256,6 +259,13 @@ export default function App() {
               <option value="community">Community room</option>
             </select>
           </label>
+          <label htmlFor="duration">Session length
+            <select id="duration" value={durationMinutes} onChange={e=>setDurationMinutes(Number(e.target.value))}>
+              <option value={30}>30 minutes</option>
+              <option value={45}>45 minutes</option>
+              <option value={60}>60 minutes</option>
+            </select>
+          </label>
         </div>
         <div className="actions">
           <button disabled={!canRun} onClick={runLive}>
@@ -302,6 +312,7 @@ export default function App() {
           <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
           <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
           <span><b>{result.evidence.selectedAffinityCount}</b> affinities selected</span>
+          <span><b>{result.evidence.sessionDurationMinutes}</b> minutes</span>
           <span><b>{source === 'live' ? result.evidence.explainabilityResultCount : '—'}</b>{source === 'live' ? ' Qloo-explained results' : ' live explainability'}</span>
           <span><b>{result.evidence.meanNormalizedScore === null ? 'Ranked' : `${Math.round(result.evidence.meanNormalizedScore*100)}%`}</b>{result.evidence.evidenceBasis === 'ranked-order' ? ' Qloo result order' : ' mean normalized score'}</span>
         </div>

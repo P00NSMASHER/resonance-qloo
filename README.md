@@ -7,7 +7,7 @@
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
-Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent engagement plan for senior-living activity teams and families.
+Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent 30-, 45-, or 60-minute engagement plan for senior-living activity teams and families.
 
 ## Why Qloo is essential
 
@@ -174,7 +174,8 @@ The preview smoke test verifies:
     {"query":"Italian food","type":"any"}
   ],
   "energy": "calm",
-  "setting": "small-group"
+  "setting": "small-group",
+  "durationMinutes": 45
 }
 ```
 
@@ -183,6 +184,7 @@ A successful live response includes:
 - resolved Qloo anchors and any category hints used,
 - affinity labels plus Qloo-provided scores when present, otherwise ranked result order,
 - a four-part session,
+- selectable 30-, 45-, or 60-minute timeboxing,
 - per-step rationale,
 - an agent decision trace,
 - an evidence summary.
