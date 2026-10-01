@@ -18,6 +18,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
   const lines = [
     'Resonance session',
     source === 'live' ? 'Source: Live Qloo' : 'Source: Illustrative demo — not live Qloo data',
+    'Scope: cultural engagement guidance, not medical advice',
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
     ...(source === 'live' && session.evidence?.evidenceBasis
       ? [`Evidence basis: ${session.evidence.evidenceBasis === 'normalized-score' ? 'Qloo numeric scores' : 'Qloo ranked result order'}`]
