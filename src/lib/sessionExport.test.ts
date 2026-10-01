@@ -26,6 +26,11 @@ describe('session export', () => {
     },
   };
 
+  it('keeps the non-medical scope in every export', () => {
+    expect(formatSessionText(session, 'live')).toContain('Scope: cultural engagement guidance, not medical advice');
+    expect(formatSessionText(session, 'demo')).toContain('Scope: cultural engagement guidance, not medical advice');
+  });
+
   it('marks illustrative exports so they cannot be mistaken for live Qloo evidence', () => {
     const text = formatSessionText(session, 'demo');
     expect(text).toContain('Illustrative demo — not live Qloo data');
