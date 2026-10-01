@@ -1,0 +1,167 @@
+openapi: 3.1.0
+info:
+  title: Resonance API
+  version: 0.1.0
+  description: >
+    Server-side API for Resonance, a Qloo-powered cultural engagement agent.
+    The Qloo credential remains on the server and is never returned to clients.
+servers:
+  - url: http://localhost:8787
+    description: Local production-style server
+paths:
+  /api/status:
+    get:
+      summary: Read Qloo connection state
+      operationId: getStatus
+      responses:
+        '200':
+          description: Current service mode
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [qlooConnected, mode, service]
+                properties:
+                  qlooConnected:
+                    type: boolean
+                  mode:
+                    type: string
+                    enum: [live, preview]
+                  service:
+                    type: string
+                    const: resonance
+  /api/recommend:
+    post:
+      summary: Build a culturally grounded engagement session
+      operationId: createRecommendation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+      responses:
+        '200':
+          description: Qloo-grounded session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: Request body exceeds the bounded input size
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Qloo returned insufficient evidence for a useful session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Qloo request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Event-issued Qloo credential is not connected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '504':
+          description: Qloo timed out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    RecommendationRequest:
+      type: object
+      required: [anchors, energy, setting]
+      additionalProperties: false
+      properties:
+        anchors:
+          type: array
+          minItems: 2
+          maxItems: 4
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 2
+            maxLength: 100
+          examples:
+            - [Ella Fitzgerald, Singin' in the Rain, Italian food]
+        energy:
+          type: string
+          enum: [calm, social, active]
+        setting:
+          type: string
+          enum: [one-on-one, small-group, community]
+    ResolvedAnchor:
+      type: object
+      required: [query, name, urn]
+      properties:
+        query:
+          type: string
+        name:
+          type: string
+        urn:
+          type: string
+    Affinity:
+      type: object
+      required: [label, score]
+      properties:
+        label:
+          type: string
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+    PlanItem:
+      type: object
+      required: [title, duration, action, why]
+      properties:
+        title:
+          type: string
+        duration:
+          type: string
+        action:
+          type: string
+        why:
+          type: string
+    RecommendationResponse:
+      type: object
+      required: [summary, resolvedAnchors, affinities, plan]
+      properties:
+        summary:
+          type: string
+        resolvedAnchors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResolvedAnchor'
+        affinities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Affinity'
+        plan:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/PlanItem'
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
