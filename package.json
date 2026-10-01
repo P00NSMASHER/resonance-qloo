@@ -13,7 +13,8 @@
     "smoke:preview": "node scripts/smoke-preview.mjs",
     "qloo:proof": "node scripts/qloo-mcp-proof.mjs",
     "submission:preflight": "node scripts/submission-preflight.mjs",
-    "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline"
+    "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline",
+    "evidence:capture": "node scripts/capture-live-evidence.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.1",
