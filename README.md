@@ -29,7 +29,7 @@ If Qloo returns too little reliable evidence, the agent fails closed instead of 
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
    - resolved anchors,
-   - cross-category affinity scores,
+   - cross-category Qloo taste evidence,
    - the agent decision trace,
    - the four-part session,
    - the why-it-fits rationale for every step.
@@ -151,7 +151,7 @@ The preview smoke test verifies:
 A successful live response includes:
 
 - resolved Qloo anchors,
-- affinity labels and normalized scores,
+- affinity labels plus Qloo-provided scores when present, otherwise ranked result order,
 - a four-part session,
 - per-step rationale,
 - an agent decision trace,
