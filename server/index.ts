@@ -12,6 +12,7 @@ import { createTtlCache } from '../src/lib/ttlCache';
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
+const QLOO_BASE_URL = resolveQlooBaseUrl(process.env.QLOO_API_BASE_URL);
 const ALLOWED_ENERGY = new Set(['calm', 'social', 'active']);
 const ALLOWED_SETTING = new Set(['one-on-one', 'small-group', 'community']);
 const liveLimiter = createRateLimiter(12, 60_000);
@@ -55,10 +56,10 @@ async function handleStatus(res: import('node:http').ServerResponse) {
     });
   }
 
-  const keyFingerprint = createHash('sha256').update(key).digest('hex').slice(0, 16);
+  const keyFingerprint = createHash('sha256').update(`${QLOO_BASE_URL}\0${key}`).digest('hex').slice(0, 16);
   const qlooStatus = await qlooProbeCache.getOrLoad(keyFingerprint, async () => {
     try {
-      const qloo = new QlooClient(key);
+      const qloo = new QlooClient(key, fetch, QLOO_BASE_URL);
       await qloo.probe();
       return 'ready' as const;
     } catch (error) {
@@ -126,11 +127,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   }
 
   try {
-    const qloo = new QlooClient(key);
+    const qloo = new QlooClient(key, fetch, QLOO_BASE_URL);
     const resolved = [];
 
     for (const query of anchors) {
-      const normalized = query.toLocaleLowerCase('en-US');
+      const normalized = `${QLOO_BASE_URL}|${query.toLocaleLowerCase('en-US')}`;
       const payload = await searchCache.getOrLoad(normalized, () => qloo.search(query));
       const found = extractResolved(query, payload);
       if (found) resolved.push(found);
@@ -141,7 +142,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     }
 
     const entityIds = resolved.map(x => x.entityId);
-    const tasteKey = [...entityIds].sort().join(',');
+    const tasteKey = `${QLOO_BASE_URL}|${[...entityIds].sort().join(',')}`;
     const tastePayload = await tasteCache.getOrLoad(
       tasteKey,
       () => qloo.tasteAnalysis(entityIds),
