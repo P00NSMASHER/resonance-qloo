@@ -2,7 +2,7 @@ export class QlooHttpError extends Error {
   constructor(
     message: string,
     public readonly status: number,
-    public readonly endpoint: 'search' | 'insights',
+    public readonly endpoint: 'search' | 'insights' | 'probe',
   ) {
     super(message);
   }
@@ -18,7 +18,7 @@ export class QlooClient {
     private readonly timeoutMs = 8_000,
   ) {}
 
-  private async request(endpoint: 'search' | 'insights', url: URL) {
+  private async request(endpoint: 'search' | 'insights' | 'probe', url: URL) {
     let response: Response;
     try {
       response = await this.fetchImpl(url, {
@@ -44,6 +44,13 @@ export class QlooClient {
     }
 
     return response.json() as Promise<unknown>;
+  }
+
+  async probe() {
+    const url = new URL('/v2/tags/types', this.baseUrl);
+    url.searchParams.set('take', '1');
+    await this.request('probe', url);
+    return true;
   }
 
   async search(query: string) {
