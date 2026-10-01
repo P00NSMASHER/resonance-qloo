@@ -20,6 +20,7 @@ type Result = {
     evidenceBasis: 'normalized-score'|'ranked-order';
     selectedAffinityCount: number;
     resolvedAnchorCount: number;
+    categoryHintCount: number;
   };
   provenance: {
     source:'qloo-live'|'illustrative-demo';
@@ -56,7 +57,8 @@ const demo: Result = {
     meanNormalizedScore:null,
     evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
-    resolvedAnchorCount:3
+    resolvedAnchorCount:3,
+    categoryHintCount:2
   },
   provenance: {
     source:'illustrative-demo'
@@ -294,6 +296,7 @@ export default function App() {
         </div>
         <div className="evidenceMetrics">
           <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
+          <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
           <span><b>{result.evidence.selectedAffinityCount}</b> affinities selected</span>
           <span><b>{result.evidence.meanNormalizedScore === null ? 'Ranked' : `${Math.round(result.evidence.meanNormalizedScore*100)}%`}</b>{result.evidence.evidenceBasis === 'ranked-order' ? ' Qloo result order' : ' mean normalized score'}</span>
         </div>
