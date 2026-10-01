@@ -6,6 +6,7 @@ import { extractAffinities, extractResolved } from '../src/lib/qlooLogic';
 import { orchestrateSession } from '../src/lib/agentPlanner';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 import { createRateLimiter } from '../src/lib/rateLimiter';
+import { createTtlCache } from '../src/lib/ttlCache';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -13,6 +14,8 @@ const MAX_BODY_BYTES = 16 * 1024;
 const ALLOWED_ENERGY = new Set(['calm', 'social', 'active']);
 const ALLOWED_SETTING = new Set(['one-on-one', 'small-group', 'community']);
 const liveLimiter = createRateLimiter(12, 60_000);
+const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
+const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 
 function json(res: import('node:http').ServerResponse, status: number, body: unknown) {
   res.writeHead(status, {
@@ -92,7 +95,9 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     const resolved = [];
 
     for (const query of anchors) {
-      const found = extractResolved(query, await qloo.search(query));
+      const normalized = query.toLocaleLowerCase('en-US');
+      const payload = await searchCache.getOrLoad(normalized, () => qloo.search(query));
+      const found = extractResolved(query, payload);
       if (found) resolved.push(found);
     }
 
@@ -100,9 +105,13 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       return json(res, 422, { error: 'Qloo could not confidently resolve enough anchors.' });
     }
 
-    const affinities = extractAffinities(
-      await qloo.tasteAnalysis(resolved.map(x => x.entityId))
+    const entityIds = resolved.map(x => x.entityId);
+    const tasteKey = [...entityIds].sort().join(',');
+    const tastePayload = await tasteCache.getOrLoad(
+      tasteKey,
+      () => qloo.tasteAnalysis(entityIds),
     );
+    const affinities = extractAffinities(tastePayload);
     const session = orchestrateSession(resolved, affinities, energy, setting);
 
     return json(res, 200, {
