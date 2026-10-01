@@ -57,6 +57,18 @@ function looksLikeEntityId(value: string) {
 export type ResolvedAnchor = { query: string; name: string; entityId: string; requestedTypeUrn?: string };
 export type Affinity = { label: string; score: number | null; rank: number };
 export type PlanItem = { title: string; duration: string; action: string; why: string };
+export type QlooExplainabilitySummary = {
+  resultCount: number;
+  aggregateAvailable: boolean;
+};
+
+function hasObjectContent(value: unknown) {
+  return Boolean(
+    value &&
+    typeof value === 'object' &&
+    Object.keys(value as Record<string, unknown>).length > 0
+  );
+}
 
 export function extractResolved(query: string, payload: unknown): ResolvedAnchor | null {
   const rows = findArray(payload, ['results', 'entities', 'data']);
@@ -103,6 +115,28 @@ export function extractAffinities(payload: unknown): Affinity[] {
     if (items.length >= 8) break;
   }
   return items;
+}
+
+export function extractExplainabilitySummary(payload: unknown): QlooExplainabilitySummary {
+  const rows = findArray(payload, ['tags', 'results', 'data']);
+  let resultCount = 0;
+
+  for (const row of rows) {
+    if (!row || typeof row !== 'object') continue;
+    const query = (row as AnyObject).query;
+    if (!query || typeof query !== 'object') continue;
+    if (hasObjectContent((query as AnyObject).explainability)) resultCount += 1;
+  }
+
+  let aggregateAvailable = false;
+  if (payload && typeof payload === 'object') {
+    const query = (payload as AnyObject).query;
+    if (query && typeof query === 'object') {
+      aggregateAvailable = hasObjectContent((query as AnyObject).explainability);
+    }
+  }
+
+  return { resultCount, aggregateAvailable };
 }
 
 export function planFromTags(tags: Affinity[], energy: string, setting: string): PlanItem[] {
