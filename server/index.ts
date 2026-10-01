@@ -126,7 +126,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   }
 
   const rawAnchors = Array.isArray(body.anchors) ? body.anchors : [];
-  const parsedAnchors = rawAnchors.flatMap((raw) => {
+  const parsedAnchors: Array<{ query: string; typeUrn?: string }> = rawAnchors.flatMap((raw): Array<{ query: string; typeUrn?: string }> => {
     if (typeof raw === 'string') {
       const query = raw.trim();
       return query.length >= 2 && query.length <= 100 ? [{ query }] : [];
