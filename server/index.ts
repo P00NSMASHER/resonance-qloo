@@ -8,14 +8,12 @@ import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 import { buildRecommendation } from '../src/lib/recommendationService';
-import { anchorTypeUrn, isAnchorType } from '../src/lib/anchorTypes';
+import { normalizeRecommendationRequest } from '../src/lib/requestNormalization';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
 const QLOO_BASE_URL = resolveQlooBaseUrl(process.env.QLOO_API_BASE_URL);
-const ALLOWED_ENERGY = new Set(['calm', 'social', 'active']);
-const ALLOWED_SETTING = new Set(['one-on-one', 'small-group', 'community']);
 const liveLimiter = createRateLimiter(12, 60_000);
 const globalLiveLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
@@ -125,29 +123,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     return json(res, 400, { error: 'Request body must be valid JSON.' });
   }
 
-  const rawAnchors = Array.isArray(body.anchors) ? body.anchors : [];
-  const parsedAnchors: Array<{ query: string; typeUrn?: string }> = rawAnchors.flatMap((raw): Array<{ query: string; typeUrn?: string }> => {
-    if (typeof raw === 'string') {
-      const query = raw.trim();
-      return query.length >= 2 && query.length <= 100 ? [{ query }] : [];
-    }
-    if (!raw || typeof raw !== 'object') return [];
-    const record = raw as Record<string, unknown>;
-    const query = typeof record.query === 'string' ? record.query.trim() : '';
-    if (query.length < 2 || query.length > 100) return [];
-    if (record.type !== undefined && !isAnchorType(record.type)) return [];
-    return [{
-      query,
-      typeUrn: anchorTypeUrn(isAnchorType(record.type) ? record.type : undefined),
-    }];
-  });
-
-  const anchors = [...new Map(
-    parsedAnchors.map(anchor => [`${anchor.typeUrn ?? 'any'}|${anchor.query.toLocaleLowerCase('en-US')}`, anchor])
-  ).values()].slice(0, 4);
-
-  const energy = typeof body.energy === 'string' && ALLOWED_ENERGY.has(body.energy) ? body.energy : 'calm';
-  const setting = typeof body.setting === 'string' && ALLOWED_SETTING.has(body.setting) ? body.setting : 'small-group';
+  const { anchors, energy, setting } = normalizeRecommendationRequest(body);
 
   if (anchors.length < 2) {
     return json(res, 400, { error: 'Provide at least two distinct cultural anchors.' });
