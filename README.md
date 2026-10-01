@@ -1,11 +1,23 @@
 # Resonance
 
+[![CI](https://github.com/P00NSMASHER/resonance-qloo/actions/workflows/ci.yml/badge.svg)](https://github.com/P00NSMASHER/resonance-qloo/actions/workflows/ci.yml)
+
 **Qloo-powered cultural intelligence for more personal human connection.**
 
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
 Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent engagement plan for senior-living activity teams and families.
+
+## 60-second judge path
+
+1. Open the live demo.
+2. Check the connection indicator in the header.
+3. If the event credential is still pending, use **Preview interface**; it is explicitly marked **ILLUSTRATIVE DEMO**.
+4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
+5. Inspect the resolved anchors, cross-category affinity signals, four-part session, and the explanation for why each step fits.
+
+For a criterion-by-criterion walkthrough, see [docs/JUDGING.md](docs/JUDGING.md).
 
 ## Why Qloo is essential
 
@@ -26,6 +38,20 @@ When no event API key is connected, the UI **does not fabricate live Qloo result
 - Event-issued Qloo API credential has been requested and is pending.
 - Live-Qloo action stays disabled until the server detects the credential.
 - MIT licensed and open source.
+- CI verifies typecheck, unit tests, production build, and the no-key preview/fail-closed path.
+
+## Architecture and trust model
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the browser/server/Qloo trust boundaries and [SECURITY.md](SECURITY.md) for secret handling and data-minimization rules.
+
+At a glance:
+
+- The browser never receives the Qloo API key.
+- `GET /api/status` exposes only connection state.
+- `POST /api/recommend` validates and bounds user input before calling Qloo.
+- Upstream requests time out rather than hanging indefinitely.
+- The server fails closed when Qloo returns too little evidence.
+- Demo and live results are separate provenance states.
 
 ## Tech
 
@@ -35,6 +61,7 @@ When no event API key is connected, the UI **does not fabricate live Qloo result
 - Node HTTP server
 - Qloo Search + Insights API
 - Vitest
+- GitHub Actions
 
 ## Local setup
 
@@ -75,7 +102,14 @@ Then open http://localhost:5173.
 npm run typecheck
 npm test
 npm run build
+npm run smoke:preview
 ```
+
+The smoke test starts the production server without a Qloo key and verifies:
+
+- preview status is reported correctly;
+- live recommendations fail closed with HTTP 503;
+- unknown API routes return HTTP 404.
 
 For a production-style run:
 
