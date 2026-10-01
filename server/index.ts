@@ -8,6 +8,7 @@ import { orchestrateSession } from '../src/lib/agentPlanner';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
+import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
