@@ -21,12 +21,25 @@ A generic LLM can generate plausible activities, but it cannot reliably ground t
 
 If Qloo returns too little reliable evidence, the agent fails closed instead of fabricating confidence.
 
+## Live-mode truthfulness
+
+A configured secret is **not** treated as proof that Qloo works.
+
+`GET /api/status` now distinguishes:
+
+- `preview` — no event credential is configured;
+- `ready` — the credential is configured **and verified against Qloo**;
+- `degraded` — a credential is configured but cannot be verified;
+- `rate-limited` — verification is temporarily blocked by Qloo's rate limit.
+
+The live button only becomes available in the verified `ready` state. This prevents the demo from advertising a live integration merely because an environment variable exists.
+
 ## 60-second judge path
 
 1. Open the live demo.
 2. Check the connection indicator in the header.
 3. If the event credential is still pending, use **Preview interface**; it is explicitly marked **ILLUSTRATIVE DEMO**.
-4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
+4. Once Qloo is verified, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
    - resolved anchors,
    - cross-category Qloo taste evidence,
@@ -66,7 +79,7 @@ The real event key must never be committed or pasted into a public artifact.
 - OpenAPI 3.1 contract is public.
 - Submission evidence and known limitations are documented.
 - Event-issued Qloo credential has been requested and is still pending.
-- Live-Qloo execution remains disabled until the credential is connected.
+- Live-Qloo execution remains disabled until the credential is both configured and verified.
 
 ## Evidence and reproducibility
 
@@ -74,6 +87,7 @@ The real event key must never be committed or pasted into a public artifact.
 - [Known limitations](docs/KNOWN_LIMITATIONS.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Judge guide](docs/JUDGING.md)
+- [Finalization runbook](docs/FINALIZATION_RUNBOOK.md)
 - [Security](SECURITY.md)
 - [OpenAPI contract](openapi.yaml)
 
@@ -84,6 +98,7 @@ The real event key must never be committed or pasted into a public artifact.
 - Vite
 - Node.js 22.19+
 - Qloo Search + Insights integration
+- verified-Qloo status probe
 - Official Qloo MCP proof path
 - Vitest
 - GitHub Actions
@@ -126,6 +141,7 @@ npm run typecheck
 npm test
 npm run build
 npm run smoke:preview
+npm run submission:preflight:offline
 ```
 
 The preview smoke test verifies:
@@ -136,7 +152,7 @@ The preview smoke test verifies:
 
 ## API
 
-`GET /api/status` reports whether Qloo is connected.
+`GET /api/status` verifies whether Qloo is actually usable before reporting `ready`.
 
 `POST /api/recommend` accepts:
 
