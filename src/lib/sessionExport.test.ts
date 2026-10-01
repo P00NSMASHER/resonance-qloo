@@ -31,6 +31,12 @@ describe('session export', () => {
     expect(formatSessionText(session, 'demo')).toContain('Scope: cultural engagement guidance, not medical advice');
   });
 
+  it('keeps facilitator control explicit in every export', () => {
+    const expected = 'Human review: facilitator may accept, modify, reorder, or reject any suggestion';
+    expect(formatSessionText(session, 'live')).toContain(expected);
+    expect(formatSessionText(session, 'demo')).toContain(expected);
+  });
+
   it('marks illustrative exports so they cannot be mistaken for live Qloo evidence', () => {
     const text = formatSessionText(session, 'demo');
     expect(text).toContain('Illustrative demo — not live Qloo data');
