@@ -1,6 +1,8 @@
+import { anchorTypeLabelFromUrn } from './anchorTypes';
+
 export type ExportableSession = {
   summary: string;
-  resolvedAnchors: { name:string }[];
+  resolvedAnchors: { name:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
 };
@@ -13,7 +15,10 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     session.summary,
     '',
     'Resolved anchors:',
-    ...session.resolvedAnchors.map(item => `- ${item.name}`),
+    ...session.resolvedAnchors.map(item => {
+      const category = anchorTypeLabelFromUrn(item.requestedTypeUrn);
+      return `- ${item.name}${category ? ` [${category}]` : ''}`;
+    }),
     '',
     'Taste evidence:',
     ...session.affinities.map(item =>
