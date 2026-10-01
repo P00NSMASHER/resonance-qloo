@@ -97,6 +97,36 @@ describe('recommendation service', () => {
     expect(gateway.tasteAnalysis).toHaveBeenCalledOnce();
   });
 
+  it('flows Qloo explainability metadata through to agent evidence', async () => {
+    const ids = [uuidA, uuidB];
+    let searchIndex = 0;
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[{ entity_id:ids[searchIndex++], name:query }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        query:{ explainability:{ overall:{ anchorA:.7 } } },
+        results:{
+          tags:[
+            { name:'Jazz', query:{ explainability:{ anchorA:.8 } } },
+            { name:'Musicals', query:{ explainability:{ anchorB:.6 } } },
+            { name:'Classic cinema' },
+          ],
+        },
+      })),
+    };
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[{query:'A'},{query:'B'}],
+      energy:'calm',
+      setting:'small-group',
+    });
+
+    expect(result.evidence.explainabilityResultCount).toBe(2);
+    expect(result.evidence.aggregateExplainabilityAvailable).toBe(true);
+    expect(result.agentTrace[3].detail).toContain('Qloo also returned');
+  });
+
   it('fails closed when too few anchors resolve', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => query === 'known'
