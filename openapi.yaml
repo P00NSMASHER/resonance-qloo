@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.9.0
+  version: 0.10.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -151,7 +151,7 @@ components:
         detail: { type: string }
     Evidence:
       type: object
-      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, resolvedAnchorCount, categoryHintCount]
+      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, resolvedAnchorCount, categoryHintCount, explainabilityResultCount, aggregateExplainabilityAvailable]
       properties:
         meanNormalizedScore:
           oneOf:
@@ -168,6 +168,13 @@ components:
           minimum: 0
           maximum: 4
           description: Number of resolved anchors that used an explicit Qloo entity-type hint.
+        explainabilityResultCount:
+          type: integer
+          minimum: 0
+          description: Number of Qloo taste results containing non-empty query.explainability metadata.
+        aggregateExplainabilityAvailable:
+          type: boolean
+          description: Whether Qloo returned non-empty top-level query.explainability metadata.
     Provenance:
       type: object
       required: [source, generatedAt]
