@@ -10,6 +10,8 @@ export type ExportableSession = {
     evidenceBasis?: 'normalized-score' | 'ranked-order';
     explainabilityResultCount?: number;
     aggregateExplainabilityAvailable?: boolean;
+    resolvedAnchorCount?: number;
+    categoryHintCount?: number;
   };
 };
 
@@ -29,6 +31,12 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       session.evidence?.aggregateExplainabilityAvailable !== undefined
     )
       ? [`Qloo explainability: ${session.evidence?.explainabilityResultCount ?? 0} result(s) with attribution metadata; aggregate metadata ${session.evidence?.aggregateExplainabilityAvailable ? 'present' : 'absent'}`]
+      : []),
+    ...(source === 'live' && (
+      session.evidence?.resolvedAnchorCount !== undefined ||
+      session.evidence?.categoryHintCount !== undefined
+    )
+      ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
       : []),
     '',
     session.summary,
