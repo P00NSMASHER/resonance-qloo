@@ -2,10 +2,10 @@ import { spawn } from 'node:child_process';
 
 const port = 8790;
 const base = `http://127.0.0.1:${port}`;
-const child = spawn('npm', ['run', 'start'], {
+
+const child = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], {
   env: { ...process.env, PORT: String(port), QLOO_API_KEY: '' },
-  stdio: ['ignore', 'pipe', 'pipe'],
-  shell: process.platform === 'win32'
+  stdio: ['ignore', 'pipe', 'pipe']
 });
 
 let stderr = '';
@@ -54,4 +54,11 @@ try {
   console.log('Preview smoke test passed.');
 } finally {
   child.kill('SIGTERM');
+  await new Promise(resolve => {
+    const timer = setTimeout(resolve, 1500);
+    child.once('exit', () => {
+      clearTimeout(timer);
+      resolve();
+    });
+  });
 }
