@@ -6,6 +6,9 @@ export type ExportableSession = {
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
   provenance?: { generatedAt?: string };
+  evidence?: {
+    evidenceBasis?: 'normalized-score' | 'ranked-order';
+  };
 };
 
 export function formatSessionText(session: ExportableSession, source: 'live' | 'demo') {
@@ -14,6 +17,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     'Resonance session',
     source === 'live' ? 'Source: Live Qloo' : 'Source: Illustrative demo — not live Qloo data',
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
+    ...(source === 'live' && session.evidence?.evidenceBasis
+      ? [`Evidence basis: ${session.evidence.evidenceBasis === 'normalized-score' ? 'Qloo numeric scores' : 'Qloo ranked result order'}`]
+      : []),
     '',
     session.summary,
     '',
