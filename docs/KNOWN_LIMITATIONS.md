@@ -9,6 +9,16 @@ The event-issued Qloo credential has been requested and is still pending. Until 
 - the exact production tool chain cannot be claimed as end-to-end verified;
 - the redacted request-to-result evidence remains intentionally incomplete.
 
+## Qloo rank vs numeric score
+
+Qloo taste-analysis responses can contain ordered tags without a numeric affinity value on each tag. Resonance does not convert rank into a fake percentage.
+
+- If Qloo returns enough numeric scores, the agent may use their mean normalized score as one evidence signal.
+- If Qloo returns ordered-but-unscored tags, the agent records `ranked-order`, displays **Rank #N**, and uses that ordering.
+- A missing Qloo score is represented as `null`.
+
+This makes the UI slightly less flashy but prevents false precision.
+
 ## Cultural affinity is not identity
 
 A Qloo affinity is a cultural signal, not proof of a person's identity, medical condition, preferences in every context, or future behavior. Resonance treats Qloo as a source of candidate connections for a human facilitator to review.
@@ -21,9 +31,9 @@ The generated session is a starting point. Staff or family should adapt, reject,
 
 Resonance is not a clinical, diagnostic, dietary, medication, or medical decision-support tool. It intentionally avoids making health claims.
 
-## Sparse input can produce weaker results
+## Sparse or ambiguous input
 
-Two vague anchors may resolve ambiguously. The product fails closed when too little evidence is available rather than pretending confidence.
+Two vague anchors may resolve ambiguously. The product fails closed when too little evidence is available rather than pretending confidence. A future refinement may add explicit user confirmation of ambiguous entity matches.
 
 ## Event quotas and upstream availability
 
