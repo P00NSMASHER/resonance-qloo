@@ -19,8 +19,8 @@ describe('session export', () => {
       {title:'Closing ritual',duration:'10 min',action:'Close gently.',why:'Keeps continuity.'},
     ],
     agentTrace:[
-      {stage:'resolve',detail:'Resolved two anchors.'},
-      {stage:'evaluate',detail:'Used ranked Qloo evidence.'},
+      {stage:'resolve',status:'ok' as const,detail:'Resolved two anchors.'},
+      {stage:'evaluate',status:'warning' as const,detail:'Used ranked Qloo evidence.'},
     ],
     provenance:{generatedAt:'2026-10-01T17:12:00.000Z'},
     evidence:{
@@ -123,7 +123,8 @@ describe('session export', () => {
 
   it('keeps the agent decision trace in exports', () => {
     expect(formatSessionText(session, 'live')).toContain('Agent decision trace:');
-    expect(formatSessionText(session, 'live')).toContain('- resolve: Resolved two anchors.');
+    expect(formatSessionText(session, 'live')).toContain('- resolve [ok]: Resolved two anchors.');
+    expect(formatSessionText(session, 'live')).toContain('- evaluate [warning]: Used ranked Qloo evidence.');
     expect(formatSessionText(session, 'demo')).toContain('Illustrative agent decision trace:');
   });
 
