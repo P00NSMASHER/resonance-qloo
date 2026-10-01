@@ -4,11 +4,11 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import { extractAffinities, extractResolved } from '../src/lib/qlooLogic';
 import { orchestrateSession } from '../src/lib/agentPlanner';
+import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
-const QLOO_TIMEOUT_MS = 8_000;
 const ALLOWED_ENERGY = new Set(['calm', 'social', 'active']);
 const ALLOWED_SETTING = new Set(['one-on-one', 'small-group', 'community']);
 
@@ -32,18 +32,6 @@ async function readJson(req: import('node:http').IncomingMessage) {
     return JSON.parse(raw || '{}') as Record<string, unknown>;
   } catch {
     throw new Error('INVALID_JSON');
-  }
-}
-
-async function qlooFetch(url: URL, key: string) {
-  try {
-    return await fetch(url, {
-      headers: { 'x-api-key': key, accept: 'application/json' },
-      signal: AbortSignal.timeout(QLOO_TIMEOUT_MS),
-    });
-  } catch (error) {
-    if (error instanceof Error && error.name === 'TimeoutError') throw new Error('QLOO_TIMEOUT');
-    throw error;
   }
 }
 
@@ -87,14 +75,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   }
 
   try {
+    const qloo = new QlooClient(key);
     const resolved = [];
+
     for (const query of anchors) {
-      const url = new URL('https://api.qloo.com/search');
-      url.searchParams.set('query', query);
-      url.searchParams.set('take', '5');
-      const response = await qlooFetch(url, key);
-      if (!response.ok) return json(res, 502, { error: `Qloo search failed (${response.status}).` });
-      const found = extractResolved(query, await response.json());
+      const found = extractResolved(query, await qloo.search(query));
       if (found) resolved.push(found);
     }
 
@@ -102,17 +87,9 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       return json(res, 422, { error: 'Qloo could not confidently resolve enough anchors.' });
     }
 
-    const insights = new URL('https://api.qloo.com/v2/insights');
-    insights.searchParams.set('filter.type', 'urn:tag');
-    insights.searchParams.set('signal.interests.entities', resolved.map(x => x.entityId).join(','));
-    insights.searchParams.set('take', '8');
-
-    const insightsResponse = await qlooFetch(insights, key);
-    if (!insightsResponse.ok) {
-      return json(res, 502, { error: `Qloo insights failed (${insightsResponse.status}).` });
-    }
-
-    const affinities = extractAffinities(await insightsResponse.json());
+    const affinities = extractAffinities(
+      await qloo.tasteAnalysis(resolved.map(x => x.entityId))
+    );
     const session = orchestrateSession(resolved, affinities, energy, setting);
 
     return json(res, 200, {
@@ -126,6 +103,13 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   } catch (error) {
     if (error instanceof Error && error.message === 'QLOO_TIMEOUT') {
       return json(res, 504, { error: 'Qloo took too long to respond. Please try again.' });
+    }
+    if (error instanceof QlooHttpError) {
+      const status = error.status === 429 ? 429 : 502;
+      const message = error.status === 429
+        ? 'Qloo rate limit reached. Please try again later.'
+        : `Qloo ${error.endpoint} request failed (${error.status}).`;
+      return json(res, status, { error: message });
     }
     if (error instanceof Error && (error.message === 'QLOO_EVIDENCE_TOO_SPARSE' || error.message === 'QLOO_EVIDENCE_TOO_WEAK')) {
       return json(res, 422, { error: 'Qloo returned too little reliable evidence for a useful session. Try more specific anchors.' });
