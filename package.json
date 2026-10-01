@@ -10,9 +10,11 @@
     "start": "tsx server/index.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "smoke:preview": "node scripts/smoke-preview.mjs"
+    "smoke:preview": "node scripts/smoke-preview.mjs",
+    "qloo:proof": "node scripts/qloo-mcp-proof.mjs"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.1",
     "dotenv": "^16.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -28,6 +30,6 @@
     "vitest": "^2.1.8"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.19.0"
   }
 }
