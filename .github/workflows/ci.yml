@@ -31,3 +31,5 @@ jobs:
         run: npm run build
       - name: Preview-mode smoke test
         run: npm run smoke:preview
+      - name: Submission artifact preflight
+        run: npm run submission:preflight:offline
