@@ -9,6 +9,7 @@ export type ExportableSession = {
   provenance?: { generatedAt?: string };
   evidence?: {
     evidenceBasis?: 'normalized-score' | 'ranked-order';
+    meanNormalizedScore?: number | null;
     explainabilityResultCount?: number;
     aggregateExplainabilityAvailable?: boolean;
     resolvedAnchorCount?: number;
@@ -28,6 +29,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
     ...(source === 'live' && session.evidence?.evidenceBasis
       ? [`Evidence basis: ${session.evidence.evidenceBasis === 'normalized-score' ? 'Qloo numeric scores' : 'Qloo ranked result order'}`]
+      : []),
+    ...(source === 'live' && session.evidence?.meanNormalizedScore !== undefined && session.evidence.meanNormalizedScore !== null
+      ? [`Mean selected Qloo score: ${Math.round(session.evidence.meanNormalizedScore * 100)}%`]
       : []),
     ...(source === 'live' && (
       session.evidence?.explainabilityResultCount !== undefined ||
