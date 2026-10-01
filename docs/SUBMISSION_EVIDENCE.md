@@ -37,6 +37,7 @@ The application code also follows current public Qloo API documentation:
 - Request shape, input validation, result provenance, and fail-closed behavior are covered by source and CI.
 - Search parsing supports the UUID IDs documented for Qloo entity signals.
 - Tag parsing matches the documented `results.tags` response shape.
+- Taste analysis requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields.
 - Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
 - When Qloo supplies ordered-but-unscored tags, the agent records `ranked-order` as its evidence basis.
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
@@ -52,6 +53,7 @@ The final evidence block will record:
 - the returned status and summary;
 - the small subset of results used by the product;
 - whether the evidence used Qloo numeric scores or ranked result order;
+- how many taste results carried Qloo-native explainability metadata and whether aggregate explainability was present;
 - why that evidence was sufficient for the resulting session plan.
 
 No claim about a specific live Qloo result should be treated as verified until this section is replaced with captured event evidence.
