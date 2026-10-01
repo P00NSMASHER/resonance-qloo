@@ -25,6 +25,7 @@ describe('session export', () => {
     provenance:{generatedAt:'2026-10-01T17:12:00.000Z'},
     evidence:{
       evidenceBasis:'ranked-order' as const,
+      meanNormalizedScore:null,
       explainabilityResultCount:2,
       aggregateExplainabilityAvailable:true,
       resolvedAnchorCount:2,
@@ -78,6 +79,20 @@ describe('session export', () => {
 
   it('keeps the live evidence basis in exported evidence', () => {
     expect(formatSessionText(session, 'live')).toContain('Evidence basis: Qloo ranked result order');
+  });
+
+  it('keeps mean normalized score only when Qloo provided numeric evidence', () => {
+    const scored = {
+      ...session,
+      evidence:{
+        ...session.evidence,
+        evidenceBasis:'normalized-score' as const,
+        meanNormalizedScore:0.81,
+      },
+    };
+    expect(formatSessionText(scored, 'live')).toContain('Mean selected Qloo score: 81%');
+    expect(formatSessionText(session, 'live')).not.toContain('Mean selected Qloo score:');
+    expect(formatSessionText(scored, 'demo')).not.toContain('Mean selected Qloo score:');
   });
 
   it('keeps live Qloo explainability status in exported evidence', () => {
