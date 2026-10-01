@@ -8,12 +8,13 @@ type AgentTraceStep = {
 
 type Result = {
   summary: string;
-  resolvedAnchors: { query:string; name:string; urn:string }[];
-  affinities: { label:string; score:number }[];
+  resolvedAnchors: { query:string; name:string; entityId:string }[];
+  affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
   agentTrace: AgentTraceStep[];
   evidence: {
-    confidence: number;
+    meanNormalizedScore: number|null;
+    evidenceBasis: 'normalized-score'|'ranked-order';
     selectedAffinityCount: number;
     resolvedAnchorCount: number;
   };
@@ -22,15 +23,15 @@ type Result = {
 const demo: Result = {
   summary: 'Illustrative preview only — this is not live Qloo data.',
   resolvedAnchors: [
-    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', urn:'demo:ella' },
-    { query:"Singin' in the Rain", name:"Singin' in the Rain", urn:'demo:rain' },
-    { query:'Italian food', name:'Italian cuisine', urn:'demo:italian' }
+    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella' },
+    { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'demo:rain' },
+    { query:'Italian food', name:'Italian cuisine', entityId:'demo:italian' }
   ],
   affinities: [
-    { label:'classic jazz vocals', score:.94 },
-    { label:'Golden Age musicals', score:.88 },
-    { label:'mid-century elegance', score:.81 },
-    { label:'Italian-American comfort', score:.77 }
+    { label:'classic jazz vocals', score:null, rank:1 },
+    { label:'Golden Age musicals', score:null, rank:2 },
+    { label:'mid-century elegance', score:null, rank:3 },
+    { label:'Italian-American comfort', score:null, rank:4 }
   ],
   plan: [
     { title:'Opening cue', duration:'10 min', action:'Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.', why:'Illustrative rationale for the preview state.' },
@@ -40,12 +41,13 @@ const demo: Result = {
   ],
   agentTrace: [
     { stage:'resolve', status:'ok', detail:'Illustrative: resolve three cultural anchors into Qloo-backed evidence.' },
-    { stage:'evaluate', status:'ok', detail:'Illustrative: retain the strongest cross-category affinities and discard weaker signals.' },
+    { stage:'evaluate', status:'ok', detail:'Illustrative: retain the first four items from an affinity-ranked result without inventing numeric scores.' },
     { stage:'compose', status:'ok', detail:'Illustrative: adapt the session to the selected energy and setting.' },
     { stage:'explain', status:'ok', detail:'Illustrative: attach a visible rationale to each activity choice.' }
   ],
   evidence: {
-    confidence:.85,
+    meanNormalizedScore:null,
+    evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
     resolvedAnchorCount:3
   }
@@ -95,7 +97,6 @@ export default function App() {
 
   async function runLive() {
     if (!canRun) return;
-
     setLoading(true);
     setError('');
     setResult(null);
@@ -198,19 +199,19 @@ export default function App() {
       </div>
       <aside className="trace" aria-label="Agent loop">
         <h3>Agent loop</h3>
-        <ol><li>Resolve cultural anchors</li><li>Evaluate evidence strength</li><li>Compose for the chosen context</li><li>Explain every recommendation</li></ol>
+        <ol><li>Resolve cultural anchors</li><li>Evaluate Qloo evidence</li><li>Compose for the chosen context</li><li>Explain every recommendation</li></ol>
       </aside>
     </section>
 
     {result && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
       <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div><b>{source==='live'?'LIVE QLOO':'ILLUSTRATIVE DEMO'}</b></div>
-      {source==='demo' && <div className="warning" role="note">Demo mode: these affinities, evidence scores, and rationales are placeholders, not Qloo API results.</div>}
+      {source==='demo' && <div className="warning" role="note">Demo mode: these affinity ranks and rationales are placeholders, not Qloo API results.</div>}
 
       <h3>Resolved anchors</h3>
-      <div className="chips">{result.resolvedAnchors.map(x=><span key={x.urn}>{x.name}</span>)}</div>
+      <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}>{x.name}</span>)}</div>
 
-      <h3>{source==='live'?'Taste DNA inferred by Qloo':'Illustrative taste-DNA preview'}</h3>
-      <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{Math.round(x.score*100)}%</b></div>)}</div>
+      <h3>{source==='live'?'Qloo taste evidence':'Illustrative taste-evidence preview'}</h3>
+      <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>)}</div>
 
       <section className="decisionTrace" aria-labelledby="decision-trace-title">
         <div>
@@ -220,7 +221,7 @@ export default function App() {
         <div className="evidenceMetrics">
           <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
           <span><b>{result.evidence.selectedAffinityCount}</b> affinities selected</span>
-          <span><b>{Math.round(result.evidence.confidence*100)}%</b> mean normalized score</span>
+          <span><b>{result.evidence.meanNormalizedScore === null ? 'Ranked' : `${Math.round(result.evidence.meanNormalizedScore*100)}%`}</b>{result.evidence.evidenceBasis === 'ranked-order' ? ' Qloo result order' : ' mean normalized score'}</span>
         </div>
         <ol className="agentTraceList">
           {result.agentTrace.map(step=><li key={step.stage} className={step.status}>
