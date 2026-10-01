@@ -24,6 +24,8 @@ type Result = {
     explainabilityResultCount: number;
     aggregateExplainabilityAvailable: boolean;
     sessionDurationMinutes: number;
+    energy: string;
+    setting: string;
   };
   provenance: {
     source:'qloo-live'|'illustrative-demo';
@@ -64,7 +66,9 @@ const demo: Result = {
     categoryHintCount:2,
     explainabilityResultCount:0,
     aggregateExplainabilityAvailable:false,
-    sessionDurationMinutes:45
+    sessionDurationMinutes:45,
+    energy:'calm',
+    setting:'small-group'
   },
   provenance: {
     source:'illustrative-demo'
@@ -175,6 +179,9 @@ export default function App() {
     setError('');
     setAnchors(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
     setAnchorTypes(['artist','movie','any']);
+    setEnergy('calm');
+    setSetting('small-group');
+    setDurationMinutes(45);
     setResult(demo);
     setSource('demo');
   }
@@ -313,6 +320,8 @@ export default function App() {
           <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
           <span><b>{result.evidence.selectedAffinityCount}</b> affinities selected</span>
           <span><b>{result.evidence.sessionDurationMinutes}</b> minutes</span>
+          <span><b>{result.evidence.energy}</b> energy</span>
+          <span><b>{result.evidence.setting}</b> setting</span>
           <span><b>{source === 'live' ? result.evidence.explainabilityResultCount : '—'}</b>{source === 'live' ? ' Qloo-explained results' : ' live explainability'}</span>
           <span><b>{result.evidence.meanNormalizedScore === null ? 'Ranked' : `${Math.round(result.evidence.meanNormalizedScore*100)}%`}</b>{result.evidence.evidenceBasis === 'ranked-order' ? ' Qloo result order' : ' mean normalized score'}</span>
         </div>
