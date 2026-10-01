@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractAffinities, extractResolved, planFromTags } from './qlooLogic';
+import { extractAffinities, extractExplainabilitySummary, extractResolved, planFromTags } from './qlooLogic';
 
 describe('Qloo parsing', () => {
   it('resolves the UUID entity IDs documented for Qloo signals', () => {
@@ -35,6 +35,23 @@ describe('Qloo parsing', () => {
       { label:'Jazz', score:null, rank:1 },
       { label:'Musicals', score:1, rank:2 }
     ]);
+  });
+
+  it('reports Qloo explainability presence without interpreting attribution details', () => {
+    expect(extractExplainabilitySummary({
+      query:{ explainability:{ top_3:{ inputA:.7 } } },
+      results:{
+        tags:[
+          { name:'Jazz', query:{ explainability:{ inputA:.8 } } },
+          { name:'Musicals', query:{} },
+          { name:'Classic cinema', query:{ explainability:{ inputB:.4 } } },
+        ],
+      },
+    })).toEqual({ resultCount:2, aggregateAvailable:true });
+
+    expect(extractExplainabilitySummary({
+      results:{ tags:[{name:'Jazz'},{name:'Musicals'}] },
+    })).toEqual({ resultCount:0, aggregateAvailable:false });
   });
 
   it('builds four session steps from ranked affinities', () => {
