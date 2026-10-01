@@ -29,6 +29,7 @@ describe('session export', () => {
       aggregateExplainabilityAvailable:true,
       resolvedAnchorCount:2,
       categoryHintCount:2,
+      selectedAffinityCount:2,
     },
   };
 
@@ -90,6 +91,13 @@ describe('session export', () => {
       'Resolution evidence: 2 anchor(s) resolved; 2 category hint(s) used'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Resolution evidence:');
+  });
+
+  it('keeps selected-affinity evidence in live exports', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Selection evidence: 2 affinity signal(s) selected for the plan'
+    );
+    expect(formatSessionText(session, 'demo')).not.toContain('Selection evidence:');
   });
 
   it('keeps the agent decision trace in exports', () => {
