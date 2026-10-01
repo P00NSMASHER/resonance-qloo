@@ -48,14 +48,14 @@ The live button only becomes available in the verified `ready` state. This preve
 
 1. Open the live demo.
 2. Check the connection indicator in the header.
-3. If the event credential is still pending, use **Preview interface**; it is explicitly marked **ILLUSTRATIVE DEMO**.
+3. If the event credential is still pending, use **Preview with example data**; it is explicitly marked **ILLUSTRATIVE DEMO**.
 4. Once Qloo is verified, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
    - resolved anchors,
    - cross-category Qloo taste evidence,
    - the agent decision trace,
    - the four-part session,
-   - the why-it-fits rationale for every step.
+   - the why-it-fits rationale for every step,\n   - the exported audit trail for provenance and evidence.
 
 See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
 
