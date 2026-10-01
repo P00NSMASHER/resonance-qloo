@@ -32,6 +32,8 @@ describe('session export', () => {
       categoryHintCount:2,
       selectedAffinityCount:2,
       sessionDurationMinutes:45,
+      energy:'social',
+      setting:'small-group',
     },
   };
 
@@ -119,6 +121,13 @@ describe('session export', () => {
   it('keeps target session length in live exports', () => {
     expect(formatSessionText(session, 'live')).toContain('Session target: 45 minutes');
     expect(formatSessionText(session, 'demo')).not.toContain('Session target:');
+  });
+
+  it('keeps session energy and setting in live exports', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Session context: energy=social; setting=small-group'
+    );
+    expect(formatSessionText(session, 'demo')).not.toContain('Session context:');
   });
 
   it('keeps the agent decision trace in exports', () => {
