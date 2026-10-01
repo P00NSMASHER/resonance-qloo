@@ -37,6 +37,24 @@ describe('Qloo parsing', () => {
     ]);
   });
 
+  it('prefers documented results.tags over unrelated nested arrays', () => {
+    const payload = {
+      data:[{ name:'Wrong array', affinity:.99 }],
+      results:{
+        tags:[
+          { name:'Jazz', affinity:.8, query:{ explainability:{ inputA:.7 } } },
+          { name:'Musicals', affinity:.6 },
+        ],
+      },
+    };
+
+    expect(extractAffinities(payload).map(x => x.label)).toEqual(['Jazz','Musicals']);
+    expect(extractExplainabilitySummary(payload)).toEqual({
+      resultCount:1,
+      aggregateAvailable:false,
+    });
+  });
+
   it('reports Qloo explainability presence without interpreting attribution details', () => {
     expect(extractExplainabilitySummary({
       query:{ explainability:{ top_3:{ inputA:.7 } } },
