@@ -17,6 +17,7 @@ const liveLimiter = createRateLimiter(12, 60_000);
 const globalLiveLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
+const qlooProbeCache = createTtlCache<boolean>(5 * 60_000, 2);
 
 function json(res: import('node:http').ServerResponse, status: number, body: unknown) {
   res.writeHead(status, {
@@ -43,11 +44,38 @@ async function readJson(req: import('node:http').IncomingMessage) {
 
 async function handleStatus(res: import('node:http').ServerResponse) {
   const key = process.env.QLOO_API_KEY?.trim();
-  json(res, 200, {
-    qlooConnected: Boolean(key),
-    mode: key ? 'live' : 'preview',
-    service: 'resonance',
-  });
+  if (!key) {
+    return json(res, 200, {
+      qlooConfigured: false,
+      qlooConnected: false,
+      qlooStatus: 'preview',
+      mode: 'preview',
+      service: 'resonance',
+    });
+  }
+
+  try {
+    const qloo = new QlooClient(key);
+    const verified = await qlooProbeCache.getOrLoad('credential', () => qloo.probe());
+    return json(res, 200, {
+      qlooConfigured: true,
+      qlooConnected: verified,
+      qlooStatus: verified ? 'ready' : 'degraded',
+      mode: verified ? 'live' : 'preview',
+      service: 'resonance',
+    });
+  } catch (error) {
+    const qlooStatus = error instanceof QlooHttpError && error.status === 429
+      ? 'rate-limited'
+      : 'degraded';
+    return json(res, 200, {
+      qlooConfigured: true,
+      qlooConnected: false,
+      qlooStatus,
+      mode: 'preview',
+      service: 'resonance',
+    });
+  }
 }
 
 async function handleRecommend(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
