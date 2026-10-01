@@ -64,6 +64,39 @@ describe('recommendation service', () => {
     expect(gateway.tasteAnalysis).toHaveBeenCalledWith([uuidA, uuidB]);
   });
 
+  it('resolves independent anchors concurrently', async () => {
+    const releases: Array<() => void> = [];
+    let nextId = 0;
+    const ids = [uuidA, uuidB];
+
+    const gateway: RecommendationGateway = {
+      search: vi.fn((query: string) => new Promise(resolve => {
+        const id = ids[nextId++];
+        releases.push(() => resolve({ results:[{ entity_id:id, name:query }] }));
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+        ]},
+      })),
+    };
+
+    const pending = buildRecommendation(gateway, {
+      anchors:[{query:'A'},{query:'B'}],
+      energy:'calm',
+      setting:'small-group',
+    });
+
+    expect(gateway.search).toHaveBeenCalledTimes(2);
+    releases.forEach(release => release());
+
+    const result = await pending;
+    expect(result.resolvedAnchors).toHaveLength(2);
+    expect(gateway.tasteAnalysis).toHaveBeenCalledOnce();
+  });
+
   it('fails closed when too few anchors resolve', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => query === 'known'
