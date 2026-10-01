@@ -11,7 +11,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "smoke:preview": "node scripts/smoke-preview.mjs",
-    "qloo:proof": "node scripts/qloo-mcp-proof.mjs"
+    "qloo:proof": "node scripts/qloo-mcp-proof.mjs",
+    "submission:preflight": "node scripts/submission-preflight.mjs",
+    "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.1",
