@@ -16,6 +16,8 @@ export type ExportableSession = {
     categoryHintCount?: number;
     selectedAffinityCount?: number;
     sessionDurationMinutes?: number;
+    energy?: string;
+    setting?: string;
   };
 };
 
@@ -50,6 +52,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       : []),
     ...(source === 'live' && session.evidence?.sessionDurationMinutes !== undefined
       ? [`Session target: ${session.evidence.sessionDurationMinutes} minutes`]
+      : []),
+    ...(source === 'live' && (session.evidence?.energy || session.evidence?.setting)
+      ? [`Session context: energy=${session.evidence?.energy ?? 'unspecified'}; setting=${session.evidence?.setting ?? 'unspecified'}`]
       : []),
     '',
     session.summary,
