@@ -19,7 +19,11 @@ describe('session export', () => {
       {title:'Closing ritual',duration:'10 min',action:'Close gently.',why:'Keeps continuity.'},
     ],
     provenance:{generatedAt:'2026-10-01T17:12:00.000Z'},
-    evidence:{evidenceBasis:'ranked-order' as const},
+    evidence:{
+      evidenceBasis:'ranked-order' as const,
+      explainabilityResultCount:2,
+      aggregateExplainabilityAvailable:true,
+    },
   };
 
   it('marks illustrative exports so they cannot be mistaken for live Qloo evidence', () => {
@@ -42,6 +46,13 @@ describe('session export', () => {
 
   it('keeps the live evidence basis in exported evidence', () => {
     expect(formatSessionText(session, 'live')).toContain('Evidence basis: Qloo ranked result order');
+  });
+
+  it('keeps live Qloo explainability status in exported evidence', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Qloo explainability: 2 result(s) with attribution metadata; aggregate metadata present'
+    );
+    expect(formatSessionText(session, 'demo')).not.toContain('Qloo explainability:');
   });
 
   it('marks verified live exports as Live Qloo', () => {
