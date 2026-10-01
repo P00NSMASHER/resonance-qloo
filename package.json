@@ -9,7 +9,8 @@
     "build": "vite build",
     "start": "tsx server/index.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "smoke:preview": "node scripts/smoke-preview.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
