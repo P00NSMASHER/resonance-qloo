@@ -22,13 +22,23 @@ npm run qloo:proof -- "classic jazz vocals"
 
 The proof script starts the canonical `qloo mcp` server, checks `qloo_capabilities`, and runs `qloo_find_tags`. It prints a redacted request-to-result artifact and never prints the credential.
 
-The live product's final Qloo tool chain will be recorded here only after the event-issued credential is connected and the calls are verified end-to-end.
+The application code also follows current public Qloo API documentation:
+
+- API base: `https://api.qloo.com`
+- Search: `/search`
+- Taste analysis: `/v2/insights?filter.type=urn:tag`
+- Input entity signal: `signal.interests.entities=<Qloo entity UUID>`
+- Tag output: `results.tags`
 
 ## 3. Redacted request-to-result explanation
 
 ### Verified now
 
 - Request shape, input validation, result provenance, and fail-closed behavior are covered by source and CI.
+- Search parsing supports the UUID IDs documented for Qloo entity signals.
+- Tag parsing matches the documented `results.tags` response shape.
+- Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
+- When Qloo supplies ordered-but-unscored tags, the agent records `ranked-order` as its evidence basis.
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
@@ -41,6 +51,7 @@ The final evidence block will record:
 - the resolved entity/tag choice;
 - the returned status and summary;
 - the small subset of results used by the product;
+- whether the evidence used Qloo numeric scores or ranked result order;
 - why that evidence was sufficient for the resulting session plan.
 
 No claim about a specific live Qloo result should be treated as verified until this section is replaced with captured event evidence.
