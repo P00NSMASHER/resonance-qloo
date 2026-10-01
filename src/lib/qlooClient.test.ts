@@ -9,6 +9,24 @@ function ok(body: unknown) {
 }
 
 describe('QlooClient', () => {
+  it('probes a lightweight authenticated Qloo endpoint before live mode', async () => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return ok({ results: [] });
+    };
+    const client = new QlooClient('event-key', mockFetch);
+
+    await expect(client.probe()).resolves.toBe(true);
+
+    const [url, init] = calls[0]!;
+    expect(String(url)).toBe('https://api.qloo.com/v2/tags/types?take=1');
+    expect(init?.headers).toEqual({
+      'x-api-key': 'event-key',
+      accept: 'application/json',
+    });
+  });
+
   it('builds a bounded search request using the documented Qloo endpoint', async () => {
     const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
     const mockFetch: typeof fetch = async (input, init) => {
