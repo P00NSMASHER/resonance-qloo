@@ -15,6 +15,7 @@ export type RecommendationInput = {
   anchors: RecommendationAnchor[];
   energy: string;
   setting: string;
+  durationMinutes?: number;
 };
 
 export async function buildRecommendation(
@@ -51,6 +52,7 @@ export async function buildRecommendation(
     input.energy,
     input.setting,
     qlooExplainability,
+    input.durationMinutes ?? 45,
   );
 
   return {

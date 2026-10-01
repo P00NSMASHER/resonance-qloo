@@ -3,11 +3,13 @@ import type { RecommendationAnchor } from './recommendationService';
 
 const ALLOWED_ENERGY = new Set(['calm','social','active']);
 const ALLOWED_SETTING = new Set(['one-on-one','small-group','community']);
+const ALLOWED_DURATION_MINUTES = new Set([30,45,60]);
 
 export type NormalizedRecommendationRequest = {
   anchors: RecommendationAnchor[];
   energy: string;
   setting: string;
+  durationMinutes: number;
 };
 
 export function normalizeRecommendationRequest(body: Record<string, unknown>): NormalizedRecommendationRequest {
@@ -44,6 +46,9 @@ export function normalizeRecommendationRequest(body: Record<string, unknown>): N
   const setting = typeof body.setting === 'string' && ALLOWED_SETTING.has(body.setting)
     ? body.setting
     : 'small-group';
+  const durationMinutes = typeof body.durationMinutes === 'number' && ALLOWED_DURATION_MINUTES.has(body.durationMinutes)
+    ? body.durationMinutes
+    : 45;
 
-  return { anchors, energy, setting };
+  return { anchors, energy, setting, durationMinutes };
 }

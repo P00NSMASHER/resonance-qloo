@@ -144,10 +144,16 @@ export function planFromTags(
   energy: string,
   setting: string,
   anchorNames: string[] = [],
+  durationMinutes = 45,
 ): PlanItem[] {
   const names = tags.map(x => x.label);
   const [a='familiar favorites', b='warm nostalgia', c='shared storytelling', d='comforting ritual'] = names;
   const [firstAnchor, secondAnchor, thirdAnchor] = anchorNames;
+  const durations = durationMinutes === 30
+    ? ['5 min','10 min','10 min','5 min']
+    : durationMinutes === 60
+      ? ['10 min','20 min','20 min','10 min']
+      : ['10 min','10 min','15 min','10 min'];
   const energyLine =
     energy === 'active' ? 'invite movement, clapping, or choosing between options' :
     energy === 'social' ? 'invite easy back-and-forth conversation' :
@@ -161,45 +167,45 @@ export function planFromTags(
     firstAnchor
       ? {
           title:'Opening cue',
-          duration:'10 min',
+          duration:durations[0],
           action:`Start with “${firstAnchor}” as the familiar cue, then branch toward “${a}.” ${energyLine}.`,
           why:`The session starts from the supplied favorite “${firstAnchor}” and uses Qloo-ranked “${a}” as adjacent cultural evidence.`,
         }
       : {
           title:'Opening cue',
-          duration:'10 min',
+          duration:durations[0],
           action:`Start with music, imagery, or a short prompt shaped around “${a}.” ${energyLine}.`,
           why:`Qloo surfaced “${a}” near the top of the cross-category evidence from the cultural anchors.`,
         },
     secondAnchor
       ? {
           title:'Story bridge',
-          duration:'15 min',
+          duration:durations[1],
           action:`Bridge from “${secondAnchor}” into “${b}” with a film scene, photo, lyric, or memory prompt. Keep it ${settingLine}.`,
           why:`“${secondAnchor}” is a supplied favorite; Qloo-ranked “${b}” provides the adjacent cultural bridge instead of a generic nostalgia prompt.`,
         }
       : {
           title:'Story bridge',
-          duration:'15 min',
+          duration:durations[1],
           action:`Use “${b}” as the bridge into a film scene, photo, lyric, or memory prompt. Keep it ${settingLine}.`,
           why:`“${b}” gives the agent a Qloo-grounded next step instead of a generic nostalgia prompt.`,
         },
     thirdAnchor
       ? {
           title:'Shared choice',
-          duration:'15 min',
+          duration:durations[2],
           action:`Offer two or three simple choices that connect “${thirdAnchor}” with “${c},” and let participants steer the next activity.`,
           why:`The known favorite “${thirdAnchor}” stays visible while “${c}” extends it into a Qloo-ranked adjacent domain.`,
         }
       : {
           title:'Shared choice',
-          duration:'15 min',
+          duration:durations[2],
           action:`Offer two or three simple choices connected to “${c}” and let participants steer the next activity.`,
           why:`“${c}” extends the known tastes into a related domain while preserving participant choice.`,
         },
     {
       title:'Closing ritual',
-      duration:'10 min',
+      duration:durations[3],
       action:`Close with a snack, sensory cue, or conversation card inspired by “${d},” then ask what should return next time.`,
       why:`“${d}” provides another Qloo-ranked adjacent signal so the plan ends in the same cultural neighborhood it started in.`,
     }

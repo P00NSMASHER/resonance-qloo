@@ -16,6 +16,7 @@ describe('recommendation request normalization', () => {
       ],
       energy:'social',
       setting:'community',
+      durationMinutes:45,
     });
   });
 
@@ -59,6 +60,19 @@ describe('recommendation request normalization', () => {
     expect(result.anchors[1]?.typeUrn).toBe('urn:entity:place');
   });
 
+  it('accepts only supported session lengths', () => {
+    for (const durationMinutes of [30,45,60]) {
+      expect(normalizeRecommendationRequest({
+        anchors:['a1','a2'],
+        durationMinutes,
+      }).durationMinutes).toBe(durationMinutes);
+    }
+    expect(normalizeRecommendationRequest({
+      anchors:['a1','a2'],
+      durationMinutes:50,
+    }).durationMinutes).toBe(45);
+  });
+
   it('caps anchors at four and defaults invalid context values', () => {
     const result = normalizeRecommendationRequest({
       anchors:['a1','a2','a3','a4','a5'],
@@ -69,5 +83,6 @@ describe('recommendation request normalization', () => {
     expect(result.anchors).toHaveLength(4);
     expect(result.energy).toBe('calm');
     expect(result.setting).toBe('small-group');
+    expect(result.durationMinutes).toBe(45);
   });
 });

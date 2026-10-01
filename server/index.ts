@@ -123,7 +123,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     return json(res, 400, { error: 'Request body must be valid JSON.' });
   }
 
-  const { anchors, energy, setting } = normalizeRecommendationRequest(body);
+  const { anchors, energy, setting, durationMinutes } = normalizeRecommendationRequest(body);
 
   if (anchors.length < 2) {
     return json(res, 400, { error: 'Provide at least two distinct cultural anchors.' });
@@ -146,6 +146,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       anchors,
       energy,
       setting,
+      durationMinutes,
     });
 
     return json(res, 200, {

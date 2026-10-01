@@ -18,6 +18,7 @@ export type AgentSession = {
     categoryHintCount: number;
     explainabilityResultCount: number;
     aggregateExplainabilityAvailable: boolean;
+    sessionDurationMinutes: number;
   };
 };
 
@@ -27,6 +28,7 @@ export function orchestrateSession(
   energy: string,
   setting: string,
   qlooExplainability: QlooExplainabilitySummary = { resultCount:0, aggregateAvailable:false },
+  durationMinutes = 45,
 ): AgentSession {
   if (resolvedAnchors.length < 2 || affinities.length < 3) {
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
@@ -51,6 +53,7 @@ export function orchestrateSession(
     energy,
     setting,
     resolvedAnchors.map(anchor => anchor.name),
+    durationMinutes,
   );
   const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
   const categoryHintCount = resolvedAnchors.filter(anchor => Boolean(anchor.requestedTypeUrn)).length;
@@ -65,6 +68,7 @@ export function orchestrateSession(
       categoryHintCount,
       explainabilityResultCount:qlooExplainability.resultCount,
       aggregateExplainabilityAvailable:qlooExplainability.aggregateAvailable,
+      sessionDurationMinutes:durationMinutes,
     },
     agentTrace: [
       {
@@ -82,7 +86,7 @@ export function orchestrateSession(
       {
         stage: 'compose',
         status: 'ok',
-        detail: `Kept the resolved favorites visible while adapting Qloo's adjacent evidence to “${energy}” energy and “${setting}” setting.`,
+        detail: `Kept the resolved favorites visible while adapting Qloo's adjacent evidence to a ${durationMinutes}-minute, “${energy}” session in a “${setting}” setting.`,
       },
       {
         stage: 'explain',
