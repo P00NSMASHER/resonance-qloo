@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.2.0
+  version: 0.3.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -22,14 +22,9 @@ paths:
                 type: object
                 required: [qlooConnected, mode, service]
                 properties:
-                  qlooConnected:
-                    type: boolean
-                  mode:
-                    type: string
-                    enum: [live, preview]
-                  service:
-                    type: string
-                    const: resonance
+                  qlooConnected: { type: boolean }
+                  mode: { type: string, enum: [live, preview] }
+                  service: { type: string, const: resonance }
   /api/recommend:
     post:
       summary: Build a culturally grounded engagement session
@@ -38,51 +33,43 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/RecommendationRequest'
+            schema: { $ref: '#/components/schemas/RecommendationRequest' }
       responses:
         '200':
           description: Qloo-grounded, agent-orchestrated session
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/RecommendationResponse'
+              schema: { $ref: '#/components/schemas/RecommendationResponse' }
         '400':
           description: Invalid input
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+              schema: { $ref: '#/components/schemas/Error' }
         '413':
           description: Request body exceeds the bounded input size
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+              schema: { $ref: '#/components/schemas/Error' }
         '422':
           description: Qloo returned insufficient evidence for a useful session
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+              schema: { $ref: '#/components/schemas/Error' }
         '502':
           description: Qloo request failed
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+              schema: { $ref: '#/components/schemas/Error' }
         '503':
           description: Event-issued Qloo credential is not connected
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+              schema: { $ref: '#/components/schemas/Error' }
         '504':
           description: Qloo timed out
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+              schema: { $ref: '#/components/schemas/Error' }
 components:
   schemas:
     RecommendationRequest:
@@ -95,110 +82,85 @@ components:
           minItems: 2
           maxItems: 4
           uniqueItems: true
-          items:
-            type: string
-            minLength: 2
-            maxLength: 100
-          examples:
-            - [Ella Fitzgerald, Singin' in the Rain, Italian food]
-        energy:
-          type: string
-          enum: [calm, social, active]
-        setting:
-          type: string
-          enum: [one-on-one, small-group, community]
+          items: { type: string, minLength: 2, maxLength: 100 }
+        energy: { type: string, enum: [calm, social, active] }
+        setting: { type: string, enum: [one-on-one, small-group, community] }
     ResolvedAnchor:
       type: object
-      required: [query, name, urn]
+      required: [query, name, entityId]
       properties:
-        query:
+        query: { type: string }
+        name: { type: string }
+        entityId:
           type: string
-        name:
-          type: string
-        urn:
-          type: string
+          description: Qloo entity UUID or entity URN returned by resolution.
     Affinity:
       type: object
-      required: [label, score]
+      required: [label, score, rank]
       properties:
-        label:
-          type: string
+        label: { type: string }
         score:
-          type: number
-          minimum: 0
-          maximum: 1
+          oneOf:
+            - { type: number, minimum: 0, maximum: 1 }
+            - { type: 'null' }
+          description: Numeric affinity only when Qloo returned one; null otherwise.
+        rank:
+          type: integer
+          minimum: 1
+          description: Position in Qloo's affinity-ranked tag results.
     PlanItem:
       type: object
       required: [title, duration, action, why]
       properties:
-        title:
-          type: string
-        duration:
-          type: string
-        action:
-          type: string
-        why:
-          type: string
+        title: { type: string }
+        duration: { type: string }
+        action: { type: string }
+        why: { type: string }
     AgentTraceStep:
       type: object
       required: [stage, status, detail]
       properties:
-        stage:
-          type: string
-          enum: [resolve, evaluate, compose, explain]
-        status:
-          type: string
-          enum: [ok, warning]
-        detail:
-          type: string
+        stage: { type: string, enum: [resolve, evaluate, compose, explain] }
+        status: { type: string, enum: [ok, warning] }
+        detail: { type: string }
     Evidence:
       type: object
-      required: [confidence, selectedAffinityCount, resolvedAnchorCount]
+      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, resolvedAnchorCount]
       properties:
-        confidence:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Mean normalized score across the selected affinity evidence; not a calibrated probability.
-        selectedAffinityCount:
-          type: integer
-          minimum: 3
-          maximum: 4
-        resolvedAnchorCount:
-          type: integer
-          minimum: 2
-          maximum: 4
+        meanNormalizedScore:
+          oneOf:
+            - { type: number, minimum: 0, maximum: 1 }
+            - { type: 'null' }
+          description: Mean normalized score only when enough numeric Qloo scores are present; never manufactured from rank.
+        evidenceBasis:
+          type: string
+          enum: [normalized-score, ranked-order]
+        selectedAffinityCount: { type: integer, minimum: 3, maximum: 4 }
+        resolvedAnchorCount: { type: integer, minimum: 2, maximum: 4 }
     RecommendationResponse:
       type: object
       required: [summary, resolvedAnchors, affinities, plan, agentTrace, evidence]
       properties:
-        summary:
-          type: string
+        summary: { type: string }
         resolvedAnchors:
           type: array
-          items:
-            $ref: '#/components/schemas/ResolvedAnchor'
+          items: { $ref: '#/components/schemas/ResolvedAnchor' }
         affinities:
           type: array
-          items:
-            $ref: '#/components/schemas/Affinity'
+          items: { $ref: '#/components/schemas/Affinity' }
         plan:
           type: array
           minItems: 4
           maxItems: 4
-          items:
-            $ref: '#/components/schemas/PlanItem'
+          items: { $ref: '#/components/schemas/PlanItem' }
         agentTrace:
           type: array
           minItems: 4
           maxItems: 4
-          items:
-            $ref: '#/components/schemas/AgentTraceStep'
-        evidence:
-          $ref: '#/components/schemas/Evidence'
+          items: { $ref: '#/components/schemas/AgentTraceStep' }
+        evidence: { $ref: '#/components/schemas/Evidence' }
     Error:
       type: object
       required: [error]
       properties:
-        error:
-          type: string
+        error: { type: string }
