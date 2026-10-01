@@ -15,6 +15,7 @@ export type AgentSession = {
     evidenceBasis: 'normalized-score' | 'ranked-order';
     selectedAffinityCount: number;
     resolvedAnchorCount: number;
+    categoryHintCount: number;
   };
 };
 
@@ -44,6 +45,7 @@ export function orchestrateSession(
 
   const plan = planFromTags(selected, energy, setting);
   const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
+  const categoryHintCount = resolvedAnchors.filter(anchor => Boolean(anchor.requestedTypeUrn)).length;
 
   return {
     plan,
@@ -52,12 +54,13 @@ export function orchestrateSession(
       evidenceBasis,
       selectedAffinityCount: selected.length,
       resolvedAnchorCount: resolvedAnchors.length,
+      categoryHintCount,
     },
     agentTrace: [
       {
         stage: 'resolve',
         status: 'ok',
-        detail: `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed entity evidence.`,
+        detail: `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed entity evidence; ${categoryHintCount} used an explicit category hint.`,
       },
       {
         stage: 'evaluate',
