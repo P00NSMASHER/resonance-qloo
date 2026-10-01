@@ -18,11 +18,13 @@ describe('session export', () => {
       {title:'Shared choice',duration:'15 min',action:'Offer choices.',why:'Preserves agency.'},
       {title:'Closing ritual',duration:'10 min',action:'Close gently.',why:'Keeps continuity.'},
     ],
+    provenance:{generatedAt:'2026-10-01T17:12:00.000Z'},
   };
 
   it('marks illustrative exports so they cannot be mistaken for live Qloo evidence', () => {
     const text = formatSessionText(session, 'demo');
     expect(text).toContain('Illustrative demo — not live Qloo data');
+    expect(text).not.toContain('Generated:');
     expect(text).toContain('Jazz: Rank #1');
     expect(text).toContain('Musicals: 82%');
   });
@@ -31,6 +33,10 @@ describe('session export', () => {
     const text = formatSessionText(session, 'live');
     expect(text).toContain('Ella Fitzgerald [Artist]');
     expect(text).toContain("Singin' in the Rain [Film]");
+  });
+
+  it('keeps the live generation timestamp in exported evidence', () => {
+    expect(formatSessionText(session, 'live')).toContain('Generated: 2026-10-01T17:12:00.000Z');
   });
 
   it('marks verified live exports as Live Qloo', () => {

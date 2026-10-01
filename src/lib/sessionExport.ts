@@ -5,12 +5,15 @@ export type ExportableSession = {
   resolvedAnchors: { name:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
+  provenance?: { generatedAt?: string };
 };
 
 export function formatSessionText(session: ExportableSession, source: 'live' | 'demo') {
+  const generatedAt = source === 'live' ? session.provenance?.generatedAt : undefined;
   const lines = [
     'Resonance session',
     source === 'live' ? 'Source: Live Qloo' : 'Source: Illustrative demo — not live Qloo data',
+    ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
     '',
     session.summary,
     '',
