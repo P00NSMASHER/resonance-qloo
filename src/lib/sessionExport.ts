@@ -5,6 +5,7 @@ export type ExportableSession = {
   resolvedAnchors: { query?:string; name:string; entityId?:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string }[];
+  agentTrace?: { stage:string; detail:string }[];
   provenance?: { generatedAt?: string };
   evidence?: {
     evidenceBasis?: 'normalized-score' | 'ranked-order';
@@ -55,6 +56,11 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ...session.affinities.map(item =>
       `- ${item.label}: ${item.score === null ? `Rank #${item.rank}` : `${Math.round(item.score * 100)}%`}`
     ),
+    ...(session.agentTrace?.length ? [
+      '',
+      source === 'live' ? 'Agent decision trace:' : 'Illustrative agent decision trace:',
+      ...session.agentTrace.map(step => `- ${step.stage}: ${step.detail}`),
+    ] : []),
     '',
     'Session plan:',
     ...session.plan.flatMap((item, index) => [
