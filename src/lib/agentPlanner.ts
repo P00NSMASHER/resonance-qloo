@@ -46,7 +46,12 @@ export function orchestrateSession(
     throw new Error('QLOO_EVIDENCE_TOO_WEAK');
   }
 
-  const plan = planFromTags(selected, energy, setting);
+  const plan = planFromTags(
+    selected,
+    energy,
+    setting,
+    resolvedAnchors.map(anchor => anchor.name),
+  );
   const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
   const categoryHintCount = resolvedAnchors.filter(anchor => Boolean(anchor.requestedTypeUrn)).length;
 
@@ -77,7 +82,7 @@ export function orchestrateSession(
       {
         stage: 'compose',
         status: 'ok',
-        detail: `Adapted the session to “${energy}” energy and “${setting}” setting instead of using a one-size-fits-all template.`,
+        detail: `Kept the resolved favorites visible while adapting Qloo's adjacent evidence to “${energy}” energy and “${setting}” setting.`,
       },
       {
         stage: 'explain',

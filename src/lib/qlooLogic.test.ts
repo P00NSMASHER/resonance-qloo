@@ -64,4 +64,24 @@ describe('Qloo parsing', () => {
     expect(plan).toHaveLength(4);
     expect(plan[0].action).toContain('easy back-and-forth conversation');
   });
+
+  it('keeps supplied favorites visible while branching into Qloo evidence', () => {
+    const plan = planFromTags([
+      { label:'Classic jazz vocals', score:null, rank:1 },
+      { label:'Golden Age musicals', score:null, rank:2 },
+      { label:'Mid-century elegance', score:null, rank:3 },
+      { label:'Italian-American comfort', score:null, rank:4 }
+    ], 'calm', 'small-group', [
+      'Ella Fitzgerald',
+      "Singin' in the Rain",
+      'Italian cuisine',
+    ]);
+
+    expect(plan[0].action).toContain('Ella Fitzgerald');
+    expect(plan[0].why).toContain('Classic jazz vocals');
+    expect(plan[1].action).toContain("Singin' in the Rain");
+    expect(plan[1].action).toContain('Golden Age musicals');
+    expect(plan[2].action).toContain('Italian cuisine');
+    expect(plan[2].action).toContain('Mid-century elegance');
+  });
 });

@@ -21,11 +21,14 @@ describe('agent planner', () => {
     );
 
     expect(session.plan).toHaveLength(4);
+    expect(session.plan[0].action).toContain('Ella Fitzgerald');
+    expect(session.plan[1].action).toContain("Singin' in the Rain");
     expect(session.agentTrace.map(x => x.stage)).toEqual(['resolve','evaluate','compose','explain']);
     expect(session.evidence.evidenceBasis).toBe('normalized-score');
     expect(session.evidence.meanNormalizedScore).toBeGreaterThan(.7);
     expect(session.evidence.categoryHintCount).toBe(2);
     expect(session.agentTrace[0].detail).toContain('2 used an explicit category hint');
+    expect(session.agentTrace[2].detail).toContain('resolved favorites visible');
   });
 
   it('exposes Qloo explainability availability without inventing attribution', () => {
