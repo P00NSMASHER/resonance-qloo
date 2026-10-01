@@ -19,6 +19,8 @@ export type AgentSession = {
     explainabilityResultCount: number;
     aggregateExplainabilityAvailable: boolean;
     sessionDurationMinutes: number;
+    energy: string;
+    setting: string;
   };
 };
 
@@ -69,6 +71,8 @@ export function orchestrateSession(
       explainabilityResultCount:qlooExplainability.resultCount,
       aggregateExplainabilityAvailable:qlooExplainability.aggregateAvailable,
       sessionDurationMinutes:durationMinutes,
+      energy,
+      setting,
     },
     agentTrace: [
       {
