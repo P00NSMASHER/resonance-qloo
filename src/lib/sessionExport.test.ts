@@ -18,6 +18,10 @@ describe('session export', () => {
       {title:'Shared choice',duration:'15 min',action:'Offer choices.',why:'Preserves agency.'},
       {title:'Closing ritual',duration:'10 min',action:'Close gently.',why:'Keeps continuity.'},
     ],
+    agentTrace:[
+      {stage:'resolve',detail:'Resolved two anchors.'},
+      {stage:'evaluate',detail:'Used ranked Qloo evidence.'},
+    ],
     provenance:{generatedAt:'2026-10-01T17:12:00.000Z'},
     evidence:{
       evidenceBasis:'ranked-order' as const,
@@ -86,6 +90,12 @@ describe('session export', () => {
       'Resolution evidence: 2 anchor(s) resolved; 2 category hint(s) used'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Resolution evidence:');
+  });
+
+  it('keeps the agent decision trace in exports', () => {
+    expect(formatSessionText(session, 'live')).toContain('Agent decision trace:');
+    expect(formatSessionText(session, 'live')).toContain('- resolve: Resolved two anchors.');
+    expect(formatSessionText(session, 'demo')).toContain('Illustrative agent decision trace:');
   });
 
   it('marks verified live exports as Live Qloo', () => {
