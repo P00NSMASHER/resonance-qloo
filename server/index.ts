@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
+import { createHash } from 'node:crypto';
 import { extractAffinities, extractResolved } from '../src/lib/qlooLogic';
 import { orchestrateSession } from '../src/lib/agentPlanner';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
@@ -17,7 +18,7 @@ const liveLimiter = createRateLimiter(12, 60_000);
 const globalLiveLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
-const qlooProbeCache = createTtlCache<boolean>(5 * 60_000, 2);
+const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
 
 function json(res: import('node:http').ServerResponse, status: number, body: unknown) {
   res.writeHead(status, {
@@ -54,28 +55,26 @@ async function handleStatus(res: import('node:http').ServerResponse) {
     });
   }
 
-  try {
-    const qloo = new QlooClient(key);
-    const verified = await qlooProbeCache.getOrLoad('credential', () => qloo.probe());
-    return json(res, 200, {
-      qlooConfigured: true,
-      qlooConnected: verified,
-      qlooStatus: verified ? 'ready' : 'degraded',
-      mode: verified ? 'live' : 'preview',
-      service: 'resonance',
-    });
-  } catch (error) {
-    const qlooStatus = error instanceof QlooHttpError && error.status === 429
-      ? 'rate-limited'
-      : 'degraded';
-    return json(res, 200, {
-      qlooConfigured: true,
-      qlooConnected: false,
-      qlooStatus,
-      mode: 'preview',
-      service: 'resonance',
-    });
-  }
+  const keyFingerprint = createHash('sha256').update(key).digest('hex').slice(0, 16);
+  const qlooStatus = await qlooProbeCache.getOrLoad(keyFingerprint, async () => {
+    try {
+      const qloo = new QlooClient(key);
+      await qloo.probe();
+      return 'ready' as const;
+    } catch (error) {
+      if (error instanceof QlooHttpError && error.status === 429) return 'rate-limited' as const;
+      return 'degraded' as const;
+    }
+  });
+
+  const ready = qlooStatus === 'ready';
+  return json(res, 200, {
+    qlooConfigured: true,
+    qlooConnected: ready,
+    qlooStatus,
+    mode: ready ? 'live' : 'preview',
+    service: 'resonance',
+  });
 }
 
 async function handleRecommend(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
