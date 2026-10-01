@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-import { QlooClient, QlooHttpError } from './qlooClient';
+import { describe, expect, it } from 'vitest';
+import { QlooClient } from './qlooClient';
 
 function ok(body: unknown) {
   return new Response(JSON.stringify(body), {
@@ -10,13 +10,17 @@ function ok(body: unknown) {
 
 describe('QlooClient', () => {
   it('builds a bounded search request using the documented Qloo endpoint', async () => {
-    const mockFetch = vi.fn(async () => ok({ results: [] }));
-    const client = new QlooClient('event-key', mockFetch as typeof fetch);
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return ok({ results: [] });
+    };
+    const client = new QlooClient('event-key', mockFetch);
 
     await client.search('Ella Fitzgerald');
 
-    expect(mockFetch).toHaveBeenCalledOnce();
-    const [url, init] = mockFetch.mock.calls[0];
+    expect(calls).toHaveLength(1);
+    const [url, init] = calls[0]!;
     expect(String(url)).toBe('https://api.qloo.com/search?query=Ella+Fitzgerald&take=5&sort_by=match');
     expect(init?.headers).toEqual({
       'x-api-key': 'event-key',
@@ -24,16 +28,21 @@ describe('QlooClient', () => {
     });
   });
 
-  it('sends resolved Qloo entity IDs into tag taste analysis', async () => {
-    const mockFetch = vi.fn(async () => ok({ results: { tags: [] } }));
-    const client = new QlooClient('event-key', mockFetch as typeof fetch);
+  it('sends resolved Qloo entity IDs into tag taste analysis and requests explainability', async () => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return ok({ results: { tags: [] } });
+    };
+    const client = new QlooClient('event-key', mockFetch);
 
     await client.tasteAnalysis([
       'FCE8B172-4795-43E4-B222-3B550DC05FD9',
       '9A25B172-4795-43E4-B222-3B550DC05AAA',
     ]);
 
-    const [url] = mockFetch.mock.calls[0];
+    expect(calls).toHaveLength(1);
+    const [url] = calls[0]!;
     const parsed = new URL(String(url));
     expect(parsed.pathname).toBe('/v2/insights');
     expect(parsed.searchParams.get('filter.type')).toBe('urn:tag');
@@ -45,10 +54,10 @@ describe('QlooClient', () => {
   });
 
   it('returns a typed upstream error without exposing the credential', async () => {
-    const mockFetch = vi.fn(async () => new Response('{}', { status: 429 }));
-    const client = new QlooClient('super-secret', mockFetch as typeof fetch);
+    const mockFetch: typeof fetch = async () => new Response('{}', { status: 429 });
+    const client = new QlooClient('super-secret', mockFetch);
 
-    await expect(client.search('test')).rejects.toMatchObject<QlooHttpError>({
+    await expect(client.search('test')).rejects.toMatchObject({
       status: 429,
       endpoint: 'search',
     });
