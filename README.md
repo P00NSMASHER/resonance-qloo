@@ -27,6 +27,10 @@ Each anchor can optionally include a Qloo entity category such as Artist, Film, 
 
 Independent anchor lookups run concurrently, reducing live latency without increasing the number of Qloo calls.
 
+### Qloo-native explainability
+
+Taste analysis requests `feature.explainability=true`. Resonance does not assume or reinterpret Qloo's attribution schema: it records only whether Qloo actually returned non-empty per-result or aggregate `query.explainability` metadata. The live evidence panel shows that availability, while absent metadata stays absent rather than being simulated.
+
 ## Live-mode truthfulness
 
 A configured secret is **not** treated as proof that Qloo works.
