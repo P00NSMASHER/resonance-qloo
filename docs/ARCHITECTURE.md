@@ -86,6 +86,8 @@ Evidence metadata states its basis explicitly:
 
 It also records `returnedAffinityCount`, `selectedAffinityCount`, and the ordered `selectedAffinityLabels`. That lets the UI and exported audit trail show the full evidence funnel without recomputing it from presentation state.
 
+The presentation layer keeps an interpretation boundary beside that evidence: Qloo affinities are aggregate cultural relationships, not probabilities, causal claims, or claims about an individual. The generated plan remains facilitator-reviewed output, not an inferred personal profile.
+
 A missing score is represented as `null`; it is never replaced with a made-up default.
 
 ## Output provenance
