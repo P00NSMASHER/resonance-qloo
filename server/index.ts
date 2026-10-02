@@ -15,7 +15,7 @@ const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
 const QLOO_BASE_URL = resolveQlooBaseUrl(
   process.env.QLOO_API_BASE_URL,
-  process.env.QLOO_ALLOW_LOCAL_MOCK === '1',
+  process.env.QLOO_ALLOW_LOCAL_MOCK === '1' && process.env.NODE_ENV !== 'production',
 );
 const liveLimiter = createRateLimiter(12, 60_000);
 const globalLiveLimiter = createRateLimiter(60, 60_000);
