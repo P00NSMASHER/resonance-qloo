@@ -28,7 +28,7 @@ Open:
 
 https://resonance-qloo.floot.app
 
-Confirm the header says **Live Qloo connected**. If it reports degraded immediately after adding the key, verify the hosted environment is using `https://hackathon.api.qloo.com` before troubleshooting the credential itself.
+Confirm the header says **Live Qloo connected**. If it reports degraded immediately after adding the key, first verify the hosted environment is using `https://hackathon.api.qloo.com`, then use **Retry Qloo verification**. The retry must issue `/api/status?refresh=1`, bypass a cached non-ready probe, and recover to `ready` when Qloo is healthy. Ordinary status reads should continue using the cache, and repeated forced retries must remain rate-limited.
 
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
