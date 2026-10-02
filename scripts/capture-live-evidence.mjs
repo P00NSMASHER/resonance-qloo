@@ -40,6 +40,26 @@ const run = await getJson('/api/recommend', {
   }),
 });
 
+if (
+  run.response.status === 409 &&
+  run.body?.code === 'QLOO_RESOLUTION_REVIEW_REQUIRED' &&
+  Array.isArray(run.body?.resolvedAnchors)
+) {
+  const review = run.body.resolvedAnchors
+    .filter(item => item?.resolutionMatch === 'top-result')
+    .map(item => ({
+      query:item.query,
+      name:item.name,
+      entityId:item.entityId,
+      requestedTypeUrn:item.requestedTypeUrn,
+    }));
+  const ids = review.map(item => item.entityId).join(',');
+  throw new Error(
+    'Qloo entity confirmation is required before live evidence capture. ' +
+    'Review the returned non-exact matches in the product, confirm them, then rerun with ' +
+    `RESONANCE_CONFIRMED_ENTITY_IDS=${ids}. Candidates: ${JSON.stringify(review)}`
+  );
+}
 if (!run.response.ok) {
   throw new Error(`Live recommendation failed: HTTP ${run.response.status} ${JSON.stringify(run.body)}`);
 }
