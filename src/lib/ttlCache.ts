@@ -5,6 +5,7 @@ type CacheEntry<T> = {
 
 export function createTtlCache<T>(ttlMs: number, maxEntries = 250) {
   const entries = new Map<string, CacheEntry<T>>();
+  const inFlight = new Map<string, Promise<T>>();
 
   return {
     get(key: string, now = Date.now()): T | undefined {
@@ -28,9 +29,22 @@ export function createTtlCache<T>(ttlMs: number, maxEntries = 250) {
     async getOrLoad(key: string, loader: () => Promise<T>, now = Date.now()) {
       const cached = this.get(key, now);
       if (cached !== undefined) return cached;
-      const value = await loader();
-      this.set(key, value, now);
-      return value;
+
+      const existing = inFlight.get(key);
+      if (existing) return existing;
+
+      const pending = Promise.resolve()
+        .then(loader)
+        .then(value => {
+          this.set(key, value, Date.now());
+          return value;
+        })
+        .finally(() => {
+          if (inFlight.get(key) === pending) inFlight.delete(key);
+        });
+
+      inFlight.set(key, pending);
+      return pending;
     },
 
     size() {
