@@ -43,6 +43,7 @@ Safety/reliability controls:
 - 2–4 distinct, trimmed anchors;
 - allowed-value validation for energy and setting;
 - 8-second timeout on each individual upstream Qloo call;
+- a 12-second browser status-request budget, safely above the server's 8-second Qloo connectivity probe cap so a slow-but-valid verification does not falsely degrade the UI;
 - a 28-second browser end-to-end live-request budget, which allows the bounded resolve → insights path plus the single explainability-compatibility retry without letting the browser abort a valid server request early;
 - per-client and per-process aggregate live-request ceilings;
 - bounded TTL caches for repeated Qloo searches/taste analysis;
