@@ -1,5 +1,10 @@
+import { readFile } from 'node:fs/promises';
+
 const base = (process.env.RESONANCE_BASE_URL || 'http://localhost:8787').replace(/\/$/, '');
 const trustedQlooOrigin = (process.env.QLOO_TRUSTED_BASE_URL || 'https://hackathon.api.qloo.com').replace(/\/$/, '');
+const expectedContractVersion = JSON.parse(
+  await readFile(new URL('../deployment-contract.json', import.meta.url), 'utf8'),
+).version;
 const anchors = ['Ella Fitzgerald', "Singin' in the Rain", 'Italian food'];
 const confirmedEntityIds = (process.env.RESONANCE_CONFIRMED_ENTITY_IDS || '')
   .split(',')
@@ -62,6 +67,11 @@ if (status.body.qlooApiOrigin !== trustedQlooOrigin) {
     `Unexpected Qloo API origin: ${status.body.qlooApiOrigin || '(missing)'}; expected ${trustedQlooOrigin}.`,
   );
 }
+if (status.body.contractVersion !== expectedContractVersion) {
+  throw new Error(
+    `Unexpected deployment contract: ${status.body.contractVersion || '(missing)'}; expected ${expectedContractVersion}.`,
+  );
+}
 
 const run = await getJson('/api/recommend', {
   method:'POST',
@@ -112,6 +122,14 @@ if (run.body?.provenance?.apiOrigin !== status.body.qlooApiOrigin) {
     `Qloo origin provenance mismatch: status=${status.body.qlooApiOrigin || '(missing)'} recommendation=${run.body?.provenance?.apiOrigin || '(missing)'}.`,
   );
 }
+if (
+  run.body?.provenance?.contractVersion !== expectedContractVersion ||
+  run.body.provenance.contractVersion !== status.body.contractVersion
+) {
+  throw new Error(
+    `Deployment contract provenance mismatch: expected=${expectedContractVersion} status=${status.body.contractVersion || '(missing)'} recommendation=${run.body?.provenance?.contractVersion || '(missing)'}.`,
+  );
+}
 
 const confirmedTopResults = Array.isArray(run.body?.resolvedAnchors)
   ? run.body.resolvedAnchors.filter(item => item?.resolutionMatch === 'top-result')
@@ -139,6 +157,7 @@ const evidence = {
   captured_at:new Date().toISOString(),
   base_url:base,
   qloo_api_origin:status.body.qlooApiOrigin,
+  deployment_contract_version:expectedContractVersion,
   interpretation_limit:'Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual. The session is a facilitator-reviewed starting point, not an inferred personal profile.',
   human_review:'Facilitator may accept, modify, reorder, or reject any suggestion based on the person’s actual response.',
   request:{
