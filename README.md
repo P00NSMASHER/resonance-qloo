@@ -42,7 +42,7 @@ A configured secret is **not** treated as proof that Qloo works.
 - `degraded` — a credential is configured but cannot be verified;
 - `rate-limited` — verification is temporarily blocked by Qloo's rate limit.
 
-The live button only becomes available in the verified `ready` state. This prevents the demo from advertising a live integration merely because an environment variable exists.
+The live button only becomes available in the verified `ready` state. This prevents the demo from advertising a live integration merely because an environment variable exists. Live status and recommendation provenance also expose the non-secret Qloo API origin so the event gateway can be audited without exposing the credential.
 
 ## 60-second judge path
 
@@ -56,7 +56,7 @@ The live button only becomes available in the verified `ready` state. This preve
    - the agent decision trace,
    - the four-part session,
    - the why-it-fits rationale for every step,
-   - the exported audit trail for provenance and evidence.
+   - the exported audit trail for provenance, the non-secret Qloo API origin, and numbered evidence.
 
 See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
 
