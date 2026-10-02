@@ -19,7 +19,7 @@ type Result = {
     meanNormalizedScore: number|null;
     evidenceBasis: 'normalized-score'|'ranked-order';
     selectedAffinityCount: number;
-    selectedAffinityLabels: string[];
+    selectedAffinityLabels?: string[];
     resolvedAnchorCount: number;
     categoryHintCount: number;
     explainabilityResultCount: number;
