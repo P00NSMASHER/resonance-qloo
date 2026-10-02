@@ -314,6 +314,12 @@ try {
   if (!capture.includes('Resolution review count mismatch')) {
     failures.push('Live evidence capture is not validating resolution review counts.');
   }
+  if (!capture.includes('interpretation_limit') || !capture.includes('aggregate cultural signals')) {
+    failures.push('Live evidence capture is missing the responsible Qloo interpretation limit.');
+  }
+  if (!capture.includes('human_review') || !capture.includes('accept, modify, reorder, or reject')) {
+    failures.push('Live evidence capture is missing explicit facilitator-control evidence.');
+  }
 } catch {}
 
 if (!process.argv.includes('--offline')) {
