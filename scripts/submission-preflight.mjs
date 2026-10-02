@@ -317,6 +317,13 @@ try {
   ) {
     failures.push('Server is missing bounded cache-bypassing Qloo verification retry semantics.');
   }
+  if (
+    !server.includes('qlooCredentialFingerprint(key)') ||
+    !server.includes('credentialFingerprint') ||
+    !server.includes('entityIds.map(qlooEntityIdentity)')
+  ) {
+    failures.push('Qloo search/taste caches are not scoped to credential identity and canonical entity IDs.');
+  }
 } catch {}
 
 try {
