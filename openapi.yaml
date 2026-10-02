@@ -246,6 +246,28 @@ components:
           type: string
           enum: [one-on-one, small-group, community]
           description: Facilitation setting used by the agent when composing the session.
+    RequestContext:
+      type: object
+      additionalProperties: false
+      required: [anchors, energy, setting, durationMinutes]
+      properties:
+        anchors:
+          type: array
+          minItems: 2
+          maxItems: 4
+          items:
+            type: object
+            additionalProperties: false
+            required: [query]
+            properties:
+              query: { type: string, minLength: 2, maxLength: 100 }
+              typeUrn:
+                type: string
+                description: Normalized Qloo entity-type URN used for this submitted anchor when a category hint was supplied.
+        energy: { type: string, enum: [calm, social, active] }
+        setting: { type: string, enum: [one-on-one, small-group, community] }
+        durationMinutes: { type: integer, enum: [30, 45, 60] }
+      description: Normalized submitted session context executed by the server and echoed back as a provenance receipt.
     Provenance:
       type: object
       required: [source, apiOrigin, generatedAt]
@@ -262,8 +284,9 @@ components:
           format: date-time
     RecommendationResponse:
       type: object
-      required: [summary, resolvedAnchors, affinities, plan, agentTrace, evidence, provenance]
+      required: [requestContext, summary, resolvedAnchors, affinities, plan, agentTrace, evidence, provenance]
       properties:
+        requestContext: { $ref: '#/components/schemas/RequestContext' }
         summary: { type: string }
         resolvedAnchors:
           type: array
@@ -285,7 +308,7 @@ components:
         provenance: { $ref: '#/components/schemas/Provenance' }
     ResolutionReviewRequired:
       type: object
-      required: [error, code, resolvedAnchors]
+      required: [error, code, requestContext, resolvedAnchors]
       properties:
         error:
           type: string
@@ -293,6 +316,7 @@ components:
         code:
           type: string
           const: QLOO_RESOLUTION_REVIEW_REQUIRED
+        requestContext: { $ref: '#/components/schemas/RequestContext' }
         resolvedAnchors:
           type: array
           minItems: 2
