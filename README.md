@@ -153,7 +153,11 @@ npm test
 npm run build
 npm run smoke:preview
 npm run submission:preflight:offline
+# After publishing/re-publishing the public app:
+npm run deployment:check
 ```
+
+`deployment:check` inspects the public Floot page and its JavaScript bundles for the current judge-evidence UI markers, so a reachable but stale deployment is not mistaken for a current one.
 
 The preview smoke test verifies:
 
