@@ -69,6 +69,8 @@ The final evidence block will record:
 - whether the evidence used Qloo numeric scores or ranked result order;
 - how many taste results carried Qloo-native explainability metadata and whether aggregate explainability was present;
 - the numbered signal-to-activity mapping used by the resulting session plan;
+- the artifact-level interpretation limit stating that Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual;
+- the explicit facilitator-control statement preserved with the artifact;
 - why that evidence was sufficient for the resulting session plan.
 
 No claim about a specific live Qloo result should be treated as verified until this section is replaced with captured event evidence.
