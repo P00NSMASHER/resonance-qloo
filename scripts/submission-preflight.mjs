@@ -10,6 +10,7 @@ const requiredFiles = [
   'docs/KNOWN_LIMITATIONS.md',
   'docs/DEVPOST_FIELDS.md',
   'SECURITY.md',
+  'scripts/qloo-mcp-proof.mjs',
   'src/App.tsx',
   'server/index.ts',
 ];
@@ -54,6 +55,16 @@ try {
   }
   if (!/illustrative demo/i.test(readme)) {
     failures.push('README does not clearly document the illustrative-demo provenance state.');
+  }
+} catch {}
+
+try {
+  const proof = await readFile('scripts/qloo-mcp-proof.mjs', 'utf8');
+  if (!proof.includes('0.1.26')) {
+    failures.push('Qloo MCP proof no longer enforces the event harness minimum version 0.1.26.');
+  }
+  if (!proof.includes('harness_version')) {
+    failures.push('Qloo MCP proof artifact no longer records the harness version.');
   }
 } catch {}
 
