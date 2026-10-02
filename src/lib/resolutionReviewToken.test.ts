@@ -17,31 +17,36 @@ const baseContext = {
 };
 const reviewedId = '9A25B172-4795-43E4-B222-3B550DC05AAA';
 const now = 1_000_000;
+const contractVersion = '2026-10-02.review-origin-v1';
 
 describe('resolution review token', () => {
   it('derives a stable instance-independent signing key from the credential and API origin', () => {
-    const first = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com');
-    const second = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com');
+    const first = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com', contractVersion);
+    const second = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com', contractVersion);
     expect(Buffer.from(first).equals(Buffer.from(second))).toBe(true);
   });
 
   it('rotates the signing key when the credential or Qloo origin changes', () => {
-    const base = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com');
-    const rotatedCredential = resolutionReviewSigningKey('new-event-key', 'https://hackathon.api.qloo.com');
-    const differentOrigin = resolutionReviewSigningKey('event-key', 'https://other.example');
+    const base = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com', contractVersion);
+    const rotatedCredential = resolutionReviewSigningKey('new-event-key', 'https://hackathon.api.qloo.com', contractVersion);
+    const differentOrigin = resolutionReviewSigningKey('event-key', 'https://other.example', contractVersion);
+    const differentContract = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com', 'next-contract');
     expect(Buffer.from(base).equals(Buffer.from(rotatedCredential))).toBe(false);
     expect(Buffer.from(base).equals(Buffer.from(differentOrigin))).toBe(false);
+    expect(Buffer.from(base).equals(Buffer.from(differentContract))).toBe(false);
   });
 
   it('verifies across server instances sharing the same Qloo credential', () => {
     const origin = 'https://hackathon.api.qloo.com';
-    const instanceAKey = resolutionReviewSigningKey('event-credential', origin);
-    const instanceBKey = resolutionReviewSigningKey('event-credential', origin);
-    const rotatedKey = resolutionReviewSigningKey('rotated-event-credential', origin);
+    const instanceAKey = resolutionReviewSigningKey('event-credential', origin, contractVersion);
+    const instanceBKey = resolutionReviewSigningKey('event-credential', origin, contractVersion);
+    const rotatedKey = resolutionReviewSigningKey('rotated-event-credential', origin, contractVersion);
+    const nextContractKey = resolutionReviewSigningKey('event-credential', origin, 'next-contract');
     const token = createResolutionReviewToken(instanceAKey, baseContext, [reviewedId], now);
 
     expect(verifyResolutionReviewToken(instanceBKey, baseContext, [reviewedId], token, now + 1000)).toBe(true);
     expect(verifyResolutionReviewToken(rotatedKey, baseContext, [reviewedId], token, now + 1000)).toBe(false);
+    expect(verifyResolutionReviewToken(nextContractKey, baseContext, [reviewedId], token, now + 1000)).toBe(false);
   });
 
 
