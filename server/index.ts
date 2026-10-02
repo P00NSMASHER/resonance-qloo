@@ -133,21 +133,6 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   const key = process.env.QLOO_API_KEY?.trim();
   if (!key) return json(res, 503, { error: 'Live Qloo access is not connected yet.' });
 
-  const clientKey = requestClientKey(req);
-  const processLimit = processLiveLimiter.check('process');
-  if (!processLimit.allowed) {
-    return json(res, 429, {
-      error: `The public Qloo demo is temporarily busy. Try again in ${processLimit.retryAfterSeconds}s.`,
-    }, { 'retry-after': String(processLimit.retryAfterSeconds) });
-  }
-
-  const limit = liveLimiter.check(clientKey);
-  if (!limit.allowed) {
-    return json(res, 429, {
-      error: `Too many live Qloo requests. Try again in ${limit.retryAfterSeconds}s.`,
-    }, { 'retry-after': String(limit.retryAfterSeconds) });
-  }
-
   let body: Record<string, unknown>;
   try {
     body = await readJson(req);
@@ -167,6 +152,23 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
 
   if (anchors.length < 2) {
     return json(res, 400, { error: 'Provide at least two distinct cultural anchors.' });
+  }
+
+  // Charge the Qloo/live quota only after the request is bounded and valid.
+  // Malformed public traffic should not be able to exhaust the upstream-call budget.
+  const clientKey = requestClientKey(req);
+  const processLimit = processLiveLimiter.check('process');
+  if (!processLimit.allowed) {
+    return json(res, 429, {
+      error: `The public Qloo demo is temporarily busy. Try again in ${processLimit.retryAfterSeconds}s.`,
+    }, { 'retry-after': String(processLimit.retryAfterSeconds) });
+  }
+
+  const limit = liveLimiter.check(clientKey);
+  if (!limit.allowed) {
+    return json(res, 429, {
+      error: `Too many live Qloo requests. Try again in ${limit.retryAfterSeconds}s.`,
+    }, { 'retry-after': String(limit.retryAfterSeconds) });
   }
 
   try {
