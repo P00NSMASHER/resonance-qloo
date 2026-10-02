@@ -210,6 +210,7 @@ try {
     'Qloo top match · confirmed',
     'Top matches confirmed',
     'Qloo API',
+    'Request receipt',
     'No synthetic signal',
     'Interpretation limit',
     'aggregate cultural relationships',
@@ -255,6 +256,9 @@ try {
   }
   if (!app.includes('<b>Qloo API</b>')) {
     failures.push('Results UI is missing live Qloo API origin provenance.');
+  }
+  if (!app.includes('<b>Request receipt</b>') || !app.includes('result.requestContext')) {
+    failures.push('Results UI is missing the visible normalized request receipt.');
   }
   if (!app.includes('No synthetic signal')) {
     failures.push('Results UI is missing the sparse-evidence no-synthetic-signal disclosure.');
