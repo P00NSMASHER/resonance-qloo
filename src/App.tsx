@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { normalizeQlooState, qlooPresentation, qlooStateAfterRecommendationFailure, type QlooUiState } from './lib/connectionState';
 import { formatSessionText } from './lib/sessionExport';
-import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, type AnchorType } from './lib/anchorTypes';
+import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, anchorTypeUrn, type AnchorType } from './lib/anchorTypes';
 import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
-import { hasConsistentRecommendationResult } from './lib/recommendationResult';
+import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './lib/recommendationResult';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -211,6 +211,18 @@ export default function App() {
       if (!hasConsistentRecommendationResult(data)) {
         setQlooState('degraded');
         throw new Error('Live Qloo response did not match the expected evidence contract. Please retry.');
+      }
+      if (!matchesRecommendationRequestContext(data, {
+        anchors:usableAnchors.map(item => ({
+          query:item.query,
+          typeUrn:anchorTypeUrn(item.type),
+        })),
+        energy,
+        setting,
+        durationMinutes,
+      })) {
+        setQlooState('degraded');
+        throw new Error('Live Qloo response did not match the submitted session context. Please retry.');
       }
       if (!hasVerifiedLiveProvenance(data, qlooApiOrigin)) {
         setQlooState('degraded');
