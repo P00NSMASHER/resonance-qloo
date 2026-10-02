@@ -37,3 +37,6 @@ jobs:
         run: node --check scripts/qloo-mcp-proof.mjs
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
+      - name: Public deployment parity (advisory)
+        continue-on-error: true
+        run: npm run deployment:check
