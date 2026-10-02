@@ -35,7 +35,7 @@ Live results expose:
 The server owns the Qloo credential and provides two routes:
 
 - `GET /api/status`: reports whether the key is configured and whether Qloo was actually verified; probe results are cached for five minutes.
-- `POST /api/recommend`: validates a bounded request, creates a normalized `requestContext` receipt, and resolves anchors through Qloo Search. If any first valid Qloo result is not an exact normalized-name match, the route returns HTTP 409 with that receipt plus the resolved candidates and stops **before** taste analysis. A second request may carry the explicitly confirmed entity IDs; only then does the server request Qloo tag insights and return the same receipt with the plan plus trace/evidence metadata.
+- `POST /api/recommend`: validates a bounded request, creates a normalized `requestContext` receipt, and resolves anchors through Qloo Search. If any first valid Qloo result is not an exact normalized-name match, the route returns HTTP 409 with that request receipt, the resolved candidates, and an ephemeral five-minute HMAC review receipt, then stops **before** taste analysis. A follow-up must return both the exact reviewed entity IDs and that server-issued receipt. The receipt is bound to the canonical request context and reviewed IDs, so IDs alone, edited context, or an expired receipt cannot authorize taste analysis.
 
 Safety/reliability controls:
 
@@ -53,7 +53,8 @@ Safety/reliability controls:
 - a manual verification retry path for configured `degraded`/`rate-limited` states that invalidates only the cached non-ready probe; preview/no-credential mode has no retry control, healthy cached `ready` state is retained, and forced retries are separately bounded to two per client per minute and twenty per server process per minute;
 - client-side connection-state downgrades when an actual live recommendation exposes upstream Qloo rate limiting/failure or fails the live evidence/provenance contract, while local application throttles and valid sparse-evidence responses remain scoped to the individual request;
 - explicit user confirmation before any non-exact Qloo top-result entity is used in taste analysis;
-- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result must be reviewed again;
+- confirmation requires both the reviewed entity IDs and a five-minute server-issued HMAC receipt bound to the canonical request context and those IDs;
+- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result, edited session context, expired receipt, or server restart must be reviewed again;
 - fail-closed behavior when too few anchors or affinities are resolved;
 - fail-closed behavior when explicit numeric evidence is too weak;
 - no invented affinity score when the Qloo response supplies only ranked tags;
@@ -82,7 +83,7 @@ The repository also contains an event-supported `qloo mcp` proof script. It chec
 The agent planner is deterministic and inspectable:
 
 1. **Resolve** — require at least two Qloo-backed anchors and classify each as an exact normalized-name match or a Qloo top-result match.
-2. **Confirm when needed** — if any resolution is a non-exact top result, stop before taste analysis and require the user to confirm those exact Qloo entity IDs or edit the anchors/category hints.
+2. **Confirm when needed** — if any resolution is a non-exact top result, stop before taste analysis and return a request-bound, five-minute review receipt. Taste analysis can continue only when the client returns that receipt with the exact reviewed Qloo entity IDs; otherwise review repeats.
 3. **Evaluate** — retain up to eight returned affinity signals, then select at most four for the plan. Prefer the highest numeric scores when at least three are present; otherwise preserve Qloo's ranked order.
 4. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as stable **#1–#N** numbering (up to four selected signals). If only three real signals are available, signal #3 is reused for the closing activity rather than synthesizing a fourth evidence item.
 5. **Explain** — return a visible rationale for every step.
