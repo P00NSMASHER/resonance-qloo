@@ -69,6 +69,25 @@ if (run.body?.provenance?.apiOrigin !== status.body.qlooApiOrigin) {
   );
 }
 
+const confirmedTopResults = Array.isArray(run.body?.resolvedAnchors)
+  ? run.body.resolvedAnchors.filter(item => item?.resolutionMatch === 'top-result')
+  : [];
+const confirmedIdSet = new Set(confirmedEntityIds);
+const unconfirmedTopResults = confirmedTopResults.filter(item => !confirmedIdSet.has(item.entityId));
+if (unconfirmedTopResults.length) {
+  throw new Error(
+    `Live evidence response contains top-result matches that were not in the explicit confirmation set: ${JSON.stringify(unconfirmedTopResults)}`,
+  );
+}
+if (
+  typeof run.body?.evidence?.topResultResolutionCount === 'number' &&
+  run.body.evidence.topResultResolutionCount !== confirmedTopResults.length
+) {
+  throw new Error(
+    `Resolution review count mismatch: evidence=${run.body.evidence.topResultResolutionCount} resolvedAnchors=${confirmedTopResults.length}.`,
+  );
+}
+
 const evidence = {
   captured_at:new Date().toISOString(),
   base_url:base,
@@ -78,6 +97,16 @@ const evidence = {
     energy:'calm',
     setting:'small-group',
     confirmedEntityIds,
+  },
+  confirmation_receipt:{
+    required:confirmedTopResults.length > 0,
+    confirmedTopResultCount:confirmedTopResults.length,
+    confirmedTopResults:confirmedTopResults.map(item => ({
+      query:item.query,
+      name:item.name,
+      entityId:item.entityId,
+      requestedTypeUrn:item.requestedTypeUrn,
+    })),
   },
   response_summary:{
     summary:run.body.summary,
