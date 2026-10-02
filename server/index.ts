@@ -9,7 +9,7 @@ import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 import { buildRecommendation, ResolutionReviewRequiredError } from '../src/lib/recommendationService';
 import { normalizeRecommendationRequest, recommendationRequestValidationError } from '../src/lib/requestNormalization';
-import { qlooEntityIdentity } from '../src/lib/qlooEntityIdentity';
+import { qlooSearchCacheKey, qlooTasteCacheKey } from '../src/lib/qlooCacheKey';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -174,11 +174,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     const credentialFingerprint = qlooCredentialFingerprint(key);
     const gateway = {
       search: (query: string, typeUrn?: string) => {
-        const normalized = `${credentialFingerprint}|${typeUrn ?? 'any'}|${query.toLocaleLowerCase('en-US')}`;
-        return searchCache.getOrLoad(normalized, () => qloo.search(query, typeUrn));
+        const searchKey = qlooSearchCacheKey(credentialFingerprint, query, typeUrn);
+        return searchCache.getOrLoad(searchKey, () => qloo.search(query, typeUrn));
       },
       tasteAnalysis: (entityIds: string[]) => {
-        const tasteKey = `${credentialFingerprint}|${entityIds.map(qlooEntityIdentity).sort().join(',')}`;
+        const tasteKey = qlooTasteCacheKey(credentialFingerprint, entityIds);
         return tasteCache.getOrLoad(tasteKey, () => qloo.tasteAnalysis(entityIds));
       },
     };
