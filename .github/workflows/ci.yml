@@ -33,5 +33,7 @@ jobs:
         run: npm run smoke:preview
       - name: Deployment checker syntax
         run: node --check scripts/check-deployment.mjs
+      - name: Qloo proof script syntax
+        run: node --check scripts/qloo-mcp-proof.mjs
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
