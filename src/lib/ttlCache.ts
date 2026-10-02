@@ -33,10 +33,11 @@ export function createTtlCache<T>(ttlMs: number, maxEntries = 250) {
       const existing = inFlight.get(key);
       if (existing) return existing;
 
-      const pending = Promise.resolve()
+      let pending: Promise<T>;
+      pending = Promise.resolve()
         .then(loader)
         .then(value => {
-          this.set(key, value, Date.now());
+          this.set(key, value, now);
           return value;
         })
         .finally(() => {
