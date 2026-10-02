@@ -104,9 +104,10 @@ npm test
 npm run build
 npm run smoke:preview
 npm run submission:preflight
+npm run deployment:check
 ```
 
-All must pass.
+All must pass. The deployment check reads the public Floot HTML and JavaScript bundles and verifies that the current judge-facing evidence UI is actually present; a merely reachable but stale deployment fails this step.
 
 ## 8. Final Devpost checks
 
