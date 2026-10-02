@@ -18,6 +18,8 @@ const requiredFiles = [
   'scripts/test-ui-state-safety.mjs',
   'scripts/test-deployment-checker.mjs',
   'src/App.tsx',
+  'src/lib/liveProvenance.ts',
+  'src/lib/liveProvenance.test.ts',
   'server/index.ts',
 ];
 
@@ -231,8 +233,8 @@ try {
     failures.push('Results UI is missing stale-state invalidation or live-request input locking.');
   }
   if (
-    !app.includes("data?.provenance?.source !== 'qloo-live'") ||
-    !app.includes('data.provenance.apiOrigin !== qlooApiOrigin')
+    !app.includes("import { hasVerifiedLiveProvenance } from './lib/liveProvenance'") ||
+    !app.includes('hasVerifiedLiveProvenance(data, qlooApiOrigin)')
   ) {
     failures.push('Results UI is missing live Qloo provenance consistency verification.');
   }
