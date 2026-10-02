@@ -278,6 +278,16 @@ try {
 } catch {}
 
 try {
+  const qlooClient = await readFile('src/lib/qlooClient.ts', 'utf8');
+  if (!qlooClient.includes("feature.explainability") || !qlooClient.includes("[400, 422]")) {
+    failures.push('Qloo client is missing the bounded optional-explainability compatibility fallback.');
+  }
+  if (!qlooClient.includes("redirect:'error'")) {
+    failures.push('Qloo client is not refusing redirects on credential-bearing requests.');
+  }
+} catch {}
+
+try {
   const recommendationService = await readFile('src/lib/recommendationService.ts', 'utf8');
   if (!recommendationService.includes('ResolutionReviewRequiredError')) {
     failures.push('Recommendation service no longer blocks taste analysis pending Qloo match confirmation.');
