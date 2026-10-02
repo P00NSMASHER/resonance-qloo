@@ -83,6 +83,7 @@ try {
   });
 
   const envelope = result.structuredContent ?? {};
+  const toolReportedError = Boolean(result.isError) || envelope.status === "error";
   const artifact = {
     generated_at: new Date().toISOString(),
     purpose: "Redacted Qloo MCP request-to-result evidence for Resonance",
@@ -91,14 +92,16 @@ try {
     tool: "qloo_find_tags",
     request: { query, limit: 5 },
     available_tool_count: names.length,
+    tool_reported_error: toolReportedError,
     result: redactProof(envelope, qlooApiKey),
+    content: redactProof(result.content ?? [], qlooApiKey),
   };
 
   const serialized = JSON.stringify(artifact, null, 2);
   assertSecretAbsent(serialized, qlooApiKey);
   process.stdout.write(serialized + "\n");
 
-  if (envelope.status === "error") {
+  if (toolReportedError) {
     process.exitCode = 1;
   }
 } catch (error) {
