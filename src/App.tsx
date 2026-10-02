@@ -330,6 +330,15 @@ export default function App() {
         </div>
         <div className="evidenceColumn">
           <div className="evidenceHeading"><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div>
+          <div className="selectionRule">
+            <b>Selection rule</b>
+            <span>{source === 'demo'
+              ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.`
+              : result.evidence.evidenceBasis === 'normalized-score'
+                ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.`
+                : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`
+            }</span>
+          </div>
           <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? 'Selected for plan' : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
         </div>
       </section>
