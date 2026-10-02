@@ -110,8 +110,17 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   if (evidence.resolvedAnchorCount !== resolvedAnchors.length) return false;
   if (!isIntegerBetween(evidence.exactResolutionCount, 0, resolvedAnchors.length)) return false;
   if (!isIntegerBetween(evidence.topResultResolutionCount, 0, resolvedAnchors.length)) return false;
-  if (Number(evidence.exactResolutionCount) + Number(evidence.topResultResolutionCount) !== resolvedAnchors.length) return false;
   if (!isIntegerBetween(evidence.categoryHintCount, 0, resolvedAnchors.length)) return false;
+  const actualExactResolutionCount = resolvedAnchors.filter(
+    item => isRecord(item) && item.resolutionMatch === 'exact-name'
+  ).length;
+  const actualTopResultResolutionCount = resolvedAnchors.length - actualExactResolutionCount;
+  const actualCategoryHintCount = resolvedAnchors.filter(
+    item => isRecord(item) && isNonEmptyString(item.requestedTypeUrn)
+  ).length;
+  if (evidence.exactResolutionCount !== actualExactResolutionCount) return false;
+  if (evidence.topResultResolutionCount !== actualTopResultResolutionCount) return false;
+  if (evidence.categoryHintCount !== actualCategoryHintCount) return false;
   if (!isIntegerBetween(evidence.explainabilityResultCount, 0, affinities.length)) return false;
   if (typeof evidence.aggregateExplainabilityAvailable !== 'boolean') return false;
   if (!DURATIONS.has(Number(evidence.sessionDurationMinutes))) return false;
