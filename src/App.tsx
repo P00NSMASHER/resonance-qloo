@@ -156,12 +156,17 @@ export default function App() {
     if (result) window.requestAnimationFrame(() => resultRef.current?.focus());
   }, [result]);
 
-  async function runLive() {
+  useEffect(() => {
+    setResolutionReview(null);
+  }, [anchors,anchorTypes]);
+
+  async function runLive(confirmedEntityIds: string[] = []) {
     if (!canRun) return;
     setLoading(true);
     setError('');
     setResult(null);
     setSource(null);
+    if (!confirmedEntityIds.length) setResolutionReview(null);
 
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), 10000);
@@ -170,11 +175,20 @@ export default function App() {
       const r = await fetch('/api/recommend', {
         method:'POST',
         headers:{'content-type':'application/json'},
-        body:JSON.stringify({anchors:usableAnchors,energy,setting,durationMinutes}),
+        body:JSON.stringify({anchors:usableAnchors,energy,setting,durationMinutes,confirmedEntityIds}),
         signal:controller.signal
       });
       const data = await r.json();
+      if (
+        r.status === 409 &&
+        data?.code === 'QLOO_RESOLUTION_REVIEW_REQUIRED' &&
+        Array.isArray(data.resolvedAnchors)
+      ) {
+        setResolutionReview(data.resolvedAnchors);
+        return;
+      }
       if (!r.ok) throw new Error(data.error || 'Qloo request failed');
+      setResolutionReview(null);
       setResult(data);
       setSource('live');
     } catch (e) {
@@ -307,7 +321,7 @@ export default function App() {
           </label>
         </div>
         <div className="actions">
-          <button disabled={!canRun} onClick={runLive}>
+          <button disabled={!canRun} onClick={()=>runLive()}>
             {loading?'Grounding with Qloo…':qlooUi.liveReady?'Build with live Qloo':'Live Qloo unavailable'}
           </button>
           <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
