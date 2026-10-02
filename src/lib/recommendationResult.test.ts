@@ -3,6 +3,15 @@ import { hasConsistentRecommendationResult, matchesRecommendationRequestContext 
 
 function validResult() {
   return {
+    requestContext:{
+      anchors:[
+        { query:'Ella Fitzgerald' },
+        { query:'Italian food' },
+      ],
+      energy:'calm',
+      setting:'small-group',
+      durationMinutes:45,
+    },
     summary:'Grounded result.',
     resolvedAnchors:[
       {
@@ -74,6 +83,23 @@ describe('live recommendation request binding', () => {
 
   it('accepts the resolved-anchor subsequence and session context for the submitted request', () => {
     expect(matchesRecommendationRequestContext(validResult(), expected)).toBe(true);
+  });
+
+  it('rejects missing or tampered normalized request receipts', () => {
+    const missing = validResult();
+    delete (missing as { requestContext?: unknown }).requestContext;
+    expect(hasConsistentRecommendationResult(missing)).toBe(false);
+    expect(matchesRecommendationRequestContext(missing, expected)).toBe(false);
+
+    const wrongEnergy = validResult();
+    wrongEnergy.requestContext.energy = 'active';
+    expect(hasConsistentRecommendationResult(wrongEnergy)).toBe(false);
+    expect(matchesRecommendationRequestContext(wrongEnergy, expected)).toBe(false);
+
+    const wrongAnchor = validResult();
+    wrongAnchor.requestContext.anchors[1].query = 'French food';
+    expect(hasConsistentRecommendationResult(wrongAnchor)).toBe(false);
+    expect(matchesRecommendationRequestContext(wrongAnchor, expected)).toBe(false);
   });
 
   it('rejects anchors from another request or a reordered response', () => {
