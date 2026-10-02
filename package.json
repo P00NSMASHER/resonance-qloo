@@ -22,7 +22,7 @@
     "deployment:check:selftest": "node scripts/test-deployment-checker.mjs",
     "evidence:capture": "node scripts/capture-live-evidence.mjs",
     "evidence:capture:selftest": "node scripts/test-evidence-capture.mjs",
-    "verify:offline": "npm run typecheck && npm test && npm run build && npm run smoke:preview && npm run ui:state:selftest && npm run deployment:check:selftest && npm run qloo:proof:redaction:selftest && npm run qloo:proof:env:selftest && npm run evidence:capture:selftest && npm run submission:preflight:offline",
+    "verify:offline": "npm run typecheck && npm test && npm run build && npm run smoke:preview && npm run ui:state:selftest && npm run deployment:check:selftest && npm run qloo:live:selftest && npm run qloo:proof:redaction:selftest && npm run qloo:proof:env:selftest && npm run evidence:capture:selftest && npm run submission:preflight:offline",
     "ui:state:selftest": "node scripts/test-ui-state-safety.mjs"
   },
   "dependencies": {
