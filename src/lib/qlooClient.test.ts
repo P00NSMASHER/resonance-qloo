@@ -96,11 +96,16 @@ describe('QlooClient', () => {
     expect(parsed.searchParams.get('feature.explainability')).toBe('true');
   });
 
-  it.each([400, 422])('retries taste analysis without optional explainability after HTTP %s', async (status) => {
+  it.each([400, 422])('retries taste analysis without optional explainability only when Qloo rejects that feature after HTTP %s', async (status) => {
     const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
     const mockFetch: typeof fetch = async (input, init) => {
       calls.push([input, init]);
-      if (calls.length === 1) return new Response('{}', { status });
+      if (calls.length === 1) {
+        return new Response(JSON.stringify({ error:'Unsupported parameter feature.explainability' }), {
+          status,
+          headers:{ 'content-type':'application/json' },
+        });
+      }
       return ok({ results:{ tags:[{ name:'Jazz' }] } });
     };
     const client = new QlooClient('event-key', mockFetch);
@@ -123,6 +128,27 @@ describe('QlooClient', () => {
     );
     expect(calls[0]![1]?.redirect).toBe('error');
     expect(calls[1]![1]?.redirect).toBe('error');
+  });
+
+  it.each([400, 422])('does not retry unrelated Qloo validation failures after HTTP %s', async (status) => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return new Response(JSON.stringify({ error:'Invalid entity signal' }), {
+        status,
+        headers:{ 'content-type':'application/json' },
+      });
+    };
+    const client = new QlooClient('event-key', mockFetch);
+
+    await expect(client.tasteAnalysis([
+      'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+    ])).rejects.toMatchObject({
+      status,
+      endpoint:'insights',
+      responseDetail:expect.stringContaining('Invalid entity signal'),
+    });
+    expect(calls).toHaveLength(1);
   });
 
   it('does not retry taste analysis for non-validation Qloo errors', async () => {
