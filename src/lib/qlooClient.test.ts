@@ -25,6 +25,7 @@ describe('QlooClient', () => {
       'x-api-key': 'event-key',
       accept: 'application/json',
     });
+    expect(init?.redirect).toBe('error');
   });
 
   it('builds a bounded generic search request', async () => {
@@ -93,6 +94,16 @@ describe('QlooClient', () => {
     );
     expect(parsed.searchParams.get('take')).toBe('8');
     expect(parsed.searchParams.get('feature.explainability')).toBe('true');
+  });
+
+  it('rejects redirects instead of forwarding the Qloo credential', async () => {
+    const mockFetch: typeof fetch = async (_input, init) => {
+      expect(init?.redirect).toBe('error');
+      throw new TypeError('fetch failed because redirect mode is error');
+    };
+    const client = new QlooClient('event-key', mockFetch);
+
+    await expect(client.search('test')).rejects.toThrow('redirect mode is error');
   });
 
   it('returns a typed upstream error without exposing the credential', async () => {
