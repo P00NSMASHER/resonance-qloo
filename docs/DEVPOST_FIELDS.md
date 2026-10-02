@@ -28,6 +28,26 @@ Resonance was started specifically for the Qloo Agentic Hackathon, so it is not 
 - GitHub detects the MIT license;
 - text description is present on Devpost.
 
-## Final blocker before treating the entry as final
+## Verified Devpost submission state
 
-The Devpost account has a registered Resonance project and an in-progress Qloo Agentic Hackathon entry, but the live project record still has `submitted_at: null`. Do not treat the public Devpost project page as proof that the hackathon submission is finalized. Final submission should happen only after a real event-issued Qloo credential is connected, the public live path is verified end-to-end, the Floot deployment matches the reviewed GitHub head, and Devpost returns a completed submission status. The official requirement calls for a functional demo that judges can use end-to-end.
+As of October 2, 2026 at 8:25 AM Eastern Time, Devpost returned:
+
+- submission id: `1207629`;
+- status: **Submitted**;
+- project: `resonance-nud9ek`;
+- hackathon: `qloo`;
+- required start-date, public-demo, and public-repository fields refreshed.
+
+The submission window remains open until October 30, 2026 at 11:45 PM Eastern Time, so the entry can continue to be improved.
+
+## Final blocker before treating the entry as judge-ready
+
+A submitted Devpost record is not yet proof of a finished hackathon entry. Treat Resonance as provisional until:
+
+- the event-issued Qloo credential is connected;
+- the public live path is verified end-to-end;
+- live evidence capture succeeds against the trusted hackathon Qloo origin;
+- the Floot deployment matches the reviewed GitHub head and `npm run deployment:check` passes;
+- the Devpost description/evidence are refreshed after that live proof.
+
+The official requirement calls for a functional demo that judges can use end-to-end.
