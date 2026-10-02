@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/connectionState';
 import { formatSessionText } from './lib/sessionExport';
 import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, type AnchorType } from './lib/anchorTypes';
+import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -197,12 +198,7 @@ export default function App() {
         return;
       }
       if (!r.ok) throw new Error(data.error || 'Qloo request failed');
-      if (
-        data?.provenance?.source !== 'qloo-live' ||
-        typeof data?.provenance?.apiOrigin !== 'string' ||
-        !qlooApiOrigin ||
-        data.provenance.apiOrigin !== qlooApiOrigin
-      ) {
+      if (!hasVerifiedLiveProvenance(data, qlooApiOrigin)) {
         throw new Error('Live Qloo provenance could not be verified. Please retry after the connection status refreshes.');
       }
       setResolutionReview(null);
