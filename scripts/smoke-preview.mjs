@@ -4,7 +4,12 @@ const port = 8790;
 const base = `http://127.0.0.1:${port}`;
 
 const child = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], {
-  env: { ...process.env, PORT: String(port), QLOO_API_KEY: '' },
+  env: {
+    ...process.env,
+    PORT: String(port),
+    QLOO_API_KEY: '',
+    QLOO_API_BASE_URL: 'https://hackathon.api.qloo.com',
+  },
   stdio: ['ignore', 'pipe', 'pipe']
 });
 
