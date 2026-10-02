@@ -105,13 +105,11 @@ describe('recommendation service', () => {
     ]);
   });
 
-  it('propagates Qloo top-result resolution review evidence through the service', async () => {
-    const ids = [uuidA, uuidB];
-    let searchIndex = 0;
+  it('requires explicit confirmation before taste analysis uses a Qloo top result', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => ({
         results:[{
-          entity_id:ids[searchIndex++],
+          entity_id:query === 'Italian food' ? uuidB : uuidA,
           name:query === 'Italian food' ? 'Italian cuisine' : query,
         }],
       })),
@@ -124,10 +122,24 @@ describe('recommendation service', () => {
       })),
     };
 
+    await expect(buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Italian food'}],
+      energy:'calm',
+      setting:'small-group',
+    })).rejects.toMatchObject({
+      message:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+      resolvedAnchors:[
+        expect.objectContaining({ entityId:uuidA, resolutionMatch:'exact-name' }),
+        expect.objectContaining({ entityId:uuidB, resolutionMatch:'top-result' }),
+      ],
+    });
+    expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
+
     const result = await buildRecommendation(gateway, {
       anchors:[{query:'Ella Fitzgerald'},{query:'Italian food'}],
       energy:'calm',
       setting:'small-group',
+      confirmedEntityIds:[uuidB],
     });
 
     expect(result.resolvedAnchors.map(item => item.resolutionMatch)).toEqual([
@@ -136,9 +148,10 @@ describe('recommendation service', () => {
     ]);
     expect(result.evidence.exactResolutionCount).toBe(1);
     expect(result.evidence.topResultResolutionCount).toBe(1);
-    expect(result.summary).toContain('1 entity match(es) should be reviewed');
-    expect(result.agentTrace[0].status).toBe('warning');
-    expect(result.agentTrace[0].detail).toContain('Qloo top-result match(es) to review');
+    expect(result.summary).toContain('1 Qloo top-result match(es) were explicitly confirmed before taste analysis');
+    expect(result.agentTrace[0].status).toBe('ok');
+    expect(result.agentTrace[0].detail).toContain('explicitly confirmed Qloo top-result match(es)');
+    expect(gateway.tasteAnalysis).toHaveBeenCalledOnce();
   });
 
   it('flows structured favorite-to-Qloo bridges through the service response', async () => {
