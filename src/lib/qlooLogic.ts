@@ -54,7 +54,28 @@ function looksLikeEntityId(value: string) {
     || value.startsWith('urn:entity:');
 }
 
-export type ResolvedAnchor = { query: string; name: string; entityId: string; requestedTypeUrn?: string };
+function normalizedEntityName(value: string) {
+  return value
+    .normalize('NFKC')
+    .toLocaleLowerCase('en-US')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function resolutionMatch(query: string, name: string): ResolvedAnchor['resolutionMatch'] {
+  return normalizedEntityName(query) === normalizedEntityName(name)
+    ? 'exact-name'
+    : 'top-result';
+}
+
+export type ResolvedAnchor = {
+  query: string;
+  name: string;
+  entityId: string;
+  requestedTypeUrn?: string;
+  resolutionMatch: 'exact-name' | 'top-result';
+};
 export type Affinity = { label: string; score: number | null; rank: number };
 export type PlanItem = {
   title: string;
@@ -96,7 +117,8 @@ export function extractResolved(query: string, payload: unknown): ResolvedAnchor
     const candidate = firstString(rec, ['entity_id', 'entityId', 'id', 'urn']);
     const name = firstString(rec, ['name', 'title', 'label']);
     if (candidate && looksLikeEntityId(candidate)) {
-      return { query, name: name || query, entityId: candidate };
+      const resolvedName = name || query;
+      return { query, name: resolvedName, entityId: candidate, resolutionMatch: resolutionMatch(query, resolvedName) };
     }
 
     for (const value of Object.values(rec)) {
@@ -104,10 +126,12 @@ export function extractResolved(query: string, payload: unknown): ResolvedAnchor
       const nested = value as AnyObject;
       const nestedId = firstString(nested, ['entity_id', 'entityId', 'id', 'urn']);
       if (nestedId && looksLikeEntityId(nestedId)) {
+        const resolvedName = firstString(nested, ['name', 'title', 'label']) || name || query;
         return {
           query,
-          name: firstString(nested, ['name', 'title', 'label']) || name || query,
+          name: resolvedName,
           entityId: nestedId,
+          resolutionMatch: resolutionMatch(query, resolvedName),
         };
       }
     }
