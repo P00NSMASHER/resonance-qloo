@@ -5,8 +5,8 @@ function validResult() {
   return {
     requestContext:{
       anchors:[
-        { query:'Ella Fitzgerald' },
-        { query:'Italian food' },
+        { query:'Ella Fitzgerald', typeUrn:undefined as string | undefined },
+        { query:'Italian food', typeUrn:undefined as string | undefined },
       ],
       energy:'calm',
       setting:'small-group',
