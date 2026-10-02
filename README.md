@@ -133,7 +133,7 @@ QLOO_API_KEY=your_event_key_here
 QLOO_API_BASE_URL=https://hackathon.api.qloo.com
 ```
 
-Never commit the real key. Resonance defaults to the hackathon origin for this event, and still allows an explicit HTTPS override when Qloo instructs otherwise.
+Never commit the real key. Resonance defaults to the hackathon origin and only accepts explicitly allowlisted Qloo API hosts. If Qloo introduces another organizer-approved gateway, add that host to the reviewed server allowlist and tests before using it; do not bypass the origin check with an arbitrary URL.
 
 Run the API server:
 
