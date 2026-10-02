@@ -168,6 +168,24 @@ describe('live recommendation result integrity', () => {
     expect(hasConsistentRecommendationResult(unexpectedAnchor)).toBe(false);
   });
 
+  it('rejects plan titles or timeboxes that do not match the declared session length', () => {
+    const wrongTitle = validResult();
+    wrongTitle.plan[0].title = 'Different title';
+    expect(hasConsistentRecommendationResult(wrongTitle)).toBe(false);
+
+    const wrongDuration = validResult();
+    wrongDuration.plan[2].duration = '10 min';
+    expect(hasConsistentRecommendationResult(wrongDuration)).toBe(false);
+
+    const sixty = validResult();
+    sixty.evidence.sessionDurationMinutes = 60;
+    sixty.plan[0].duration = '10 min';
+    sixty.plan[1].duration = '20 min';
+    sixty.plan[2].duration = '20 min';
+    sixty.plan[3].duration = '10 min';
+    expect(hasConsistentRecommendationResult(sixty)).toBe(true);
+  });
+
   it('rejects missing or reordered agent stages', () => {
     const result = validResult();
     [result.agentTrace[0], result.agentTrace[1]] = [result.agentTrace[1], result.agentTrace[0]];
