@@ -268,6 +268,29 @@ try {
       throw new Error('Mock-live status contract failed: ' + JSON.stringify(liveStatus));
     }
 
+    const qlooSearchesBeforeInvalidRequest = mockQloo.searchCalls();
+    const invalidRequestResponse = await fetch(liveBase + '/api/recommend', {
+      method:'POST',
+      headers:{ 'content-type':'application/json' },
+      body:JSON.stringify({
+        anchors:['a1','a2','a3','a4','a5'],
+        energy:'wild',
+        setting:'small-group',
+        surprise:true,
+      }),
+    });
+    const invalidRequestBody = await invalidRequestResponse.json();
+    if (
+      invalidRequestResponse.status !== 400 ||
+      !String(invalidRequestBody.error || '').includes('Unsupported request field') ||
+      mockQloo.searchCalls() !== qlooSearchesBeforeInvalidRequest
+    ) {
+      throw new Error(
+        'Invalid recommendation request was not rejected before Qloo access: ' +
+        invalidRequestResponse.status + ' ' + JSON.stringify(invalidRequestBody),
+      );
+    }
+
     const request = {
       anchors:['Ella Fitzgerald','Italian food'],
       energy:'calm',
