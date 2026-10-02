@@ -12,6 +12,7 @@ describe('public recommendation request validation', () => {
       setting:'small-group',
       durationMinutes:45,
       confirmedEntityIds:['FCE8B172-4795-43E4-B222-3B550DC05FD9'],
+      reviewToken:'review-receipt',
     })).toBeNull();
   });
 
@@ -76,6 +77,20 @@ describe('public recommendation request validation', () => {
       setting:'small-group',
       confirmedEntityIds:[42],
     })).toContain('1–200');
+
+    expect(recommendationRequestValidationError({
+      anchors:['a1','a2'],
+      energy:'calm',
+      setting:'small-group',
+      reviewToken:'',
+    })).toContain('reviewToken');
+
+    expect(recommendationRequestValidationError({
+      anchors:['a1','a2'],
+      energy:'calm',
+      setting:'small-group',
+      reviewToken:'x'.repeat(129),
+    })).toContain('1–128');
   });
 });
 
@@ -150,6 +165,19 @@ describe('recommendation request normalization', () => {
       anchors:['a1','a2'],
       durationMinutes:50,
     }).durationMinutes).toBe(45);
+  });
+
+  it('normalizes a bounded review receipt only when supplied', () => {
+    const withToken = normalizeRecommendationRequest({
+      anchors:['a1','a2'],
+      reviewToken:'  review-receipt  ',
+    });
+    expect(withToken.reviewToken).toBe('review-receipt');
+
+    const withoutToken = normalizeRecommendationRequest({
+      anchors:['a1','a2'],
+    });
+    expect('reviewToken' in withoutToken).toBe(false);
   });
 
   it('normalizes and bounds explicitly confirmed Qloo entity IDs', () => {
