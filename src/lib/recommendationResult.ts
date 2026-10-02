@@ -3,6 +3,7 @@ const DURATIONS = new Set([30,45,60]);
 const ENERGIES = new Set(['calm','social','active']);
 const SETTINGS = new Set(['one-on-one','small-group','community']);
 const RESOLUTION_MATCHES = new Set(['exact-name','top-result']);
+const PLAN_TITLES = ['Opening cue','Story bridge','Shared choice','Closing ritual'] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value));
@@ -22,7 +23,6 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   const resolvedAnchors = payload.resolvedAnchors;
   if (!Array.isArray(resolvedAnchors) || resolvedAnchors.length < 2 || resolvedAnchors.length > 4) return false;
   const resolvedEntityIds = new Set<string>();
-  const resolvedNames = new Set<string>();
   let exactResolutionCount = 0;
   let topResultResolutionCount = 0;
   let categoryHintCount = 0;
@@ -36,7 +36,6 @@ export function hasConsistentRecommendationResult(payload: unknown) {
     ) return false;
     if (resolvedEntityIds.has(item.entityId)) return false;
     resolvedEntityIds.add(item.entityId);
-    resolvedNames.add(item.name);
     if (item.requestedTypeUrn !== undefined && !isNonEmptyString(item.requestedTypeUrn)) return false;
     if (item.resolutionMatch === 'exact-name') exactResolutionCount += 1;
     else topResultResolutionCount += 1;
@@ -48,15 +47,14 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   const affinityLabels = new Set<string>();
   const affinityLabelsNormalized = new Set<string>();
   const validatedAffinities: Array<{ label:string; score:number|null; rank:number }> = [];
-  let previousRank = 0;
-  for (const item of affinities) {
+  for (let index = 0; index < affinities.length; index += 1) {
+    const item = affinities[index];
     if (!isRecord(item) || !isNonEmptyString(item.label)) return false;
     const normalizedLabel = item.label.toLocaleLowerCase('en-US');
     if (affinityLabelsNormalized.has(normalizedLabel)) return false;
     affinityLabels.add(item.label);
     affinityLabelsNormalized.add(normalizedLabel);
-    if (!Number.isInteger(item.rank) || Number(item.rank) <= previousRank) return false;
-    previousRank = Number(item.rank);
+    if (item.rank !== index + 1) return false;
     if (
       item.score !== null &&
       (typeof item.score !== 'number' || !Number.isFinite(item.score) || item.score < 0 || item.score > 1)
@@ -125,10 +123,13 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 
   const plan = payload.plan;
   if (!Array.isArray(plan) || plan.length !== 4) return false;
-  const planLabels = new Set<string>();
-  const firstPlanLabelSequence: string[] = [];
-  let planMinutes = 0;
-  for (const item of plan) {
+  const expectedDurations = Number(evidence.sessionDurationMinutes) === 30
+    ? ['5 min','10 min','10 min','5 min']
+    : Number(evidence.sessionDurationMinutes) === 60
+      ? ['10 min','20 min','20 min','10 min']
+      : ['10 min','10 min','15 min','10 min'];
+  for (let index = 0; index < plan.length; index += 1) {
+    const item = plan[index];
     if (
       !isRecord(item) ||
       !isNonEmptyString(item.title) ||
@@ -138,21 +139,18 @@ export function hasConsistentRecommendationResult(payload: unknown) {
       !isNonEmptyString(item.affinityLabel) ||
       !selectedLabels.has(item.affinityLabel)
     ) return false;
-    if (item.anchorName !== undefined) {
-      if (!isNonEmptyString(item.anchorName) || !resolvedNames.has(item.anchorName)) return false;
+    if (item.title !== PLAN_TITLES[index] || item.duration !== expectedDurations[index]) return false;
+
+    const expectedLabel = selectedSequence[Math.min(index, selectedSequence.length - 1)];
+    if (item.affinityLabel !== expectedLabel) return false;
+
+    const expectedAnchor = isRecord(resolvedAnchors[index]) ? resolvedAnchors[index].name : undefined;
+    if (expectedAnchor !== undefined) {
+      if (item.anchorName !== expectedAnchor) return false;
+    } else if (item.anchorName !== undefined) {
+      return false;
     }
-    const durationMatch = item.duration.match(/^(\d+) min$/);
-    if (!durationMatch) return false;
-    planMinutes += Number(durationMatch[1]);
-    if (!planLabels.has(item.affinityLabel)) firstPlanLabelSequence.push(item.affinityLabel);
-    planLabels.add(item.affinityLabel);
   }
-  if (planMinutes !== evidence.sessionDurationMinutes) return false;
-  if (planLabels.size !== selectedLabels.size) return false;
-  if (
-    firstPlanLabelSequence.length !== selectedSequence.length ||
-    firstPlanLabelSequence.some((label,index) => label !== selectedSequence[index])
-  ) return false;
 
   const trace = payload.agentTrace;
   if (!Array.isArray(trace) || trace.length !== STAGES.length) return false;
