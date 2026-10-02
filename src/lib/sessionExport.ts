@@ -24,6 +24,12 @@ export type ExportableSession = {
 
 export function formatSessionText(session: ExportableSession, source: 'live' | 'demo') {
   const generatedAt = source === 'live' ? session.provenance?.generatedAt : undefined;
+  const selectedAffinitySequence = session.evidence?.selectedAffinityLabels?.length
+    ? session.evidence.selectedAffinityLabels
+    : session.affinities.slice(0, session.evidence?.selectedAffinityCount ?? 0).map(item => item.label);
+  const selectedAffinityOrder = new Map(
+    selectedAffinitySequence.map((label,index) => [label,index + 1]),
+  );
   const lines = [
     'Resonance session',
     source === 'live' ? 'Source: Live Qloo' : 'Source: Illustrative demo — not live Qloo data',
@@ -49,10 +55,10 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
       : []),
     ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined
-      ? [`Selection evidence: ${session.evidence.selectedAffinityCount} affinity signal(s) selected for the plan`]
+      ? [`Selection evidence: ${session.evidence.selectedAffinityCount} of ${session.affinities.length} affinity signal(s) selected for the plan`]
       : []),
-    ...(source === 'live' && session.evidence?.selectedAffinityLabels?.length
-      ? [`Selected Qloo signals: ${session.evidence.selectedAffinityLabels.join(' | ')}`]
+    ...(source === 'live' && selectedAffinitySequence.length
+      ? [`Selected Qloo signals: ${selectedAffinitySequence.map((label,index) => `#${index + 1} ${label}`).join(' | ')}`]
       : []),
     ...(source === 'live' && session.evidence?.sessionDurationMinutes !== undefined
       ? [`Session target: ${session.evidence.sessionDurationMinutes} minutes`]
@@ -73,10 +79,14 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       return `- ${resolution}${category ? ` [${category}]` : ''}${id}`;
     }),
     '',
-    'Taste evidence:',
-    ...session.affinities.map(item =>
-      `- ${item.label}: ${item.score === null ? `Rank #${item.rank}` : `${Math.round(item.score * 100)}%`}`
-    ),
+    source === 'live' ? 'Taste evidence:' : 'Illustrative taste evidence:',
+    ...session.affinities.map(item => {
+      const signalNumber = selectedAffinityOrder.get(item.label);
+      const role = signalNumber
+        ? source === 'live' ? `selected Qloo signal #${signalNumber}` : `example plan signal #${signalNumber}`
+        : source === 'live' ? 'additional Qloo evidence' : 'additional example evidence';
+      return `- [${role}] ${item.label}: ${item.score === null ? `Rank #${item.rank}` : `${Math.round(item.score * 100)}%`}`;
+    }),
     ...(session.agentTrace?.length ? [
       '',
       source === 'live' ? 'Agent decision trace:' : 'Illustrative agent decision trace:',
@@ -84,14 +94,17 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ] : []),
     '',
     'Session plan:',
-    ...session.plan.flatMap((item, index) => [
-      `${index + 1}. ${item.title} (${item.duration})`,
-      ...(item.affinityLabel
-        ? [`   Bridge: ${item.anchorName ? `${item.anchorName} -> ${item.affinityLabel}` : item.affinityLabel}`]
-        : []),
-      `   ${item.action}`,
-      `   Why it fits: ${item.why}`,
-    ]),
+    ...session.plan.flatMap((item, index) => {
+      const signalNumber = item.affinityLabel ? selectedAffinityOrder.get(item.affinityLabel) : undefined;
+      return [
+        `${index + 1}. ${item.title} (${item.duration})`,
+        ...(item.affinityLabel
+          ? [`   Bridge${signalNumber ? ` [${source === 'live' ? 'Qloo' : 'example'} signal #${signalNumber}]` : ''}: ${item.anchorName ? `${item.anchorName} -> ${item.affinityLabel}` : item.affinityLabel}`]
+          : []),
+        `   ${item.action}`,
+        `   Why it fits: ${item.why}`,
+      ];
+    }),
   ];
   return lines.join('\n');
 }
