@@ -114,6 +114,32 @@ describe('agent planner', () => {
     expect(session.agentTrace[1].detail).toContain('No numeric score was invented');
   });
 
+  it('records all returned signals while selecting at most four', () => {
+    const session = orchestrateSession(
+      anchors,
+      [
+        { label:'Jazz', score:null, rank:1 },
+        { label:'Musicals', score:null, rank:2 },
+        { label:'Classic cinema', score:null, rank:3 },
+        { label:'Italian cuisine', score:null, rank:4 },
+        { label:'Travel nostalgia', score:null, rank:5 },
+        { label:'Vintage fashion', score:null, rank:6 },
+      ],
+      'calm',
+      'small-group',
+    );
+
+    expect(session.evidence.returnedAffinityCount).toBe(6);
+    expect(session.evidence.selectedAffinityCount).toBe(4);
+    expect(session.evidence.selectedAffinityLabels).toEqual([
+      'Jazz',
+      'Musicals',
+      'Classic cinema',
+      'Italian cuisine',
+    ]);
+    expect(session.plan).toHaveLength(4);
+  });
+
   it('fails closed when explicit numeric evidence is weak', () => {
     expect(() => orchestrateSession(
       anchors,
