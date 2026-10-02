@@ -200,9 +200,10 @@ A successful live response includes:
 
 ## Privacy and scope
 
-- No personal identifiers are required.
+- Use cultural entities/preferences only; do not send resident/client names, emails, account IDs, device identifiers, health information, location histories, or other personal data to Qloo.
+- A public cultural entity may itself contain a person's name (for example, a favorite artist); that is distinct from identifying the person using the product.
 - Resonance is not a medical tool and gives no medical advice.
-- Qloo results are treated as cultural-affinity signals, not claims about identity or future behavior.
+- Qloo results are treated as aggregate cultural-affinity signals, not claims about identity, sensitive traits, causality, probability, or future behavior for an individual.
 - Human facilitators remain in control of final activity choices.
 
 ## License
