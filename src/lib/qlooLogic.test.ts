@@ -8,7 +8,8 @@ describe('Qloo parsing', () => {
     })).toEqual({
       query: 'Ella Fitzgerald',
       name: 'Ella Fitzgerald',
-      entityId: 'FCE8B172-4795-43E4-B222-3B550DC05FD9'
+      entityId: 'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+      resolutionMatch: 'exact-name'
     });
   });
 
@@ -18,8 +19,26 @@ describe('Qloo parsing', () => {
     })).toEqual({
       query: 'Example',
       name: 'Example',
-      entityId: 'urn:entity:artist:example'
+      entityId: 'urn:entity:artist:example',
+      resolutionMatch: 'exact-name'
     });
+  });
+
+  it('marks a renamed first result as a Qloo top-result match without inventing confidence', () => {
+    expect(extractResolved('Italian food', {
+      results: [{ entity_id:'FCE8B172-4795-43E4-B222-3B550DC05FD9', name:'Italian cuisine' }],
+    })).toEqual({
+      query:'Italian food',
+      name:'Italian cuisine',
+      entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+      resolutionMatch:'top-result',
+    });
+  });
+
+  it('normalizes punctuation and casing before calling a name exact', () => {
+    expect(extractResolved("Singin' in the Rain", {
+      results: [{ entity_id:'FCE8B172-4795-43E4-B222-3B550DC05FD9', name:'SINGIN’ IN THE RAIN' }],
+    })?.resolutionMatch).toBe('exact-name');
   });
 
   it('keeps Qloo result order and never fabricates missing scores', () => {
