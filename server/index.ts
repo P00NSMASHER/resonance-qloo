@@ -19,6 +19,8 @@ const QLOO_BASE_URL = resolveQlooBaseUrl(
 );
 const liveLimiter = createRateLimiter(12, 60_000);
 const processLiveLimiter = createRateLimiter(60, 60_000);
+const qlooProbeRefreshLimiter = createRateLimiter(2, 60_000);
+const processQlooProbeRefreshLimiter = createRateLimiter(20, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
@@ -60,7 +62,18 @@ async function readJson(req: import('node:http').IncomingMessage) {
   }
 }
 
-async function handleStatus(res: import('node:http').ServerResponse) {
+function requestClientKey(req: import('node:http').IncomingMessage) {
+  const forwarded = req.headers['x-forwarded-for'];
+  return (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0])?.trim()
+    || req.socket.remoteAddress
+    || 'unknown';
+}
+
+async function handleStatus(
+  req: import('node:http').IncomingMessage,
+  res: import('node:http').ServerResponse,
+  forceRefresh = false,
+) {
   const key = process.env.QLOO_API_KEY?.trim();
   if (!key) {
     return json(res, 200, {
@@ -74,6 +87,18 @@ async function handleStatus(res: import('node:http').ServerResponse) {
   }
 
   const keyFingerprint = createHash('sha256').update(`${QLOO_BASE_URL}\0${key}`).digest('hex').slice(0, 16);
+
+  if (forceRefresh) {
+    const cachedStatus = qlooProbeCache.get(keyFingerprint);
+    if (cachedStatus && cachedStatus !== 'ready') {
+      const processRefreshLimit = processQlooProbeRefreshLimiter.check('process');
+      const clientRefreshLimit = qlooProbeRefreshLimiter.check(requestClientKey(req));
+      if (processRefreshLimit.allowed && clientRefreshLimit.allowed) {
+        qlooProbeCache.delete(keyFingerprint);
+      }
+    }
+  }
+
   const qlooStatus = await qlooProbeCache.getOrLoad(keyFingerprint, async () => {
     try {
       const qloo = new QlooClient(key, fetch, QLOO_BASE_URL);
@@ -100,10 +125,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   const key = process.env.QLOO_API_KEY?.trim();
   if (!key) return json(res, 503, { error: 'Live Qloo access is not connected yet.' });
 
-  const forwarded = req.headers['x-forwarded-for'];
-  const clientKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0])?.trim()
-    || req.socket.remoteAddress
-    || 'unknown';
+  const clientKey = requestClientKey(req);
   const processLimit = processLiveLimiter.check('process');
   if (!processLimit.allowed) {
     return json(res, 429, {
@@ -244,7 +266,9 @@ async function serveStatic(pathname: string, res: import('node:http').ServerResp
 createServer(async (req, res) => {
   try {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-    if (req.method === 'GET' && url.pathname === '/api/status') return handleStatus(res);
+    if (req.method === 'GET' && url.pathname === '/api/status') {
+      return handleStatus(req, res, url.searchParams.get('refresh') === '1');
+    }
     if (req.method === 'POST' && url.pathname === '/api/recommend') return handleRecommend(req, res);
     if (url.pathname.startsWith('/api/')) return json(res, 404, { error: 'API route not found.' });
     return serveStatic(url.pathname, res);
