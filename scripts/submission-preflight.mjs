@@ -268,6 +268,12 @@ try {
   ) {
     failures.push('Results UI is missing live Qloo provenance consistency verification.');
   }
+  if (
+    !app.includes('qlooStateAfterRecommendationFailure(r.status, data?.error)') ||
+    !app.includes("setQlooState('degraded')")
+  ) {
+    failures.push('Results UI is not downgrading Qloo connection state after verified upstream/live-response failures.');
+  }
 } catch {}
 
 try {
