@@ -15,7 +15,7 @@ Before enabling the live action, the client calls `GET /api/status`. The server 
 
 Only `ready` enables live recommendations.
 
-The browser also applies a second provenance gate to successful recommendations: `provenance.source` must be `qloo-live`, `provenance.apiOrigin` must exactly match the origin returned by the verified status endpoint, and `generatedAt` must be a valid timestamp before the result is labeled live. Session-defining controls are disabled during an in-flight live request. Any later edit to anchors, category hints, energy, setting, or duration clears generated output and pending entity confirmation so an old response cannot be mistaken for evidence about the edited form.
+The browser also applies two gates to successful recommendations before rendering them as live. First, it verifies internal evidence consistency: returned/selected signal counts, selected-label membership, resolution accounting, plan-to-signal mapping, and the four-stage trace must agree. Second, `provenance.source` must be `qloo-live`, `provenance.apiOrigin` must exactly match the origin returned by the verified status endpoint, and `generatedAt` must be a valid timestamp. Session-defining controls are disabled during an in-flight live request. Any later edit to anchors, category hints, energy, setting, or duration clears generated output and pending entity confirmation so an old response cannot be mistaken for evidence about the edited form.
 
 Live results expose:
 
