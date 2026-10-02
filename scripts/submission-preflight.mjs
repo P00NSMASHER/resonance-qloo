@@ -56,6 +56,9 @@ try {
   if (!qlooConfig.includes('allowLocalMock') || !qlooConfig.includes('isLoopbackHostname')) {
     failures.push('Qloo runtime is missing the explicit loopback-only local mock gate.');
   }
+  if (!qlooConfig.includes("url.port !== '443'")) {
+    failures.push('Qloo runtime is not enforcing the standard HTTPS port for trusted Qloo hosts.');
+  }
 } catch {}
 
 try {
@@ -213,6 +216,16 @@ try {
   const server = await readFile('server/index.ts', 'utf8');
   if (!server.includes('ResolutionReviewRequiredError') || !server.includes("code: 'QLOO_RESOLUTION_REVIEW_REQUIRED'")) {
     failures.push('Server is missing the 409 Qloo resolution-confirmation response path.');
+  }
+  if (!server.includes("QLOO_ALLOW_LOCAL_MOCK === '1' && process.env.NODE_ENV !== 'production'")) {
+    failures.push('Server does not disable the local Qloo mock escape hatch in production.');
+  }
+} catch {}
+
+try {
+  const qlooClient = await readFile('src/lib/qlooClient.ts', 'utf8');
+  if (!qlooClient.includes("redirect:'error'")) {
+    failures.push('Qloo client is not refusing redirects on credential-bearing requests.');
   }
 } catch {}
 
