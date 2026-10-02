@@ -8,6 +8,7 @@ import { join } from 'node:path';
 const PREVIEW_PORT = 8790;
 const LIVE_PORT = 8791;
 const RETRY_PORT = 8792;
+const RETRY_LIMIT_PORT = 8793;
 const HACKATHON_ORIGIN = 'https://hackathon.api.qloo.com';
 const UUID_A = 'FCE8B172-4795-43E4-B222-3B550DC05FD9';
 const UUID_B = '9A25B172-4795-43E4-B222-3B550DC05AAA';
@@ -165,6 +166,7 @@ async function stopServer(server) {
 let previewChild;
 let liveChild;
 let retryChild;
+let retryLimitChild;
 let mockQloo;
 let tls;
 
@@ -377,6 +379,38 @@ try {
     ) {
       throw new Error('Manual refresh should not discard or re-probe a healthy cached Qloo state.');
     }
+
+    await stopChild(retryChild);
+    retryChild = null;
+
+    mockQloo.setProbeReady(false);
+    const retryLimitServer = spawnResonance(RETRY_LIMIT_PORT, {
+      QLOO_API_KEY:'smoke-key',
+      QLOO_API_BASE_URL:mockQloo.baseUrl,
+      QLOO_ALLOW_LOCAL_MOCK:'1',
+      NODE_TLS_REJECT_UNAUTHORIZED:'0',
+    });
+    retryLimitChild = retryLimitServer.child;
+    const retryLimitBase = `http://127.0.0.1:${RETRY_LIMIT_PORT}`;
+    const limitedInitial = await waitForServer(retryLimitBase, retryLimitServer.getStderr);
+    if (limitedInitial.qlooStatus !== 'degraded') {
+      throw new Error('Retry-limit smoke must start from a degraded cached Qloo state.');
+    }
+    const probesBeforeForcedRetries = mockQloo.probeCalls();
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const response = await fetch(retryLimitBase + '/api/status?refresh=1');
+      const body = await response.json();
+      if (body.qlooStatus !== 'degraded') {
+        throw new Error('Failed Qloo retry should remain degraded during retry-limit smoke.');
+      }
+    }
+
+    if (mockQloo.probeCalls() !== probesBeforeForcedRetries + 2) {
+      throw new Error(
+        `Expected retry limiter to allow only two forced probes per minute; before=${probesBeforeForcedRetries} after=${mockQloo.probeCalls()}.`,
+      );
+    }
   } else {
     console.warn('OpenSSL unavailable; skipped local HTTPS Qloo review-handshake smoke.');
   }
@@ -386,6 +420,7 @@ try {
   await stopChild(previewChild);
   await stopChild(liveChild);
   await stopChild(retryChild);
+  await stopChild(retryLimitChild);
   await stopServer(mockQloo?.server);
   if (tls?.directory) {
     await rm(tls.directory, { recursive:true, force:true });
