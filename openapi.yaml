@@ -28,7 +28,7 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [qlooConfigured, qlooConnected, qlooStatus, qlooApiOrigin, mode, service]
+                required: [qlooConfigured, qlooConnected, qlooStatus, qlooApiOrigin, mode, service, contractVersion]
                 properties:
                   qlooConfigured: { type: boolean }
                   qlooConnected: { type: boolean }
@@ -39,6 +39,9 @@ paths:
                     description: Non-secret HTTPS origin used for Qloo requests.
                   mode: { type: string, enum: [live, preview] }
                   service: { type: string, const: resonance }
+                  contractVersion:
+                    type: string
+                    description: Shared frontend/backend deployment contract version used for production parity checks.
   /api/recommend:
     post:
       summary: Build a culturally grounded engagement session
