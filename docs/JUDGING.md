@@ -12,7 +12,7 @@
    - the visible aggregate handoff from resolved favorites into Qloo taste analysis;
    - the returned taste evidence, including the **selected / returned** signal count;
    - the selection rule: highest real numeric Qloo affinities when enough scores exist, otherwise Qloo's returned rank order with no invented percentage;
-   - **Plan signal #1–#4** badges that identify exactly which returned signals were selected;
+   - numbered **Plan signal #N** badges that identify exactly which returned signals were selected (up to four);
    - the four-stage agent decision trace;
    - the four-step session, where the same signal numbers reappear beside the activities they drive;
    - each step's evidence-backed "why it fits" explanation;
@@ -36,7 +36,7 @@ The implementation now matches current Qloo public documentation more defensibly
 - Taste analysis requests Qloo's documented `feature.explainability=true`. Resonance reports how many returned taste results actually contain non-empty `query.explainability` metadata and whether aggregate explainability is present; it does not invent attribution when Qloo omits it.
 - If a tag result is rank-ordered but unscored, Resonance preserves that Qloo order and displays **Rank #N** instead of manufacturing a percentage.
 - The service retains up to eight returned affinity signals for inspection while the agent selects at most four for the four-step plan.
-- The selected-signal sequence is explicit and stable: the UI labels the chosen evidence **Plan signal #1–#4**, repeats those numbers on the corresponding activity cards, and preserves the same mapping in copied session evidence.
+- The selected-signal sequence is explicit and stable: the UI labels chosen evidence with stable **Plan signal #N** numbering (up to four selected signals), repeats those numbers on the corresponding activity cards, and preserves the same mapping in copied session evidence.
 - Returned-but-unselected signals remain visible as **Additional evidence** instead of disappearing from the audit path.
 - Weak or sparse evidence fails closed.
 
