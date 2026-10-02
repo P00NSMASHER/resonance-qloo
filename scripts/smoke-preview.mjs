@@ -328,6 +328,9 @@ try {
       reviewResponse.status !== 409 ||
       reviewBody.code !== 'QLOO_RESOLUTION_REVIEW_REQUIRED' ||
       !Array.isArray(reviewBody.resolvedAnchors) ||
+      typeof reviewBody.reviewToken !== 'string' ||
+      reviewBody.reviewToken.length < 1 ||
+      reviewBody.reviewToken.length > 128 ||
       reviewBody.requestContext?.energy !== 'calm' ||
       reviewBody.requestContext?.setting !== 'small-group' ||
       reviewBody.requestContext?.durationMinutes !== 45 ||
@@ -348,12 +351,47 @@ try {
       throw new Error('Review payload did not expose the expected Qloo top-result mapping: ' + JSON.stringify(reviewBody));
     }
 
+    const idOnlyResponse = await fetch(liveBase + '/api/recommend', {
+      method:'POST',
+      headers:{ 'content-type':'application/json' },
+      body:JSON.stringify({
+        ...request,
+        confirmedEntityIds:[reviewed.entityId],
+      }),
+    });
+    const idOnlyBody = await idOnlyResponse.json();
+    if (idOnlyResponse.status !== 409 || idOnlyBody.code !== 'QLOO_RESOLUTION_REVIEW_REQUIRED') {
+      throw new Error('ID-only confirmation unexpectedly bypassed review: ' + idOnlyResponse.status + ' ' + JSON.stringify(idOnlyBody));
+    }
+    if (mockQloo.insightCalls() !== 0) {
+      throw new Error('Taste analysis ran after ID-only confirmation without a review receipt.');
+    }
+
+    const changedContextResponse = await fetch(liveBase + '/api/recommend', {
+      method:'POST',
+      headers:{ 'content-type':'application/json' },
+      body:JSON.stringify({
+        ...request,
+        energy:'social',
+        confirmedEntityIds:[reviewed.entityId],
+        reviewToken:reviewBody.reviewToken,
+      }),
+    });
+    const changedContextBody = await changedContextResponse.json();
+    if (changedContextResponse.status !== 409 || changedContextBody.code !== 'QLOO_RESOLUTION_REVIEW_REQUIRED') {
+      throw new Error('Changed request context unexpectedly reused an old review receipt: ' + changedContextResponse.status + ' ' + JSON.stringify(changedContextBody));
+    }
+    if (mockQloo.insightCalls() !== 0) {
+      throw new Error('Taste analysis ran with a review receipt bound to a different request context.');
+    }
+
     const confirmedResponse = await fetch(liveBase + '/api/recommend', {
       method:'POST',
       headers:{ 'content-type':'application/json' },
       body:JSON.stringify({
         ...request,
         confirmedEntityIds:[reviewed.entityId],
+        reviewToken:reviewBody.reviewToken,
       }),
     });
     const confirmedBody = await confirmedResponse.json();
