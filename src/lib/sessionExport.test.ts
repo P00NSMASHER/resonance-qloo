@@ -11,6 +11,7 @@ describe('session export', () => {
     affinities:[
       {label:'Jazz',score:null,rank:1},
       {label:'Musicals',score:.82,rank:2},
+      {label:'Classic cinema',score:null,rank:3},
     ],
     plan:[
       {title:'Opening cue',duration:'10 min',action:'Play a familiar song.',why:'Qloo-ranked evidence.',anchorName:'Ella Fitzgerald',affinityLabel:'Jazz'},
@@ -112,18 +113,30 @@ describe('session export', () => {
     expect(formatSessionText(session, 'demo')).not.toContain('Resolution evidence:');
   });
 
-  it('keeps selected-affinity evidence in live exports', () => {
+  it('keeps selected-versus-returned affinity evidence in live exports', () => {
     expect(formatSessionText(session, 'live')).toContain(
-      'Selection evidence: 2 affinity signal(s) selected for the plan'
+      'Selection evidence: 2 of 3 affinity signal(s) selected for the plan'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Selection evidence:');
   });
 
-  it('keeps selected Qloo labels in live exports', () => {
+  it('keeps numbered selected Qloo labels in live exports', () => {
     expect(formatSessionText(session, 'live')).toContain(
-      'Selected Qloo signals: Jazz | Musicals'
+      'Selected Qloo signals: #1 Jazz | #2 Musicals'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Selected Qloo signals:');
+  });
+
+  it('distinguishes selected and additional taste evidence in exports', () => {
+    const live = formatSessionText(session, 'live');
+    expect(live).toContain('[selected Qloo signal #1] Jazz: Rank #1');
+    expect(live).toContain('[selected Qloo signal #2] Musicals: 82%');
+    expect(live).toContain('[additional Qloo evidence] Classic cinema: Rank #3');
+
+    const demo = formatSessionText(session, 'demo');
+    expect(demo).toContain('Illustrative taste evidence:');
+    expect(demo).toContain('[example plan signal #1] Jazz: Rank #1');
+    expect(demo).toContain('[additional example evidence] Classic cinema: Rank #3');
   });
 
   it('keeps target session length in live exports', () => {
@@ -138,9 +151,12 @@ describe('session export', () => {
     expect(formatSessionText(session, 'demo')).not.toContain('Session context:');
   });
 
-  it('keeps structured favorite-to-Qloo bridges in exports', () => {
+  it('keeps numbered favorite-to-Qloo bridges in exports', () => {
     expect(formatSessionText(session, 'live')).toContain(
-      'Bridge: Ella Fitzgerald -> Jazz'
+      'Bridge [Qloo signal #1]: Ella Fitzgerald -> Jazz'
+    );
+    expect(formatSessionText(session, 'demo')).toContain(
+      'Bridge [example signal #1]: Ella Fitzgerald -> Jazz'
     );
   });
 
