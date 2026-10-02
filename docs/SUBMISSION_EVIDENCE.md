@@ -51,6 +51,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - The selection rule is exposed in the UI: use the highest real numeric Qloo affinities when enough scores exist; otherwise preserve Qloo's returned rank order.
 - The UI shows the selected-versus-returned count and marks chosen evidence with stable **Plan signal #N** numbering (up to four selected signals) while leaving unselected results visible as **Additional evidence**.
 - Those same signal numbers are carried into the activity cards and copied session audit trail, so a judge can trace a selected Qloo signal into the plan step it influenced.
+- The live and illustrative result views expose an interpretation limit beside the evidence: Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual, and final activity choices remain with the facilitator.
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
