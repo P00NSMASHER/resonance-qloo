@@ -28,6 +28,7 @@ export class QlooClient {
           'x-api-key': this.apiKey,
           accept: 'application/json',
         },
+        redirect:'error',
         signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch (error) {
