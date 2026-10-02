@@ -51,7 +51,7 @@ Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewe
 
 ## Event quotas and upstream availability
 
-Live Qloo behavior is subject to the event-issued credential, quota, rate limits, and upstream availability. Requests are bounded, rate-limited, cached where safe, and time out rather than retrying indefinitely.
+Live Qloo behavior is subject to the event-issued credential, quota, rate limits, and upstream availability. Requests are bounded, rate-limited, cached where safe, and time out rather than retrying indefinitely. The per-client and aggregate application limiters are in-memory and therefore scoped to one running server process; they are not presented as a distributed quota authority across multiple horizontally scaled instances. The upstream Qloo quota remains the ultimate cross-instance limit.
 
 ## Hosted environment
 
