@@ -5,6 +5,7 @@ import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, anchorTypeUrn, type Anchor
 import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
 import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './lib/recommendationResult';
 import { payloadHasMatchingRequestContext, type RecommendationRequestContext } from './lib/recommendationContext';
+import deploymentContract from '../deployment-contract.json';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -352,7 +353,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  return <main className="page">
+  return <main className="page" data-deployment-contract={deploymentContract.version}>
     <header>
       <div className="brand"><span aria-hidden="true">R</span>Resonance</div>
       <div className={`status ${qlooState === 'ready' ? 'live' : qlooState === 'degraded' ? 'degraded' : 'pending'}`} role="status" aria-live="polite">
