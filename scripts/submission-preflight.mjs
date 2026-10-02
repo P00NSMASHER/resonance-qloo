@@ -246,9 +246,12 @@ try {
 try {
   const reviewToken = await readFile('src/lib/resolutionReviewToken.ts', 'utf8');
   for (const marker of [
+    "createHash('sha256')",
+    "resonance:qloo-review-receipt:v1",
     "createHmac('sha256'",
     'timingSafeEqual',
     'RESOLUTION_REVIEW_TOKEN_TTL_MS = 5 * 60_000',
+    'resolutionReviewSigningKey',
     'requestAnchorKey',
     'qlooEntityIdentity',
     'expiresAt <= now',
@@ -386,7 +389,7 @@ try {
     failures.push('Server review response is missing the normalized request receipt.');
   }
   if (
-    !server.includes('REVIEW_TOKEN_KEY') ||
+    !server.includes('resolutionReviewSigningKey(key)') ||
     !server.includes('createResolutionReviewToken') ||
     !server.includes('verifyResolutionReviewToken') ||
     !server.includes('confirmationVerified')
