@@ -159,6 +159,9 @@ try {
   if (!proof.includes('redactProof')) {
     failures.push('Qloo MCP proof is not using the shared redaction utility.');
   }
+  if (!proof.includes('result.isError') || !proof.includes('tool_reported_error')) {
+    failures.push('Qloo MCP proof is not treating MCP tool-level errors as failed proof.');
+  }
 } catch {}
 
 try {
