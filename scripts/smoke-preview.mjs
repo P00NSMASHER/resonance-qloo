@@ -51,6 +51,12 @@ try {
   requireHeader(page, 'x-frame-options', 'DENY');
   requireHeader(page, 'referrer-policy', 'same-origin');
   requireHeader(page, 'cache-control', 'no-cache');
+  const html = await page.text();
+  const assetMatch = html.match(/(?:src|href)=["']([^"']*\/assets\/[^"']+)["']/i);
+  if (!assetMatch) throw new Error('Built app shell did not reference a hashed production asset.');
+  const asset = await fetch(new URL(assetMatch[1], base));
+  if (asset.status !== 200) throw new Error('Production asset should return 200, got ' + asset.status);
+  requireHeader(asset, 'cache-control', 'public, max-age=31536000, immutable');
 
   const recommend = await fetch(base + '/api/recommend', {
     method: 'POST',
