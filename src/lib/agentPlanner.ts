@@ -14,6 +14,7 @@ export type AgentSession = {
     meanNormalizedScore: number | null;
     evidenceBasis: 'normalized-score' | 'ranked-order';
     selectedAffinityCount: number;
+    returnedAffinityCount: number;
     selectedAffinityLabels: string[];
     resolvedAnchorCount: number;
     categoryHintCount: number;
@@ -67,6 +68,7 @@ export function orchestrateSession(
       meanNormalizedScore,
       evidenceBasis,
       selectedAffinityCount: selected.length,
+      returnedAffinityCount: affinities.length,
       selectedAffinityLabels: selected.map(item => item.label),
       resolvedAnchorCount: resolvedAnchors.length,
       categoryHintCount,
@@ -86,8 +88,8 @@ export function orchestrateSession(
         stage: 'evaluate',
         status: 'ok',
         detail: usingScores
-          ? `Selected ${selected.length} highest-scoring affinities; mean normalized score ${Math.round((meanNormalizedScore ?? 0) * 100)}%.`
-          : `Selected the first ${selected.length} tags from Qloo's affinity-ranked result order. No numeric score was invented because this response did not provide one.`,
+          ? `Selected ${selected.length} highest-scoring affinities from ${affinities.length} returned signals; mean normalized score ${Math.round((meanNormalizedScore ?? 0) * 100)}%.`
+          : `Selected the first ${selected.length} of ${affinities.length} tags from Qloo's affinity-ranked result order. No numeric score was invented because this response did not provide one.`,
       },
       {
         stage: 'compose',
