@@ -150,6 +150,35 @@ describe('session export', () => {
     expect(demo).toContain('[additional example evidence] Classic cinema: Rank #3');
   });
 
+  it('explains sparse selected-signal reuse instead of implying synthetic evidence', () => {
+    const sparse = {
+      ...session,
+      affinities:[
+        {label:'Jazz',score:null,rank:1},
+        {label:'Musicals',score:null,rank:2},
+        {label:'Classic cinema',score:null,rank:3},
+      ],
+      plan:[
+        {title:'Opening cue',duration:'10 min',action:'Play a familiar song.',why:'Qloo-ranked evidence.',anchorName:'Ella Fitzgerald',affinityLabel:'Jazz'},
+        {title:'Story bridge',duration:'10 min',action:'Invite a story.',why:'Related cultural signal.',affinityLabel:'Musicals'},
+        {title:'Shared choice',duration:'15 min',action:'Offer choices.',why:'Preserves agency.',affinityLabel:'Classic cinema'},
+        {title:'Closing ritual',duration:'10 min',action:'Close gently.',why:'Keeps continuity.',affinityLabel:'Classic cinema'},
+      ],
+      evidence:{
+        ...session.evidence,
+        selectedAffinityCount:3,
+        returnedAffinityCount:3,
+        selectedAffinityLabels:['Jazz','Musicals','Classic cinema'],
+      },
+    };
+
+    const live = formatSessionText(sparse, 'live');
+    expect(live).toContain(
+      'Signal reuse: 3 unique selected Qloo signal(s) support 4 activities; the last real selected signal is reused for the closing step instead of inventing synthetic evidence'
+    );
+    expect(live).toContain('Bridge [Qloo signal #3]: Classic cinema');
+  });
+
   it('keeps target session length in live exports', () => {
     expect(formatSessionText(session, 'live')).toContain('Session target: 45 minutes');
     expect(formatSessionText(session, 'demo')).not.toContain('Session target:');
