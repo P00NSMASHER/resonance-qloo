@@ -39,15 +39,14 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   if (!Array.isArray(affinities) || affinities.length < 3 || affinities.length > 8) return false;
   const affinityLabels = new Set<string>();
   const affinityLabelsNormalized = new Set<string>();
-  let previousRank = 0;
-  for (const item of affinities) {
+  for (let index = 0; index < affinities.length; index += 1) {
+    const item = affinities[index];
     if (!isRecord(item) || !isNonEmptyString(item.label)) return false;
     const normalizedLabel = item.label.toLocaleLowerCase('en-US');
     if (affinityLabelsNormalized.has(normalizedLabel)) return false;
     affinityLabels.add(item.label);
     affinityLabelsNormalized.add(normalizedLabel);
-    if (!Number.isInteger(item.rank) || Number(item.rank) <= previousRank) return false;
-    previousRank = Number(item.rank);
+    if (item.rank !== index + 1) return false;
     if (
       item.score !== null &&
       (typeof item.score !== 'number' || !Number.isFinite(item.score) || item.score < 0 || item.score > 1)
@@ -70,6 +69,28 @@ export function hasConsistentRecommendationResult(payload: unknown) {
     selectedLabels.add(label);
   }
 
+  const scoredAffinities = affinities
+    .filter((item): item is Record<string, unknown> & { label:string; score:number; rank:number } =>
+      isRecord(item) &&
+      isNonEmptyString(item.label) &&
+      typeof item.score === 'number' &&
+      Number.isFinite(item.score) &&
+      Number.isInteger(item.rank)
+    )
+    .sort((left,right) => right.score - left.score);
+  const expectedBasis = scoredAffinities.length >= 3 ? 'normalized-score' : 'ranked-order';
+  if (evidence.evidenceBasis !== expectedBasis) return false;
+
+  const expectedSelectedLabels = (
+    expectedBasis === 'normalized-score'
+      ? scoredAffinities
+      : affinities
+  ).slice(0,4).map(item => String((item as Record<string, unknown>).label));
+  if (
+    expectedSelectedLabels.length !== evidence.selectedAffinityLabels.length ||
+    expectedSelectedLabels.some((label,index) => label !== evidence.selectedAffinityLabels[index])
+  ) return false;
+
   if (evidence.meanNormalizedScore !== null) {
     if (
       typeof evidence.meanNormalizedScore !== 'number' ||
@@ -80,6 +101,11 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   }
   if (evidence.evidenceBasis === 'normalized-score' && evidence.meanNormalizedScore === null) return false;
   if (evidence.evidenceBasis === 'ranked-order' && evidence.meanNormalizedScore !== null) return false;
+  if (expectedBasis === 'normalized-score') {
+    const selectedScores = scoredAffinities.slice(0,4).map(item => item.score);
+    const expectedMean = selectedScores.reduce((sum,score) => sum + score, 0) / selectedScores.length;
+    if (Math.abs(Number(evidence.meanNormalizedScore) - expectedMean) > 1e-9) return false;
+  }
 
   if (evidence.resolvedAnchorCount !== resolvedAnchors.length) return false;
   if (!isIntegerBetween(evidence.exactResolutionCount, 0, resolvedAnchors.length)) return false;
@@ -94,22 +120,29 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 
   const plan = payload.plan;
   if (!Array.isArray(plan) || plan.length !== 4) return false;
-  const planLabels = new Set<string>();
-  for (const item of plan) {
+  for (let index = 0; index < plan.length; index += 1) {
+    const item = plan[index];
     if (
       !isRecord(item) ||
       !isNonEmptyString(item.title) ||
       !isNonEmptyString(item.duration) ||
       !isNonEmptyString(item.action) ||
       !isNonEmptyString(item.why) ||
-      !isNonEmptyString(item.affinityLabel) ||
-      !selectedLabels.has(item.affinityLabel)
+      !isNonEmptyString(item.affinityLabel)
     ) return false;
-    if (item.anchorName !== undefined && !isNonEmptyString(item.anchorName)) return false;
-    planLabels.add(item.affinityLabel);
+
+    const expectedLabel = evidence.selectedAffinityLabels[
+      Math.min(index, evidence.selectedAffinityLabels.length - 1)
+    ];
+    if (item.affinityLabel !== expectedLabel) return false;
+
+    const expectedAnchor = isRecord(resolvedAnchors[index]) ? resolvedAnchors[index].name : undefined;
+    if (expectedAnchor !== undefined) {
+      if (item.anchorName !== expectedAnchor) return false;
+    } else if (item.anchorName !== undefined) {
+      return false;
+    }
   }
-  if (planLabels.size !== selectedLabels.size) return false;
-  for (const label of selectedLabels) if (!planLabels.has(label)) return false;
 
   const trace = payload.agentTrace;
   if (!Array.isArray(trace) || trace.length !== STAGES.length) return false;
