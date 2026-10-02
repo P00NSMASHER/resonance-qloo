@@ -14,6 +14,8 @@ const requiredFiles = [
   'scripts/qloo-mcp-proof.mjs',
   'scripts/proof-redaction.mjs',
   'scripts/test-proof-redaction.mjs',
+  'scripts/proof-environment.mjs',
+  'scripts/test-proof-environment.mjs',
   'scripts/test-evidence-capture.mjs',
   'scripts/test-ui-state-safety.mjs',
   'scripts/test-deployment-checker.mjs',
@@ -163,6 +165,24 @@ try {
   }
   if (!proof.includes('result.isError') || !proof.includes('tool_reported_error')) {
     failures.push('Qloo MCP proof is not treating MCP tool-level errors as failed proof.');
+  }
+  if (!proof.includes('buildQlooProofEnv')) {
+    failures.push('Qloo MCP proof is not using the minimal subprocess environment builder.');
+  }
+  if (proof.includes('env: process.env')) {
+    failures.push('Qloo MCP proof is exposing the full parent environment to the subprocess.');
+  }
+} catch {}
+
+try {
+  const proofEnvironment = await readFile('scripts/proof-environment.mjs', 'utf8');
+  if (!proofEnvironment.includes('QLOO_API_KEY')) {
+    failures.push('Proof subprocess environment is missing the event Qloo credential.');
+  }
+  for (const forbidden of ['OPENAI_API_KEY','GITHUB_TOKEN','AWS_SECRET_ACCESS_KEY','DATABASE_URL','QLOO_API_BASE_URL']) {
+    if (proofEnvironment.includes(`'${forbidden}'`) || proofEnvironment.includes(`"${forbidden}"`)) {
+      failures.push(`Proof subprocess environment allowlist contains forbidden variable: ${forbidden}`);
+    }
   }
 } catch {}
 
