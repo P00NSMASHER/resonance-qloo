@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createResolutionReviewToken,
+  resolutionReviewSigningKey,
   verifyResolutionReviewToken,
 } from './resolutionReviewToken';
 
@@ -18,6 +19,17 @@ const reviewedId = '9A25B172-4795-43E4-B222-3B550DC05AAA';
 const now = 1_000_000;
 
 describe('resolution review token', () => {
+  it('verifies across server instances sharing the same Qloo credential', () => {
+    const instanceAKey = resolutionReviewSigningKey('event-credential');
+    const instanceBKey = resolutionReviewSigningKey('event-credential');
+    const rotatedKey = resolutionReviewSigningKey('rotated-event-credential');
+    const token = createResolutionReviewToken(instanceAKey, baseContext, [reviewedId], now);
+
+    expect(verifyResolutionReviewToken(instanceBKey, baseContext, [reviewedId], token, now + 1000)).toBe(true);
+    expect(verifyResolutionReviewToken(rotatedKey, baseContext, [reviewedId], token, now + 1000)).toBe(false);
+  });
+
+
   it('accepts the exact reviewed context and entity set before expiry', () => {
     const token = createResolutionReviewToken(signingKey, baseContext, [reviewedId], now);
     expect(verifyResolutionReviewToken(signingKey, baseContext, [reviewedId], token, now + 1000)).toBe(true);
