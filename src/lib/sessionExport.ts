@@ -58,7 +58,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       session.evidence?.resolvedAnchorCount !== undefined ||
       session.evidence?.categoryHintCount !== undefined
     )
-      ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.exactResolutionCount ?? session.resolvedAnchors.filter(item => item.resolutionMatch === 'exact-name').length} exact-name match(es); ${session.evidence?.topResultResolutionCount ?? session.resolvedAnchors.filter(item => item.resolutionMatch === 'top-result').length} Qloo top-result match(es) to review; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
+      ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.exactResolutionCount ?? session.resolvedAnchors.filter(item => item.resolutionMatch === 'exact-name').length} exact-name match(es); ${session.evidence?.topResultResolutionCount ?? session.resolvedAnchors.filter(item => item.resolutionMatch === 'top-result').length} Qloo top-result match(es) ${source === 'live' ? 'explicitly confirmed before taste analysis' : 'to review'}; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
       : []),
     ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined
       ? [`Selection evidence: ${session.evidence.selectedAffinityCount} of ${session.evidence.returnedAffinityCount ?? session.affinities.length} affinity signal(s) selected for the plan`]
@@ -86,7 +86,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
         ? `${item.query} -> ${item.name}`
         : item.name;
       const match = item.resolutionMatch === 'top-result'
-        ? ' {Resolution: Qloo top result — review}'
+        ? source === 'live'
+          ? ' {Resolution: Qloo top result — explicitly confirmed}'
+          : ' {Resolution: Qloo top result — review}'
         : item.resolutionMatch === 'exact-name'
           ? ' {Resolution: exact name}'
           : '';
