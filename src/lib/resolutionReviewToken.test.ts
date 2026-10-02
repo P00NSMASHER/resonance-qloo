@@ -19,6 +19,20 @@ const reviewedId = '9A25B172-4795-43E4-B222-3B550DC05AAA';
 const now = 1_000_000;
 
 describe('resolution review token', () => {
+  it('derives a stable instance-independent signing key from the credential and API origin', () => {
+    const first = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com');
+    const second = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com');
+    expect(Buffer.from(first).equals(Buffer.from(second))).toBe(true);
+  });
+
+  it('rotates the signing key when the credential or Qloo origin changes', () => {
+    const base = resolutionReviewSigningKey('event-key', 'https://hackathon.api.qloo.com');
+    const rotatedCredential = resolutionReviewSigningKey('new-event-key', 'https://hackathon.api.qloo.com');
+    const differentOrigin = resolutionReviewSigningKey('event-key', 'https://other.example');
+    expect(Buffer.from(base).equals(Buffer.from(rotatedCredential))).toBe(false);
+    expect(Buffer.from(base).equals(Buffer.from(differentOrigin))).toBe(false);
+  });
+
   it('verifies across server instances sharing the same Qloo credential', () => {
     const instanceAKey = resolutionReviewSigningKey('event-credential');
     const instanceBKey = resolutionReviewSigningKey('event-credential');
