@@ -15,6 +15,8 @@ describe('Qloo base URL configuration', () => {
       .toThrow('trusted Qloo API origin');
     expect(() => resolveQlooBaseUrl('https://evil.qloo.com'))
       .toThrow('trusted Qloo API origin');
+    expect(() => resolveQlooBaseUrl('https://hackathon.api.qloo.com:8443'))
+      .toThrow('standard HTTPS port');
   });
 
   it('allows loopback HTTPS only behind the explicit local-mock flag', () => {
