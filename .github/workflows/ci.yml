@@ -35,6 +35,8 @@ jobs:
         run: node --check scripts/check-deployment.mjs
       - name: Qloo proof script syntax
         run: node --check scripts/qloo-mcp-proof.mjs
+      - name: Live evidence capture syntax
+        run: node --check scripts/capture-live-evidence.mjs
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
       - name: Public deployment parity (advisory)
