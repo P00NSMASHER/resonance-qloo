@@ -40,6 +40,7 @@ On a machine with Node.js 22.19+:
 
 ```bash
 npm install --global @qloo/qloo-harness
+qloo --version # must be 0.1.26 or newer
 qloo setup --qloo
 npm install
 npm run qloo:proof -- "classic jazz vocals"
