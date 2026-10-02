@@ -43,6 +43,7 @@ Safety/reliability controls:
 - 8-second upstream timeout;
 - per-client and global live-request ceilings;
 - bounded TTL caches for repeated Qloo searches/taste analysis;
+- in-flight coalescing for identical cache keys, so simultaneous judges do not duplicate the same Qloo Search, Insights, or connectivity-probe call before the first response fills the cache;
 - cached credential verification so page loads do not repeatedly burn quota;
 - explicit user confirmation before any non-exact Qloo top-result entity is used in taste analysis;
 - confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result must be reviewed again;
