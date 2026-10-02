@@ -15,6 +15,7 @@
     "submission:preflight": "node scripts/submission-preflight.mjs",
     "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline",
     "deployment:check": "node scripts/check-deployment.mjs",
+    "deployment:check:selftest": "node scripts/test-deployment-checker.mjs",
     "evidence:capture": "node scripts/capture-live-evidence.mjs"
   },
   "dependencies": {
