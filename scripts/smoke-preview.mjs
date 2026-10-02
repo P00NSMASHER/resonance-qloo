@@ -473,9 +473,9 @@ try {
     const healthyRefresh = await healthyRefreshResponse.json();
     if (
       healthyRefresh.qlooStatus !== 'ready' ||
-      mockQloo.probeCalls() !== probesAfterReady
+      mockQloo.probeCalls() !== probesAfterReady + 1
     ) {
-      throw new Error('Manual refresh should not discard or re-probe a healthy cached Qloo state.');
+      throw new Error('Explicit manual refresh should re-probe even a previously healthy cached Qloo state.');
     }
 
     await stopChild(retryChild);
