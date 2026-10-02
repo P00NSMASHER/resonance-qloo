@@ -19,9 +19,9 @@ function validResult() {
       },
     ],
     affinities:[
-      { label:'Jazz', score:null, rank:1 },
-      { label:'Musicals', score:null, rank:2 },
-      { label:'Classic cinema', score:null, rank:3 },
+      { label:'Jazz', score:null as number | null, rank:1 },
+      { label:'Musicals', score:null as number | null, rank:2 },
+      { label:'Classic cinema', score:null as number | null, rank:3 },
     ],
     plan:[
       { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz' },
