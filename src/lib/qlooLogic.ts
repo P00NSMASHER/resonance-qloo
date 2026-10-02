@@ -56,7 +56,14 @@ function looksLikeEntityId(value: string) {
 
 export type ResolvedAnchor = { query: string; name: string; entityId: string; requestedTypeUrn?: string };
 export type Affinity = { label: string; score: number | null; rank: number };
-export type PlanItem = { title: string; duration: string; action: string; why: string };
+export type PlanItem = {
+  title: string;
+  duration: string;
+  action: string;
+  why: string;
+  anchorName?: string;
+  affinityLabel: string;
+};
 export type QlooExplainabilitySummary = {
   resultCount: number;
   aggregateAvailable: boolean;
@@ -181,12 +188,15 @@ export function planFromTags(
           duration:durations[0],
           action:`Start with “${firstAnchor}” as the familiar cue, then branch toward “${a}.” ${energyLine}.`,
           why:`The session starts from the supplied favorite “${firstAnchor}” and uses Qloo-ranked “${a}” as adjacent cultural evidence.`,
+          anchorName:firstAnchor,
+          affinityLabel:a,
         }
       : {
           title:'Opening cue',
           duration:durations[0],
           action:`Start with music, imagery, or a short prompt shaped around “${a}.” ${energyLine}.`,
           why:`Qloo surfaced “${a}” near the top of the cross-category evidence from the cultural anchors.`,
+          affinityLabel:a,
         },
     secondAnchor
       ? {
@@ -194,12 +204,15 @@ export function planFromTags(
           duration:durations[1],
           action:`Bridge from “${secondAnchor}” into “${b}” with a film scene, photo, lyric, or memory prompt. Keep it ${settingLine}.`,
           why:`“${secondAnchor}” is a supplied favorite; Qloo-ranked “${b}” provides the adjacent cultural bridge instead of a generic nostalgia prompt.`,
+          anchorName:secondAnchor,
+          affinityLabel:b,
         }
       : {
           title:'Story bridge',
           duration:durations[1],
           action:`Use “${b}” as the bridge into a film scene, photo, lyric, or memory prompt. Keep it ${settingLine}.`,
           why:`“${b}” gives the agent a Qloo-grounded next step instead of a generic nostalgia prompt.`,
+          affinityLabel:b,
         },
     thirdAnchor
       ? {
@@ -207,12 +220,15 @@ export function planFromTags(
           duration:durations[2],
           action:`Offer two or three simple choices that connect “${thirdAnchor}” with “${c},” and let participants steer the next activity.`,
           why:`The known favorite “${thirdAnchor}” stays visible while “${c}” extends it into a Qloo-ranked adjacent domain.`,
+          anchorName:thirdAnchor,
+          affinityLabel:c,
         }
       : {
           title:'Shared choice',
           duration:durations[2],
           action:`Offer two or three simple choices connected to “${c}” and let participants steer the next activity.`,
           why:`“${c}” extends the known tastes into a related domain while preserving participant choice.`,
+          affinityLabel:c,
         },
     fourthAnchor
       ? {
@@ -220,12 +236,15 @@ export function planFromTags(
           duration:durations[3],
           action:`Close by reconnecting “${fourthAnchor}” with “${d}” through a snack, sensory cue, or conversation card, then ask what should return next time.`,
           why:`The supplied favorite “${fourthAnchor}” remains visible in the final step while Qloo-ranked “${d}” provides the adjacent cultural signal.`,
+          anchorName:fourthAnchor,
+          affinityLabel:d,
         }
       : {
           title:'Closing ritual',
           duration:durations[3],
           action:`Close with a snack, sensory cue, or conversation card inspired by “${d},” then ask what should return next time.`,
           why:`“${d}” provides another Qloo-ranked adjacent signal so the plan ends in the same cultural neighborhood it started in.`,
+          affinityLabel:d,
         }
   ];
 }
