@@ -118,7 +118,12 @@ export function extractResolved(query: string, payload: unknown): ResolvedAnchor
     const name = firstString(rec, ['name', 'title', 'label']);
     if (candidate && looksLikeEntityId(candidate)) {
       const resolvedName = name || query;
-      return { query, name: resolvedName, entityId: candidate, resolutionMatch: resolutionMatch(query, resolvedName) };
+      return {
+        query,
+        name: resolvedName,
+        entityId: candidate,
+        resolutionMatch: name ? resolutionMatch(query, resolvedName) : 'top-result',
+      };
     }
 
     for (const value of Object.values(rec)) {
@@ -126,12 +131,13 @@ export function extractResolved(query: string, payload: unknown): ResolvedAnchor
       const nested = value as AnyObject;
       const nestedId = firstString(nested, ['entity_id', 'entityId', 'id', 'urn']);
       if (nestedId && looksLikeEntityId(nestedId)) {
-        const resolvedName = firstString(nested, ['name', 'title', 'label']) || name || query;
+        const nestedName = firstString(nested, ['name', 'title', 'label']) || name;
+        const resolvedName = nestedName || query;
         return {
           query,
           name: resolvedName,
           entityId: nestedId,
-          resolutionMatch: resolutionMatch(query, resolvedName),
+          resolutionMatch: nestedName ? resolutionMatch(query, resolvedName) : 'top-result',
         };
       }
     }
