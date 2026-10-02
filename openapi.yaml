@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.13.0
+  version: 0.14.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -51,6 +51,11 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
+        '409':
+          description: One or more non-exact Qloo entity matches must be explicitly confirmed before taste analysis.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ResolutionReviewRequired' }
         '413':
           description: Request body exceeds the bounded input size
           content:
@@ -107,6 +112,12 @@ components:
           enum: [30, 45, 60]
           default: 45
           description: Requested total session length in minutes.
+        confirmedEntityIds:
+          type: array
+          maxItems: 4
+          uniqueItems: true
+          items: { type: string, minLength: 1, maxLength: 200 }
+          description: Qloo entity IDs explicitly confirmed by the user after a resolution-review response.
     AnchorInput:
       type: object
       required: [query]
@@ -264,6 +275,21 @@ components:
           items: { $ref: '#/components/schemas/AgentTraceStep' }
         evidence: { $ref: '#/components/schemas/Evidence' }
         provenance: { $ref: '#/components/schemas/Provenance' }
+    ResolutionReviewRequired:
+      type: object
+      required: [error, code, resolvedAnchors]
+      properties:
+        error:
+          type: string
+          const: Review Qloo entity matches before continuing.
+        code:
+          type: string
+          const: QLOO_RESOLUTION_REVIEW_REQUIRED
+        resolvedAnchors:
+          type: array
+          minItems: 2
+          maxItems: 4
+          items: { $ref: '#/components/schemas/ResolvedAnchor' }
     Error:
       type: object
       required: [error]
