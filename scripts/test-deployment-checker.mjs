@@ -1,11 +1,16 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const EXPECTED_QLOO_API_ORIGIN = 'https://hackathon.api.qloo.com';
+const EXPECTED_CONTRACT_VERSION = JSON.parse(
+  await readFile(new URL('../deployment-contract.json', import.meta.url), 'utf8'),
+).version;
 const checkerPath = fileURLToPath(new URL('./check-deployment.mjs', import.meta.url));
 const markers = [
+  EXPECTED_CONTRACT_VERSION,
   'How Qloo changed this plan',
   'Selection rule',
   'Request receipt',
@@ -58,6 +63,7 @@ async function withMockDeployment(mode, fn) {
       res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
       res.end(JSON.stringify({
         service:'resonance',
+        contractVersion: mode === 'wrong-contract' ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
         qlooApiOrigin:EXPECTED_QLOO_API_ORIGIN,
         mode:'preview',
         qlooStatus:'preview',
@@ -103,6 +109,16 @@ async function withMockDeployment(mode, fn) {
 const current = await withMockDeployment('current', runChecker);
 if (current.code !== 0 || !current.stdout.includes('Public deployment frontend + backend parity passed.')) {
   throw new Error(`Expected current deployment to pass. stdout=${current.stdout} stderr=${current.stderr}`);
+}
+
+const wrongContract = await withMockDeployment('wrong-contract', runChecker);
+const wrongContractOutput = wrongContract.stdout + '\n' + wrongContract.stderr;
+if (
+  wrongContract.code === 0 ||
+  !wrongContractOutput.includes('Public backend contract version') ||
+  !wrongContractOutput.includes(EXPECTED_CONTRACT_VERSION)
+) {
+  throw new Error(`Expected wrong deployment contract to fail clearly. stdout=${wrongContract.stdout} stderr=${wrongContract.stderr}`);
 }
 
 const staleBackend = await withMockDeployment('html-status', runChecker);
