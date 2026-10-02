@@ -149,7 +149,7 @@ export function extractAffinities(payload: unknown): Affinity[] {
   const rows = qlooTagRows(payload);
   const items: Affinity[] = [];
 
-  for (const row of rows) {
+  for (const [rowIndex, row] of rows.entries()) {
     if (!row || typeof row !== 'object') continue;
     const rec = row as AnyObject;
     const label = firstString(rec, ['name', 'label', 'title', 'tag']);
@@ -158,7 +158,7 @@ export function extractAffinities(payload: unknown): Affinity[] {
     items.push({
       label,
       score: affinityScore(rec),
-      rank: items.length + 1,
+      rank: rowIndex + 1,
     });
     if (items.length >= 8) break;
   }
