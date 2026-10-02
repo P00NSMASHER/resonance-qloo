@@ -40,6 +40,10 @@ The application code also follows current public Qloo API documentation:
 - Taste analysis requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields.
 - Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
 - When Qloo supplies ordered-but-unscored tags, the agent records `ranked-order` as its evidence basis.
+- The service retains up to eight returned taste signals for inspection while selecting at most four to drive the four-step session.
+- The selection rule is exposed in the UI: use the highest real numeric Qloo affinities when enough scores exist; otherwise preserve Qloo's returned rank order.
+- The UI shows the selected-versus-returned count and marks the chosen evidence as **Plan signal #1–#4** while leaving unselected results visible as **Additional evidence**.
+- Those same signal numbers are carried into the activity cards and copied session audit trail, so a judge can trace a selected Qloo signal into the plan step it influenced.
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
@@ -51,9 +55,11 @@ The final evidence block will record:
 - a redacted request;
 - the resolved entity/tag choice;
 - the returned status and summary;
-- the small subset of results used by the product;
+- the full returned taste-signal subset retained for inspection and the exact numbered signals selected for the plan;
+- the selected-versus-returned signal count;
 - whether the evidence used Qloo numeric scores or ranked result order;
 - how many taste results carried Qloo-native explainability metadata and whether aggregate explainability was present;
+- the numbered signal-to-activity mapping used by the resulting session plan;
 - why that evidence was sufficient for the resulting session plan.
 
 No claim about a specific live Qloo result should be treated as verified until this section is replaced with captured event evidence.
