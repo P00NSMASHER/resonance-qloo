@@ -32,6 +32,7 @@ describe('session export', () => {
       resolvedAnchorCount:2,
       categoryHintCount:2,
       selectedAffinityCount:2,
+      returnedAffinityCount:3,
       selectedAffinityLabels:['Jazz','Musicals'],
       sessionDurationMinutes:45,
       energy:'social',
@@ -118,6 +119,16 @@ describe('session export', () => {
       'Selection evidence: 2 of 3 affinity signal(s) selected for the plan'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Selection evidence:');
+  });
+
+  it('uses the first-class returned signal count in live selection evidence', () => {
+    const withExplicitReturnedCount = {
+      ...session,
+      evidence:{ ...session.evidence, returnedAffinityCount:7 },
+    };
+    expect(formatSessionText(withExplicitReturnedCount, 'live')).toContain(
+      'Selection evidence: 2 of 7 affinity signal(s) selected for the plan'
+    );
   });
 
   it('keeps numbered selected Qloo labels in live exports', () => {
