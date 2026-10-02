@@ -240,6 +240,9 @@ describe('recommendation service', () => {
 
     expect(result.evidence.explainabilityResultCount).toBe(0);
     expect(result.evidence.aggregateExplainabilityAvailable).toBe(false);
+    expect(result.evidence.selectedAffinityCount).toBe(3);
+    expect(result.evidence.returnedAffinityCount).toBe(3);
+    expect(result.plan[3].affinityLabel).toBe('Classic cinema');
     expect(result.agentTrace[3].status).toBe('warning');
     expect(result.agentTrace[3].detail).toContain('did not include attribution metadata');
   });
