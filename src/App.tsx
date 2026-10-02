@@ -100,6 +100,7 @@ const demo: Result = {
 };
 
 const anchorExamples = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place', 'Another favorite'];
+const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
 export default function App() {
@@ -139,7 +140,7 @@ export default function App() {
 
   useEffect(() => {
     const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 5000);
+    const timer = window.setTimeout(() => controller.abort(), STATUS_REQUEST_TIMEOUT_MS);
 
     fetch('/api/status', { signal: controller.signal })
       .then(r => {
