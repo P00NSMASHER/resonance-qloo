@@ -54,6 +54,35 @@ try {
   }
 } catch {}
 
+try {
+  const app = await readFile('src/App.tsx', 'utf8');
+  if (!app.includes('className="signalCount"')) {
+    failures.push('Results UI is missing selected-versus-returned signal counts.');
+  }
+  if (!app.includes('Selection rule')) {
+    failures.push('Results UI is missing the Qloo signal selection rule.');
+  }
+  if (!app.includes('Plan signal #')) {
+    failures.push('Results UI is missing numbered selected Qloo signals.');
+  }
+  if (!app.includes('Additional evidence')) {
+    failures.push('Results UI no longer distinguishes supporting Qloo evidence.');
+  }
+} catch {}
+
+try {
+  const sessionExport = await readFile('src/lib/sessionExport.ts', 'utf8');
+  if (!sessionExport.includes('selected Qloo signal #')) {
+    failures.push('Session export is missing numbered selected Qloo signals.');
+  }
+  if (!sessionExport.includes('additional Qloo evidence')) {
+    failures.push('Session export no longer distinguishes additional Qloo evidence.');
+  }
+  if (!sessionExport.includes('Selection evidence:')) {
+    failures.push('Session export is missing selected-versus-returned evidence counts.');
+  }
+} catch {}
+
 if (!process.argv.includes('--offline')) {
   try {
     const response = await fetch(LIVE_URL, { redirect:'follow', signal:AbortSignal.timeout(8000) });
