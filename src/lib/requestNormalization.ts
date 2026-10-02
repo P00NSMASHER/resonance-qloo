@@ -141,5 +141,12 @@ export function normalizeRecommendationRequest(body: Record<string, unknown>): N
     ? body.reviewToken.trim()
     : undefined;
 
-  return { anchors, energy, setting, durationMinutes, confirmedEntityIds, reviewToken };
+  return {
+    anchors,
+    energy,
+    setting,
+    durationMinutes,
+    confirmedEntityIds,
+    ...(reviewToken ? { reviewToken } : {}),
+  };
 }
