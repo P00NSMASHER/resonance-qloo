@@ -7,6 +7,7 @@ import { join } from 'node:path';
 
 const PREVIEW_PORT = 8790;
 const LIVE_PORT = 8791;
+const RETRY_PORT = 8792;
 const HACKATHON_ORIGIN = 'https://hackathon.api.qloo.com';
 const UUID_A = 'FCE8B172-4795-43E4-B222-3B550DC05FD9';
 const UUID_B = '9A25B172-4795-43E4-B222-3B550DC05AAA';
@@ -81,6 +82,8 @@ async function createTlsFixture() {
 }
 
 async function startMockQloo(tls) {
+  let probeReady = true;
+  let probeCalls = 0;
   let searchCalls = 0;
   let insightCalls = 0;
   const server = createHttpsServer({ key:tls.key, cert:tls.cert }, (req, res) => {
@@ -99,6 +102,11 @@ async function startMockQloo(tls) {
     }
 
     if (url.pathname === '/v2/tags/types') {
+      probeCalls += 1;
+      if (!probeReady) {
+        send(503, { error:'mock probe unavailable' });
+        return;
+      }
       send(200, { results:{ types:[] } });
       return;
     }
@@ -141,6 +149,8 @@ async function startMockQloo(tls) {
   return {
     server,
     baseUrl:`https://127.0.0.1:${address.port}`,
+    setProbeReady:(value) => { probeReady = Boolean(value); },
+    probeCalls:() => probeCalls,
     searchCalls:() => searchCalls,
     insightCalls:() => insightCalls,
   };
@@ -154,6 +164,7 @@ async function stopServer(server) {
 
 let previewChild;
 let liveChild;
+let retryChild;
 let mockQloo;
 let tls;
 
@@ -316,6 +327,56 @@ try {
     if (confirmedBody.plan?.[3]?.affinityLabel !== 'Classic cinema') {
       throw new Error('Three-signal closing step should reuse the last real selected signal.');
     }
+
+    await stopChild(liveChild);
+    liveChild = null;
+
+    mockQloo.setProbeReady(false);
+    const retryServer = spawnResonance(RETRY_PORT, {
+      QLOO_API_KEY:'smoke-key',
+      QLOO_API_BASE_URL:mockQloo.baseUrl,
+      QLOO_ALLOW_LOCAL_MOCK:'1',
+      NODE_TLS_REJECT_UNAUTHORIZED:'0',
+    });
+    retryChild = retryServer.child;
+    const retryBase = `http://127.0.0.1:${RETRY_PORT}`;
+    const degradedStatus = await waitForServer(retryBase, retryServer.getStderr);
+    if (
+      degradedStatus.qlooConnected !== false ||
+      degradedStatus.qlooStatus !== 'degraded' ||
+      degradedStatus.mode !== 'preview'
+    ) {
+      throw new Error('Expected cached degraded status before manual retry: ' + JSON.stringify(degradedStatus));
+    }
+    const probesAfterDegraded = mockQloo.probeCalls();
+
+    mockQloo.setProbeReady(true);
+    const cachedDegradedResponse = await fetch(retryBase + '/api/status');
+    const cachedDegraded = await cachedDegradedResponse.json();
+    if (cachedDegraded.qlooStatus !== 'degraded' || mockQloo.probeCalls() !== probesAfterDegraded) {
+      throw new Error('Ordinary status read should preserve the cached degraded probe before explicit retry.');
+    }
+
+    const refreshedResponse = await fetch(retryBase + '/api/status?refresh=1');
+    const refreshed = await refreshedResponse.json();
+    if (
+      refreshed.qlooConnected !== true ||
+      refreshed.qlooStatus !== 'ready' ||
+      refreshed.mode !== 'live' ||
+      mockQloo.probeCalls() !== probesAfterDegraded + 1
+    ) {
+      throw new Error('Manual status refresh did not re-probe Qloo and recover: ' + JSON.stringify(refreshed));
+    }
+
+    const probesAfterReady = mockQloo.probeCalls();
+    const healthyRefreshResponse = await fetch(retryBase + '/api/status?refresh=1');
+    const healthyRefresh = await healthyRefreshResponse.json();
+    if (
+      healthyRefresh.qlooStatus !== 'ready' ||
+      mockQloo.probeCalls() !== probesAfterReady
+    ) {
+      throw new Error('Manual refresh should not discard or re-probe a healthy cached Qloo state.');
+    }
   } else {
     console.warn('OpenSSL unavailable; skipped local HTTPS Qloo review-handshake smoke.');
   }
@@ -324,6 +385,7 @@ try {
 } finally {
   await stopChild(previewChild);
   await stopChild(liveChild);
+  await stopChild(retryChild);
   await stopServer(mockQloo?.server);
   if (tls?.directory) {
     await rm(tls.directory, { recursive:true, force:true });
