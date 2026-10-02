@@ -21,6 +21,8 @@ const requiredFiles = [
   'scripts/test-deployment-checker.mjs',
   'src/lib/clientIdentity.ts',
   'src/lib/clientIdentity.test.ts',
+  'src/lib/resolutionReviewToken.ts',
+  'src/lib/resolutionReviewToken.test.ts',
   'src/App.tsx',
   'src/lib/recommendationResult.ts',
   'src/lib/liveProvenance.ts',
@@ -133,6 +135,9 @@ try {
   if (!openapi.includes('confirmedEntityIds') || !openapi.includes('QLOO_RESOLUTION_REVIEW_REQUIRED')) {
     failures.push('OpenAPI contract is missing the pre-taste entity-confirmation handshake.');
   }
+  if (!openapi.includes('reviewToken') || !openapi.includes('expires after five minutes')) {
+    failures.push('OpenAPI contract is missing the request-bound expiring Qloo review receipt.');
+  }
   if (!openapi.includes('RequestContext:') || !openapi.includes('requestContext:')) {
     failures.push('OpenAPI contract is missing the normalized request-context receipt.');
   }
@@ -239,6 +244,22 @@ try {
 } catch {}
 
 try {
+  const reviewToken = await readFile('src/lib/resolutionReviewToken.ts', 'utf8');
+  for (const marker of [
+    "createHmac('sha256'",
+    'timingSafeEqual',
+    'RESOLUTION_REVIEW_TOKEN_TTL_MS = 5 * 60_000',
+    'requestAnchorKey',
+    'qlooEntityIdentity',
+    'expiresAt <= now',
+  ]) {
+    if (!reviewToken.includes(marker)) {
+      failures.push(`Qloo review receipt helper is missing integrity rule: ${marker}`);
+    }
+  }
+} catch {}
+
+try {
   const app = await readFile('src/App.tsx', 'utf8');
   if (!app.includes('hasConsistentRecommendationResult')) {
     failures.push('Results UI is not validating live recommendation evidence consistency before rendering.');
@@ -266,6 +287,9 @@ try {
   }
   if (!app.includes('confirmedEntityIds')) {
     failures.push('Results UI is not sending explicitly confirmed Qloo entity IDs.');
+  }
+  if (!app.includes('resolutionReviewToken') || !app.includes('reviewToken:reviewBody.reviewToken') && !app.includes('{ reviewToken }')) {
+    failures.push('Results UI is not returning the server-issued Qloo review receipt with confirmation.');
   }
   if (!app.includes('payloadHasMatchingRequestContext') || !app.includes('Qloo review response did not match the submitted session context')) {
     failures.push('Results UI is not binding review responses to the normalized submitted request receipt.');
@@ -361,6 +385,14 @@ try {
   if (!server.includes('requestContext: error.requestContext')) {
     failures.push('Server review response is missing the normalized request receipt.');
   }
+  if (
+    !server.includes('REVIEW_TOKEN_KEY') ||
+    !server.includes('createResolutionReviewToken') ||
+    !server.includes('verifyResolutionReviewToken') ||
+    !server.includes('confirmationVerified')
+  ) {
+    failures.push('Server is missing request-bound Qloo review receipt minting/verification.');
+  }
   if (!server.includes('qlooSearchCacheKey') || !server.includes('qlooTasteCacheKey')) {
     failures.push('Server is not using canonical Qloo request cache identities.');
   }
@@ -428,6 +460,7 @@ try {
     'ALLOWED_SETTING.has(body.setting)',
     'ALLOWED_DURATION_MINUTES.has(body.durationMinutes)',
     'confirmedEntityIds must contain at most 4',
+    'reviewToken must contain 1–128 characters',
   ]) {
     if (!requestNormalization.includes(marker)) {
       failures.push(`Public recommendation request validation is missing contract rule: ${marker}`);
@@ -478,6 +511,9 @@ try {
   if (!recommendationService.includes('confirmedEntityIds')) {
     failures.push('Recommendation service no longer checks explicit confirmed Qloo entity IDs.');
   }
+  if (!recommendationService.includes('confirmationVerified')) {
+    failures.push('Recommendation service allows Qloo ID confirmation without a verified review receipt.');
+  }
   if (!recommendationService.includes('recommendationRequestContext') || !recommendationService.includes('requestContext,')) {
     failures.push('Recommendation service is missing the normalized request receipt.');
   }
@@ -493,6 +529,9 @@ try {
   }
   if (!capture.includes('confirmation_receipt')) {
     failures.push('Live evidence capture is missing the explicit Qloo confirmation receipt.');
+  }
+  if (!capture.includes('RESONANCE_REVIEW_TOKEN') || !capture.includes('reviewTokenUsed')) {
+    failures.push('Live evidence capture is not requiring/recording use of the Qloo review receipt.');
   }
   if (!capture.includes('unconfirmedTopResults')) {
     failures.push('Live evidence capture is not rejecting unconfirmed top-result matches.');
