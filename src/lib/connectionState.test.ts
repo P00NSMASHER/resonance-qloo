@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeQlooState, qlooPresentation } from './connectionState';
+import { normalizeQlooState, qlooPresentation, qlooStateAfterRecommendationFailure } from './connectionState';
 
 describe('Qloo connection state', () => {
   it('only marks live mode ready after verified connectivity', () => {
@@ -29,6 +29,16 @@ describe('Qloo connection state', () => {
   it('does not confuse a configured-but-broken key with live connectivity', () => {
     expect(normalizeQlooState({ qlooConfigured:true, qlooConnected:false, qlooStatus:'degraded' })).toBe('degraded');
     expect(qlooPresentation('degraded').liveReady).toBe(false);
+  });
+
+  it('downgrades only upstream Qloo recommendation failures', () => {
+    expect(qlooStateAfterRecommendationFailure(429, 'Qloo rate limit reached. Please try again later.')).toBe('rate-limited');
+    expect(qlooStateAfterRecommendationFailure(502, 'Qloo search request failed (500).')).toBe('degraded');
+    expect(qlooStateAfterRecommendationFailure(504, 'Qloo took too long to respond. Please try again.')).toBe('degraded');
+
+    expect(qlooStateAfterRecommendationFailure(429, 'Too many live Qloo requests. Try again in 10s.')).toBeNull();
+    expect(qlooStateAfterRecommendationFailure(422, 'Qloo returned too little reliable evidence.')).toBeNull();
+    expect(qlooStateAfterRecommendationFailure(400, 'Bad request')).toBeNull();
   });
 
   it('distinguishes rate limiting from a missing credential', () => {
