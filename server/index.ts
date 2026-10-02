@@ -69,6 +69,10 @@ function requestClientKey(req: import('node:http').IncomingMessage) {
     || 'unknown';
 }
 
+function qlooCredentialFingerprint(key: string) {
+  return createHash('sha256').update(`${QLOO_BASE_URL}\0${key}`).digest('hex').slice(0, 16);
+}
+
 async function handleStatus(
   req: import('node:http').IncomingMessage,
   res: import('node:http').ServerResponse,
@@ -86,7 +90,7 @@ async function handleStatus(
     });
   }
 
-  const keyFingerprint = createHash('sha256').update(`${QLOO_BASE_URL}\0${key}`).digest('hex').slice(0, 16);
+  const keyFingerprint = qlooCredentialFingerprint(key);
 
   if (forceRefresh) {
     const cachedStatus = qlooProbeCache.get(keyFingerprint);
@@ -158,13 +162,14 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
 
   try {
     const qloo = new QlooClient(key, fetch, QLOO_BASE_URL);
+    const credentialFingerprint = qlooCredentialFingerprint(key);
     const gateway = {
       search: (query: string, typeUrn?: string) => {
-        const normalized = `${QLOO_BASE_URL}|${typeUrn ?? 'any'}|${query.toLocaleLowerCase('en-US')}`;
+        const normalized = `${credentialFingerprint}|${typeUrn ?? 'any'}|${query.toLocaleLowerCase('en-US')}`;
         return searchCache.getOrLoad(normalized, () => qloo.search(query, typeUrn));
       },
       tasteAnalysis: (entityIds: string[]) => {
-        const tasteKey = `${QLOO_BASE_URL}|${[...entityIds].sort().join(',')}`;
+        const tasteKey = `${credentialFingerprint}|${[...entityIds].sort().join(',')}`;
         return tasteCache.getOrLoad(tasteKey, () => qloo.tasteAnalysis(entityIds));
       },
     };
