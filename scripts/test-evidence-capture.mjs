@@ -98,6 +98,7 @@ const server = createServer(async (req, res) => {
       send(409, {
         error:'Review Qloo entity matches before continuing.',
         code:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+        contractVersion:responseMode === 'review-contract-mismatch' ? 'stale-contract' : CONTRACT_VERSION,
         requestContext,
         resolvedAnchors,
         reviewToken:REVIEW_TOKEN,
@@ -172,6 +173,16 @@ try {
     !reviewOutput.includes(`RESONANCE_REVIEW_TOKEN=${REVIEW_TOKEN}`)
   ) {
     throw new Error(`Expected review-required capture failure. stdout=${needsReview.stdout} stderr=${needsReview.stderr}`);
+  }
+
+  responseMode = 'review-contract-mismatch';
+  const wrongReviewContract = await runCapture(baseUrl);
+  const wrongReviewContractOutput = wrongReviewContract.stdout + '\n' + wrongReviewContract.stderr;
+  if (
+    wrongReviewContract.code === 0 ||
+    !wrongReviewContractOutput.includes('Qloo review response deployment contract mismatch')
+  ) {
+    throw new Error(`Expected review deployment-contract mismatch to be rejected. stdout=${wrongReviewContract.stdout} stderr=${wrongReviewContract.stderr}`);
   }
 
   responseMode = 'normal';
