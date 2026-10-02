@@ -312,11 +312,21 @@ export default function App() {
       </div>
       {source==='demo' && <div className="warning" role="note">Demo mode: these affinity ranks and rationales are placeholders, not Qloo API results.</div>}
 
-      <h3>Resolved anchors</h3>
-      <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
-
-      <h3>{source==='live'?'Qloo taste evidence':'Illustrative taste-evidence preview'}</h3>
-      <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>)}</div>
+      <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
+        <div className="evidenceColumn">
+          <div className="evidenceHeading"><b>Input evidence</b><h3 id="evidence-bridge-title">Resolved favorites</h3></div>
+          <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
+        </div>
+        <div className="evidenceHandoff" aria-label={source === 'live' ? 'Resolved favorites are sent together into Qloo taste analysis' : 'Illustrative favorites feed the example Qloo taste-analysis path'}>
+          <span>{source === 'live' ? 'sent together to' : 'illustrate input to'}</span>
+          <strong>Qloo taste analysis</strong>
+          <i aria-hidden="true">→</i>
+        </div>
+        <div className="evidenceColumn">
+          <div className="evidenceHeading"><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Selected taste signals':'Example taste signals'}</h3></div>
+          <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>)}</div>
+        </div>
+      </section>
 
       <section className="decisionTrace" aria-labelledby="decision-trace-title">
         <div>
