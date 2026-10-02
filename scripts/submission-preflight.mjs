@@ -345,6 +345,12 @@ try {
   ) {
     failures.push('Qloo search/taste caches are not scoped to credential identity and canonical entity IDs.');
   }
+  if (
+    !server.includes('recommendationRequestValidationError(body)') ||
+    !server.includes('return json(res, 400, { error: requestValidationError })')
+  ) {
+    failures.push('Server is not failing closed on out-of-contract recommendation requests before normalization/Qloo access.');
+  }
 } catch {}
 
 try {
@@ -362,6 +368,23 @@ try {
   }
   if (qlooClient.includes('public readonly responseDetail')) {
     failures.push('Qloo client is retaining raw upstream validation detail on public error objects.');
+  }
+} catch {}
+
+try {
+  const requestNormalization = await readFile('src/lib/requestNormalization.ts', 'utf8');
+  for (const marker of [
+    'recommendationRequestValidationError',
+    'ALLOWED_REQUEST_KEYS',
+    'body.anchors.length > 4',
+    'ALLOWED_ENERGY.has(body.energy)',
+    'ALLOWED_SETTING.has(body.setting)',
+    'ALLOWED_DURATION_MINUTES.has(body.durationMinutes)',
+    'confirmedEntityIds must contain at most 4',
+  ]) {
+    if (!requestNormalization.includes(marker)) {
+      failures.push(`Public recommendation request validation is missing contract rule: ${marker}`);
+    }
   }
 } catch {}
 
