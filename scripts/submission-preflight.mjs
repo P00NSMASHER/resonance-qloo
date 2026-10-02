@@ -31,6 +31,19 @@ try {
 } catch {}
 
 try {
+  const openapi = await readFile('openapi.yaml', 'utf8');
+  if (!openapi.includes('selectedAffinityLabels')) {
+    failures.push('OpenAPI contract is missing selectedAffinityLabels evidence.');
+  }
+  if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
+    failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
+  }
+  if (!/const:\s*qloo-live/.test(openapi)) {
+    failures.push('OpenAPI provenance no longer pins live responses to qloo-live.');
+  }
+} catch {}
+
+try {
   const readme = await readFile('README.md', 'utf8');
   if (!readme.includes(LIVE_URL)) failures.push('README does not include the public demo URL.');
   if (!readme.includes('https://devpost.com/software/resonance-nud9ek')) {
