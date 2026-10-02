@@ -283,8 +283,9 @@ try {
     failures.push('Results UI is missing live Qloo provenance consistency verification.');
   }
   if (
-    !app.includes('matchesRecommendationRequestContext(data, {') ||
+    !app.includes('const requestContext: RecommendationRequestContext = {') ||
     !app.includes('typeUrn:anchorTypeUrn(item.type)') ||
+    !app.includes('matchesRecommendationRequestContext(data, requestContext)') ||
     !app.includes('Live Qloo response did not match the submitted session context.')
   ) {
     failures.push('Results UI is missing live recommendation request-context binding.');
@@ -317,7 +318,12 @@ try {
   if (!sessionExport.includes('Qloo API origin:')) {
     failures.push('Session export is missing live Qloo API origin provenance.');
   }
-  if (!sessionExport.includes('Submitted request context:') || !sessionExport.includes('Submitted anchors:')) {
+  if (
+    !sessionExport.includes('session.requestContext') ||
+    !sessionExport.includes("'Submitted' : 'Illustrative'") ||
+    !sessionExport.includes('request context:') ||
+    !sessionExport.includes('anchors:')
+  ) {
     failures.push('Session export is missing the normalized submitted request receipt.');
   }
   if (!sessionExport.includes('explicitly confirmed before taste analysis')) {
