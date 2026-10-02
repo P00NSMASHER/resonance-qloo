@@ -1,6 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { execFileSync } from "node:child_process";
+import { assertSecretAbsent, redactProof } from "./proof-redaction.mjs";
 
 const query = process.argv.slice(2).join(" ").trim() || "classic jazz vocals";
 const MIN_HARNESS_VERSION = [0, 1, 26];
@@ -37,7 +38,8 @@ try {
   process.exit(2);
 }
 
-if (!process.env.QLOO_API_KEY?.trim()) {
+const qlooApiKey = process.env.QLOO_API_KEY?.trim() || "";
+if (!qlooApiKey) {
   process.stderr.write("QLOO_API_KEY is not set. Use the event-issued credential only.\n");
   process.exit(2);
 }
@@ -52,32 +54,6 @@ const client = new Client({
   name: "resonance-qloo-proof",
   version: "0.1.0",
 });
-
-function redact(value) {
-  if (Array.isArray(value)) return value.slice(0, 5).map(redact);
-  if (!value || typeof value !== "object") return value;
-
-  const out = {};
-  for (const [key, item] of Object.entries(value)) {
-    const lower = key.toLowerCase();
-    if (
-      lower.includes("api_key") ||
-      lower.includes("apikey") ||
-      lower.includes("authorization") ||
-      lower.includes("credential") ||
-      lower.includes("token")
-    ) {
-      out[key] = "[REDACTED]";
-      continue;
-    }
-    if (key === "results" && Array.isArray(item)) {
-      out[key] = item.slice(0, 5).map(redact);
-      continue;
-    }
-    out[key] = redact(item);
-  }
-  return out;
-}
 
 try {
   await client.connect(transport);
@@ -115,10 +91,12 @@ try {
     tool: "qloo_find_tags",
     request: { query, limit: 5 },
     available_tool_count: names.length,
-    result: redact(envelope),
+    result: redactProof(envelope, qlooApiKey),
   };
 
-  process.stdout.write(JSON.stringify(artifact, null, 2) + "\n");
+  const serialized = JSON.stringify(artifact, null, 2);
+  assertSecretAbsent(serialized, qlooApiKey);
+  process.stdout.write(serialized + "\n");
 
   if (envelope.status === "error") {
     process.exitCode = 1;
