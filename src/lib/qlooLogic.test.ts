@@ -83,6 +83,20 @@ describe('Qloo parsing', () => {
     expect(plan[0].action).toContain('easy back-and-forth conversation');
   });
 
+  it('reuses the last real Qloo signal when only three affinities are available', () => {
+    const plan = planFromTags([
+      { label:'Jazz', score:null, rank:1 },
+      { label:'Musicals', score:null, rank:2 },
+      { label:'Classic cinema', score:null, rank:3 },
+    ], 'calm', 'small-group');
+
+    expect(plan).toHaveLength(4);
+    expect(plan[2].affinityLabel).toBe('Classic cinema');
+    expect(plan[3].affinityLabel).toBe('Classic cinema');
+    expect(plan[3].affinityLabel).not.toBe('comforting ritual');
+    expect(plan[3].why).toContain('selected Qloo evidence');
+  });
+
   it('exposes structured favorite-to-Qloo bridge metadata', () => {
     const plan = planFromTags([
       { label:'Classic jazz vocals', score:null, rank:1 },
