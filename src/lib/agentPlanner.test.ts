@@ -25,6 +25,12 @@ describe('agent planner', () => {
     expect(session.plan[1].action).toContain("Singin' in the Rain");
     expect(session.agentTrace.map(x => x.stage)).toEqual(['resolve','evaluate','compose','explain']);
     expect(session.evidence.evidenceBasis).toBe('normalized-score');
+    expect(session.evidence.selectedAffinityLabels).toEqual([
+      'Jazz',
+      'Musicals',
+      'Classic cinema',
+      'Italian cuisine',
+    ]);
     expect(session.evidence.meanNormalizedScore).toBeGreaterThan(.7);
     expect(session.evidence.categoryHintCount).toBe(2);
     expect(session.evidence.sessionDurationMinutes).toBe(45);
