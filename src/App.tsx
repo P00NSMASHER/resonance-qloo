@@ -334,7 +334,10 @@ export default function App() {
         </div>
         <p className="fieldHint">
           <b>{source === 'live' ? 'Selected Qloo signals:' : 'Illustrative selected signals:'}</b>{' '}
-          {result.evidence.selectedAffinityLabels.join(' · ')}
+          {(Array.isArray(result.evidence.selectedAffinityLabels) && result.evidence.selectedAffinityLabels.length
+            ? result.evidence.selectedAffinityLabels
+            : result.affinities.slice(0, result.evidence.selectedAffinityCount).map(item => item.label)
+          ).join(' · ')}
         </p>
         <ol className="agentTraceList">
           {result.agentTrace.map(step=><li key={step.stage} className={step.status}>
