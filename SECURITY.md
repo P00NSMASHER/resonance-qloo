@@ -8,7 +8,7 @@ Submission proof tooling treats the credential as a value-level secret, not only
 
 The official `qloo mcp` proof subprocess also receives a minimal environment allowlist rather than the full parent `process.env`. It gets the event Qloo key plus basic OS/config-location variables needed to launch the CLI; unrelated application, GitHub, cloud, database, and API secrets are intentionally excluded.
 
-The server also constrains `QLOO_API_BASE_URL` to the documented Qloo API hosts (`hackathon.api.qloo.com` and `api.qloo.com`) before any request can carry the key. Trusted Qloo hosts must use the standard HTTPS port, credential-bearing fetches refuse redirects, and loopback HTTPS is accepted only when the explicit local smoke-test flag is enabled outside `NODE_ENV=production`. That test flag is intentionally absent from the deployment environment example.
+The server also constrains `QLOO_API_BASE_URL` to the documented Qloo API hosts (`hackathon.api.qloo.com` and `api.qloo.com`) before any request can carry the key. Trusted Qloo hosts must use the standard HTTPS port, credential-bearing fetches refuse redirects, and loopback HTTPS is accepted only when the explicit local smoke-test flag is enabled **and** `NODE_ENV` is exactly `development` or `test`. An unset, staging-like, or production environment therefore cannot activate the loopback escape hatch. That test flag is intentionally absent from the deployment environment example.
 
 ## Data minimization
 
