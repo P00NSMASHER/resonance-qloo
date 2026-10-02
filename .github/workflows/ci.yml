@@ -54,6 +54,10 @@ jobs:
         id: deployment_parity
         continue-on-error: true
         run: npm run deployment:check
+      - name: Live Qloo readiness (advisory)
+        id: qloo_live_readiness
+        continue-on-error: true
+        run: npm run qloo:live:check
       - name: Summarize public deployment parity
         if: always()
         run: |
@@ -63,4 +67,11 @@ jobs:
             echo "::warning title=Public deployment parity failed::The Floot deployment is stale or incomplete. Re-publish the reviewed GitHub head, then run npm run deployment:check."
             echo "### Public deployment parity: ⚠️ stale or incomplete" >> "$GITHUB_STEP_SUMMARY"
             echo "Re-publish the reviewed GitHub head to Floot, then run `npm run deployment:check`." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ "${{ steps.qloo_live_readiness.outcome }}" = "success" ]; then
+            echo "### Live Qloo readiness: ✅ ready" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning title=Live Qloo not ready::The deployment is current, but the public app has not verified a live Qloo credential yet."
+            echo "### Live Qloo readiness: ⚠️ credential not ready" >> "$GITHUB_STEP_SUMMARY"
+            echo "After connecting the event-issued credential, run `npm run qloo:live:check`." >> "$GITHUB_STEP_SUMMARY"
           fi
