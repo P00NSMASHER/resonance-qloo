@@ -14,6 +14,12 @@ The server also constrains `QLOO_API_BASE_URL` to the documented Qloo API hosts 
 
 Resonance accepts cultural entities and preference examples only. Do not send a resident/client name, email, account ID, device identifier, health information, location history, or other personal data to Qloo. A cultural entity can itself contain a public person's name (for example, a favorite artist); that is different from identifying the person using the product.
 
+## Resolution review receipts
+
+Non-exact Qloo entity confirmation uses an ephemeral capability receipt rather than trusting entity IDs alone. The server creates a random in-memory HMAC key at process start and signs a receipt over the canonical submitted anchors/category hints, energy, setting, duration, reviewed Qloo entity IDs, and an expiry timestamp. Receipts expire after five minutes. A changed request, changed reviewed ID set, expiry, or server restart invalidates the receipt and forces review again.
+
+The receipt is not a Qloo credential, but it is still treated as transient capability data: it stays in browser state only long enough to complete the reviewed follow-up, is cleared when session-defining inputs change, and is never included in copied sessions or captured submission evidence.
+
 ## Network-rate-limit identity
 
 The public server derives a transient rate-limit bucket key from the proxy-nearest/right-most forwarded network address, falling back to the socket address when forwarding is absent. The raw address is immediately SHA-256 hashed and truncated before it enters limiter state. That identifier is used only to bound public requests; it is not included in Qloo requests, recommendation output, proof artifacts, or application logs.
