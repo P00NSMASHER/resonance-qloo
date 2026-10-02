@@ -362,6 +362,10 @@ try {
     'topResultResolutionCount',
     'selectedAffinityLabels',
     'planLabels.size !== selectedLabels.size',
+    'const PLAN_TITLES',
+    'const PLAN_DURATIONS',
+    'const expectedPlanLabels',
+    'const expectedAnchorName',
     "const STAGES = ['resolve','evaluate','compose','explain']",
   ]) {
     if (!recommendationResult.includes(marker)) {
