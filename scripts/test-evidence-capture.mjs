@@ -64,7 +64,7 @@ const server = createServer(async (req, res) => {
       anchors:[
         { query:'Ella Fitzgerald' },
         { query:"Singin' in the Rain" },
-        { query:'Italian food' },
+        { query:responseMode === 'context-mismatch' ? 'French food' : 'Italian food' },
       ],
       energy:'calm',
       setting:'small-group',
@@ -197,6 +197,16 @@ try {
     !wrongOutput.includes('were not in the explicit confirmation set')
   ) {
     throw new Error(`Expected unconfirmed successful response to be rejected. stdout=${wrongConfirmation.stdout} stderr=${wrongConfirmation.stderr}`);
+  }
+
+  responseMode = 'context-mismatch';
+  const wrongContext = await runCapture(baseUrl, CONFIRMED_ID);
+  const wrongContextOutput = wrongContext.stdout + '\n' + wrongContext.stderr;
+  if (
+    wrongContext.code === 0 ||
+    !wrongContextOutput.includes('did not match the evidence-capture request context')
+  ) {
+    throw new Error(`Expected mismatched request receipt to be rejected. stdout=${wrongContext.stdout} stderr=${wrongContext.stderr}`);
   }
 
   responseMode = 'count-mismatch';
