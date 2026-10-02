@@ -1,6 +1,15 @@
 export const DEFAULT_QLOO_API_BASE_URL = 'https://hackathon.api.qloo.com';
 
-export function resolveQlooBaseUrl(raw: string | undefined) {
+const TRUSTED_QLOO_HOSTS = new Set([
+  'hackathon.api.qloo.com',
+  'api.qloo.com',
+]);
+
+function isLoopbackHostname(hostname: string) {
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+}
+
+export function resolveQlooBaseUrl(raw: string | undefined, allowLocalMock = false) {
   const value = raw?.trim() || DEFAULT_QLOO_API_BASE_URL;
   let url: URL;
 
@@ -16,6 +25,12 @@ export function resolveQlooBaseUrl(raw: string | undefined) {
 
   if (url.username || url.password || url.search || url.hash || (url.pathname && url.pathname !== '/')) {
     throw new Error('QLOO_API_BASE_URL must be a clean HTTPS origin.');
+  }
+
+  const trustedQlooHost = TRUSTED_QLOO_HOSTS.has(url.hostname);
+  const allowedLocalMock = allowLocalMock && isLoopbackHostname(url.hostname);
+  if (!trustedQlooHost && !allowedLocalMock) {
+    throw new Error('QLOO_API_BASE_URL must use a trusted Qloo API origin.');
   }
 
   return url.origin;
