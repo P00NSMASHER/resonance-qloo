@@ -42,6 +42,8 @@ jobs:
         run: node --check scripts/qloo-mcp-proof.mjs
       - name: Qloo proof redaction self-test
         run: npm run qloo:proof:redaction:selftest
+      - name: Qloo proof environment isolation self-test
+        run: npm run qloo:proof:env:selftest
       - name: Live evidence capture syntax
         run: node --check scripts/capture-live-evidence.mjs
       - name: Live evidence capture self-test

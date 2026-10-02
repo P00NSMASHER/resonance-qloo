@@ -2,6 +2,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { execFileSync } from "node:child_process";
 import { assertSecretAbsent, redactProof } from "./proof-redaction.mjs";
+import { buildQlooProofEnv } from "./proof-environment.mjs";
 
 const query = process.argv.slice(2).join(" ").trim() || "classic jazz vocals";
 const MIN_HARNESS_VERSION = [0, 1, 26];
@@ -47,7 +48,7 @@ if (!qlooApiKey) {
 const transport = new StdioClientTransport({
   command: "qloo",
   args: ["mcp"],
-  env: process.env,
+  env: buildQlooProofEnv(process.env, qlooApiKey),
 });
 
 const client = new Client({
