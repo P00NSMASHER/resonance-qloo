@@ -31,6 +31,7 @@ type Result = {
   };
   provenance: {
     source:'qloo-live'|'illustrative-demo';
+    apiOrigin?:string;
     generatedAt?:string;
   };
 };
@@ -313,6 +314,7 @@ export default function App() {
       <div className="resultMeta" aria-label="Result provenance and evidence">
         <span className={source === 'live' ? 'metaLive' : 'metaDemo'}><b>Source</b>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
         <span><b>Evidence</b>{result.evidence.evidenceBasis === 'ranked-order' ? 'Ranked Qloo order' : 'Normalized Qloo score'}</span>
+        {source === 'live' && result.provenance.apiOrigin && <span><b>Qloo API</b>{result.provenance.apiOrigin.replace(/^https:\/\//,'')}</span>}
         <span><b>{result.provenance.generatedAt ? 'Generated' : 'Timestamp'}</b>{result.provenance.generatedAt ? new Date(result.provenance.generatedAt).toLocaleString() : 'Static example · no live timestamp'}</span>
       </div>
       <div className="resultActions" aria-label="Session actions">
