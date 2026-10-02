@@ -42,8 +42,11 @@ export async function buildRecommendation(
     }),
   );
   const resolved: ResolvedAnchor[] = [];
+  const seenEntityIds = new Set<string>();
   for (const item of resolvedCandidates) {
-    if (item) resolved.push(item);
+    if (!item || seenEntityIds.has(item.entityId)) continue;
+    seenEntityIds.add(item.entityId);
+    resolved.push(item);
   }
 
   if (resolved.length < 2) {
