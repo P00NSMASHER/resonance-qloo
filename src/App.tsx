@@ -23,14 +23,14 @@ type Result = {
   summary: string;
   resolvedAnchors: ResolvedAnchor[];
   affinities: { label:string; score:number|null; rank:number }[];
-  plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
+  plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel:string }[];
   agentTrace: AgentTraceStep[];
   evidence: {
     meanNormalizedScore: number|null;
     evidenceBasis: 'normalized-score'|'ranked-order';
     selectedAffinityCount: number;
     returnedAffinityCount: number;
-    selectedAffinityLabels?: string[];
+    selectedAffinityLabels: string[];
     resolvedAnchorCount: number;
     exactResolutionCount: number;
     topResultResolutionCount: number;
@@ -129,11 +129,7 @@ export default function App() {
   }, [anchors,anchorTypes]);
   const qlooUi = qlooPresentation(qlooState);
   const canRun = usableAnchors.length >= 2 && qlooUi.liveReady && !loading;
-  const selectedAffinitySequence = result
-    ? (Array.isArray(result.evidence.selectedAffinityLabels) && result.evidence.selectedAffinityLabels.length
-      ? result.evidence.selectedAffinityLabels
-      : result.affinities.slice(0, result.evidence.selectedAffinityCount).map(item => item.label))
-    : [];
+  const selectedAffinitySequence = result?.evidence.selectedAffinityLabels ?? [];
   const selectedAffinityLabels = new Set<string>(selectedAffinitySequence);
   const selectedAffinityOrder = new Map<string, number>(
     selectedAffinitySequence.map((label,index) => [label,index + 1]),
