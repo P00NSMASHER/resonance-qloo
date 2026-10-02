@@ -345,6 +345,9 @@ try {
   if (!server.includes('requestContext: error.requestContext')) {
     failures.push('Server review response is missing the normalized request receipt.');
   }
+  if (!server.includes('qlooSearchCacheKey') || !server.includes('qlooTasteCacheKey')) {
+    failures.push('Server is not using canonical Qloo request cache identities.');
+  }
   if (
     !server.includes("process.env.QLOO_ALLOW_LOCAL_MOCK === '1'") ||
     !server.includes("process.env.NODE_ENV === 'development'") ||
