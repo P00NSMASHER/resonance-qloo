@@ -47,7 +47,7 @@ Safety/reliability controls:
 - a 12-second browser status-request budget, safely above the server's 8-second Qloo connectivity probe cap so a slow-but-valid verification does not falsely degrade the UI;
 - a 28-second browser end-to-end live-request budget, which allows the bounded resolve → insights path plus the single explainability-compatibility retry without letting the browser abort a valid server request early;
 - per-client and per-process aggregate live-request ceilings;
-- bounded TTL caches for repeated Qloo searches/taste analysis, scoped to a non-secret fingerprint of the active Qloo credential so a key rotation cannot inherit evidence cached under a previous credential;
+- bounded TTL caches for repeated Qloo searches/taste analysis, scoped to a non-secret fingerprint of the active Qloo credential so a key rotation cannot inherit evidence cached under a previous credential; search cache identity canonicalizes harmless query case/whitespace while preserving category hints, and taste cache identity preserves the exact resolved-entity order sent to Qloo rather than treating differently ordered requests as interchangeable;
 - in-flight coalescing for identical cache keys, so simultaneous judges do not duplicate the same Qloo Search, Insights, or connectivity-probe call before the first response fills the cache;
 - cached credential verification so page loads do not repeatedly burn quota;
 - a manual verification retry path for configured `degraded`/`rate-limited` states that invalidates only the cached non-ready probe; preview/no-credential mode has no retry control, healthy cached `ready` state is retained, and forced retries are separately bounded to two per client per minute and twenty per server process per minute;
