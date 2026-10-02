@@ -107,11 +107,14 @@ export default function App() {
   }, [anchors,anchorTypes]);
   const qlooUi = qlooPresentation(qlooState);
   const canRun = usableAnchors.length >= 2 && qlooUi.liveReady && !loading;
-  const selectedAffinityLabels = new Set<string>(result
+  const selectedAffinitySequence = result
     ? (Array.isArray(result.evidence.selectedAffinityLabels) && result.evidence.selectedAffinityLabels.length
       ? result.evidence.selectedAffinityLabels
       : result.affinities.slice(0, result.evidence.selectedAffinityCount).map(item => item.label))
-    : []
+    : [];
+  const selectedAffinityLabels = new Set<string>(selectedAffinitySequence);
+  const selectedAffinityOrder = new Map<string, number>(
+    selectedAffinitySequence.map((label,index) => [label,index + 1]),
   );
 
   useEffect(() => {
@@ -339,7 +342,7 @@ export default function App() {
                 : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`
             }</span>
           </div>
-          <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? 'Selected for plan' : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
+          <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
         </div>
       </section>
 
@@ -391,7 +394,7 @@ export default function App() {
         </div>
       </section>
 
-      <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <div className="bridge">{x.anchorName && <div className="bridgeNode"><b>Known favorite</b><span>{x.anchorName}</span></div>}<div className="bridgeNode"><b>Qloo signal</b><span>{x.affinityLabel}</span></div></div>}<div className="activityEvidence"><b>Resulting activity</b><p>{x.action}</p></div><div className="rationale"><b>Evidence-backed rationale</b>{x.affinityLabel && <div className="rationalePath">{x.anchorName ? `${x.anchorName} + ${x.affinityLabel} → ${x.title}` : `${x.affinityLabel} → ${x.title}`}</div>}<p>{x.why}</p></div></article>)}</div>
+      <div className="plan">{result.plan.map(x=>{const signalNumber=x.affinityLabel ? selectedAffinityOrder.get(x.affinityLabel) : undefined;return <article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <div className="bridge">{x.anchorName && <div className="bridgeNode"><b>Known favorite</b><span>{x.anchorName}</span></div>}<div className="bridgeNode"><b>{signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'}</b><span>{x.affinityLabel}</span></div></div>}<div className="activityEvidence"><b>Resulting activity</b><p>{x.action}</p></div><div className="rationale"><b>Evidence-backed rationale</b>{x.affinityLabel && <div className="rationalePath">{signalNumber ? `Signal #${signalNumber}: ` : ''}{x.anchorName ? `${x.anchorName} + ${x.affinityLabel} → ${x.title}` : `${x.affinityLabel} → ${x.title}`}</div>}<p>{x.why}</p></div></article>})}</div>
     </section>}
 
     <section className="impact"><h2>Personalization without a profile, history, or identity graph.</h2><p>Start from a few real favorites instead of a generic age-based activity list. No personal identifiers are required, and Resonance is not a medical tool.</p></section>
