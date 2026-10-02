@@ -1,4 +1,5 @@
 import { DEFAULT_QLOO_API_BASE_URL } from './qlooConfig';
+import { DEFAULT_QLOO_API_BASE_URL } from './qlooConfig';
 
 export class QlooHttpError extends Error {
   constructor(
