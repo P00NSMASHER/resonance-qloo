@@ -410,7 +410,7 @@ export default function App() {
         <div className="evidenceMetrics">
           <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
           <span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span>
-          <span><b>{result.evidence.topResultResolutionCount}</b> top matches to review</span>
+          <span><b>{result.evidence.topResultResolutionCount}</b>{source === 'live' ? ' top matches confirmed' : ' top matches to review'}</span>
           <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
           <span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span>
           <span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span>
