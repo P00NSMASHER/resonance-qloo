@@ -7,6 +7,17 @@ import {
 
 export const RESOLUTION_REVIEW_TOKEN_TTL_MS = 5 * 60_000;
 
+export function resolutionReviewSigningKey(
+  qlooApiKey: string,
+  qlooApiOrigin: string,
+) {
+  return createHmac('sha256', qlooApiKey)
+    .update('resonance-resolution-review:v1')
+    .update('\n')
+    .update(qlooApiOrigin)
+    .digest();
+}
+
 export function resolutionReviewSigningKey(qlooApiKey: string) {
   return createHash('sha256')
     .update('resonance:qloo-review-receipt:v1\0')
