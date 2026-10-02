@@ -197,3 +197,57 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 
   return true;
 }
+
+
+export type RecommendationRequestContext = {
+  anchors: Array<{ query:string; typeUrn?:string }>;
+  energy: string;
+  setting: string;
+  durationMinutes: number;
+};
+
+function normalizedRequestQuery(value: string) {
+  return value
+    .normalize('NFKC')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLocaleLowerCase('en-US');
+}
+
+function requestAnchorKey(query: string, typeUrn?: string) {
+  return `${typeUrn ?? 'any'}|${normalizedRequestQuery(query)}`;
+}
+
+export function matchesRecommendationRequestContext(
+  payload: unknown,
+  expected: RecommendationRequestContext,
+) {
+  if (!isRecord(payload) || !Array.isArray(payload.resolvedAnchors) || !isRecord(payload.evidence)) {
+    return false;
+  }
+
+  const expectedIndexByKey = new Map(
+    expected.anchors.map((anchor,index) => [requestAnchorKey(anchor.query, anchor.typeUrn),index]),
+  );
+  let previousIndex = -1;
+
+  for (const item of payload.resolvedAnchors) {
+    if (!isRecord(item) || !isNonEmptyString(item.query)) return false;
+    const typeUrn = item.requestedTypeUrn === undefined
+      ? undefined
+      : isNonEmptyString(item.requestedTypeUrn)
+        ? item.requestedTypeUrn
+        : null;
+    if (typeUrn === null) return false;
+
+    const expectedIndex = expectedIndexByKey.get(requestAnchorKey(item.query, typeUrn));
+    if (expectedIndex === undefined || expectedIndex <= previousIndex) return false;
+    previousIndex = expectedIndex;
+  }
+
+  return (
+    payload.evidence.energy === expected.energy &&
+    payload.evidence.setting === expected.setting &&
+    payload.evidence.sessionDurationMinutes === expected.durationMinutes
+  );
+}
