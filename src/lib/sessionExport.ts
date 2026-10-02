@@ -15,6 +15,7 @@ export type ExportableSession = {
     resolvedAnchorCount?: number;
     categoryHintCount?: number;
     selectedAffinityCount?: number;
+    selectedAffinityLabels?: string[];
     sessionDurationMinutes?: number;
     energy?: string;
     setting?: string;
@@ -49,6 +50,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       : []),
     ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined
       ? [`Selection evidence: ${session.evidence.selectedAffinityCount} affinity signal(s) selected for the plan`]
+      : []),
+    ...(source === 'live' && session.evidence?.selectedAffinityLabels?.length
+      ? [`Selected Qloo signals: ${session.evidence.selectedAffinityLabels.join(' | ')}`]
       : []),
     ...(source === 'live' && session.evidence?.sessionDurationMinutes !== undefined
       ? [`Session target: ${session.evidence.sessionDurationMinutes} minutes`]
