@@ -22,7 +22,7 @@ Live results expose:
 - all retained Qloo taste evidence, up to eight distinct signals;
 - first-class returned-versus-selected signal counts;
 - the explicit selection rule and evidence basis: numeric scores or Qloo rank order;
-- numbered **Plan signal #1–#4** evidence plus unselected **Additional evidence**;
+- numbered selected **Plan signal #N** evidence (up to four selected signals) plus unselected **Additional evidence**;
 - an agent decision trace;
 - the generated session, where the same signal numbers reappear beside the activities they drive;
 - evidence-backed why-it-fits rationales.
@@ -72,7 +72,7 @@ The agent planner is deterministic and inspectable:
 
 1. **Resolve** — require at least two Qloo-backed anchors.
 2. **Evaluate** — retain up to eight returned affinity signals, then select at most four for the plan. Prefer the highest numeric scores when at least three are present; otherwise preserve Qloo's ranked order.
-3. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as **#1–#4**.
+3. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as stable **#1–#N** numbering (up to four selected signals).
 4. **Explain** — return a visible rationale for every step.
 
 Evidence metadata states its basis explicitly:
