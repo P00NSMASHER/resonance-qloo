@@ -55,8 +55,12 @@ export async function buildRecommendation(
     input.durationMinutes ?? 45,
   );
 
+  const reviewSuffix = session.evidence.topResultResolutionCount > 0
+    ? ` ${session.evidence.topResultResolutionCount} entity match(es) should be reviewed.`
+    : '';
+
   return {
-    summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.`,
+    summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.${reviewSuffix}`,
     resolvedAnchors: resolved,
     affinities,
     plan: session.plan,
