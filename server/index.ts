@@ -100,7 +100,7 @@ async function handleStatus(
 
   if (forceRefresh) {
     const cachedStatus = qlooProbeCache.get(keyFingerprint);
-    if (cachedStatus && cachedStatus !== 'ready') {
+    if (cachedStatus) {
       const processRefreshLimit = processQlooProbeRefreshLimiter.check('process');
       const clientRefreshLimit = qlooProbeRefreshLimiter.check(requestClientKey(req));
       if (processRefreshLimit.allowed && clientRefreshLimit.allowed) {
