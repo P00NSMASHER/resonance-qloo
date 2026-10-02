@@ -54,20 +54,38 @@ function runChecker(baseUrl) {
 
 async function withMockDeployment(mode, fn) {
   const server = createServer((req, res) => {
+    const statusPayload = {
+      service:'resonance',
+      contractVersion: mode === 'wrong-contract' ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
+      qlooApiOrigin:EXPECTED_QLOO_API_ORIGIN,
+      mode:'preview',
+      qlooStatus:'preview',
+    };
+
     if (req.url === '/api/status') {
+      if (mode === 'html-status' || mode === 'floot-superjson') {
+        res.writeHead(200, { 'content-type':'text/html; charset=utf-8' });
+        res.end('<!doctype html><title>frontend shell</title>');
+        return;
+      }
+      res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
+      res.end(JSON.stringify(statusPayload));
+      return;
+    }
+
+    if (req.url === '/_api/status') {
+      if (mode === 'floot-superjson') {
+        res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ json:statusPayload }));
+        return;
+      }
       if (mode === 'html-status') {
         res.writeHead(200, { 'content-type':'text/html; charset=utf-8' });
         res.end('<!doctype html><title>stale frontend</title>');
         return;
       }
-      res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
-      res.end(JSON.stringify({
-        service:'resonance',
-        contractVersion: mode === 'wrong-contract' ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
-        qlooApiOrigin:EXPECTED_QLOO_API_ORIGIN,
-        mode:'preview',
-        qlooStatus:'preview',
-      }));
+      res.writeHead(404, { 'content-type':'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ error:'not found' }));
       return;
     }
 
@@ -109,6 +127,15 @@ async function withMockDeployment(mode, fn) {
 const current = await withMockDeployment('current', runChecker);
 if (current.code !== 0 || !current.stdout.includes('Public deployment frontend + backend parity passed.')) {
   throw new Error(`Expected current deployment to pass. stdout=${current.stdout} stderr=${current.stderr}`);
+}
+
+const floot = await withMockDeployment('floot-superjson', runChecker);
+if (
+  floot.code !== 0 ||
+  !floot.stdout.includes('Public backend status passed via /_api/status') ||
+  !floot.stdout.includes('Public deployment frontend + backend parity passed.')
+) {
+  throw new Error(`Expected Floot SuperJSON deployment to pass. stdout=${floot.stdout} stderr=${floot.stderr}`);
 }
 
 const wrongContract = await withMockDeployment('wrong-contract', runChecker);
