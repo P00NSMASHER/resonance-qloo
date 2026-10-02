@@ -38,7 +38,10 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Request shape, input validation, result provenance, and fail-closed behavior are covered by source and CI.
 - Live status and recommendation provenance carry the non-secret Qloo API origin; the evidence-capture script requires it to match the trusted hackathon gateway before emitting a proof artifact.
 - Search parsing supports the UUID IDs documented for Qloo entity signals.
-- Each resolved entity is classified as either an exact normalized-name match or a Qloo top-result match that should be reviewed. The UI, agent trace, and copied evidence preserve that distinction without turning it into an invented confidence score.
+- Each resolved entity is classified as either an exact normalized-name match or a Qloo top-result match; no confidence score is invented.
+- A non-exact Qloo top result cannot feed taste analysis immediately. Resonance returns a review-required response first, shows the resolved input → entity mapping, and requires explicit confirmation of those exact Qloo entity IDs or an input edit before continuing.
+- Confirmation is bound to the current resolved entity IDs, so a changed Qloo match must be reviewed again rather than inheriting stale approval.
+- After confirmation, the live trace records that the Qloo top-result match was explicitly confirmed before taste analysis, and exports preserve the resolution classification.
 - Tag parsing matches the documented `results.tags` response shape.
 - Taste analysis requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields.
 - Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
@@ -56,7 +59,7 @@ The final evidence block will record:
 
 - the exact Qloo tool/workflow, public harness version, and Qloo API origin used;
 - a redacted request;
-- the resolved entity/tag choice, including whether each entity was an exact-name match or a Qloo top-result match requiring review;
+- the resolved entity/tag choice, including whether each entity was an exact-name match or a Qloo top-result match and, for any non-exact match, evidence that its exact Qloo entity ID was confirmed before taste analysis;
 - the returned status and summary;
 - the full returned taste-signal subset retained for inspection and the exact numbered signals selected for the plan;
 - the selected-versus-returned signal count;
