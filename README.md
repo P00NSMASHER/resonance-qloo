@@ -52,7 +52,7 @@ If a credential is configured but verification is `degraded` or `rate-limited`, 
 
 A later live recommendation can also invalidate the optimistic connection display: upstream Qloo rate limiting moves the UI to `rate-limited`, upstream 502/504 failures move it to `degraded`, and a malformed/inconsistent supposedly-live response also fails closed to `degraded`. Local public-demo throttling and valid “insufficient evidence” responses do **not** downgrade the Qloo connection state.
 
-The browser independently checks successful recommendation provenance before showing **LIVE QLOO**: the response must declare `qloo-live`, include a valid generation timestamp, and report the exact same Qloo API origin returned by the verified status endpoint. Session-defining inputs are locked while a live request is in flight, and changing an anchor, category, energy, setting, or duration invalidates any prior result and pending entity confirmation so stale evidence cannot appear to belong to edited inputs.
+The browser independently checks successful recommendation evidence before showing **LIVE QLOO**. The response must be internally consistent, its resolved anchors/category hints must belong to the submitted anchor list in the same order, its energy/setting/duration must match the submitted session context, and its provenance must declare `qloo-live`, include a valid generation timestamp, and report the exact same Qloo API origin returned by the verified status endpoint. Session-defining inputs are locked while a live request is in flight, and changing an anchor, category, energy, setting, or duration invalidates any prior result and pending entity confirmation so stale evidence cannot appear to belong to edited inputs.
 
 ## 60-second judge path
 
