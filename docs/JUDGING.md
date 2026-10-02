@@ -7,14 +7,16 @@
 3. If the event credential is still pending, use **Preview with example data**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
+   - the result metadata strip: source mode, evidence basis, and live generation timestamp;
    - resolved Qloo entity IDs and the category hints used to disambiguate them;
-   - cross-category taste evidence;
-   - the evidence basis: numeric score when Qloo supplies one, otherwise Qloo's affinity-ranked result order;
+   - the visible aggregate handoff from resolved favorites into Qloo taste analysis;
+   - the returned taste evidence, including the **selected / returned** signal count;
+   - the selection rule: highest real numeric Qloo affinities when enough scores exist, otherwise Qloo's returned rank order with no invented percentage;
+   - **Plan signal #1–#4** badges that identify exactly which returned signals were selected;
    - the four-stage agent decision trace;
-   - the four-step session;
-   - each step's "why it fits" explanation;
-   - the visible favorite → Qloo bridge on each plan step;
-   - the exported session audit trail, which preserves source mode, generation time, Qloo IDs, resolution path, evidence basis, explainability availability, selected-signal count, target duration, and agent trace.
+   - the four-step session, where the same signal numbers reappear beside the activities they drive;
+   - each step's evidence-backed "why it fits" explanation;
+   - the exported session audit trail, which preserves source mode, generation time, Qloo IDs, resolution path, evidence basis, explainability availability, selected-versus-returned counts, numbered selected signals, target duration, and agent trace.
 
 ## Judging-criteria mapping
 
@@ -33,6 +35,9 @@ The implementation now matches current Qloo public documentation more defensibly
 - Numeric affinity values are used only if Qloo actually returns them.
 - Taste analysis requests Qloo's documented `feature.explainability=true`. Resonance reports how many returned taste results actually contain non-empty `query.explainability` metadata and whether aggregate explainability is present; it does not invent attribution when Qloo omits it.
 - If a tag result is rank-ordered but unscored, Resonance preserves that Qloo order and displays **Rank #N** instead of manufacturing a percentage.
+- The service retains up to eight returned affinity signals for inspection while the agent selects at most four for the four-step plan.
+- The selected-signal sequence is explicit and stable: the UI labels the chosen evidence **Plan signal #1–#4**, repeats those numbers on the corresponding activity cards, and preserves the same mapping in copied session evidence.
+- Returned-but-unselected signals remain visible as **Additional evidence** instead of disappearing from the audit path.
 - Weak or sparse evidence fails closed.
 
 The server also keeps the event credential private, bounds inputs, times out upstream calls, and exposes an inspectable agent trace.
