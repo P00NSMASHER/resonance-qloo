@@ -545,6 +545,14 @@ try {
   if (!capture.includes('QLOO_TRUSTED_BASE_URL')) {
     failures.push('Live evidence capture is not bound to a trusted Qloo origin.');
   }
+  if (
+    !capture.includes('expectedContractVersion') ||
+    !capture.includes('status.body.contractVersion') ||
+    !capture.includes('provenance?.contractVersion') ||
+    !capture.includes('deployment_contract_version')
+  ) {
+    failures.push('Live evidence capture is not bound to the shared deployment contract version.');
+  }
   if (!capture.includes('provenance?.apiOrigin') && !capture.includes('provenance.apiOrigin')) {
     failures.push('Live evidence capture is not checking recommendation Qloo origin provenance.');
   }
