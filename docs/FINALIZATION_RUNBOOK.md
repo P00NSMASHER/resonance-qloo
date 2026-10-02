@@ -33,7 +33,7 @@ Confirm the header says **Live Qloo connected**. If it reports degraded immediat
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
 - the example result visibly shows Artist / Film category hints where expected;
-- the result metadata strip clearly separates source, evidence basis, and generation time;
+- the result metadata strip clearly separates source, evidence basis, the non-secret Qloo API origin, and generation time;
 - the evidence panel shows the selected / returned signal count and the selection rule;
 - selected Qloo evidence uses stable Plan signal #N numbering (up to four selected signals), while unselected results remain visible as Additional evidence;
 - the plan cards repeat those signal numbers; when only three signals are selected, the closing step may truthfully reuse Signal #3 rather than inventing a fourth Qloo signal;
@@ -96,7 +96,7 @@ Or against the public deployment:
 RESONANCE_BASE_URL=https://resonance-qloo.floot.app npm run evidence:capture
 ```
 
-The capture script refuses to run unless the server reports that Qloo is connected.
+The capture script refuses to run unless the server reports that Qloo is connected. It also requires the status endpoint and live recommendation provenance to agree on the Qloo API origin and, by default, requires `https://hackathon.api.qloo.com`. Override `QLOO_TRUSTED_BASE_URL` only if Qloo explicitly instructs you to use another gateway.
 
 ## 6. Update submission evidence
 
