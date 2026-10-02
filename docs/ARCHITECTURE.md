@@ -42,7 +42,8 @@ Safety/reliability controls:
 - maximum 16 KB request body;
 - 2–4 distinct, trimmed anchors;
 - allowed-value validation for energy and setting;
-- 8-second upstream timeout;
+- 8-second timeout on each individual upstream Qloo call;
+- a 28-second browser end-to-end live-request budget, which allows the bounded resolve → insights path plus the single explainability-compatibility retry without letting the browser abort a valid server request early;
 - per-client and per-process aggregate live-request ceilings;
 - bounded TTL caches for repeated Qloo searches/taste analysis;
 - in-flight coalescing for identical cache keys, so simultaneous judges do not duplicate the same Qloo Search, Insights, or connectivity-probe call before the first response fills the cache;
