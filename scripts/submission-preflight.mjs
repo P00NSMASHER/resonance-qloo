@@ -53,6 +53,12 @@ try {
   if (!openapi.includes('returnedAffinityCount')) {
     failures.push('OpenAPI contract is missing returnedAffinityCount evidence.');
   }
+  if (!openapi.includes('resolutionMatch')) {
+    failures.push('OpenAPI contract is missing exact-vs-top-result resolution evidence.');
+  }
+  if (!openapi.includes('exactResolutionCount') || !openapi.includes('topResultResolutionCount')) {
+    failures.push('OpenAPI contract is missing resolution review counts.');
+  }
   if (!openapi.includes('qlooApiOrigin') || !openapi.includes('apiOrigin')) {
     failures.push('OpenAPI contract is missing non-secret Qloo origin provenance.');
   }
@@ -111,6 +117,9 @@ try {
   if (!app.includes('Additional evidence')) {
     failures.push('Results UI no longer distinguishes supporting Qloo evidence.');
   }
+  if (!app.includes('Qloo top match · review') || !app.includes('Review entity matches')) {
+    failures.push('Results UI is missing Qloo top-result resolution review cues.');
+  }
   if (!app.includes('<b>Qloo API</b>')) {
     failures.push('Results UI is missing live Qloo API origin provenance.');
   }
@@ -129,6 +138,9 @@ try {
   }
   if (!sessionExport.includes('additional Qloo evidence')) {
     failures.push('Session export no longer distinguishes additional Qloo evidence.');
+  }
+  if (!sessionExport.includes('Resolution: Qloo top result — review')) {
+    failures.push('Session export is missing Qloo top-result resolution review evidence.');
   }
   if (!sessionExport.includes('Selection evidence:')) {
     failures.push('Session export is missing selected-versus-returned evidence counts.');
