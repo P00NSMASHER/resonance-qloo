@@ -27,7 +27,7 @@ Each anchor can optionally include a Qloo entity category such as Artist, Film, 
 
 Independent anchor lookups run concurrently, reducing live latency without increasing the number of Qloo calls.
 
-Resolved entities are also classified as either an **exact normalized-name match** or a **Qloo top-result match to review**. The UI does not turn that into a made-up confidence score: non-exact matches are visibly flagged for facilitator review and preserved in the copied audit trail.
+Resolved entities are also classified as either an **exact normalized-name match** or a **Qloo top-result match to review**. The UI does not turn that into a made-up confidence score. If a top result is non-exact, Resonance stops **before taste analysis**, shows the input → Qloo entity mapping, and requires the user to explicitly confirm those exact entity IDs or edit the anchors/category hints. Only confirmed matches can feed the taste-analysis step, and the confirmation is cleared if the inputs change.
 
 ### Qloo-native explainability
 
@@ -53,7 +53,7 @@ The live button only becomes available in the verified `ready` state. This preve
 3. If the event credential is still pending, use **Preview with example data**; it is explicitly marked **ILLUSTRATIVE DEMO**.
 4. Once Qloo is verified, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
-   - resolved anchors,
+   - resolved anchors, exact-vs-top-result classification, and the pre-taste confirmation step when needed,
    - cross-category Qloo taste evidence,
    - the agent decision trace,
    - the four-part session,
@@ -190,7 +190,8 @@ The preview smoke test verifies:
 
 A successful live response includes:
 
-- resolved Qloo anchors and any category hints used,
+- resolved Qloo anchors, category hints, and exact-name vs top-result classification,
+- a review-required handshake before non-exact top results can be used for taste analysis,
 - affinity labels plus Qloo-provided scores when present, otherwise ranked result order,
 - first-class returned-versus-selected affinity counts,
 - numbered selected signals preserved from evidence into plan steps and exports,
