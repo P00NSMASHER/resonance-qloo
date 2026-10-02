@@ -17,6 +17,8 @@ export type AgentSession = {
     returnedAffinityCount: number;
     selectedAffinityLabels: string[];
     resolvedAnchorCount: number;
+    exactResolutionCount: number;
+    topResultResolutionCount: number;
     categoryHintCount: number;
     explainabilityResultCount: number;
     aggregateExplainabilityAvailable: boolean;
@@ -60,6 +62,8 @@ export function orchestrateSession(
     durationMinutes,
   );
   const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
+  const exactResolutionCount = resolvedAnchors.filter(anchor => anchor.resolutionMatch === 'exact-name').length;
+  const topResultResolutionCount = resolvedAnchors.length - exactResolutionCount;
   const categoryHintCount = resolvedAnchors.filter(anchor => Boolean(anchor.requestedTypeUrn)).length;
 
   return {
@@ -71,6 +75,8 @@ export function orchestrateSession(
       returnedAffinityCount: affinities.length,
       selectedAffinityLabels: selected.map(item => item.label),
       resolvedAnchorCount: resolvedAnchors.length,
+      exactResolutionCount,
+      topResultResolutionCount,
       categoryHintCount,
       explainabilityResultCount:qlooExplainability.resultCount,
       aggregateExplainabilityAvailable:qlooExplainability.aggregateAvailable,
@@ -81,8 +87,10 @@ export function orchestrateSession(
     agentTrace: [
       {
         stage: 'resolve',
-        status: 'ok',
-        detail: `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed entity evidence; ${categoryHintCount} used an explicit category hint.`,
+        status: topResultResolutionCount > 0 ? 'warning' : 'ok',
+        detail: topResultResolutionCount > 0
+          ? `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed entity evidence; ${exactResolutionCount} exact-name match(es), ${topResultResolutionCount} Qloo top-result match(es) to review, and ${categoryHintCount} explicit category hint(s).`
+          : `Resolved ${resolvedAnchors.length} cultural anchors into Qloo-backed entity evidence; all ${exactResolutionCount} are exact-name matches and ${categoryHintCount} used an explicit category hint.`,
       },
       {
         stage: 'evaluate',
