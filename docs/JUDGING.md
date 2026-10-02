@@ -9,7 +9,7 @@
 5. Inspect:
    - the result metadata strip: source mode, evidence basis, visible **Request receipt**, non-secret Qloo API origin, and live generation timestamp;
    - resolved Qloo entity IDs, category hints, and whether each resolution is an **Exact name** or **Qloo top match · review**;
-   - when a top match is non-exact, the **Qloo match review required** gate: taste analysis must not run until the user confirms those exact entity IDs or edits the input;
+   - when a top match is non-exact, the **Qloo match review required** gate: the server issues a five-minute review receipt and taste analysis must not run until the user returns that receipt with the exact reviewed entity IDs or edits the input;
    - after confirmation, the same mapping is labeled **Qloo top match · confirmed** and only then feeds the visible aggregate handoff into Qloo taste analysis;
    - the returned taste evidence, including the **selected / returned** signal count;
    - the visible **Interpretation limit**: Qloo affinities are aggregate cultural relationships, not probabilities or claims about the individual, and the facilitator keeps control;
@@ -34,7 +34,7 @@ The implementation now matches current Qloo public documentation more defensibly
 - The agent reports how many category hints were actually applied and preserves them beside the resolved anchors.
 - Resolution is not presented as hidden confidence: each resolved entity is classified as an exact normalized-name match or a Qloo top-result match that should be reviewed.
 - Both the HTTP 409 review response and HTTP 200 recommendation carry a normalized `requestContext` receipt (submitted anchors/type URNs, energy, setting, duration). The browser rejects either response if that receipt does not exactly match the form that initiated the request, and the receipt is preserved in copied/live evidence.
-- A non-exact top result triggers HTTP 409 and stops before taste analysis. The response returns the request receipt plus the resolved candidates; the browser shows the input → Qloo mapping and requires explicit confirmation of those exact entity IDs. Editing the inputs clears the pending review. If Qloo resolves to a different ID on the next pass, that new ID must be reviewed again.
+- A non-exact top result triggers HTTP 409 and stops before taste analysis. The response returns the normalized request receipt, resolved candidates, and a five-minute HMAC review receipt. The browser shows the input → Qloo mapping and the follow-up must include both the exact reviewed IDs and that server-issued receipt. IDs alone cannot bypass review; editing the request, expiration, a changed Qloo result, or a server restart requires review again.
 - Confirmed top-result matches are preserved as such in the live evidence rather than being relabeled as exact matches.
 - Independent anchor-resolution calls run concurrently to reduce live latency.
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
