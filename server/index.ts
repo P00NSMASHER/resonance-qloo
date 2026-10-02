@@ -68,9 +68,13 @@ async function readJson(req: import('node:http').IncomingMessage) {
 
 function requestClientKey(req: import('node:http').IncomingMessage) {
   const forwarded = req.headers['x-forwarded-for'];
-  return (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0])?.trim()
-    || req.socket.remoteAddress
-    || 'unknown';
+  const forwardedValues = (Array.isArray(forwarded) ? forwarded : [forwarded])
+    .flatMap(value => typeof value === 'string' ? value.split(',') : [])
+    .map(value => value.trim())
+    .filter(Boolean);
+  const nearestForwardedAddress = forwardedValues.at(-1);
+  const candidate = nearestForwardedAddress || req.socket.remoteAddress || 'unknown';
+  return createHash('sha256').update(candidate).digest('hex').slice(0, 24);
 }
 
 function qlooCredentialFingerprint(key: string) {
