@@ -262,6 +262,7 @@ try {
     "createHmac('sha256'",
     'resonance-resolution-review:v1',
     ".update(qlooApiOrigin)",
+    ".update(deploymentContractVersion)",
     'timingSafeEqual',
     'RESOLUTION_REVIEW_TOKEN_TTL_MS = 5 * 60_000',
     'resolutionReviewSigningKey',
@@ -417,7 +418,7 @@ try {
     failures.push('Server review response is missing the normalized request receipt.');
   }
   if (
-    !server.includes('resolutionReviewSigningKey(key, QLOO_BASE_URL)') ||
+    !/resolutionReviewSigningKey\([\s\S]{0,180}deploymentContract\.version/.test(server) ||
     !server.includes('createResolutionReviewToken') ||
     !server.includes('verifyResolutionReviewToken') ||
     !server.includes('confirmationVerified')
