@@ -24,8 +24,8 @@ function validResult() {
       { label:'Classic cinema', score:null as number | null, rank:3 },
     ],
     plan:[
-      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz' },
-      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals' },
+      { title:'Opening cue', duration:'10 min', action:'A', why:'A', anchorName:'Ella Fitzgerald', affinityLabel:'Jazz' },
+      { title:'Story bridge', duration:'10 min', action:'B', why:'B', anchorName:'Italian cuisine', affinityLabel:'Musicals' },
       { title:'Shared choice', duration:'15 min', action:'C', why:'C', affinityLabel:'Classic cinema' },
       { title:'Closing ritual', duration:'10 min', action:'D', why:'D', affinityLabel:'Classic cinema' },
     ],
@@ -92,21 +92,80 @@ describe('live recommendation result integrity', () => {
   it('rejects inconsistent resolution accounting', () => {
     const result = validResult();
     result.evidence.exactResolutionCount = 2;
+    result.evidence.topResultResolutionCount = 0;
     expect(hasConsistentRecommendationResult(result)).toBe(false);
+
+    const categoryMismatch = validResult();
+    categoryMismatch.evidence.categoryHintCount = 1;
+    expect(hasConsistentRecommendationResult(categoryMismatch)).toBe(false);
   });
 
-  it('rejects impossible score and rank evidence', () => {
+  it('rejects impossible or non-sequential score/rank evidence', () => {
     const badScore = validResult();
     badScore.affinities[0].score = 1.2;
     expect(hasConsistentRecommendationResult(badScore)).toBe(false);
 
     const badRank = validResult();
-    badRank.affinities[0].rank = 0;
+    badRank.affinities[1].rank = 4;
     expect(hasConsistentRecommendationResult(badRank)).toBe(false);
 
     const mismatchedBasis = validResult();
     mismatchedBasis.evidence.evidenceBasis = 'normalized-score';
     expect(hasConsistentRecommendationResult(mismatchedBasis)).toBe(false);
+  });
+
+  it('rejects ranked-order selections that do not match Qloo rank order', () => {
+    const result = validResult();
+    result.evidence.selectedAffinityLabels = ['Musicals','Jazz','Classic cinema'];
+    result.plan[0].affinityLabel = 'Musicals';
+    result.plan[1].affinityLabel = 'Jazz';
+    expect(hasConsistentRecommendationResult(result)).toBe(false);
+  });
+
+  it('accepts the real numeric-score selection rule and rejects false score evidence', () => {
+    const scored = validResult();
+    scored.affinities = [
+      { label:'Jazz', score:0.4, rank:1 },
+      { label:'Musicals', score:0.9, rank:2 },
+      { label:'Classic cinema', score:0.7, rank:3 },
+      { label:'Italian cuisine', score:null, rank:4 },
+    ];
+    scored.evidence.returnedAffinityCount = 4;
+    scored.evidence.selectedAffinityCount = 3;
+    scored.evidence.selectedAffinityLabels = ['Musicals','Classic cinema','Jazz'];
+    scored.evidence.evidenceBasis = 'normalized-score';
+    scored.evidence.meanNormalizedScore = (0.9 + 0.7 + 0.4) / 3;
+    scored.plan[0].affinityLabel = 'Musicals';
+    scored.plan[1].affinityLabel = 'Classic cinema';
+    scored.plan[2].affinityLabel = 'Jazz';
+    scored.plan[3].affinityLabel = 'Jazz';
+
+    expect(hasConsistentRecommendationResult(scored)).toBe(true);
+
+    const wrongOrder = structuredClone(scored);
+    wrongOrder.evidence.selectedAffinityLabels = ['Classic cinema','Musicals','Jazz'];
+    wrongOrder.plan[0].affinityLabel = 'Classic cinema';
+    wrongOrder.plan[1].affinityLabel = 'Musicals';
+    expect(hasConsistentRecommendationResult(wrongOrder)).toBe(false);
+
+    const wrongMean = structuredClone(scored);
+    wrongMean.evidence.meanNormalizedScore = 0.5;
+    expect(hasConsistentRecommendationResult(wrongMean)).toBe(false);
+  });
+
+  it('rejects plan signal order or favorite grounding that diverges from agent evidence', () => {
+    const wrongSignalOrder = validResult();
+    wrongSignalOrder.plan[0].affinityLabel = 'Musicals';
+    wrongSignalOrder.plan[1].affinityLabel = 'Jazz';
+    expect(hasConsistentRecommendationResult(wrongSignalOrder)).toBe(false);
+
+    const wrongAnchor = validResult();
+    wrongAnchor.plan[0].anchorName = 'Different favorite';
+    expect(hasConsistentRecommendationResult(wrongAnchor)).toBe(false);
+
+    const unexpectedAnchor = validResult();
+    unexpectedAnchor.plan[3].anchorName = 'Invented favorite';
+    expect(hasConsistentRecommendationResult(unexpectedAnchor)).toBe(false);
   });
 
   it('rejects missing or reordered agent stages', () => {
