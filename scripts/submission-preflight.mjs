@@ -366,9 +366,10 @@ try {
   if (
     !server.includes('qlooCredentialFingerprint(key)') ||
     !server.includes('credentialFingerprint') ||
-    !server.includes('entityIds.map(qlooEntityIdentity)')
+    !server.includes('qlooSearchCacheKey(credentialFingerprint') ||
+    !server.includes('qlooTasteCacheKey(credentialFingerprint')
   ) {
-    failures.push('Qloo search/taste caches are not scoped to credential identity and canonical entity IDs.');
+    failures.push('Qloo search/taste caches are not scoped to credential identity and canonical request keys.');
   }
   if (
     !server.includes('recommendationRequestValidationError(body)') ||
@@ -432,6 +433,19 @@ try {
     if (!recommendationResult.includes(marker)) {
       failures.push(`Live recommendation result validator is missing integrity rule: ${marker}`);
     }
+  }
+} catch {}
+
+try {
+  const qlooCacheKey = await readFile('src/lib/qlooCacheKey.ts', 'utf8');
+  if (
+    !qlooCacheKey.includes('normalizedRequestQuery') ||
+    !qlooCacheKey.includes("entityIds.map(qlooEntityIdentity).join(',')")
+  ) {
+    failures.push('Qloo cache-key helper is missing canonical search/entity identity.');
+  }
+  if (qlooCacheKey.includes('.sort()')) {
+    failures.push('Qloo taste cache key must preserve resolved entity order rather than sorting it.');
   }
 } catch {}
 
