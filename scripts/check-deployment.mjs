@@ -8,6 +8,9 @@ const requiredMarkers = [
   'Additional evidence',
   'Qloo top match · review',
   'Review entity matches',
+  'Qloo match review required',
+  'Confirm matches & build',
+  'QLOO_RESOLUTION_REVIEW_REQUIRED',
   'Static example · no live timestamp',
 ];
 
