@@ -51,7 +51,7 @@ describe('QlooClient', () => {
 
     await client.probe();
 
-    expect(String(calls[0]![0])).toBe('https://api.qloo.com/v2/tags/types?take=1');
+    expect(String(calls[0]![0])).toBe('https://hackathon.api.qloo.com/v2/tags/types?take=1');
   });
 
   it('can constrain resolution to a documented Qloo entity category', async () => {
