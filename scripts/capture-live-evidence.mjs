@@ -1,6 +1,11 @@
 const base = (process.env.RESONANCE_BASE_URL || 'http://localhost:8787').replace(/\/$/, '');
 const trustedQlooOrigin = (process.env.QLOO_TRUSTED_BASE_URL || 'https://hackathon.api.qloo.com').replace(/\/$/, '');
 const anchors = ['Ella Fitzgerald', "Singin' in the Rain", 'Italian food'];
+const confirmedEntityIds = (process.env.RESONANCE_CONFIRMED_ENTITY_IDS || '')
+  .split(',')
+  .map(value => value.trim())
+  .filter(Boolean)
+  .slice(0,4);
 
 async function getJson(path, init) {
   const response = await fetch(base + path, {
@@ -31,6 +36,7 @@ const run = await getJson('/api/recommend', {
     anchors,
     energy:'calm',
     setting:'small-group',
+    confirmedEntityIds,
   }),
 });
 
@@ -51,6 +57,7 @@ const evidence = {
     anchors,
     energy:'calm',
     setting:'small-group',
+    confirmedEntityIds,
   },
   response_summary:{
     summary:run.body.summary,
