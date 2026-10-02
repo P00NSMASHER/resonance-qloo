@@ -63,6 +63,7 @@ for (const marker of [
   "setQlooApiOrigin('');",
   "}, [statusRefreshKey]);",
   "Retry Qloo verification",
+  "qlooState === 'degraded' || qlooState === 'rate-limited'",
   "setStatusRefreshKey(current => current + 1)",
   "const STATUS_REQUEST_TIMEOUT_MS = 12_000;",
   "window.setTimeout(() => controller.abort(), STATUS_REQUEST_TIMEOUT_MS);",
