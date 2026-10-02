@@ -34,6 +34,7 @@ describe('live Qloo provenance verifier', () => {
       provenance:{
         source:'qloo-live',
         apiOrigin:'https://api.qloo.com',
+        contractVersion,
         generatedAt:'2026-10-02T13:00:00.000Z',
       },
     }, origin, contractVersion)).toBe(false);
