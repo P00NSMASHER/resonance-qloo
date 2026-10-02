@@ -259,8 +259,12 @@ try {
   if (!app.includes('function invalidateGeneratedState()') || !app.includes('disabled={loading}')) {
     failures.push('Results UI is missing stale-state invalidation or live-request input locking.');
   }
-  if (!app.includes("'/api/status?refresh=1'") || !app.includes('Retry Qloo verification')) {
-    failures.push('Results UI manual Qloo retry is not routed through explicit server re-verification.');
+  if (
+    !app.includes("'/api/status?refresh=1'") ||
+    !app.includes('Retry Qloo verification') ||
+    !app.includes("qlooState === 'degraded' || qlooState === 'rate-limited'")
+  ) {
+    failures.push('Results UI manual Qloo retry is missing explicit re-verification or correct failure-state visibility.');
   }
   if (
     !app.includes("import { hasVerifiedLiveProvenance } from './lib/liveProvenance'") ||
