@@ -60,6 +60,17 @@ const server = createServer(async (req, res) => {
     const body = raw ? JSON.parse(raw) : {};
     const confirmed = Array.isArray(body.confirmedEntityIds) ? body.confirmedEntityIds : [];
 
+    const requestContext = {
+      anchors:[
+        { query:'Ella Fitzgerald' },
+        { query:"Singin' in the Rain" },
+        { query:'Italian food' },
+      ],
+      energy:'calm',
+      setting:'small-group',
+      durationMinutes:45,
+    };
+
     const resolvedAnchors = [
       {
         query:'Ella Fitzgerald',
@@ -79,12 +90,14 @@ const server = createServer(async (req, res) => {
       send(409, {
         error:'Review Qloo entity matches before continuing.',
         code:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+        requestContext,
         resolvedAnchors,
       });
       return;
     }
 
     send(200, {
+      requestContext,
       summary:'Self-test live recommendation.',
       resolvedAnchors,
       affinities:[
