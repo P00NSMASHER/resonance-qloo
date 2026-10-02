@@ -54,7 +54,7 @@ Safety/reliability controls:
 - client-side connection-state downgrades when an actual live recommendation exposes upstream Qloo rate limiting/failure or fails the live evidence/provenance contract, while local application throttles and valid sparse-evidence responses remain scoped to the individual request;
 - explicit user confirmation before any non-exact Qloo top-result entity is used in taste analysis;
 - confirmation requires both the reviewed entity IDs and a five-minute server-issued HMAC receipt bound to the canonical request context and those IDs;
-- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result, edited session context, expired receipt, or server restart must be reviewed again;
+- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result, edited session context, expired receipt, or Qloo credential rotation must be reviewed again; the credential-derived signing key is stable across ordinary server instances/restarts;
 - fail-closed behavior when too few anchors or affinities are resolved;
 - fail-closed behavior when explicit numeric evidence is too weak;
 - no invented affinity score when the Qloo response supplies only ranked tags;
