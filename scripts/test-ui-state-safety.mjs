@@ -57,4 +57,13 @@ if (anchorInputIndex < 0 || !anchorInputWindow.includes('disabled={loading}')) {
   throw new Error('Anchor text input is editable during a live request.');
 }
 
-console.log('UI stale-state safety self-test passed.');
+for (const marker of [
+  "const [qlooApiOrigin, setQlooApiOrigin] = useState('');",
+  "data?.provenance?.source !== 'qloo-live'",
+  "data.provenance.apiOrigin !== qlooApiOrigin",
+  "Live Qloo provenance could not be verified.",
+]) {
+  if (!source.includes(marker)) throw new Error('Live provenance guard missing: ' + marker);
+}
+
+console.log('UI stale-state + provenance safety self-test passed.');
