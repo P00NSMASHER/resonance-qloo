@@ -137,7 +137,7 @@ npm run submission:preflight
 npm run deployment:check
 ```
 
-All must pass. The offline command includes the HTTP review-handshake smoke, deployment-checker self-test, proof-redaction self-test, evidence-capture self-test, build/tests, and artifact preflight. The deployment check validates both production layers: `/api/status` must expose the Resonance contract and trusted Qloo hackathon origin, and the public Floot HTML/JavaScript bundles must contain the current judge-facing evidence UI. A reachable but stale frontend or backend fails this step.
+All must pass. The offline command includes the HTTP review-handshake smoke, deployment-checker self-test, proof-redaction self-test, evidence-capture self-test, build/tests, and artifact preflight. For the public deployment, check in this order: (1) backend and frontend both match the exact shared version in `deployment-contract.json`; (2) `/api/status` exposes the Resonance contract and trusted Qloo hackathon origin; (3) the public bundle contains the current judge-facing evidence UI; (4) the live Qloo flow and evidence capture succeed. A reachable but stale or mixed-version frontend/backend fails before any live proof is accepted.
 
 ## 8. Final Devpost checks
 
