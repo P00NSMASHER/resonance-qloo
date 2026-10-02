@@ -32,6 +32,20 @@ try {
 } catch {}
 
 try {
+  const envExample = await readFile('.env.example', 'utf8');
+  if (!envExample.includes('QLOO_API_BASE_URL=https://hackathon.api.qloo.com')) {
+    failures.push('.env.example is not pinned to the Qloo Agentic Hackathon API origin.');
+  }
+} catch {}
+
+try {
+  const qlooConfig = await readFile('src/lib/qlooConfig.ts', 'utf8');
+  if (!qlooConfig.includes("DEFAULT_QLOO_API_BASE_URL = 'https://hackathon.api.qloo.com'")) {
+    failures.push('Qloo runtime default is not the Agentic Hackathon API origin.');
+  }
+} catch {}
+
+try {
   const openapi = await readFile('openapi.yaml', 'utf8');
   if (!openapi.includes('selectedAffinityLabels')) {
     failures.push('OpenAPI contract is missing selectedAffinityLabels evidence.');
