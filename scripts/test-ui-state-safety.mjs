@@ -71,6 +71,9 @@ for (const marker of [
   "const [qlooApiOrigin, setQlooApiOrigin] = useState('');",
   "import { hasVerifiedLiveProvenance } from './lib/liveProvenance';",
   "hasVerifiedLiveProvenance(data, qlooApiOrigin)",
+  "qlooStateAfterRecommendationFailure(r.status, data?.error)",
+  "if (nextQlooState) setQlooState(nextQlooState);",
+  "setQlooState('degraded');",
   "Live Qloo provenance could not be verified.",
 ]) {
   if (!source.includes(marker)) throw new Error('Live provenance guard missing: ' + marker);
