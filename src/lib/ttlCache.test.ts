@@ -21,13 +21,37 @@ describe('ttl cache', () => {
     expect(loader).toHaveBeenCalledTimes(2);
   });
 
+  it('coalesces concurrent loads for the same key', async () => {
+    const cache = createTtlCache<number>(1000);
+    let release!: (value: number) => void;
+    const loader = vi.fn(() => new Promise<number>(resolve => {
+      release = resolve;
+    }));
+
+    const first = cache.getOrLoad('x', loader, 1000);
+    const second = cache.getOrLoad('x', loader, 1000);
+
+    expect(loader).toHaveBeenCalledTimes(1);
+    release(42);
+
+    await expect(Promise.all([first, second])).resolves.toEqual([42,42]);
+    expect(loader).toHaveBeenCalledTimes(1);
+    await expect(cache.getOrLoad('x', loader, 1500)).resolves.toBe(42);
+    expect(loader).toHaveBeenCalledTimes(1);
+  });
+
   it('does not cache failed loads', async () => {
     const cache = createTtlCache<number>(1000);
     const loader = vi.fn()
       .mockRejectedValueOnce(new Error('boom'))
       .mockResolvedValueOnce(7);
 
-    await expect(cache.getOrLoad('x', loader, 1000)).rejects.toThrow('boom');
+    const first = cache.getOrLoad('x', loader, 1000);
+    const second = cache.getOrLoad('x', loader, 1000);
+    await expect(first).rejects.toThrow('boom');
+    await expect(second).rejects.toThrow('boom');
+    expect(loader).toHaveBeenCalledTimes(1);
+
     await expect(cache.getOrLoad('x', loader, 1100)).resolves.toBe(7);
     expect(loader).toHaveBeenCalledTimes(2);
   });
