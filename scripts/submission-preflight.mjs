@@ -131,6 +131,8 @@ try {
     'Top matches confirmed',
     'Qloo API',
     'No synthetic signal',
+    'Interpretation limit',
+    'aggregate cultural relationships',
     'QLOO_RESOLUTION_REVIEW_REQUIRED',
   ]) {
     if (!deploymentCheck.includes(marker)) {
