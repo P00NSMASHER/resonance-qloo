@@ -5,8 +5,8 @@ describe('session export', () => {
   const session = {
     summary:'A grounded session.',
     resolvedAnchors:[
-      {query:'Ella',name:'Ella Fitzgerald',entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',requestedTypeUrn:'urn:entity:artist'},
-      {query:"Singin' in the Rain",name:"Singin' in the Rain",entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA',requestedTypeUrn:'urn:entity:movie'}
+      {query:'Ella',name:'Ella Fitzgerald',entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',requestedTypeUrn:'urn:entity:artist',resolutionMatch:'top-result' as const},
+      {query:"Singin' in the Rain",name:"Singin' in the Rain",entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA',requestedTypeUrn:'urn:entity:movie',resolutionMatch:'exact-name' as const}
     ],
     affinities:[
       {label:'Jazz',score:null,rank:1},
@@ -30,6 +30,8 @@ describe('session export', () => {
       explainabilityResultCount:2,
       aggregateExplainabilityAvailable:true,
       resolvedAnchorCount:2,
+      exactResolutionCount:1,
+      topResultResolutionCount:1,
       categoryHintCount:2,
       selectedAffinityCount:2,
       returnedAffinityCount:3,
@@ -75,7 +77,9 @@ describe('session export', () => {
   it('keeps input-to-resolution evidence in live exports', () => {
     const live = formatSessionText(session, 'live');
     expect(live).toContain('Ella -> Ella Fitzgerald [Artist]');
+    expect(live).toContain('Resolution: Qloo top result — review');
     expect(live).toContain("Singin' in the Rain [Film]");
+    expect(live).toContain('Resolution: exact name');
   });
 
   it('keeps the live generation timestamp in exported evidence', () => {
@@ -114,7 +118,7 @@ describe('session export', () => {
 
   it('keeps anchor-resolution evidence in live exports', () => {
     expect(formatSessionText(session, 'live')).toContain(
-      'Resolution evidence: 2 anchor(s) resolved; 2 category hint(s) used'
+      'Resolution evidence: 2 anchor(s) resolved; 1 exact-name match(es); 1 Qloo top-result match(es) to review; 2 category hint(s) used'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Resolution evidence:');
   });
