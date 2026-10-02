@@ -122,7 +122,7 @@ The real event key must never be committed or pasted into a public artifact.
 ```bash
 git clone https://github.com/P00NSMASHER/resonance-qloo.git
 cd resonance-qloo
-npm install
+npm ci
 cp .env.example .env
 ```
 
