@@ -163,7 +163,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     setting,
     durationMinutes,
   });
-  const reviewSigningKey = resolutionReviewSigningKey(key, QLOO_BASE_URL);
+  const reviewSigningKey = resolutionReviewSigningKey(
+    key,
+    QLOO_BASE_URL,
+    deploymentContract.version,
+  );
   const confirmationVerified =
     confirmedEntityIds.length > 0 &&
     verifyResolutionReviewToken(
