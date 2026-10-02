@@ -82,7 +82,7 @@ for (const marker of [
   "typeof data.reviewToken === 'string'",
   "data.reviewToken.length <= 128",
   "setResolutionReviewToken(data.reviewToken);",
-  "reviewToken:reviewBody.reviewToken",
+  "...(reviewToken ? { reviewToken } : {}),",
   "disabled={loading || !resolutionReviewToken}",
   "matchesRecommendationRequestContext(data, requestContext)",
   "Live Qloo response did not match the submitted session context.",
