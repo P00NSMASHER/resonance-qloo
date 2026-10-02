@@ -12,6 +12,7 @@
    - when a top match is non-exact, the **Qloo match review required** gate: taste analysis must not run until the user confirms those exact entity IDs or edits the input;
    - after confirmation, the same mapping is labeled **Qloo top match · confirmed** and only then feeds the visible aggregate handoff into Qloo taste analysis;
    - the returned taste evidence, including the **selected / returned** signal count;
+   - the visible **Interpretation limit**: Qloo affinities are aggregate cultural relationships, not probabilities or claims about the individual, and the facilitator keeps control;
    - the selection rule: highest real numeric Qloo affinities when enough scores exist, otherwise Qloo's returned rank order with no invented percentage;
    - numbered **Plan signal #N** badges that identify exactly which returned signals were selected (up to four);
    - when only three signals are usable, the visible **No synthetic signal** note explaining that signal #3 is reused for the closing step;
