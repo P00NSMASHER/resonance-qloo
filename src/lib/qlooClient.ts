@@ -1,3 +1,5 @@
+import { DEFAULT_QLOO_API_BASE_URL } from './qlooConfig';
+
 export class QlooHttpError extends Error {
   constructor(
     message: string,
@@ -14,7 +16,7 @@ export class QlooClient {
   constructor(
     private readonly apiKey: string,
     private readonly fetchImpl: FetchLike = fetch,
-    private readonly baseUrl = 'https://api.qloo.com',
+    private readonly baseUrl = DEFAULT_QLOO_API_BASE_URL,
     private readonly timeoutMs = 8_000,
   ) {}
 
