@@ -204,6 +204,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       return json(res, 409, {
         error: 'Review Qloo entity matches before continuing.',
         code: 'QLOO_RESOLUTION_REVIEW_REQUIRED',
+        requestContext: error.requestContext,
         resolvedAnchors: error.resolvedAnchors,
       });
     }
