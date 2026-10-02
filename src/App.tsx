@@ -347,7 +347,7 @@ export default function App() {
         </ol>
       </section>
 
-      <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <div className="bridge"><b>{x.anchorName ? "Known favorite → Qloo bridge" : "Qloo signal"}</b><span>{x.anchorName ? x.anchorName + " → " + x.affinityLabel : x.affinityLabel}</span></div>}<p>{x.action}</p><div><b>Why it fits</b><br/>{x.why}</div></article>)}</div>
+      <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <div className="bridge">{x.anchorName && <div className="bridgeNode"><b>Known favorite</b><span>{x.anchorName}</span></div>}<div className="bridgeNode"><b>Qloo signal</b><span>{x.affinityLabel}</span></div></div>}<div className="activityEvidence"><b>Resulting activity</b><p>{x.action}</p></div><div><b>Why it fits</b><br/>{x.why}</div></article>)}</div>
     </section>}
 
     <section className="impact"><h2>Personalization without a profile, history, or identity graph.</h2><p>Start from a few real favorites instead of a generic age-based activity list. No personal identifiers are required, and Resonance is not a medical tool.</p></section>
