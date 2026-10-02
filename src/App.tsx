@@ -329,7 +329,7 @@ export default function App() {
           <i aria-hidden="true">→</i>
         </div>
         <div className="evidenceColumn">
-          <div className="evidenceHeading"><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div>
+          <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.affinities.length}</strong> {source === 'live' ? 'returned' : 'example'}</span></div>
           <div className="selectionRule">
             <b>Selection rule</b>
             <span>{source === 'demo'
