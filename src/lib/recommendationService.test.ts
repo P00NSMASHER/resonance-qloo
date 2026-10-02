@@ -139,7 +139,7 @@ describe('recommendation service', () => {
       requestContext:{
         anchors:[
           { query:'Ella Fitzgerald' },
-          { query:'Italian food' },
+          { query:'Nameless favorite' },
         ],
         energy:'calm',
         setting:'small-group',
@@ -180,6 +180,15 @@ describe('recommendation service', () => {
       setting:'small-group',
     })).rejects.toMatchObject({
       message:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+      requestContext:{
+        anchors:[
+          { query:'Ella Fitzgerald' },
+          { query:'Italian food' },
+        ],
+        energy:'calm',
+        setting:'small-group',
+        durationMinutes:45,
+      },
       resolvedAnchors:[
         expect.objectContaining({ entityId:uuidA, resolutionMatch:'exact-name' }),
         expect.objectContaining({ entityId:uuidB, resolutionMatch:'top-result' }),
