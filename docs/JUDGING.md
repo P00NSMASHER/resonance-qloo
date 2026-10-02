@@ -13,6 +13,7 @@
    - the returned taste evidence, including the **selected / returned** signal count;
    - the selection rule: highest real numeric Qloo affinities when enough scores exist, otherwise Qloo's returned rank order with no invented percentage;
    - numbered **Plan signal #N** badges that identify exactly which returned signals were selected (up to four);
+   - when only three signals are usable, the visible **No synthetic signal** note explaining that signal #3 is reused for the closing step;
    - the four-stage agent decision trace;
    - the four-step session, where the same signal numbers reappear beside the activities they drive;
    - each step's evidence-backed "why it fits" explanation;
@@ -38,7 +39,7 @@ The implementation now matches current Qloo public documentation more defensibly
 - The service retains up to eight returned affinity signals for inspection while the agent selects at most four for the four-step plan.
 - The selected-signal sequence is explicit and stable: the UI labels chosen evidence with stable **Plan signal #N** numbering (up to four selected signals), repeats those numbers on the corresponding activity cards, and preserves the same mapping in copied session evidence.
 - Returned-but-unselected signals remain visible as **Additional evidence** instead of disappearing from the audit path.
-- Weak or sparse evidence fails closed.
+- Fewer than three usable affinity signals fail closed. If exactly three selected signals support the four-step plan, the closing step reuses the last real selected signal and the UI/export explicitly says no synthetic fourth signal was created.
 
 The server also keeps the event credential private, bounds inputs, times out upstream calls, and exposes an inspectable agent trace.
 
