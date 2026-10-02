@@ -96,6 +96,48 @@ describe('QlooClient', () => {
     expect(parsed.searchParams.get('feature.explainability')).toBe('true');
   });
 
+  it.each([400, 422])('retries taste analysis without optional explainability after HTTP %s', async (status) => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      if (calls.length === 1) return new Response('{}', { status });
+      return ok({ results:{ tags:[{ name:'Jazz' }] } });
+    };
+    const client = new QlooClient('event-key', mockFetch);
+
+    const result = await client.tasteAnalysis([
+      'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+      '9A25B172-4795-43E4-B222-3B550DC05AAA',
+    ]);
+
+    expect(result).toEqual({ results:{ tags:[{ name:'Jazz' }] } });
+    expect(calls).toHaveLength(2);
+
+    const first = new URL(String(calls[0]![0]));
+    const second = new URL(String(calls[1]![0]));
+    expect(first.searchParams.get('feature.explainability')).toBe('true');
+    expect(second.searchParams.has('feature.explainability')).toBe(false);
+    expect(second.searchParams.get('filter.type')).toBe('urn:tag');
+    expect(second.searchParams.get('signal.interests.entities')).toBe(
+      'FCE8B172-4795-43E4-B222-3B550DC05FD9,9A25B172-4795-43E4-B222-3B550DC05AAA'
+    );
+    expect(calls[0]![1]?.redirect).toBe('error');
+    expect(calls[1]![1]?.redirect).toBe('error');
+  });
+
+  it('does not retry taste analysis for non-validation Qloo errors', async () => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return new Response('{}', { status:429 });
+    };
+    const client = new QlooClient('event-key', mockFetch);
+
+    await expect(client.tasteAnalysis(['FCE8B172-4795-43E4-B222-3B550DC05FD9']))
+      .rejects.toMatchObject({ status:429, endpoint:'insights' });
+    expect(calls).toHaveLength(1);
+  });
+
   it('rejects redirects instead of forwarding the Qloo credential', async () => {
     const mockFetch: typeof fetch = async (_input, init) => {
       expect(init?.redirect).toBe('error');
