@@ -298,10 +298,11 @@ export default function App() {
     </section>
 
     {result && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
-      <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div><b>{source==='live'?'LIVE QLOO':'ILLUSTRATIVE DEMO'}</b></div>
-      <div className="provenanceLine">
-        <strong>{result.provenance.source === 'qloo-live' ? 'Verified live Qloo result' : 'Illustrative preview data'}</strong>
-        {result.provenance.generatedAt && <span>Generated {new Date(result.provenance.generatedAt).toLocaleString()}</span>}
+      <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div></div>
+      <div className="resultMeta" aria-label="Result provenance and evidence">
+        <span className={source === 'live' ? 'metaLive' : 'metaDemo'}><b>Source</b>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
+        <span><b>Evidence</b>{result.evidence.evidenceBasis === 'ranked-order' ? 'Ranked Qloo order' : 'Normalized Qloo score'}</span>
+        <span><b>{result.provenance.generatedAt ? 'Generated' : 'Timestamp'}</b>{result.provenance.generatedAt ? new Date(result.provenance.generatedAt).toLocaleString() : 'Static example · no live timestamp'}</span>
       </div>
       <div className="resultActions" aria-label="Session actions">
         <button type="button" className="secondary" onClick={copySession}>{copied ? 'Copied' : 'Copy session'}</button>
