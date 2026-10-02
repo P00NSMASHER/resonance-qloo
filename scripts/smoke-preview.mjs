@@ -332,6 +332,7 @@ try {
     if (
       reviewResponse.status !== 409 ||
       reviewBody.code !== 'QLOO_RESOLUTION_REVIEW_REQUIRED' ||
+      reviewBody.contractVersion !== CONTRACT_VERSION ||
       !Array.isArray(reviewBody.resolvedAnchors) ||
       typeof reviewBody.reviewToken !== 'string' ||
       reviewBody.reviewToken.length < 1 ||
@@ -412,6 +413,7 @@ try {
     if (
       confirmedBody.provenance?.source !== 'qloo-live' ||
       confirmedBody.provenance?.apiOrigin !== mockQloo.baseUrl ||
+      confirmedBody.provenance?.contractVersion !== CONTRACT_VERSION ||
       confirmedBody.requestContext?.energy !== 'calm' ||
       confirmedBody.requestContext?.setting !== 'small-group' ||
       confirmedBody.requestContext?.durationMinutes !== 45 ||
