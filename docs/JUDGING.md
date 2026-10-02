@@ -41,6 +41,7 @@ The implementation now matches current Qloo public documentation more defensibly
 - Tag results are read from `results.tags`.
 - Numeric affinity values are used only if Qloo actually returns them.
 - Taste analysis requests Qloo's documented `feature.explainability=true`. Resonance reports how many returned taste results actually contain non-empty `query.explainability` metadata and whether aggregate explainability is present; it does not invent attribution when Qloo omits it.
+- If Qloo explicitly rejects that optional explainability feature with a 400/422 response whose detail identifies explainability, Resonance retries once without the flag. Other 400/422 validation failures remain errors rather than being masked by the fallback.
 - If a tag result is rank-ordered but unscored, Resonance preserves that Qloo order and displays **Rank #N** instead of manufacturing a percentage.
 - The service retains up to eight returned affinity signals for inspection while the agent selects at most four for the four-step plan.
 - The selected-signal sequence is explicit and stable: the UI labels chosen evidence with stable **Plan signal #N** numbering (up to four selected signals), repeats those numbers on the corresponding activity cards, and preserves the same mapping in copied session evidence.
