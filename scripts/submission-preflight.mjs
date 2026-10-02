@@ -184,6 +184,15 @@ try {
   if (!capture.includes('provenance?.apiOrigin') && !capture.includes('provenance.apiOrigin')) {
     failures.push('Live evidence capture is not checking recommendation Qloo origin provenance.');
   }
+  if (!capture.includes('confirmation_receipt')) {
+    failures.push('Live evidence capture is missing the explicit Qloo confirmation receipt.');
+  }
+  if (!capture.includes('unconfirmedTopResults')) {
+    failures.push('Live evidence capture is not rejecting unconfirmed top-result matches.');
+  }
+  if (!capture.includes('Resolution review count mismatch')) {
+    failures.push('Live evidence capture is not validating resolution review counts.');
+  }
 } catch {}
 
 if (!process.argv.includes('--offline')) {
