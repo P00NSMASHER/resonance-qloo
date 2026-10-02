@@ -35,13 +35,34 @@ async function fetchJson(url) {
       'user-agent': 'resonance-deployment-check/1.0',
     },
   });
+  const bodyText = await response.text();
   if (!response.ok) {
-    throw new Error(`${url} returned HTTP ${response.status}`);
+    throw new Error(`${url} returned HTTP ${response.status}: ${bodyText.slice(0,160)}`);
   }
-  return response.json();
+  const contentType = response.headers.get('content-type') || '';
+  if (!/application\/json/i.test(contentType)) {
+    throw new Error(
+      `${url} returned ${contentType || 'an unknown content type'} instead of JSON. ` +
+      'The public deployment may be stale or missing its API backend.',
+    );
+  }
+  try {
+    return JSON.parse(bodyText);
+  } catch {
+    throw new Error(`${url} returned invalid JSON despite content-type ${contentType}.`);
+  }
 }
 
-const status = await fetchJson(BASE_URL + '/api/status');
+let status;
+try {
+  status = await fetchJson(BASE_URL + '/api/status');
+} catch (error) {
+  console.error(
+    'FAIL: Public backend status endpoint is not serving the current Resonance API contract. ' +
+    (error instanceof Error ? error.message : String(error)),
+  );
+  process.exit(1);
+}
 if (status.service !== 'resonance') {
   console.error(`FAIL: Public backend service marker is ${JSON.stringify(status.service)}, expected "resonance".`);
   process.exit(1);
