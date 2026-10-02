@@ -47,5 +47,16 @@ jobs:
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
       - name: Public deployment parity (advisory)
+        id: deployment_parity
         continue-on-error: true
         run: npm run deployment:check
+      - name: Summarize public deployment parity
+        if: always()
+        run: |
+          if [ "${{ steps.deployment_parity.outcome }}" = "success" ]; then
+            echo "### Public deployment parity: ✅ current" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning title=Public deployment parity failed::The Floot deployment is stale or incomplete. Re-publish the reviewed GitHub head, then run npm run deployment:check."
+            echo "### Public deployment parity: ⚠️ stale or incomplete" >> "$GITHUB_STEP_SUMMARY"
+            echo "Re-publish the reviewed GitHub head to Floot, then run `npm run deployment:check`." >> "$GITHUB_STEP_SUMMARY"
+          fi
