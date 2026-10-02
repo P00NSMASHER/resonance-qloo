@@ -10,11 +10,14 @@ export const RESOLUTION_REVIEW_TOKEN_TTL_MS = 5 * 60_000;
 export function resolutionReviewSigningKey(
   qlooApiKey: string,
   qlooApiOrigin: string,
+  deploymentContractVersion: string,
 ) {
   return createHmac('sha256', qlooApiKey)
     .update('resonance-resolution-review:v1')
     .update('\n')
     .update(qlooApiOrigin)
+    .update('\n')
+    .update(deploymentContractVersion)
     .digest();
 }
 
