@@ -74,6 +74,16 @@ describe('live recommendation result integrity', () => {
     expect(hasConsistentRecommendationResult(selectedMismatch)).toBe(false);
   });
 
+  it('rejects semantically duplicate Qloo UUIDs and affinity labels', () => {
+    const duplicateEntity = validResult();
+    duplicateEntity.resolvedAnchors[1].entityId = duplicateEntity.resolvedAnchors[0].entityId.toLowerCase();
+    expect(hasConsistentRecommendationResult(duplicateEntity)).toBe(false);
+
+    const duplicateAffinity = validResult();
+    duplicateAffinity.affinities[1].label = ' jazz ';
+    expect(hasConsistentRecommendationResult(duplicateAffinity)).toBe(false);
+  });
+
   it('rejects selected labels that are absent, duplicated, or not represented in the plan', () => {
     const absent = validResult();
     absent.evidence.selectedAffinityLabels = ['Jazz','Musicals','Not returned'];
