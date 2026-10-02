@@ -47,6 +47,10 @@ export function createTtlCache<T>(ttlMs: number, maxEntries = 250) {
       return load;
     },
 
+    delete(key: string) {
+      entries.delete(key);
+    },
+
     size() {
       return entries.size;
     },
