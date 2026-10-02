@@ -6,9 +6,24 @@ describe('Qloo base URL configuration', () => {
     expect(resolveQlooBaseUrl(undefined)).toBe(DEFAULT_QLOO_API_BASE_URL);
   });
 
-  it('supports an explicit public Qloo API origin when needed', () => {
+  it('supports only the documented Qloo API origins by default', () => {
     expect(resolveQlooBaseUrl('https://api.qloo.com/'))
       .toBe('https://api.qloo.com');
+    expect(resolveQlooBaseUrl('https://hackathon.api.qloo.com/'))
+      .toBe('https://hackathon.api.qloo.com');
+    expect(() => resolveQlooBaseUrl('https://example.com'))
+      .toThrow('trusted Qloo API origin');
+    expect(() => resolveQlooBaseUrl('https://evil.qloo.com'))
+      .toThrow('trusted Qloo API origin');
+  });
+
+  it('allows loopback HTTPS only behind the explicit local-mock flag', () => {
+    expect(() => resolveQlooBaseUrl('https://127.0.0.1:9443'))
+      .toThrow('trusted Qloo API origin');
+    expect(resolveQlooBaseUrl('https://127.0.0.1:9443', true))
+      .toBe('https://127.0.0.1:9443');
+    expect(resolveQlooBaseUrl('https://localhost:9443', true))
+      .toBe('https://localhost:9443');
   });
 
   it('fails closed on insecure or malformed origins', () => {
