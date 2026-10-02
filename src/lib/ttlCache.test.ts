@@ -56,6 +56,17 @@ describe('ttl cache', () => {
     expect(loader).toHaveBeenCalledTimes(2);
   });
 
+  it('supports targeted invalidation without clearing unrelated keys', async () => {
+    const cache = createTtlCache<number>(1000);
+    cache.set('x', 1, 1000);
+    cache.set('y', 2, 1000);
+
+    cache.delete('x');
+
+    expect(cache.get('x', 1100)).toBeUndefined();
+    expect(cache.get('y', 1100)).toBe(2);
+  });
+
   it('does not cache failed loads', async () => {
     const cache = createTtlCache<number>(1000);
     const loader = vi.fn()
