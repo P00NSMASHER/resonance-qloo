@@ -316,8 +316,12 @@ try {
   if (!server.includes('ResolutionReviewRequiredError') || !server.includes("code: 'QLOO_RESOLUTION_REVIEW_REQUIRED'")) {
     failures.push('Server is missing the 409 Qloo resolution-confirmation response path.');
   }
-  if (!server.includes("QLOO_ALLOW_LOCAL_MOCK === '1' && process.env.NODE_ENV !== 'production'")) {
-    failures.push('Server does not disable the local Qloo mock escape hatch in production.');
+  if (
+    !server.includes("process.env.QLOO_ALLOW_LOCAL_MOCK === '1'") ||
+    !server.includes("process.env.NODE_ENV === 'development'") ||
+    !server.includes("process.env.NODE_ENV === 'test'")
+  ) {
+    failures.push('Server local Qloo mock escape hatch is not restricted to explicit development/test mode.');
   }
   if (
     !server.includes('qlooProbeRefreshLimiter') ||
