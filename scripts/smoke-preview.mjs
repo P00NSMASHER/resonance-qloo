@@ -291,6 +291,26 @@ try {
       );
     }
 
+    // Invalid requests must not consume the 12/minute live-Qloo client budget.
+    // This deliberately exceeds that threshold before issuing the valid review request below.
+    for (let attempt = 0; attempt < 13; attempt += 1) {
+      const invalid = await fetch(liveBase + '/api/recommend', {
+        method:'POST',
+        headers:{ 'content-type':'application/json' },
+        body:JSON.stringify({
+          anchors:['Ella Fitzgerald','Italian food'],
+          energy:'wild',
+          setting:'small-group',
+        }),
+      });
+      if (invalid.status !== 400) {
+        throw new Error(`Invalid request consumed live-Qloo quota on attempt ${attempt + 1}: HTTP ${invalid.status}.`);
+      }
+    }
+    if (mockQloo.searchCalls() !== qlooSearchesBeforeInvalidRequest) {
+      throw new Error('Invalid requests unexpectedly reached Qloo while testing quota isolation.');
+    }
+
     const request = {
       anchors:['Ella Fitzgerald','Italian food'],
       energy:'calm',
