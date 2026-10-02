@@ -8,6 +8,7 @@ const requiredInvalidationBody = [
   "setError('');",
   "setCopied(false);",
   "setResolutionReview(null);",
+  "setResolutionReviewToken('');",
 ];
 
 const invalidateStart = source.indexOf('function invalidateGeneratedState()');
@@ -77,6 +78,12 @@ for (const marker of [
   "typeUrn:anchorTypeUrn(item.type)",
   "payloadHasMatchingRequestContext(data, requestContext)",
   "Qloo review response did not match the submitted session context.",
+  "const [resolutionReviewToken, setResolutionReviewToken] = useState('');",
+  "typeof data.reviewToken === 'string'",
+  "data.reviewToken.length <= 128",
+  "setResolutionReviewToken(data.reviewToken);",
+  "reviewToken:reviewBody.reviewToken",
+  "disabled={loading || !resolutionReviewToken}",
   "matchesRecommendationRequestContext(data, requestContext)",
   "Live Qloo response did not match the submitted session context.",
   "<b>Request receipt</b>",
