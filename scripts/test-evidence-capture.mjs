@@ -7,10 +7,11 @@ const capturePath = fileURLToPath(new URL('./capture-live-evidence.mjs', import.
 const QLOO_ORIGIN = 'https://hackathon.api.qloo.com';
 const CONFIRMED_ID = '9A25B172-4795-43E4-B222-3B550DC05AAA';
 const SECRET = 'qloo-capture-selftest-secret';
+const REVIEW_TOKEN = 'selftest-review-receipt';
 
 let responseMode = 'normal';
 
-function runCapture(baseUrl, confirmedEntityIds = '') {
+function runCapture(baseUrl, confirmedEntityIds = '', reviewToken = '') {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [capturePath], {
       env:{
@@ -19,6 +20,7 @@ function runCapture(baseUrl, confirmedEntityIds = '') {
         QLOO_TRUSTED_BASE_URL:QLOO_ORIGIN,
         QLOO_API_KEY:SECRET,
         RESONANCE_CONFIRMED_ENTITY_IDS:confirmedEntityIds,
+        RESONANCE_REVIEW_TOKEN:reviewToken,
       },
       stdio:['ignore','pipe','pipe'],
     });
@@ -59,6 +61,7 @@ const server = createServer(async (req, res) => {
     for await (const chunk of req) raw += String(chunk);
     const body = raw ? JSON.parse(raw) : {};
     const confirmed = Array.isArray(body.confirmedEntityIds) ? body.confirmedEntityIds : [];
+    const suppliedReviewToken = typeof body.reviewToken === 'string' ? body.reviewToken : '';
 
     const requestContext = {
       anchors:[
@@ -86,12 +89,13 @@ const server = createServer(async (req, res) => {
       },
     ];
 
-    if (!confirmed.length) {
+    if (!confirmed.length || suppliedReviewToken !== REVIEW_TOKEN) {
       send(409, {
         error:'Review Qloo entity matches before continuing.',
         code:'QLOO_RESOLUTION_REVIEW_REQUIRED',
         requestContext,
         resolvedAnchors,
+        reviewToken:REVIEW_TOKEN,
       });
       return;
     }
@@ -158,18 +162,32 @@ try {
   if (
     needsReview.code === 0 ||
     !reviewOutput.includes('Qloo entity confirmation is required') ||
-    !reviewOutput.includes(`RESONANCE_CONFIRMED_ENTITY_IDS=${CONFIRMED_ID}`)
+    !reviewOutput.includes(`RESONANCE_CONFIRMED_ENTITY_IDS=${CONFIRMED_ID}`) ||
+    !reviewOutput.includes(`RESONANCE_REVIEW_TOKEN=${REVIEW_TOKEN}`)
   ) {
     throw new Error(`Expected review-required capture failure. stdout=${needsReview.stdout} stderr=${needsReview.stderr}`);
   }
 
   responseMode = 'normal';
-  const success = await runCapture(baseUrl, CONFIRMED_ID);
+  const idOnly = await runCapture(baseUrl, CONFIRMED_ID);
+  const idOnlyOutput = idOnly.stdout + '\n' + idOnly.stderr;
+  if (
+    idOnly.code === 0 ||
+    !idOnlyOutput.includes('Qloo entity confirmation is required') ||
+    !idOnlyOutput.includes(`RESONANCE_REVIEW_TOKEN=${REVIEW_TOKEN}`)
+  ) {
+    throw new Error(`Expected ID-only evidence capture to require the server receipt. stdout=${idOnly.stdout} stderr=${idOnly.stderr}`);
+  }
+
+  const success = await runCapture(baseUrl, CONFIRMED_ID, REVIEW_TOKEN);
   if (success.code !== 0) {
     throw new Error(`Expected confirmed evidence capture to pass. stdout=${success.stdout} stderr=${success.stderr}`);
   }
   if (success.stdout.includes(SECRET)) {
     throw new Error('Evidence capture emitted QLOO_API_KEY.');
+  }
+  if (success.stdout.includes(REVIEW_TOKEN)) {
+    throw new Error('Evidence capture emitted the ephemeral Qloo review receipt.');
   }
   const artifact = JSON.parse(success.stdout);
   if (
@@ -183,6 +201,7 @@ try {
   }
   if (
     artifact.confirmation_receipt?.required !== true ||
+    artifact.confirmation_receipt?.reviewTokenUsed !== true ||
     artifact.confirmation_receipt?.confirmedTopResultCount !== 1 ||
     artifact.confirmation_receipt?.confirmedTopResults?.[0]?.entityId !== CONFIRMED_ID
   ) {
@@ -190,7 +209,7 @@ try {
   }
 
   responseMode = 'normal';
-  const wrongConfirmation = await runCapture(baseUrl, 'AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA');
+  const wrongConfirmation = await runCapture(baseUrl, 'AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA', REVIEW_TOKEN);
   const wrongOutput = wrongConfirmation.stdout + '\n' + wrongConfirmation.stderr;
   if (
     wrongConfirmation.code === 0 ||
@@ -200,7 +219,7 @@ try {
   }
 
   responseMode = 'context-mismatch';
-  const wrongContext = await runCapture(baseUrl, CONFIRMED_ID);
+  const wrongContext = await runCapture(baseUrl, CONFIRMED_ID, REVIEW_TOKEN);
   const wrongContextOutput = wrongContext.stdout + '\n' + wrongContext.stderr;
   if (
     wrongContext.code === 0 ||
@@ -210,7 +229,7 @@ try {
   }
 
   responseMode = 'count-mismatch';
-  const mismatch = await runCapture(baseUrl, CONFIRMED_ID);
+  const mismatch = await runCapture(baseUrl, CONFIRMED_ID, REVIEW_TOKEN);
   const mismatchOutput = mismatch.stdout + '\n' + mismatch.stderr;
   if (
     mismatch.code === 0 ||
