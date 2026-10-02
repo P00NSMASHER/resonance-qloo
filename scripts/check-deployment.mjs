@@ -4,6 +4,7 @@ const EXPECTED_QLOO_API_ORIGIN = (process.env.EXPECTED_QLOO_API_ORIGIN || 'https
 const requiredMarkers = [
   'How Qloo changed this plan',
   'Selection rule',
+  'Request receipt',
   'Plan signal #',
   'Additional evidence',
   'Qloo top match · review',
