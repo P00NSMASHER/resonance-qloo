@@ -21,6 +21,10 @@ Qloo taste-analysis responses can contain ordered tags without a numeric affinit
 
 This makes the UI slightly less flashy but prevents false precision.
 
+## Optional explainability compatibility
+
+Resonance requests Qloo's optional `feature.explainability=true` capability first. If Qloo responds with HTTP 400 or 422 **and the returned error detail specifically implicates explainability**, the client retries that same bounded taste-analysis request once without the optional flag. It does not retry unrelated validation failures, so a bad entity signal or another request error is not silently converted into a successful fallback.
+
 ## Credential verification is cached
 
 Successful live-connectivity verification is cached briefly to avoid spending event quota on every page load. That means a credential revoked moments after a successful probe can remain shown as ready until the cache expires; the next actual Qloo call still fails closed.
