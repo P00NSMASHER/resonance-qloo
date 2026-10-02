@@ -106,6 +106,7 @@ export default function App() {
   const [setting, setSetting] = useState('small-group');
   const [durationMinutes, setDurationMinutes] = useState(45);
   const [qlooState, setQlooState] = useState<QlooUiState>('checking');
+  const [qlooApiOrigin, setQlooApiOrigin] = useState('');
   const [result, setResult] = useState<Result | null>(null);
   const [source, setSource] = useState<'live'|'demo'|null>(null);
   const [error, setError] = useState('');
@@ -142,8 +143,16 @@ export default function App() {
         if (!r.ok) throw new Error('status unavailable');
         return r.json();
       })
-      .then(x => setQlooState(normalizeQlooState(x)))
-      .catch(() => setQlooState('degraded'))
+      .then(x => {
+        const nextState = normalizeQlooState(x);
+        const origin = typeof x?.qlooApiOrigin === 'string' ? x.qlooApiOrigin : '';
+        setQlooApiOrigin(origin);
+        setQlooState(nextState === 'ready' && !origin ? 'degraded' : nextState);
+      })
+      .catch(() => {
+        setQlooApiOrigin('');
+        setQlooState('degraded');
+      })
       .finally(() => window.clearTimeout(timer));
 
     return () => {
@@ -188,6 +197,14 @@ export default function App() {
         return;
       }
       if (!r.ok) throw new Error(data.error || 'Qloo request failed');
+      if (
+        data?.provenance?.source !== 'qloo-live' ||
+        typeof data?.provenance?.apiOrigin !== 'string' ||
+        !qlooApiOrigin ||
+        data.provenance.apiOrigin !== qlooApiOrigin
+      ) {
+        throw new Error('Live Qloo provenance could not be verified. Please retry after the connection status refreshes.');
+      }
       setResolutionReview(null);
       setResult(data);
       setSource('live');
