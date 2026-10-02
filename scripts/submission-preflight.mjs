@@ -377,6 +377,11 @@ try {
   ) {
     failures.push('Server is not failing closed on out-of-contract recommendation requests before normalization/Qloo access.');
   }
+  const validationIndex = server.indexOf('const requestValidationError = recommendationRequestValidationError(body)');
+  const liveQuotaIndex = server.indexOf("const processLimit = processLiveLimiter.check('process')");
+  if (validationIndex < 0 || liveQuotaIndex < 0 || validationIndex > liveQuotaIndex) {
+    failures.push('Live Qloo quota is being charged before request validation.');
+  }
 } catch {}
 
 try {
