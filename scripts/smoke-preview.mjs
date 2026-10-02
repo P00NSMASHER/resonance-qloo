@@ -35,7 +35,12 @@ try {
 
   const status = await fetch(base + '/api/status');
   const statusBody = await status.json();
-  if (status.status !== 200 || statusBody.qlooConnected !== false || statusBody.mode !== 'preview') {
+  if (
+    status.status !== 200 ||
+    statusBody.qlooConnected !== false ||
+    statusBody.mode !== 'preview' ||
+    statusBody.qlooApiOrigin !== 'https://hackathon.api.qloo.com'
+  ) {
     throw new Error('Preview status contract failed: ' + JSON.stringify(statusBody));
   }
   requireHeader(status, 'content-security-policy', "default-src 'self'");
