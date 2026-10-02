@@ -203,20 +203,47 @@ export default function App() {
     }
   }
 
+  function invalidateGeneratedState() {
+    setResult(null);
+    setSource(null);
+    setError('');
+    setCopied(false);
+    setResolutionReview(null);
+  }
+
   function updateAnchor(index: number, value: string) {
+    invalidateGeneratedState();
     setAnchors(current => current.map((item, itemIndex) => itemIndex === index ? value : item));
   }
 
   function updateAnchorType(index: number, value: AnchorType) {
+    invalidateGeneratedState();
     setAnchorTypes(current => current.map((item, itemIndex) => itemIndex === index ? value : item));
   }
 
+  function updateEnergy(value: string) {
+    invalidateGeneratedState();
+    setEnergy(value);
+  }
+
+  function updateSetting(value: string) {
+    invalidateGeneratedState();
+    setSetting(value);
+  }
+
+  function updateDuration(value: number) {
+    invalidateGeneratedState();
+    setDurationMinutes(value);
+  }
+
   function addAnchor() {
+    invalidateGeneratedState();
     setAnchors(current => current.length >= 4 ? current : [...current, '']);
     setAnchorTypes(current => current.length >= 4 ? current : [...current, 'any']);
   }
 
   function removeAnchor(index: number) {
+    invalidateGeneratedState();
     setAnchors(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
     setAnchorTypes(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
   }
@@ -279,6 +306,7 @@ export default function App() {
                 className="anchorType"
                 aria-label={`Category for cultural anchor ${index + 1}`}
                 value={anchorTypes[index] ?? 'any'}
+                disabled={loading}
                 onChange={e=>updateAnchorType(index,e.target.value as AnchorType)}
               >
                 {ANCHOR_TYPE_OPTIONS.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
@@ -286,13 +314,14 @@ export default function App() {
               <input
                 id={`anchor-${index}`}
                 value={anchor}
+                disabled={loading}
                 onChange={e=>updateAnchor(index, e.target.value)}
                 placeholder={anchorExamples[index] ?? 'Another favorite'}
                 autoComplete="off"
                 maxLength={100}
               />
             </label>
-            {anchors.length > 2 && <button type="button" className="anchorRemove" onClick={()=>removeAnchor(index)} aria-label={`Remove cultural anchor ${index + 1}`}>Remove</button>}
+            {anchors.length > 2 && <button type="button" className="anchorRemove" disabled={loading} onClick={()=>removeAnchor(index)} aria-label={`Remove cultural anchor ${index + 1}`}>Remove</button>}
           </div>)}
         </div>
         <div className="anchorControls">
@@ -301,21 +330,21 @@ export default function App() {
         </div>
         <div className="selects">
           <label htmlFor="energy">Energy
-            <select id="energy" value={energy} onChange={e=>setEnergy(e.target.value)}>
+            <select id="energy" value={energy} disabled={loading} onChange={e=>updateEnergy(e.target.value)}>
               <option value="calm">Calm & familiar</option>
               <option value="social">Social & conversational</option>
               <option value="active">Lively & participatory</option>
             </select>
           </label>
           <label htmlFor="setting">Setting
-            <select id="setting" value={setting} onChange={e=>setSetting(e.target.value)}>
+            <select id="setting" value={setting} disabled={loading} onChange={e=>updateSetting(e.target.value)}>
               <option value="one-on-one">One-on-one</option>
               <option value="small-group">Small group</option>
               <option value="community">Community room</option>
             </select>
           </label>
           <label htmlFor="duration">Session length
-            <select id="duration" value={durationMinutes} onChange={e=>setDurationMinutes(Number(e.target.value))}>
+            <select id="duration" value={durationMinutes} disabled={loading} onChange={e=>updateDuration(Number(e.target.value))}>
               <option value={30}>30 minutes</option>
               <option value={45}>45 minutes</option>
               <option value={60}>60 minutes</option>
