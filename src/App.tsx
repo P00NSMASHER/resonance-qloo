@@ -19,6 +19,7 @@ type Result = {
     meanNormalizedScore: number|null;
     evidenceBasis: 'normalized-score'|'ranked-order';
     selectedAffinityCount: number;
+    returnedAffinityCount: number;
     selectedAffinityLabels?: string[];
     resolvedAnchorCount: number;
     categoryHintCount: number;
@@ -63,6 +64,7 @@ const demo: Result = {
     meanNormalizedScore:null,
     evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
+    returnedAffinityCount:4,
     selectedAffinityLabels:[
       'classic jazz vocals',
       'Golden Age musicals',
@@ -332,7 +334,7 @@ export default function App() {
           <i aria-hidden="true">→</i>
         </div>
         <div className="evidenceColumn">
-          <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.affinities.length}</strong> {source === 'live' ? 'returned' : 'example'}</span></div>
+          <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> {source === 'live' ? 'returned' : 'example'}</span></div>
           <div className="selectionRule">
             <b>Selection rule</b>
             <span>{source === 'demo'
@@ -354,7 +356,8 @@ export default function App() {
         <div className="evidenceMetrics">
           <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
           <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
-          <span><b>{result.evidence.selectedAffinityCount}</b> affinities selected</span>
+          <span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span>
+          <span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span>
           <span><b>{result.evidence.sessionDurationMinutes}</b> minutes</span>
           <span><b>{result.evidence.energy}</b> energy</span>
           <span><b>{result.evidence.setting}</b> setting</span>
