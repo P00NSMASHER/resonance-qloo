@@ -16,7 +16,14 @@ export type RecommendationInput = {
   energy: string;
   setting: string;
   durationMinutes?: number;
+  confirmedEntityIds?: string[];
 };
+
+export class ResolutionReviewRequiredError extends Error {
+  constructor(public readonly resolvedAnchors: ResolvedAnchor[]) {
+    super('QLOO_RESOLUTION_REVIEW_REQUIRED');
+  }
+}
 
 export async function buildRecommendation(
   gateway: RecommendationGateway,
@@ -43,6 +50,14 @@ export async function buildRecommendation(
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
   }
 
+  const confirmedEntityIds = new Set(input.confirmedEntityIds ?? []);
+  const unresolvedReview = resolved.filter(
+    item => item.resolutionMatch === 'top-result' && !confirmedEntityIds.has(item.entityId),
+  );
+  if (unresolvedReview.length) {
+    throw new ResolutionReviewRequiredError(resolved);
+  }
+
   const tastePayload = await gateway.tasteAnalysis(resolved.map(x => x.entityId));
   const affinities = extractAffinities(tastePayload);
   const qlooExplainability = extractExplainabilitySummary(tastePayload);
@@ -55,16 +70,26 @@ export async function buildRecommendation(
     input.durationMinutes ?? 45,
   );
 
-  const reviewSuffix = session.evidence.topResultResolutionCount > 0
-    ? ` ${session.evidence.topResultResolutionCount} entity match(es) should be reviewed.`
+  const topResultCount = session.evidence.topResultResolutionCount;
+  const reviewSuffix = topResultCount > 0
+    ? ` ${topResultCount} Qloo top-result match(es) were explicitly confirmed before taste analysis.`
     : '';
+  const agentTrace = session.agentTrace.map(step =>
+    step.stage === 'resolve' && topResultCount > 0
+      ? {
+          ...step,
+          status:'ok' as const,
+          detail:`Resolved ${resolved.length} cultural anchors into Qloo-backed entity evidence; ${session.evidence.exactResolutionCount} exact-name match(es), ${topResultCount} explicitly confirmed Qloo top-result match(es), and ${session.evidence.categoryHintCount} explicit category hint(s).`,
+        }
+      : step
+  );
 
   return {
     summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.${reviewSuffix}`,
     resolvedAnchors: resolved,
     affinities,
     plan: session.plan,
-    agentTrace: session.agentTrace,
+    agentTrace,
     evidence: session.evidence,
   };
 }
