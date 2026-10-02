@@ -111,6 +111,7 @@ export default function App() {
   const [durationMinutes, setDurationMinutes] = useState(45);
   const [qlooState, setQlooState] = useState<QlooUiState>('checking');
   const [qlooApiOrigin, setQlooApiOrigin] = useState('');
+  const [statusRefreshKey, setStatusRefreshKey] = useState(0);
   const [result, setResult] = useState<Result | null>(null);
   const [source, setSource] = useState<'live'|'demo'|null>(null);
   const [error, setError] = useState('');
@@ -139,6 +140,8 @@ export default function App() {
   );
 
   useEffect(() => {
+    setQlooState('checking');
+    setQlooApiOrigin('');
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), STATUS_REQUEST_TIMEOUT_MS);
 
@@ -163,7 +166,7 @@ export default function App() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, []);
+  }, [statusRefreshKey]);
 
   useEffect(() => {
     if (result) window.requestAnimationFrame(() => resultRef.current?.focus());
@@ -377,6 +380,12 @@ export default function App() {
           <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
         </div>
         <small>{qlooUi.helper}</small>
+        {qlooState !== 'ready' && qlooState !== 'checking' && <button
+          type="button"
+          className="connectionRetry"
+          disabled={loading}
+          onClick={()=>setStatusRefreshKey(current => current + 1)}
+        >Retry Qloo verification</button>}
         {usableAnchors.length < 2 && <div className="validation" role="status">Enter at least two distinct cultural anchors.</div>}
         {error && <div className="error" role="alert">{error}</div>}
         {resolutionReview && <section className="resolutionReview" aria-labelledby="resolution-review-title">
