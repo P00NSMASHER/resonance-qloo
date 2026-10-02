@@ -12,7 +12,9 @@
    - the evidence basis: numeric score when Qloo supplies one, otherwise Qloo's affinity-ranked result order;
    - the four-stage agent decision trace;
    - the four-step session;
-   - each step's "why it fits" explanation;\n   - the exported session audit trail, which preserves source mode, generation time, Qloo IDs, resolution path, evidence basis, explainability availability, selected-signal count, target duration, and agent trace.
+   - each step's "why it fits" explanation;
+   - the visible favorite → Qloo bridge on each plan step;
+   - the exported session audit trail, which preserves source mode, generation time, Qloo IDs, resolution path, evidence basis, explainability availability, selected-signal count, target duration, and agent trace.
 
 ## Judging-criteria mapping
 
