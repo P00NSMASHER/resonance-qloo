@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { orchestrateSession } from './agentPlanner';
 
 const anchors = [
-  { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9', requestedTypeUrn:'urn:entity:artist' },
-  { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA', requestedTypeUrn:'urn:entity:movie' },
+  { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' as const },
+  { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'9A25B172-4795-43E4-B222-3B550DC05AAA', requestedTypeUrn:'urn:entity:movie', resolutionMatch:'exact-name' as const },
 ];
 
 describe('agent planner', () => {
@@ -33,12 +33,40 @@ describe('agent planner', () => {
     ]);
     expect(session.evidence.returnedAffinityCount).toBe(4);
     expect(session.evidence.meanNormalizedScore).toBeGreaterThan(.7);
+    expect(session.evidence.exactResolutionCount).toBe(2);
+    expect(session.evidence.topResultResolutionCount).toBe(0);
     expect(session.evidence.categoryHintCount).toBe(2);
     expect(session.evidence.sessionDurationMinutes).toBe(45);
     expect(session.evidence.energy).toBe('social');
     expect(session.evidence.setting).toBe('small-group');
     expect(session.agentTrace[0].detail).toContain('2 used an explicit category hint');
     expect(session.agentTrace[2].detail).toContain('resolved favorites visible');
+  });
+
+  it('warns when Qloo resolution uses a non-exact top result', () => {
+    const session = orchestrateSession(
+      [
+        anchors[0],
+        {
+          query:'Italian food',
+          name:'Italian cuisine',
+          entityId:'7B25B172-4795-43E4-B222-3B550DC05AAB',
+          resolutionMatch:'top-result',
+        },
+      ],
+      [
+        { label:'Jazz', score:null, rank:1 },
+        { label:'Musicals', score:null, rank:2 },
+        { label:'Classic cinema', score:null, rank:3 },
+      ],
+      'calm',
+      'small-group',
+    );
+
+    expect(session.evidence.exactResolutionCount).toBe(1);
+    expect(session.evidence.topResultResolutionCount).toBe(1);
+    expect(session.agentTrace[0].status).toBe('warning');
+    expect(session.agentTrace[0].detail).toContain('1 Qloo top-result match(es) to review');
   });
 
   it('scales the four timeboxes to the selected session length', () => {
