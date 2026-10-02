@@ -66,8 +66,26 @@ describe('agent planner', () => {
 
     expect(session.evidence.explainabilityResultCount).toBe(2);
     expect(session.evidence.aggregateExplainabilityAvailable).toBe(true);
+    expect(session.agentTrace[3].status).toBe('ok');
     expect(session.agentTrace[3].detail).toContain('2 taste result(s)');
     expect(session.agentTrace[3].detail).toContain('aggregate explainability');
+  });
+
+  it('marks missing explainability as a warning', () => {
+    const session = orchestrateSession(
+      anchors,
+      [
+        { label:'Jazz', score:null, rank:1 },
+        { label:'Musicals', score:null, rank:2 },
+        { label:'Classic cinema', score:null, rank:3 },
+      ],
+      'calm',
+      'small-group',
+      { resultCount:0, aggregateAvailable:false },
+    );
+
+    expect(session.agentTrace[3].status).toBe('warning');
+    expect(session.agentTrace[3].detail).toContain('did not include attribution metadata');
   });
 
   it('uses Qloo rank order without manufacturing scores', () => {
