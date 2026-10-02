@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.14.0
+  version: 0.15.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -125,7 +125,12 @@ components:
           maxItems: 4
           uniqueItems: true
           items: { type: string, minLength: 1, maxLength: 200 }
-          description: Qloo entity IDs explicitly confirmed by the user after a resolution-review response.
+          description: Qloo entity IDs explicitly confirmed by the user after a resolution-review response. IDs alone do not authorize a non-exact match; the matching reviewToken must also be supplied.
+        reviewToken:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: Ephemeral server-issued review receipt returned by the 409 response. It is HMAC-bound to the normalized request context and reviewed entity IDs and expires after five minutes.
     AnchorInput:
       type: object
       required: [query]
@@ -308,7 +313,7 @@ components:
         provenance: { $ref: '#/components/schemas/Provenance' }
     ResolutionReviewRequired:
       type: object
-      required: [error, code, requestContext, resolvedAnchors]
+      required: [error, code, requestContext, resolvedAnchors, reviewToken]
       properties:
         error:
           type: string
@@ -317,6 +322,11 @@ components:
           type: string
           const: QLOO_RESOLUTION_REVIEW_REQUIRED
         requestContext: { $ref: '#/components/schemas/RequestContext' }
+        reviewToken:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: Ephemeral receipt that must accompany the confirmed top-result entity IDs on the follow-up request.
         resolvedAnchors:
           type: array
           minItems: 2
