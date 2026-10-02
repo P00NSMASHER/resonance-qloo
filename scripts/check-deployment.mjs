@@ -6,6 +6,8 @@ const requiredMarkers = [
   'Selection rule',
   'Plan signal #',
   'Additional evidence',
+  'Qloo top match · review',
+  'Review entity matches',
   'Static example · no live timestamp',
 ];
 
