@@ -39,7 +39,7 @@ Resonance is not a clinical, diagnostic, dietary, medication, or medical decisio
 
 ## Sparse or ambiguous input
 
-Two vague anchors may resolve ambiguously. The product fails closed when too little evidence is available rather than pretending confidence. A future refinement may add explicit user confirmation of ambiguous entity matches.
+Two vague anchors may resolve ambiguously. Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewer than three usable affinity signals. Exactly three usable signals are accepted: the four-step plan reuses the third real selected signal for the closing step, and the UI/export disclose that reuse instead of inventing a synthetic fourth signal. A future refinement may add explicit user confirmation of ambiguous entity matches.
 
 ## Event quotas and upstream availability
 
@@ -47,4 +47,4 @@ Live Qloo behavior is subject to the event-issued credential, quota, rate limits
 
 ## Hosted environment
 
-The current public demo is externally hosted on Floot. The public repository is the reproducible source of truth for code, tests, architecture, and the event-tooling proof path.
+The current public demo is externally hosted on Floot. The public repository is the reproducible source of truth for code, tests, architecture, and the event-tooling proof path. Source changes do not by themselves prove the public deployment is current; finalization therefore includes a public bundle parity check and requires re-publishing Floot when the hosted feature set is stale.
