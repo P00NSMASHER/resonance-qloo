@@ -70,6 +70,40 @@ describe('recommendation service', () => {
     expect(gateway.tasteAnalysis).toHaveBeenCalledWith([uuidA, uuidB]);
   });
 
+  it('keeps all returned Qloo evidence while selecting only four plan signals', async () => {
+    const gateway = gatewayWithTags([
+      { name:'Jazz' },
+      { name:'Musicals' },
+      { name:'Classic cinema' },
+      { name:'Italian cuisine' },
+      { name:'Broadway' },
+      { name:'Swing dance' },
+      { name:'Art deco' },
+      { name:'Cafe culture' },
+    ]);
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:"Singin' in the Rain"}],
+      energy:'social',
+      setting:'small-group',
+    });
+
+    expect(result.affinities).toHaveLength(8);
+    expect(result.evidence.selectedAffinityCount).toBe(4);
+    expect(result.evidence.selectedAffinityLabels).toEqual([
+      'Jazz',
+      'Musicals',
+      'Classic cinema',
+      'Italian cuisine',
+    ]);
+    expect(result.plan.map(item => item.affinityLabel)).toEqual([
+      'Jazz',
+      'Musicals',
+      'Classic cinema',
+      'Italian cuisine',
+    ]);
+  });
+
   it('flows structured favorite-to-Qloo bridges through the service response', async () => {
     const gateway = gatewayWithTags([
       { name:'Jazz' },
