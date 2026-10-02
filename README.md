@@ -205,6 +205,8 @@ The smoke test verifies:
 }
 ```
 
+Invalid public requests fail closed with HTTP 400 before Qloo is contacted. The server does not silently truncate extra anchors, ignore unknown fields, or substitute defaults for invalid energy, setting, duration, or confirmation IDs.
+
 A successful live response includes:
 
 - resolved Qloo anchors, category hints, and exact-name vs top-result classification,
