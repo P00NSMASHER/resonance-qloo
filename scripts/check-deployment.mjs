@@ -12,6 +12,8 @@ const requiredMarkers = [
   'Top matches confirmed',
   'Qloo API',
   'No synthetic signal',
+  'Interpretation limit',
+  'aggregate cultural relationships',
   'Qloo match review required',
   'Confirm matches & build',
   'QLOO_RESOLUTION_REVIEW_REQUIRED',
