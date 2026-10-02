@@ -165,7 +165,10 @@ export function planFromTags(
   durationMinutes = 45,
 ): PlanItem[] {
   const names = tags.map(x => x.label);
-  const [a='familiar favorites', b='warm nostalgia', c='shared storytelling', d='comforting ritual'] = names;
+  const a = names[0] ?? 'familiar favorites';
+  const b = names[1] ?? a;
+  const c = names[2] ?? b;
+  const d = names[3] ?? c;
   const [firstAnchor, secondAnchor, thirdAnchor, fourthAnchor] = anchorNames;
   const durations = durationMinutes === 30
     ? ['5 min','10 min','10 min','5 min']
@@ -243,7 +246,7 @@ export function planFromTags(
           title:'Closing ritual',
           duration:durations[3],
           action:`Close with a snack, sensory cue, or conversation card inspired by “${d},” then ask what should return next time.`,
-          why:`“${d}” provides another Qloo-ranked adjacent signal so the plan ends in the same cultural neighborhood it started in.`,
+          why:`“${d}” keeps the closing step grounded in selected Qloo evidence so the plan ends in the same cultural neighborhood it started in.`,
           affinityLabel:d,
         }
   ];
