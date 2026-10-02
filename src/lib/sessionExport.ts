@@ -61,6 +61,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ...(source === 'live' && selectedAffinitySequence.length
       ? [`Selected Qloo signals: ${selectedAffinitySequence.map((label,index) => `#${index + 1} ${label}`).join(' | ')}`]
       : []),
+    ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined && session.evidence.selectedAffinityCount < session.plan.length
+      ? [`Signal reuse: ${session.evidence.selectedAffinityCount} unique selected Qloo signal(s) support ${session.plan.length} activities; the last real selected signal is reused for the closing step instead of inventing synthetic evidence`]
+      : []),
     ...(source === 'live' && session.evidence?.sessionDurationMinutes !== undefined
       ? [`Session target: ${session.evidence.sessionDurationMinutes} minutes`]
       : []),
