@@ -13,6 +13,7 @@ import { qlooSearchCacheKey, qlooTasteCacheKey } from '../src/lib/qlooCacheKey';
 import { rateLimitClientKey } from '../src/lib/clientIdentity';
 import { recommendationRequestContext } from '../src/lib/recommendationContext';
 import { createResolutionReviewToken, resolutionReviewSigningKey, verifyResolutionReviewToken } from '../src/lib/resolutionReviewToken';
+import deploymentContract from '../deployment-contract.json';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -91,6 +92,7 @@ async function handleStatus(
       qlooApiOrigin: QLOO_BASE_URL,
       mode: 'preview',
       service: 'resonance',
+      contractVersion: deploymentContract.version,
     });
   }
 
@@ -126,6 +128,7 @@ async function handleStatus(
     qlooApiOrigin: QLOO_BASE_URL,
     mode: ready ? 'live' : 'preview',
     service: 'resonance',
+    contractVersion: deploymentContract.version,
   });
 }
 
