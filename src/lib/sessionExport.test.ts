@@ -3,6 +3,15 @@ import { formatSessionText } from './sessionExport';
 
 describe('session export', () => {
   const session = {
+    requestContext:{
+      anchors:[
+        { query:'Ella Fitzgerald', typeUrn:'urn:entity:artist' },
+        { query:"Singin' in the Rain", typeUrn:'urn:entity:movie' },
+      ],
+      energy:'social',
+      setting:'small-group',
+      durationMinutes:45,
+    },
     summary:'A grounded session.',
     resolvedAnchors:[
       {query:'Ella',name:'Ella Fitzgerald',entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',requestedTypeUrn:'urn:entity:artist',resolutionMatch:'top-result' as const},
@@ -100,6 +109,16 @@ describe('session export', () => {
   it('keeps the non-secret Qloo API origin in live exports only', () => {
     expect(formatSessionText(session, 'live')).toContain('Qloo API origin: https://hackathon.api.qloo.com');
     expect(formatSessionText(session, 'demo')).not.toContain('Qloo API origin:');
+  });
+
+  it('preserves the normalized submitted request receipt in exports', () => {
+    const live = formatSessionText(session, 'live');
+    expect(live).toContain('Submitted request context: 45 minutes; energy=social; setting=small-group');
+    expect(live).toContain('Submitted anchors: Ella Fitzgerald [Artist] | Singin\' in the Rain [Film]');
+
+    const demo = formatSessionText(session, 'demo');
+    expect(demo).toContain('Illustrative request context: 45 minutes; energy=social; setting=small-group');
+    expect(demo).toContain('Illustrative anchors: Ella Fitzgerald [Artist] | Singin\' in the Rain [Film]');
   });
 
   it('keeps the live evidence basis in exported evidence', () => {
