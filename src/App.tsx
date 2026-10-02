@@ -130,6 +130,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [resolutionReview, setResolutionReview] = useState<ResolvedAnchor[] | null>(null);
+  const [resolutionReviewToken, setResolutionReviewToken] = useState('');
   const resultRef = useRef<HTMLElement | null>(null);
 
   const usableAnchors = useMemo(() => {
@@ -182,15 +183,19 @@ export default function App() {
 
   useEffect(() => {
     setResolutionReview(null);
+    setResolutionReviewToken('');
   }, [anchors,anchorTypes]);
 
-  async function runLive(confirmedEntityIds: string[] = []) {
+  async function runLive(confirmedEntityIds: string[] = [], reviewToken = '') {
     if (!canRun) return;
     setLoading(true);
     setError('');
     setResult(null);
     setSource(null);
-    if (!confirmedEntityIds.length) setResolutionReview(null);
+    if (!confirmedEntityIds.length) {
+      setResolutionReview(null);
+      setResolutionReviewToken('');
+    }
 
     const requestContext: RecommendationRequestContext = {
       anchors:usableAnchors.map(item => ({
@@ -209,20 +214,31 @@ export default function App() {
       const r = await fetch('/api/recommend', {
         method:'POST',
         headers:{'content-type':'application/json'},
-        body:JSON.stringify({anchors:usableAnchors,energy,setting,durationMinutes,confirmedEntityIds}),
+        body:JSON.stringify({
+          anchors:usableAnchors,
+          energy,
+          setting,
+          durationMinutes,
+          confirmedEntityIds,
+          ...(reviewToken ? { reviewToken } : {}),
+        }),
         signal:controller.signal
       });
       const data = await r.json();
       if (
         r.status === 409 &&
         data?.code === 'QLOO_RESOLUTION_REVIEW_REQUIRED' &&
-        Array.isArray(data.resolvedAnchors)
+        Array.isArray(data.resolvedAnchors) &&
+        typeof data.reviewToken === 'string' &&
+        data.reviewToken.length > 0 &&
+        data.reviewToken.length <= 128
       ) {
         if (!payloadHasMatchingRequestContext(data, requestContext)) {
           setQlooState('degraded');
           throw new Error('Qloo review response did not match the submitted session context. Please retry.');
         }
         setResolutionReview(data.resolvedAnchors);
+        setResolutionReviewToken(data.reviewToken);
         return;
       }
       if (!r.ok) {
@@ -243,6 +259,7 @@ export default function App() {
         throw new Error('Live Qloo provenance could not be verified. Please retry after the connection status refreshes.');
       }
       setResolutionReview(null);
+      setResolutionReviewToken('');
       setResult(data);
       setSource('live');
     } catch (e) {
@@ -263,6 +280,7 @@ export default function App() {
     setError('');
     setCopied(false);
     setResolutionReview(null);
+    setResolutionReviewToken('');
   }
 
   function updateAnchor(index: number, value: string) {
@@ -434,8 +452,8 @@ export default function App() {
             </div>)}
           </div>
           <div className="resolutionReviewActions">
-            <button type="button" disabled={loading} onClick={()=>runLive(resolutionReview.filter(item => item.resolutionMatch === 'top-result').map(item => item.entityId))}>Confirm matches & build</button>
-            <button type="button" className="secondary" disabled={loading} onClick={()=>setResolutionReview(null)}>Edit anchors instead</button>
+            <button type="button" disabled={loading || !resolutionReviewToken} onClick={()=>runLive(resolutionReview.filter(item => item.resolutionMatch === 'top-result').map(item => item.entityId), resolutionReviewToken)}>Confirm matches & build</button>
+            <button type="button" className="secondary" disabled={loading} onClick={()=>{setResolutionReview(null);setResolutionReviewToken('')}}>Edit anchors instead</button>
           </div>
         </section>}
       </div>
