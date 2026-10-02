@@ -7,6 +7,25 @@ describe('Qloo connection state', () => {
     expect(qlooPresentation('ready').liveReady).toBe(true);
   });
 
+  it('fails closed on contradictory or incomplete ready payloads', () => {
+    expect(normalizeQlooState({
+      qlooConfigured:true,
+      qlooConnected:false,
+      qlooStatus:'ready',
+    })).toBe('degraded');
+    expect(normalizeQlooState({
+      qlooConfigured:false,
+      qlooConnected:true,
+      qlooStatus:'ready',
+    })).toBe('degraded');
+    expect(normalizeQlooState({
+      qlooConfigured:true,
+      qlooConnected:true,
+      qlooStatus:'degraded',
+    })).toBe('degraded');
+    expect(normalizeQlooState({})).toBe('degraded');
+  });
+
   it('does not confuse a configured-but-broken key with live connectivity', () => {
     expect(normalizeQlooState({ qlooConfigured:true, qlooConnected:false, qlooStatus:'degraded' })).toBe('degraded');
     expect(qlooPresentation('degraded').liveReady).toBe(false);
