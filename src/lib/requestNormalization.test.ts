@@ -17,6 +17,7 @@ describe('recommendation request normalization', () => {
       energy:'social',
       setting:'community',
       durationMinutes:45,
+      confirmedEntityIds:[],
     });
   });
 
@@ -71,6 +72,24 @@ describe('recommendation request normalization', () => {
       anchors:['a1','a2'],
       durationMinutes:50,
     }).durationMinutes).toBe(45);
+  });
+
+  it('normalizes and bounds explicitly confirmed Qloo entity IDs', () => {
+    const result = normalizeRecommendationRequest({
+      anchors:['a1','a2'],
+      confirmedEntityIds:[
+        ' FCE8B172-4795-43E4-B222-3B550DC05FD9 ',
+        'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+        'urn:entity:artist:example',
+        42,
+        '',
+      ],
+    });
+
+    expect(result.confirmedEntityIds).toEqual([
+      'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+      'urn:entity:artist:example',
+    ]);
   });
 
   it('caps anchors at four and defaults invalid context values', () => {
