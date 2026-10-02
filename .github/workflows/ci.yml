@@ -54,6 +54,8 @@ jobs:
         id: deployment_parity
         continue-on-error: true
         run: npm run deployment:check
+      - name: Live Qloo readiness self-test
+        run: npm run qloo:live:selftest
       - name: Live Qloo readiness (advisory)
         id: qloo_live_readiness
         continue-on-error: true
