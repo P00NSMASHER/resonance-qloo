@@ -10,6 +10,7 @@ import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 import { buildRecommendation, ResolutionReviewRequiredError } from '../src/lib/recommendationService';
 import { normalizeRecommendationRequest, recommendationRequestValidationError } from '../src/lib/requestNormalization';
 import { qlooSearchCacheKey, qlooTasteCacheKey } from '../src/lib/qlooCacheKey';
+import { rateLimitClientKey } from '../src/lib/clientIdentity';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -67,14 +68,7 @@ async function readJson(req: import('node:http').IncomingMessage) {
 }
 
 function requestClientKey(req: import('node:http').IncomingMessage) {
-  const forwarded = req.headers['x-forwarded-for'];
-  const forwardedValues = (Array.isArray(forwarded) ? forwarded : [forwarded])
-    .flatMap(value => typeof value === 'string' ? value.split(',') : [])
-    .map(value => value.trim())
-    .filter(Boolean);
-  const nearestForwardedAddress = forwardedValues.at(-1);
-  const candidate = nearestForwardedAddress || req.socket.remoteAddress || 'unknown';
-  return createHash('sha256').update(candidate).digest('hex').slice(0, 24);
+  return rateLimitClientKey(req.headers['x-forwarded-for'], req.socket.remoteAddress);
 }
 
 function qlooCredentialFingerprint(key: string) {
