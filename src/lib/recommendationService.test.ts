@@ -89,6 +89,7 @@ describe('recommendation service', () => {
     });
 
     expect(result.affinities).toHaveLength(8);
+    expect(result.evidence.returnedAffinityCount).toBe(8);
     expect(result.evidence.selectedAffinityCount).toBe(4);
     expect(result.evidence.selectedAffinityLabels).toEqual([
       'Jazz',
