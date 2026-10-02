@@ -15,6 +15,7 @@ const requiredFiles = [
   'scripts/proof-redaction.mjs',
   'scripts/test-proof-redaction.mjs',
   'scripts/test-evidence-capture.mjs',
+  'scripts/test-ui-state-safety.mjs',
   'scripts/test-deployment-checker.mjs',
   'src/App.tsx',
   'server/index.ts',
