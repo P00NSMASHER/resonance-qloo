@@ -450,6 +450,7 @@ describe('recommendation service', () => {
       energy:'calm',
       setting:'small-group',
       confirmedEntityIds:[uuidB],
+      confirmationVerified:true,
     });
 
     expect(result.evidence.topResultResolutionCount).toBe(1);
