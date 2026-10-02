@@ -36,6 +36,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 ### Verified now
 
 - Request shape, input validation, result provenance, and fail-closed behavior are covered by source and CI.
+- Live status and recommendation provenance carry the non-secret Qloo API origin; the evidence-capture script requires it to match the trusted hackathon gateway before emitting a proof artifact.
 - Search parsing supports the UUID IDs documented for Qloo entity signals.
 - Tag parsing matches the documented `results.tags` response shape.
 - Taste analysis requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields.
@@ -52,7 +53,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 
 The final evidence block will record:
 
-- the exact Qloo tool/workflow and public harness version used;
+- the exact Qloo tool/workflow, public harness version, and Qloo API origin used;
 - a redacted request;
 - the resolved entity/tag choice;
 - the returned status and summary;
