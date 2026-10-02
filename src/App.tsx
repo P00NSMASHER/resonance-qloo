@@ -371,6 +371,10 @@ export default function App() {
         <span className="copyStatus" role="status" aria-live="polite">{copied ? 'Session copied to clipboard.' : ''}</span>
       </div>
       {source==='demo' && <div className="warning" role="note">Demo mode: these affinity ranks and rationales are placeholders, not Qloo API results.</div>}
+      <div className="interpretationLimit" role="note">
+        <b>Interpretation limit</b>
+        <span>Qloo affinities describe aggregate cultural relationships, not a probability or claim about this individual. Use the plan as a facilitator-reviewed starting point: accept, modify, reorder, or reject any suggestion based on the person’s actual response.</span>
+      </div>
 
       <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
         <div className="evidenceColumn">
