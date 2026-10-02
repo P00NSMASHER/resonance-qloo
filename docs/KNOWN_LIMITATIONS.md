@@ -29,7 +29,7 @@ Resonance requests Qloo's optional `feature.explainability=true` capability firs
 
 Successful live-connectivity verification is cached briefly to avoid spending event quota on every page load. That means a credential revoked moments after a successful probe can remain shown as ready until the cache expires; the next actual Qloo call still fails closed.
 
-For non-ready cached states, the UI exposes **Retry Qloo verification**. That retry explicitly asks the server to invalidate only the cached degraded/rate-limited probe and re-check Qloo. A healthy cached `ready` state is not discarded. Forced re-verification is bounded to two attempts per client per minute and twenty per server process per minute, so the retry button cannot become an unbounded Qloo-quota drain.
+When a credential is configured but the cached state is `degraded` or `rate-limited`, the UI exposes **Retry Qloo verification**. Preview/no-credential mode intentionally does not show this control. That retry explicitly asks the server to invalidate only the cached degraded/rate-limited probe and re-check Qloo. A healthy cached `ready` state is not discarded. Forced re-verification is bounded to two attempts per client per minute and twenty per server process per minute, so the retry button cannot become an unbounded Qloo-quota drain.
 
 ## Cultural affinity is not identity
 
