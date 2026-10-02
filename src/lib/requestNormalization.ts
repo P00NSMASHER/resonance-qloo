@@ -11,6 +11,7 @@ export type NormalizedRecommendationRequest = {
   setting: string;
   durationMinutes: number;
   confirmedEntityIds: string[];
+  reviewToken?: string;
 };
 
 const ALLOWED_REQUEST_KEYS = new Set([
@@ -19,6 +20,7 @@ const ALLOWED_REQUEST_KEYS = new Set([
   'setting',
   'durationMinutes',
   'confirmedEntityIds',
+  'reviewToken',
 ]);
 
 export function recommendationRequestValidationError(body: Record<string, unknown>) {
@@ -81,6 +83,13 @@ export function recommendationRequestValidationError(body: Record<string, unknow
     }
   }
 
+  if (
+    body.reviewToken !== undefined &&
+    (typeof body.reviewToken !== 'string' || body.reviewToken.trim().length < 1 || body.reviewToken.trim().length > 128)
+  ) {
+    return 'reviewToken must contain 1–128 characters.';
+  }
+
   return null;
 }
 
@@ -128,6 +137,9 @@ export function normalizeRecommendationRequest(body: Record<string, unknown>): N
         return id.length > 0 && id.length <= 200 ? [id] : [];
       }))].slice(0,4)
     : [];
+  const reviewToken = typeof body.reviewToken === 'string' && body.reviewToken.trim().length <= 128
+    ? body.reviewToken.trim()
+    : undefined;
 
-  return { anchors, energy, setting, durationMinutes, confirmedEntityIds };
+  return { anchors, energy, setting, durationMinutes, confirmedEntityIds, reviewToken };
 }
