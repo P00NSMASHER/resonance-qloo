@@ -35,7 +35,7 @@ Live results expose:
 The server owns the Qloo credential and provides two routes:
 
 - `GET /api/status`: reports whether the key is configured and whether Qloo was actually verified; probe results are cached for five minutes.
-- `POST /api/recommend`: validates a bounded request, creates a normalized `requestContext` receipt, and resolves anchors through Qloo Search. If any first valid Qloo result is not an exact normalized-name match, the route returns HTTP 409 with that request receipt, the resolved candidates, and an ephemeral five-minute HMAC review receipt, then stops **before** taste analysis. A follow-up must return both the exact reviewed entity IDs and that server-issued receipt. The receipt is bound to the canonical request context and reviewed IDs, so IDs alone, edited context, or an expired receipt cannot authorize taste analysis.
+- `POST /api/recommend`: validates a bounded request, creates a normalized `requestContext` receipt, and resolves anchors through Qloo Search. If any first valid Qloo result is not an exact normalized-name match, the route returns HTTP 409 with that request receipt, the resolved candidates, and an ephemeral five-minute HMAC review receipt, then stops **before** taste analysis. A follow-up must return both the exact reviewed entity IDs and that server-issued receipt. The receipt is bound to the canonical request context and reviewed IDs, and its signing key is derived from the Qloo credential, Qloo API origin, and shared deployment-contract version. IDs alone, edited context, an expired receipt, credential/origin rotation, or a deployment-contract change cannot authorize taste analysis.
 
 Safety/reliability controls:
 
@@ -54,7 +54,7 @@ Safety/reliability controls:
 - client-side connection-state downgrades when an actual live recommendation exposes upstream Qloo rate limiting/failure or fails the live evidence/provenance contract, while local application throttles and valid sparse-evidence responses remain scoped to the individual request;
 - explicit user confirmation before any non-exact Qloo top-result entity is used in taste analysis;
 - confirmation requires both the reviewed entity IDs and a five-minute server-issued HMAC receipt bound to the canonical request context and those IDs;
-- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result, edited session context, expired receipt, Qloo credential rotation, or Qloo API-origin change must be reviewed again; the credential+origin-derived signing key is stable across ordinary server instances/restarts using the same deployment configuration;
+- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result, edited session context, expired receipt, Qloo credential rotation, Qloo API-origin change, or deployment-contract change must be reviewed again; the credential+origin+contract-derived signing key is stable across ordinary server instances/restarts using the same deployment configuration;
 - fail-closed behavior when too few anchors or affinities are resolved;
 - fail-closed behavior when explicit numeric evidence is too weak;
 - no invented affinity score when the Qloo response supplies only ranked tags;
