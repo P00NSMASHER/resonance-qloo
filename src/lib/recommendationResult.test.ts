@@ -115,6 +115,7 @@ describe('live recommendation request binding', () => {
   it('binds category hints and session-defining context', () => {
     const typed = validResult();
     typed.resolvedAnchors[0].requestedTypeUrn = 'urn:entity:artist';
+    typed.requestContext.anchors[0].typeUrn = 'urn:entity:artist';
     expect(matchesRecommendationRequestContext(typed, {
       ...expected,
       anchors:[
