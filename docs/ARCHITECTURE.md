@@ -40,7 +40,7 @@ The server owns the Qloo credential and provides two routes:
 Safety/reliability controls:
 
 - maximum 16 KB request body;
-- public request-shape validation before any Qloo call: unsupported fields, malformed anchors, more than four anchors, invalid energy/setting/duration, or malformed confirmation IDs return HTTP 400 instead of being silently ignored, truncated, or defaulted;
+- public request-shape validation before any Qloo call: unsupported fields, malformed anchors, more than four anchors, invalid energy/setting/duration, or malformed confirmation IDs return HTTP 400 instead of being silently ignored, truncated, or defaulted; those invalid requests are rejected **before** the live-Qloo quota limiters are charged, so malformed traffic cannot consume the budget reserved for valid Qloo work;
 - 2–4 distinct, trimmed anchors after normalization;
 - allowed-value validation for energy and setting;
 - 8-second timeout on each individual upstream Qloo call;
