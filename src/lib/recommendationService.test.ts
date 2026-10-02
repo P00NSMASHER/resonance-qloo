@@ -136,6 +136,7 @@ describe('recommendation service', () => {
     ]);
     expect(result.evidence.exactResolutionCount).toBe(1);
     expect(result.evidence.topResultResolutionCount).toBe(1);
+    expect(result.summary).toContain('1 entity match(es) should be reviewed');
     expect(result.agentTrace[0].status).toBe('warning');
     expect(result.agentTrace[0].detail).toContain('Qloo top-result match(es) to review');
   });
