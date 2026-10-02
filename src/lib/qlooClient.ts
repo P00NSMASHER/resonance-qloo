@@ -5,7 +5,7 @@ export class QlooHttpError extends Error {
     message: string,
     public readonly status: number,
     public readonly endpoint: 'search' | 'insights' | 'probe',
-    public readonly responseDetail = '',
+    public readonly explainabilityUnsupported = false,
   ) {
     super(message);
   }
@@ -41,11 +41,20 @@ export class QlooClient {
 
     if (!response.ok) {
       const responseDetail = (await response.text().catch(() => '')).slice(0, 1_000);
+      const normalizedDetail = responseDetail.toLocaleLowerCase('en-US');
+      const explainabilityUnsupported =
+        endpoint === 'insights' &&
+        url.searchParams.has('feature.explainability') &&
+        [400, 422].includes(response.status) &&
+        (
+          normalizedDetail.includes('explainability') ||
+          normalizedDetail.includes('feature.explainability')
+        );
       throw new QlooHttpError(
         `Qloo ${endpoint} failed (${response.status}).`,
         response.status,
         endpoint,
-        responseDetail,
+        explainabilityUnsupported,
       );
     }
 
@@ -81,12 +90,7 @@ export class QlooClient {
     try {
       return await this.request('insights', buildUrl(true));
     } catch (error) {
-      if (!(error instanceof QlooHttpError) || ![400, 422].includes(error.status)) throw error;
-      const detail = error.responseDetail.toLocaleLowerCase('en-US');
-      const explainabilityRejected =
-        detail.includes('explainability') ||
-        detail.includes('feature.explainability');
-      if (!explainabilityRejected) throw error;
+      if (!(error instanceof QlooHttpError) || !error.explainabilityUnsupported) throw error;
       return this.request('insights', buildUrl(false));
     }
   }
