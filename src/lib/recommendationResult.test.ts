@@ -24,8 +24,8 @@ function validResult() {
       { label:'Classic cinema', score:null as number | null, rank:3 },
     ],
     plan:[
-      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz', anchorName:undefined as string | undefined },
-      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals', anchorName:undefined as string | undefined },
+      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz', anchorName:'Ella Fitzgerald' as string | undefined },
+      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals', anchorName:'Italian cuisine' as string | undefined },
       { title:'Shared choice', duration:'15 min', action:'C', why:'C', affinityLabel:'Classic cinema', anchorName:undefined as string | undefined },
       { title:'Closing ritual', duration:'10 min', action:'D', why:'D', affinityLabel:'Classic cinema', anchorName:undefined as string | undefined },
     ],
@@ -104,6 +104,11 @@ describe('live recommendation result integrity', () => {
     badRank.affinities[0].rank = 0;
     expect(hasConsistentRecommendationResult(badRank)).toBe(false);
 
+    const rankGap = validResult();
+    rankGap.affinities[1].rank = 4;
+    rankGap.affinities[2].rank = 5;
+    expect(hasConsistentRecommendationResult(rankGap)).toBe(false);
+
     const mismatchedBasis = validResult();
     mismatchedBasis.evidence.evidenceBasis = 'normalized-score';
     expect(hasConsistentRecommendationResult(mismatchedBasis)).toBe(false);
@@ -151,19 +156,25 @@ describe('live recommendation result integrity', () => {
     expect(hasConsistentRecommendationResult(categoryCount)).toBe(false);
   });
 
-  it('rejects plan durations and signal order that drift from session evidence', () => {
-    const badMinutes = validResult();
-    badMinutes.plan[0].duration = '5 min';
-    expect(hasConsistentRecommendationResult(badMinutes)).toBe(false);
+  it('rejects plan details that preserve totals/sets but drift from the exact agent mapping', () => {
+    const redistributedMinutes = validResult();
+    redistributedMinutes.plan[0].duration = '5 min';
+    redistributedMinutes.plan[1].duration = '15 min';
+    expect(hasConsistentRecommendationResult(redistributedMinutes)).toBe(false);
 
-    const wrongOrder = validResult();
-    wrongOrder.plan[0].affinityLabel = 'Musicals';
-    wrongOrder.plan[1].affinityLabel = 'Jazz';
-    expect(hasConsistentRecommendationResult(wrongOrder)).toBe(false);
+    const wrongRepeatPlacement = validResult();
+    wrongRepeatPlacement.plan[1].affinityLabel = 'Jazz';
+    wrongRepeatPlacement.plan[2].affinityLabel = 'Musicals';
+    wrongRepeatPlacement.plan[3].affinityLabel = 'Classic cinema';
+    expect(hasConsistentRecommendationResult(wrongRepeatPlacement)).toBe(false);
 
-    const unknownAnchor = validResult();
-    unknownAnchor.plan[0].anchorName = 'Unresolved favorite';
-    expect(hasConsistentRecommendationResult(unknownAnchor)).toBe(false);
+    const swappedResolvedFavorite = validResult();
+    swappedResolvedFavorite.plan[0].anchorName = 'Italian cuisine';
+    expect(hasConsistentRecommendationResult(swappedResolvedFavorite)).toBe(false);
+
+    const wrongTitle = validResult();
+    wrongTitle.plan[0].title = 'Different title';
+    expect(hasConsistentRecommendationResult(wrongTitle)).toBe(false);
   });
 
   it('rejects missing or reordered agent stages', () => {
