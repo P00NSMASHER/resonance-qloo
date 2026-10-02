@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 import { qlooEntityIdentity } from './qlooEntityIdentity';
 import {
   requestAnchorKey,
@@ -6,6 +6,13 @@ import {
 } from './recommendationContext';
 
 export const RESOLUTION_REVIEW_TOKEN_TTL_MS = 5 * 60_000;
+
+export function resolutionReviewSigningKey(qlooApiKey: string) {
+  return createHash('sha256')
+    .update('resonance:qloo-review-receipt:v1\0')
+    .update(qlooApiKey)
+    .digest();
+}
 
 function reviewPayload(
   context: RecommendationRequestContext,
