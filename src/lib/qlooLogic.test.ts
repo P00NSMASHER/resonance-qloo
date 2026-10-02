@@ -24,6 +24,21 @@ describe('Qloo parsing', () => {
     });
   });
 
+  it('requires review when Qloo returns an entity ID without a name', () => {
+    expect(extractResolved('Ella Fitzgerald', {
+      results: [{ entity_id:'FCE8B172-4795-43E4-B222-3B550DC05FD9' }],
+    })).toEqual({
+      query:'Ella Fitzgerald',
+      name:'Ella Fitzgerald',
+      entityId:'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+      resolutionMatch:'top-result',
+    });
+
+    expect(extractResolved('Example', {
+      data:[{ entity:{ urn:'urn:entity:artist:example' } }],
+    })?.resolutionMatch).toBe('top-result');
+  });
+
   it('marks a renamed first result as a Qloo top-result match without inventing confidence', () => {
     expect(extractResolved('Italian food', {
       results: [{ entity_id:'FCE8B172-4795-43E4-B222-3B550DC05FD9', name:'Italian cuisine' }],
