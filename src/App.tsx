@@ -240,7 +240,7 @@ export default function App() {
     <section className="workspace" aria-label="Resonance session builder">
       <div className="card">
         <h2>Give the agent a few cultural anchors</h2>
-        <p className="fieldHint">Use preferences only. No names, emails, health information, or other personal identifiers are needed.</p>
+        <p className="fieldHint">Use cultural preferences only. Do not enter a resident/person name, email, account ID, health information, location history, or another personal identifier.</p>
         <div className="inputs">
           {anchors.map((anchor,index)=><div className="anchorGroup" key={index}>
             <label className="anchorField" htmlFor={`anchor-${index}`}>
