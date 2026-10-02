@@ -11,6 +11,7 @@ const requiredFiles = [
   'docs/SUBMISSION_EVIDENCE.md',
   'docs/KNOWN_LIMITATIONS.md',
   'docs/DEVPOST_FIELDS.md',
+  'docs/FLOOT_QLOO_CUTOVER.md',
   'SECURITY.md',
   'scripts/qloo-mcp-proof.mjs',
   'scripts/proof-redaction.mjs',
