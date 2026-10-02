@@ -1,6 +1,12 @@
 import { anchorTypeLabelFromUrn } from './anchorTypes';
 
 export type ExportableSession = {
+  requestContext?: {
+    anchors:Array<{ query:string; typeUrn?:string }>;
+    energy:string;
+    setting:string;
+    durationMinutes:number;
+  };
   summary: string;
   resolvedAnchors: { query?:string; name:string; entityId?:string; requestedTypeUrn?:string; resolutionMatch?:'exact-name'|'top-result' }[];
   affinities: { label:string; score:number|null; rank:number }[];
@@ -42,6 +48,15 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
     ...(source === 'live' && session.provenance?.apiOrigin
       ? [`Qloo API origin: ${session.provenance.apiOrigin}`]
+      : []),
+    ...(session.requestContext
+      ? [
+          `${source === 'live' ? 'Submitted' : 'Illustrative'} request context: ${session.requestContext.durationMinutes} minutes; energy=${session.requestContext.energy}; setting=${session.requestContext.setting}`,
+          `${source === 'live' ? 'Submitted' : 'Illustrative'} anchors: ${session.requestContext.anchors.map(anchor => {
+            const category = anchorTypeLabelFromUrn(anchor.typeUrn);
+            return `${anchor.query}${category ? ` [${category}]` : ''}`;
+          }).join(' | ')}`,
+        ]
       : []),
     ...(source === 'live' && session.evidence?.evidenceBasis
       ? [`Evidence basis: ${session.evidence.evidenceBasis === 'normalized-score' ? 'Qloo numeric scores' : 'Qloo ranked result order'}`]
