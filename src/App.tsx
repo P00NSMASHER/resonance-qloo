@@ -145,7 +145,7 @@ export default function App() {
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), STATUS_REQUEST_TIMEOUT_MS);
 
-    fetch('/api/status', { signal: controller.signal })
+    fetch(statusRefreshKey > 0 ? '/api/status?refresh=1' : '/api/status', { signal: controller.signal })
       .then(r => {
         if (!r.ok) throw new Error('status unavailable');
         return r.json();
