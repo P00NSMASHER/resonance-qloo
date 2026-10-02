@@ -24,8 +24,8 @@ function validResult() {
       { label:'Classic cinema', score:null as number | null, rank:3 },
     ],
     plan:[
-      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz', anchorName:undefined as string | undefined },
-      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals', anchorName:undefined as string | undefined },
+      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz', anchorName:'Ella Fitzgerald' as string | undefined },
+      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals', anchorName:'Italian cuisine' as string | undefined },
       { title:'Shared choice', duration:'15 min', action:'C', why:'C', affinityLabel:'Classic cinema', anchorName:undefined as string | undefined },
       { title:'Closing ritual', duration:'10 min', action:'D', why:'D', affinityLabel:'Classic cinema', anchorName:undefined as string | undefined },
     ],
@@ -159,6 +159,26 @@ describe('live recommendation result integrity', () => {
     const categoryCount = validResult();
     categoryCount.evidence.categoryHintCount = 1;
     expect(hasConsistentRecommendationResult(categoryCount)).toBe(false);
+  });
+
+  it('rejects plan mappings that drift while preserving counts and totals', () => {
+    const wrongSparseReuse = validResult();
+    wrongSparseReuse.plan[3].affinityLabel = 'Jazz';
+    expect(hasConsistentRecommendationResult(wrongSparseReuse)).toBe(false);
+
+    const swappedKnownAnchors = validResult();
+    swappedKnownAnchors.plan[0].anchorName = 'Italian cuisine';
+    swappedKnownAnchors.plan[1].anchorName = 'Ella Fitzgerald';
+    expect(hasConsistentRecommendationResult(swappedKnownAnchors)).toBe(false);
+
+    const wrongTitle = validResult();
+    wrongTitle.plan[0].title = 'Warm-up';
+    expect(hasConsistentRecommendationResult(wrongTitle)).toBe(false);
+
+    const sameTotalWrongTimeboxes = validResult();
+    sameTotalWrongTimeboxes.plan[0].duration = '5 min';
+    sameTotalWrongTimeboxes.plan[1].duration = '15 min';
+    expect(hasConsistentRecommendationResult(sameTotalWrongTimeboxes)).toBe(false);
   });
 
   it('rejects plan durations and signal order that drift from session evidence', () => {
