@@ -58,6 +58,8 @@ if (anchorInputIndex < 0 || !anchorInputWindow.includes('disabled={loading}')) {
 }
 
 for (const marker of [
+  "const LIVE_REQUEST_TIMEOUT_MS = 28_000;",
+  "window.setTimeout(() => controller.abort(), LIVE_REQUEST_TIMEOUT_MS);",
   "const [qlooApiOrigin, setQlooApiOrigin] = useState('');",
   "import { hasVerifiedLiveProvenance } from './lib/liveProvenance';",
   "hasVerifiedLiveProvenance(data, qlooApiOrigin)",
