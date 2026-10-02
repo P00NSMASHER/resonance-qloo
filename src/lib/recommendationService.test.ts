@@ -59,6 +59,12 @@ describe('recommendation service', () => {
     expect(result.resolvedAnchors).toHaveLength(2);
     expect(result.affinities).toHaveLength(4);
     expect(result.evidence.evidenceBasis).toBe('ranked-order');
+    expect(result.evidence.selectedAffinityLabels).toEqual([
+      'Jazz',
+      'Musicals',
+      'Classic cinema',
+      'Italian cuisine',
+    ]);
     expect(result.plan).toHaveLength(4);
     expect(result.agentTrace.map(x => x.stage)).toEqual(['resolve','evaluate','compose','explain']);
     expect(gateway.tasteAnalysis).toHaveBeenCalledWith([uuidA, uuidB]);
