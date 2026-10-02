@@ -160,6 +160,15 @@ try {
   }
   const artifact = JSON.parse(success.stdout);
   if (
+    typeof artifact.interpretation_limit !== 'string' ||
+    !artifact.interpretation_limit.includes('aggregate cultural signals') ||
+    !artifact.interpretation_limit.includes('not probabilities or claims about an individual') ||
+    typeof artifact.human_review !== 'string' ||
+    !artifact.human_review.includes('accept, modify, reorder, or reject')
+  ) {
+    throw new Error('Evidence capture did not preserve responsible interpretation limits.');
+  }
+  if (
     artifact.confirmation_receipt?.required !== true ||
     artifact.confirmation_receipt?.confirmedTopResultCount !== 1 ||
     artifact.confirmation_receipt?.confirmedTopResults?.[0]?.entityId !== CONFIRMED_ID
