@@ -13,6 +13,14 @@ paths:
     get:
       summary: Read Qloo connection state
       operationId: getStatus
+      parameters:
+        - in: query
+          name: refresh
+          required: false
+          schema:
+            type: string
+            enum: ['1']
+          description: Request a bounded re-verification when the cached Qloo probe is non-ready. Healthy ready state is not discarded; forced retries are rate-limited server-side.
       responses:
         '200':
           description: Current service mode
