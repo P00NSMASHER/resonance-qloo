@@ -58,6 +58,12 @@ if (anchorInputIndex < 0 || !anchorInputWindow.includes('disabled={loading}')) {
 }
 
 for (const marker of [
+  "const [statusRefreshKey, setStatusRefreshKey] = useState(0);",
+  "setQlooState('checking');",
+  "setQlooApiOrigin('');",
+  "}, [statusRefreshKey]);",
+  "Retry Qloo verification",
+  "setStatusRefreshKey(current => current + 1)",
   "const STATUS_REQUEST_TIMEOUT_MS = 12_000;",
   "window.setTimeout(() => controller.abort(), STATUS_REQUEST_TIMEOUT_MS);",
   "const LIVE_REQUEST_TIMEOUT_MS = 28_000;",
