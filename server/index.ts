@@ -218,6 +218,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       provenance: {
         source: 'qloo-live',
         apiOrigin: QLOO_BASE_URL,
+        contractVersion: deploymentContract.version,
         generatedAt: new Date().toISOString(),
       },
     });
@@ -229,6 +230,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       return json(res, 409, {
         error: 'Review Qloo entity matches before continuing.',
         code: 'QLOO_RESOLUTION_REVIEW_REQUIRED',
+        contractVersion: deploymentContract.version,
         requestContext: error.requestContext,
         resolvedAnchors: error.resolvedAnchors,
         reviewToken:createResolutionReviewToken(
