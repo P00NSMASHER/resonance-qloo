@@ -92,6 +92,11 @@ if (
   typeof run.body?.reviewToken === 'string' &&
   run.body.reviewToken.length > 0
 ) {
+  if (run.body.contractVersion !== expectedContractVersion) {
+    throw new Error(
+      `Qloo review response deployment contract mismatch: ${run.body.contractVersion || '(missing)'}; expected ${expectedContractVersion}.`,
+    );
+  }
   if (!requestContextMatches(run.body)) {
     throw new Error('Qloo review response did not match the live evidence request context.');
   }
