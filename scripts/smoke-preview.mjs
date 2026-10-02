@@ -221,6 +221,7 @@ try {
     const live = spawnResonance(LIVE_PORT, {
       QLOO_API_KEY:'smoke-key',
       QLOO_API_BASE_URL:mockQloo.baseUrl,
+      QLOO_ALLOW_LOCAL_MOCK:'1',
       NODE_TLS_REJECT_UNAUTHORIZED:'0',
     });
     liveChild = live.child;
