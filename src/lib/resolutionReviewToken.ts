@@ -1,4 +1,4 @@
-import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { qlooEntityIdentity } from './qlooEntityIdentity';
 import {
   requestAnchorKey,
@@ -15,13 +15,6 @@ export function resolutionReviewSigningKey(
     .update('resonance-resolution-review:v1')
     .update('\n')
     .update(qlooApiOrigin)
-    .digest();
-}
-
-export function resolutionReviewSigningKey(qlooApiKey: string) {
-  return createHash('sha256')
-    .update('resonance:qloo-review-receipt:v1\0')
-    .update(qlooApiKey)
     .digest();
 }
 
