@@ -131,6 +131,9 @@ try {
   if (!openapi.includes('confirmedEntityIds') || !openapi.includes('QLOO_RESOLUTION_REVIEW_REQUIRED')) {
     failures.push('OpenAPI contract is missing the pre-taste entity-confirmation handshake.');
   }
+  if (!openapi.includes('RequestContext:') || !openapi.includes('requestContext:')) {
+    failures.push('OpenAPI contract is missing the normalized request-context receipt.');
+  }
   if (!openapi.includes("name: refresh") || !openapi.includes("enum: ['1']")) {
     failures.push('OpenAPI status contract is missing the bounded Qloo re-verification query.');
   }
@@ -247,6 +250,9 @@ try {
   if (!app.includes('confirmedEntityIds')) {
     failures.push('Results UI is not sending explicitly confirmed Qloo entity IDs.');
   }
+  if (!app.includes('payloadHasMatchingRequestContext') || !app.includes('Qloo review response did not match the submitted session context')) {
+    failures.push('Results UI is not binding review responses to the normalized submitted request receipt.');
+  }
   if (!app.includes('<b>Qloo API</b>')) {
     failures.push('Results UI is missing live Qloo API origin provenance.');
   }
@@ -307,6 +313,9 @@ try {
   if (!sessionExport.includes('Qloo API origin:')) {
     failures.push('Session export is missing live Qloo API origin provenance.');
   }
+  if (!sessionExport.includes('Submitted request context:') || !sessionExport.includes('Submitted anchors:')) {
+    failures.push('Session export is missing the normalized submitted request receipt.');
+  }
   if (!sessionExport.includes('explicitly confirmed before taste analysis')) {
     failures.push('Session export is missing live top-result confirmation evidence.');
   }
@@ -322,6 +331,9 @@ try {
   const server = await readFile('server/index.ts', 'utf8');
   if (!server.includes('ResolutionReviewRequiredError') || !server.includes("code: 'QLOO_RESOLUTION_REVIEW_REQUIRED'")) {
     failures.push('Server is missing the 409 Qloo resolution-confirmation response path.');
+  }
+  if (!server.includes('requestContext: error.requestContext')) {
+    failures.push('Server review response is missing the normalized request receipt.');
   }
   if (
     !server.includes("process.env.QLOO_ALLOW_LOCAL_MOCK === '1'") ||
@@ -418,6 +430,9 @@ try {
   if (!recommendationService.includes('confirmedEntityIds')) {
     failures.push('Recommendation service no longer checks explicit confirmed Qloo entity IDs.');
   }
+  if (!recommendationService.includes('recommendationRequestContext') || !recommendationService.includes('requestContext,')) {
+    failures.push('Recommendation service is missing the normalized request receipt.');
+  }
 } catch {}
 
 try {
@@ -436,6 +451,9 @@ try {
   }
   if (!capture.includes('Resolution review count mismatch')) {
     failures.push('Live evidence capture is not validating resolution review counts.');
+  }
+  if (!capture.includes('requestContextMatches') || !capture.includes('did not match the evidence-capture request context')) {
+    failures.push('Live evidence capture is not binding artifacts to the normalized request receipt.');
   }
   if (!capture.includes('interpretation_limit') || !capture.includes('aggregate cultural signals')) {
     failures.push('Live evidence capture is missing the responsible Qloo interpretation limit.');
