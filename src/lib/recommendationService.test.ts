@@ -105,6 +105,40 @@ describe('recommendation service', () => {
     ]);
   });
 
+  it('requires confirmation when a resolved Qloo entity has no returned name', async () => {
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[query === 'Nameless favorite'
+          ? { entity_id:uuidB }
+          : { entity_id:uuidA, name:query }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+        ]},
+      })),
+    };
+
+    await expect(buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Nameless favorite'}],
+      energy:'calm',
+      setting:'small-group',
+    })).rejects.toMatchObject({
+      message:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+      resolvedAnchors:[
+        expect.objectContaining({ entityId:uuidA, resolutionMatch:'exact-name' }),
+        expect.objectContaining({
+          entityId:uuidB,
+          name:'Nameless favorite',
+          resolutionMatch:'top-result',
+        }),
+      ],
+    });
+    expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
+  });
+
   it('requires explicit confirmation before taste analysis uses a Qloo top result', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => ({
