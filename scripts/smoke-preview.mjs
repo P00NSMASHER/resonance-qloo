@@ -81,6 +81,7 @@ async function createTlsFixture() {
 }
 
 async function startMockQloo(tls) {
+  let searchCalls = 0;
   let insightCalls = 0;
   const server = createHttpsServer({ key:tls.key, cert:tls.cert }, (req, res) => {
     const url = new URL(req.url || '/', 'https://localhost');
@@ -103,6 +104,7 @@ async function startMockQloo(tls) {
     }
 
     if (url.pathname === '/search') {
+      searchCalls += 1;
       const query = url.searchParams.get('query') || '';
       const result = query === 'Italian food'
         ? { entity_id:UUID_B, name:'Italian cuisine' }
@@ -139,6 +141,7 @@ async function startMockQloo(tls) {
   return {
     server,
     baseUrl:`https://127.0.0.1:${address.port}`,
+    searchCalls:() => searchCalls,
     insightCalls:() => insightCalls,
   };
 }
@@ -271,6 +274,9 @@ try {
     ) {
       throw new Error('Review-required HTTP contract failed: ' + reviewResponse.status + ' ' + JSON.stringify(reviewBody));
     }
+    if (mockQloo.searchCalls() !== 2) {
+      throw new Error(`Expected two Qloo searches during resolution review, got ${mockQloo.searchCalls()}.`);
+    }
     if (mockQloo.insightCalls() !== 0) {
       throw new Error('Taste analysis ran before non-exact Qloo matches were confirmed.');
     }
@@ -291,6 +297,9 @@ try {
     const confirmedBody = await confirmedResponse.json();
     if (confirmedResponse.status !== 200) {
       throw new Error('Confirmed live recommendation failed: ' + confirmedResponse.status + ' ' + JSON.stringify(confirmedBody));
+    }
+    if (mockQloo.searchCalls() !== 2) {
+      throw new Error(`Confirmation should reuse cached Qloo resolutions; got ${mockQloo.searchCalls()} total search calls.`);
     }
     if (mockQloo.insightCalls() !== 1) {
       throw new Error(`Expected exactly one taste-analysis call after confirmation, got ${mockQloo.insightCalls()}.`);
