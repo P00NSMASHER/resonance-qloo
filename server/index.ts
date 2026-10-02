@@ -9,6 +9,7 @@ import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 import { buildRecommendation, ResolutionReviewRequiredError } from '../src/lib/recommendationService';
 import { normalizeRecommendationRequest } from '../src/lib/requestNormalization';
+import { qlooEntityIdentity } from '../src/lib/qlooEntityIdentity';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -169,7 +170,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
         return searchCache.getOrLoad(normalized, () => qloo.search(query, typeUrn));
       },
       tasteAnalysis: (entityIds: string[]) => {
-        const tasteKey = `${credentialFingerprint}|${[...entityIds].sort().join(',')}`;
+        const tasteKey = `${credentialFingerprint}|${entityIds.map(qlooEntityIdentity).sort().join(',')}`;
         return tasteCache.getOrLoad(tasteKey, () => qloo.tasteAnalysis(entityIds));
       },
     };
