@@ -68,6 +68,18 @@ try {
 } catch {}
 
 try {
+  const ci = await readFile('.github/workflows/ci.yml', 'utf8');
+  if (!ci.includes('npm ci --no-audit --no-fund')) {
+    failures.push('CI is not installing from the committed npm lockfile with npm ci.');
+  }
+  if (!ci.includes('id: deployment_parity') || !ci.includes('GITHUB_STEP_SUMMARY')) {
+    failures.push('CI is not surfacing public deployment parity in the Actions summary.');
+  }
+} catch (error) {
+  failures.push(`CI workflow could not be validated: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
   const envExample = await readFile('.env.example', 'utf8');
   if (!envExample.includes('QLOO_API_BASE_URL=https://hackathon.api.qloo.com')) {
     failures.push('.env.example is not pinned to the Qloo Agentic Hackathon API origin.');
