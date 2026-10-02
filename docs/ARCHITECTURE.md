@@ -72,7 +72,7 @@ The agent planner is deterministic and inspectable:
 
 1. **Resolve** — require at least two Qloo-backed anchors.
 2. **Evaluate** — retain up to eight returned affinity signals, then select at most four for the plan. Prefer the highest numeric scores when at least three are present; otherwise preserve Qloo's ranked order.
-3. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as stable **#1–#N** numbering (up to four selected signals).
+3. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as stable **#1–#N** numbering (up to four selected signals). If only three real signals are available, signal #3 is reused for the closing activity rather than synthesizing a fourth evidence item.
 4. **Explain** — return a visible rationale for every step.
 
 Evidence metadata states its basis explicitly:
