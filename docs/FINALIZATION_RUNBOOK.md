@@ -6,6 +6,14 @@ Use this only after the event-issued Qloo API credential arrives.
 
 Add the credential to the hosted app as `QLOO_API_KEY`.
 
+For the Agentic Hackathon, also set:
+
+```text
+QLOO_API_BASE_URL=https://hackathon.api.qloo.com
+```
+
+Hackathon-issued keys are scoped to that event API origin. Resonance now defaults there, but the hosted environment should still make the intended origin explicit so deployment configuration is auditable.
+
 Do not paste it into:
 - chat,
 - GitHub,
@@ -20,7 +28,7 @@ Open:
 
 https://resonance-qloo.floot.app
 
-Confirm the header says **Live Qloo connected**.
+Confirm the header says **Live Qloo connected**. If it reports degraded immediately after adding the key, verify the hosted environment is using `https://hackathon.api.qloo.com` before troubleshooting the credential itself.
 
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
@@ -41,6 +49,8 @@ On a machine with Node.js 22.19+:
 ```bash
 npm install --global @qloo/qloo-harness
 qloo --version # must be 0.1.26 or newer
+export QLOO_BASE_URL=https://hackathon.api.qloo.com
+export QLOO_TRUSTED_BASE_URL=https://hackathon.api.qloo.com
 qloo setup --qloo
 npm install
 npm run qloo:proof -- "classic jazz vocals"
