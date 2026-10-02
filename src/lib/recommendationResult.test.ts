@@ -24,10 +24,10 @@ function validResult() {
       { label:'Classic cinema', score:null as number | null, rank:3 },
     ],
     plan:[
-      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz' },
-      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals' },
-      { title:'Shared choice', duration:'15 min', action:'C', why:'C', affinityLabel:'Classic cinema' },
-      { title:'Closing ritual', duration:'10 min', action:'D', why:'D', affinityLabel:'Classic cinema' },
+      { title:'Opening cue', duration:'10 min', action:'A', why:'A', affinityLabel:'Jazz', anchorName:undefined as string | undefined },
+      { title:'Story bridge', duration:'10 min', action:'B', why:'B', affinityLabel:'Musicals', anchorName:undefined as string | undefined },
+      { title:'Shared choice', duration:'15 min', action:'C', why:'C', affinityLabel:'Classic cinema', anchorName:undefined as string | undefined },
+      { title:'Closing ritual', duration:'10 min', action:'D', why:'D', affinityLabel:'Classic cinema', anchorName:undefined as string | undefined },
     ],
     agentTrace:[
       { stage:'resolve', status:'ok', detail:'Resolved.' },
@@ -36,7 +36,7 @@ function validResult() {
       { stage:'explain', status:'warning', detail:'Explained.' },
     ],
     evidence:{
-      meanNormalizedScore:null,
+      meanNormalizedScore:null as number | null,
       evidenceBasis:'ranked-order',
       selectedAffinityCount:3,
       returnedAffinityCount:3,
