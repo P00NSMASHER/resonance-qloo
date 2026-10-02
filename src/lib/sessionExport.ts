@@ -2,7 +2,7 @@ import { anchorTypeLabelFromUrn } from './anchorTypes';
 
 export type ExportableSession = {
   summary: string;
-  resolvedAnchors: { query?:string; name:string; entityId?:string; requestedTypeUrn?:string }[];
+  resolvedAnchors: { query?:string; name:string; entityId?:string; requestedTypeUrn?:string; resolutionMatch?:'exact-name'|'top-result' }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace?: { stage:string; status?:'ok'|'warning'; detail:string }[];
@@ -13,6 +13,8 @@ export type ExportableSession = {
     explainabilityResultCount?: number;
     aggregateExplainabilityAvailable?: boolean;
     resolvedAnchorCount?: number;
+    exactResolutionCount?: number;
+    topResultResolutionCount?: number;
     categoryHintCount?: number;
     selectedAffinityCount?: number;
     returnedAffinityCount?: number;
@@ -56,7 +58,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       session.evidence?.resolvedAnchorCount !== undefined ||
       session.evidence?.categoryHintCount !== undefined
     )
-      ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
+      ? [`Resolution evidence: ${session.evidence?.resolvedAnchorCount ?? session.resolvedAnchors.length} anchor(s) resolved; ${session.evidence?.exactResolutionCount ?? session.resolvedAnchors.filter(item => item.resolutionMatch === 'exact-name').length} exact-name match(es); ${session.evidence?.topResultResolutionCount ?? session.resolvedAnchors.filter(item => item.resolutionMatch === 'top-result').length} Qloo top-result match(es) to review; ${session.evidence?.categoryHintCount ?? 0} category hint(s) used`]
       : []),
     ...(source === 'live' && session.evidence?.selectedAffinityCount !== undefined
       ? [`Selection evidence: ${session.evidence.selectedAffinityCount} of ${session.evidence.returnedAffinityCount ?? session.affinities.length} affinity signal(s) selected for the plan`]
@@ -83,7 +85,12 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       const resolution = source === 'live' && item.query && item.query.trim().toLowerCase() !== item.name.trim().toLowerCase()
         ? `${item.query} -> ${item.name}`
         : item.name;
-      return `- ${resolution}${category ? ` [${category}]` : ''}${id}`;
+      const match = item.resolutionMatch === 'top-result'
+        ? ' {Resolution: Qloo top result — review}'
+        : item.resolutionMatch === 'exact-name'
+          ? ' {Resolution: exact name}'
+          : '';
+      return `- ${resolution}${category ? ` [${category}]` : ''}${match}${id}`;
     }),
     '',
     source === 'live' ? 'Taste evidence:' : 'Illustrative taste evidence:',
