@@ -20,7 +20,7 @@ qloo setup --qloo
 npm run qloo:proof -- "classic jazz vocals"
 ```
 
-The proof script starts the canonical `qloo mcp` server, checks `qloo_capabilities`, and runs `qloo_find_tags`. It prints a redacted request-to-result artifact and never prints the credential.
+The proof script requires the event kit's minimum public harness version (0.1.26+), starts the canonical `qloo mcp` server, checks `qloo_capabilities`, and runs `qloo_find_tags`. It records the harness version in the redacted request-to-result artifact and never prints the credential.
 
 The application code also follows current public Qloo API documentation:
 
@@ -51,7 +51,7 @@ The application code also follows current public Qloo API documentation:
 
 The final evidence block will record:
 
-- the exact Qloo tool/workflow used;
+- the exact Qloo tool/workflow and public harness version used;
 - a redacted request;
 - the resolved entity/tag choice;
 - the returned status and summary;
