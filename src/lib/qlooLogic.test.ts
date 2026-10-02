@@ -71,6 +71,21 @@ describe('Qloo parsing', () => {
     ]);
   });
 
+  it('preserves original Qloo row positions when duplicate labels are removed', () => {
+    expect(extractAffinities({
+      results:{
+        tags:[
+          { name:'Jazz' },
+          { name:'jazz', affinity:.9 },
+          { name:'Musicals' },
+        ],
+      },
+    })).toEqual([
+      { label:'Jazz', score:null, rank:1 },
+      { label:'Musicals', score:null, rank:3 },
+    ]);
+  });
+
   it('prefers documented results.tags over unrelated nested arrays', () => {
     const payload = {
       data:[{ name:'Wrong array', affinity:.99 }],
