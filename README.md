@@ -55,7 +55,8 @@ The live button only becomes available in the verified `ready` state. This preve
    - cross-category Qloo taste evidence,
    - the agent decision trace,
    - the four-part session,
-   - the why-it-fits rationale for every step,\n   - the exported audit trail for provenance and evidence.
+   - the why-it-fits rationale for every step,
+   - the exported audit trail for provenance and evidence.
 
 See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
 
@@ -82,7 +83,7 @@ The real event key must never be committed or pasted into a public artifact.
 
 ## Current hackathon status
 
-- Public live demo is deployed.
+- Public live demo is deployed on Floot. GitHub `main` is the source of truth; after source changes, republish the Floot app before final judging so the public demo matches the reviewed head.
 - Public MIT-licensed source repo is complete.
 - GitHub recognizes the MIT license.
 - CI covers typecheck, unit tests, production build, and preview/fail-closed smoke tests.
