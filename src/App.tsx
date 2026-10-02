@@ -9,9 +9,17 @@ type AgentTraceStep = {
   detail: string;
 };
 
+type ResolvedAnchor = {
+  query:string;
+  name:string;
+  entityId:string;
+  requestedTypeUrn?:string;
+  resolutionMatch:'exact-name'|'top-result';
+};
+
 type Result = {
   summary: string;
-  resolvedAnchors: { query:string; name:string; entityId:string; requestedTypeUrn?:string; resolutionMatch:'exact-name'|'top-result' }[];
+  resolvedAnchors: ResolvedAnchor[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace: AgentTraceStep[];
@@ -103,6 +111,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [resolutionReview, setResolutionReview] = useState<ResolvedAnchor[] | null>(null);
   const resultRef = useRef<HTMLElement | null>(null);
 
   const usableAnchors = useMemo(() => {
