@@ -344,6 +344,10 @@ export default function App() {
                 : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`
             }</span>
           </div>
+          {result.evidence.selectedAffinityCount < result.plan.length && <div className="evidenceReuseNote" role="note">
+            <b>No synthetic signal</b>
+            <span>Only {result.evidence.selectedAffinityCount} unique {source === 'live' ? 'Qloo' : 'example'} signals were selected for {result.plan.length} activities, so the last real selected signal is reused for the closing step instead of inventing another one.</span>
+          </div>}
           <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
         </div>
       </section>
