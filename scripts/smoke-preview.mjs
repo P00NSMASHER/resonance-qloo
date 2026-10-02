@@ -10,6 +10,9 @@ const LIVE_PORT = 8791;
 const RETRY_PORT = 8792;
 const RETRY_LIMIT_PORT = 8793;
 const HACKATHON_ORIGIN = 'https://hackathon.api.qloo.com';
+const CONTRACT_VERSION = JSON.parse(
+  await readFile(new URL('../deployment-contract.json', import.meta.url), 'utf8'),
+).version;
 const UUID_A = 'FCE8B172-4795-43E4-B222-3B550DC05FD9';
 const UUID_B = '9A25B172-4795-43E4-B222-3B550DC05AAA';
 
@@ -185,7 +188,8 @@ try {
     status.status !== 200 ||
     statusBody.qlooConnected !== false ||
     statusBody.mode !== 'preview' ||
-    statusBody.qlooApiOrigin !== HACKATHON_ORIGIN
+    statusBody.qlooApiOrigin !== HACKATHON_ORIGIN ||
+    statusBody.contractVersion !== CONTRACT_VERSION
   ) {
     throw new Error('Preview status contract failed: ' + JSON.stringify(statusBody));
   }
@@ -263,7 +267,8 @@ try {
       liveStatus.qlooConnected !== true ||
       liveStatus.mode !== 'live' ||
       liveStatus.qlooStatus !== 'ready' ||
-      liveStatus.qlooApiOrigin !== mockQloo.baseUrl
+      liveStatus.qlooApiOrigin !== mockQloo.baseUrl ||
+      liveStatus.contractVersion !== CONTRACT_VERSION
     ) {
       throw new Error('Mock-live status contract failed: ' + JSON.stringify(liveStatus));
     }
