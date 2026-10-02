@@ -252,6 +252,7 @@ try {
       QLOO_API_KEY:'smoke-key',
       QLOO_API_BASE_URL:mockQloo.baseUrl,
       QLOO_ALLOW_LOCAL_MOCK:'1',
+      NODE_ENV:'test',
       NODE_TLS_REJECT_UNAUTHORIZED:'0',
     });
     liveChild = live.child;
@@ -338,6 +339,7 @@ try {
       QLOO_API_KEY:'smoke-key',
       QLOO_API_BASE_URL:mockQloo.baseUrl,
       QLOO_ALLOW_LOCAL_MOCK:'1',
+      NODE_ENV:'test',
       NODE_TLS_REJECT_UNAUTHORIZED:'0',
     });
     retryChild = retryServer.child;
@@ -388,6 +390,7 @@ try {
       QLOO_API_KEY:'smoke-key',
       QLOO_API_BASE_URL:mockQloo.baseUrl,
       QLOO_ALLOW_LOCAL_MOCK:'1',
+      NODE_ENV:'test',
       NODE_TLS_REJECT_UNAUTHORIZED:'0',
     });
     retryLimitChild = retryLimitServer.child;
