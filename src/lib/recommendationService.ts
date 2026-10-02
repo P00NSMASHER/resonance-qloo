@@ -1,5 +1,6 @@
 import { extractAffinities, extractExplainabilitySummary, extractResolved, type ResolvedAnchor } from './qlooLogic';
 import { orchestrateSession } from './agentPlanner';
+import { qlooEntityIdentity } from './qlooEntityIdentity';
 
 export type RecommendationAnchor = {
   query: string;
@@ -44,8 +45,10 @@ export async function buildRecommendation(
   const resolved: ResolvedAnchor[] = [];
   const seenEntityIds = new Set<string>();
   for (const item of resolvedCandidates) {
-    if (!item || seenEntityIds.has(item.entityId)) continue;
-    seenEntityIds.add(item.entityId);
+    if (!item) continue;
+    const identity = qlooEntityIdentity(item.entityId);
+    if (seenEntityIds.has(identity)) continue;
+    seenEntityIds.add(identity);
     resolved.push(item);
   }
 
@@ -53,9 +56,9 @@ export async function buildRecommendation(
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
   }
 
-  const confirmedEntityIds = new Set(input.confirmedEntityIds ?? []);
+  const confirmedEntityIds = new Set((input.confirmedEntityIds ?? []).map(qlooEntityIdentity));
   const unresolvedReview = resolved.filter(
-    item => item.resolutionMatch === 'top-result' && !confirmedEntityIds.has(item.entityId),
+    item => item.resolutionMatch === 'top-result' && !confirmedEntityIds.has(qlooEntityIdentity(item.entityId)),
   );
   if (unresolvedReview.length) {
     throw new ResolutionReviewRequiredError(resolved);
