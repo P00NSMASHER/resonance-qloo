@@ -59,8 +59,8 @@ if (anchorInputIndex < 0 || !anchorInputWindow.includes('disabled={loading}')) {
 
 for (const marker of [
   "const [qlooApiOrigin, setQlooApiOrigin] = useState('');",
-  "data?.provenance?.source !== 'qloo-live'",
-  "data.provenance.apiOrigin !== qlooApiOrigin",
+  "import { hasVerifiedLiveProvenance } from './lib/liveProvenance';",
+  "hasVerifiedLiveProvenance(data, qlooApiOrigin)",
   "Live Qloo provenance could not be verified.",
 ]) {
   if (!source.includes(marker)) throw new Error('Live provenance guard missing: ' + marker);
