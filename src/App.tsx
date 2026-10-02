@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/connectionState';
+import { normalizeQlooState, qlooPresentation, qlooStateAfterRecommendationFailure, type QlooUiState } from './lib/connectionState';
 import { formatSessionText } from './lib/sessionExport';
 import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, type AnchorType } from './lib/anchorTypes';
 import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
@@ -203,11 +203,17 @@ export default function App() {
         setResolutionReview(data.resolvedAnchors);
         return;
       }
-      if (!r.ok) throw new Error(data.error || 'Qloo request failed');
+      if (!r.ok) {
+        const nextQlooState = qlooStateAfterRecommendationFailure(r.status, data?.error);
+        if (nextQlooState) setQlooState(nextQlooState);
+        throw new Error(data.error || 'Qloo request failed');
+      }
       if (!hasConsistentRecommendationResult(data)) {
+        setQlooState('degraded');
         throw new Error('Live Qloo response did not match the expected evidence contract. Please retry.');
       }
       if (!hasVerifiedLiveProvenance(data, qlooApiOrigin)) {
+        setQlooState('degraded');
         throw new Error('Live Qloo provenance could not be verified. Please retry after the connection status refreshes.');
       }
       setResolutionReview(null);
