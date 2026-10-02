@@ -14,6 +14,10 @@ The server also constrains `QLOO_API_BASE_URL` to the documented Qloo API hosts 
 
 Resonance accepts cultural entities and preference examples only. Do not send a resident/client name, email, account ID, device identifier, health information, location history, or other personal data to Qloo. A cultural entity can itself contain a public person's name (for example, a favorite artist); that is different from identifying the person using the product.
 
+## Network-rate-limit identity
+
+The public server derives a transient rate-limit bucket key from the proxy-nearest/right-most forwarded network address, falling back to the socket address when forwarding is absent. The raw address is immediately SHA-256 hashed and truncated before it enters limiter state. That identifier is used only to bound public requests; it is not included in Qloo requests, recommendation output, proof artifacts, or application logs.
+
 ## Reporting
 
 If you find a security issue, do not open a public issue containing exploit details or credentials. Contact the repository owner privately through their GitHub profile.
