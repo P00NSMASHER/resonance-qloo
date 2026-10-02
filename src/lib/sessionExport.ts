@@ -12,7 +12,7 @@ export type ExportableSession = {
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace?: { stage:string; status?:'ok'|'warning'; detail:string }[];
-  provenance?: { generatedAt?: string; apiOrigin?: string };
+  provenance?: { generatedAt?: string; apiOrigin?: string; contractVersion?: string };
   evidence?: {
     evidenceBasis?: 'normalized-score' | 'ranked-order';
     meanNormalizedScore?: number | null;
@@ -48,6 +48,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
     ...(source === 'live' && session.provenance?.apiOrigin
       ? [`Qloo API origin: ${session.provenance.apiOrigin}`]
+      : []),
+    ...(source === 'live' && session.provenance?.contractVersion
+      ? [`Deployment contract: ${session.provenance.contractVersion}`]
       : []),
     ...(session.requestContext
       ? [
