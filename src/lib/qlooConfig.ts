@@ -1,4 +1,4 @@
-export const DEFAULT_QLOO_API_BASE_URL = 'https://api.qloo.com';
+export const DEFAULT_QLOO_API_BASE_URL = 'https://hackathon.api.qloo.com';
 
 export function resolveQlooBaseUrl(raw: string | undefined) {
   const value = raw?.trim() || DEFAULT_QLOO_API_BASE_URL;
