@@ -20,7 +20,7 @@ describe('QlooClient', () => {
     await expect(client.probe()).resolves.toBe(true);
 
     const [url, init] = calls[0]!;
-    expect(String(url)).toBe('https://api.qloo.com/v2/tags/types?take=1');
+    expect(String(url)).toBe('https://hackathon.api.qloo.com/v2/tags/types?take=1');
     expect(init?.headers).toEqual({
       'x-api-key': 'event-key',
       accept: 'application/json',
@@ -38,7 +38,20 @@ describe('QlooClient', () => {
     await client.search('Ella Fitzgerald');
 
     const [url] = calls[0]!;
-    expect(String(url)).toBe('https://api.qloo.com/search?query=Ella+Fitzgerald&take=5&sort_by=match');
+    expect(String(url)).toBe('https://hackathon.api.qloo.com/search?query=Ella+Fitzgerald&take=5&sort_by=match');
+  });
+
+  it('supports an explicit public Qloo API override', async () => {
+    const calls: Array<[RequestInfo | URL, RequestInit | undefined]> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push([input, init]);
+      return ok({ results: [] });
+    };
+    const client = new QlooClient('event-key', mockFetch, 'https://api.qloo.com');
+
+    await client.probe();
+
+    expect(String(calls[0]![0])).toBe('https://api.qloo.com/v2/tags/types?take=1');
   });
 
   it('can constrain resolution to a documented Qloo entity category', async () => {
