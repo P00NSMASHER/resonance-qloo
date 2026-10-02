@@ -153,6 +153,25 @@ describe('recommendation service', () => {
     expect(result.agentTrace[3].detail).toContain('Qloo also returned');
   });
 
+  it('surfaces missing Qloo explainability as a warning', async () => {
+    const gateway = gatewayWithTags([
+      { name:'Jazz' },
+      { name:'Musicals' },
+      { name:'Classic cinema' },
+    ]);
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[{query:'A'},{query:'B'}],
+      energy:'calm',
+      setting:'small-group',
+    });
+
+    expect(result.evidence.explainabilityResultCount).toBe(0);
+    expect(result.evidence.aggregateExplainabilityAvailable).toBe(false);
+    expect(result.agentTrace[3].status).toBe('warning');
+    expect(result.agentTrace[3].detail).toContain('did not include attribution metadata');
+  });
+
   it('fails closed when too few anchors resolve', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => query === 'known'
