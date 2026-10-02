@@ -33,7 +33,9 @@ Confirm the header says **Live Qloo connected**. If it reports degraded immediat
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
 - the example result visibly shows Artist / Film category hints where expected;
-- each resolved anchor visibly distinguishes **Exact name** from **Qloo top match · review**, and any top-result match is counted in the review note/evidence metrics;
+- each resolved anchor visibly distinguishes **Exact name** from **Qloo top match · review**;
+- a non-exact top match stops before taste analysis and opens **Qloo match review required**, showing the user's anchor, Qloo top match, category hint when present, and entity ID;
+- **Confirm matches & build** continues only with the exact reviewed entity IDs; editing an anchor/category clears the pending confirmation;
 - the result metadata strip clearly separates source, evidence basis, the non-secret Qloo API origin, and generation time;
 - the evidence panel shows the selected / returned signal count and the selection rule;
 - selected Qloo evidence uses stable Plan signal #N numbering (up to four selected signals), while unselected results remain visible as Additional evidence;
@@ -69,8 +71,11 @@ Use the public app with:
 
 Confirm:
 - at least two anchors resolve;
-- every resolved entity shows its exact-name vs Qloo top-result classification; review any top-result match before treating the live result as final evidence;
-- Qloo taste evidence is returned;
+- every resolved entity shows its exact-name vs Qloo top-result classification;
+- for at least one intentionally non-exact test anchor, verify the first request returns the review gate before any taste evidence appears;
+- confirm the displayed Qloo entity mapping and verify the resulting live session labels that match **Qloo top match · confirmed**;
+- edit the anchor/category and verify a stale confirmation is not reused;
+- Qloo taste evidence is returned only after required entity confirmations;
 - the agent decision trace is visible;
 - the evidence basis says either `normalized-score` or `ranked-order`;
 - `explainabilityResultCount` accurately reflects whether Qloo returned per-result `query.explainability` metadata;
@@ -98,7 +103,7 @@ Or against the public deployment:
 RESONANCE_BASE_URL=https://resonance-qloo.floot.app npm run evidence:capture
 ```
 
-The capture script refuses to run unless the server reports that Qloo is connected. It also requires the status endpoint and live recommendation provenance to agree on the Qloo API origin and, by default, requires `https://hackathon.api.qloo.com`. Override `QLOO_TRUSTED_BASE_URL` only if Qloo explicitly instructs you to use another gateway.
+The capture script refuses to run unless the server reports that Qloo is connected. It also requires the status endpoint and live recommendation provenance to agree on the Qloo API origin and, by default, requires `https://hackathon.api.qloo.com`. Override `QLOO_TRUSTED_BASE_URL` only if Qloo explicitly instructs you to use another gateway. If the chosen evidence anchors produce a non-exact Qloo top result, first confirm that match through the product flow and use confirmed IDs for the final live proof rather than bypassing the review gate.
 
 ## 6. Update submission evidence
 
