@@ -184,6 +184,9 @@ A successful live response includes:
 
 - resolved Qloo anchors and any category hints used,
 - affinity labels plus Qloo-provided scores when present, otherwise ranked result order,
+- first-class returned-versus-selected affinity counts,
+- numbered selected signals preserved from evidence into plan steps and exports,
+- returned-but-unselected signals retained as additional evidence,
 - a four-part session,
 - selectable 30-, 45-, or 60-minute timeboxing,
 - per-step rationale,
