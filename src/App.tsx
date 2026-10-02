@@ -11,7 +11,7 @@ type AgentTraceStep = {
 
 type Result = {
   summary: string;
-  resolvedAnchors: { query:string; name:string; entityId:string; requestedTypeUrn?:string }[];
+  resolvedAnchors: { query:string; name:string; entityId:string; requestedTypeUrn?:string; resolutionMatch:'exact-name'|'top-result' }[];
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace: AgentTraceStep[];
@@ -22,6 +22,8 @@ type Result = {
     returnedAffinityCount: number;
     selectedAffinityLabels?: string[];
     resolvedAnchorCount: number;
+    exactResolutionCount: number;
+    topResultResolutionCount: number;
     categoryHintCount: number;
     explainabilityResultCount: number;
     aggregateExplainabilityAvailable: boolean;
@@ -39,9 +41,9 @@ type Result = {
 const demo: Result = {
   summary: 'Illustrative preview only — this is not live Qloo data.',
   resolvedAnchors: [
-    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella', requestedTypeUrn:'urn:entity:artist' },
-    { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'demo:rain', requestedTypeUrn:'urn:entity:movie' },
-    { query:'Italian food', name:'Italian cuisine', entityId:'demo:italian' }
+    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
+    { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'demo:rain', requestedTypeUrn:'urn:entity:movie', resolutionMatch:'exact-name' },
+    { query:'Italian food', name:'Italian cuisine', entityId:'demo:italian', resolutionMatch:'top-result' }
   ],
   affinities: [
     { label:'classic jazz vocals', score:null, rank:1 },
@@ -56,7 +58,7 @@ const demo: Result = {
     { title:'Closing ritual', duration:'10 min', action:'Close around an Italian comfort-food prompt and ask what should return next time.', why:'Illustrative rationale for the preview state.', affinityLabel:'Italian-American comfort' }
   ],
   agentTrace: [
-    { stage:'resolve', status:'ok', detail:'Illustrative: resolve three cultural anchors into Qloo-backed evidence.' },
+    { stage:'resolve', status:'warning', detail:'Illustrative: two anchors are exact-name matches; “Italian food” resolves to the Qloo top result “Italian cuisine,” which should be reviewed.' },
     { stage:'evaluate', status:'ok', detail:'Illustrative: retain the first four items from an affinity-ranked result without inventing numeric scores.' },
     { stage:'compose', status:'ok', detail:'Illustrative: adapt the session to the selected energy and setting.' },
     { stage:'explain', status:'ok', detail:'Illustrative: attach a visible rationale to each activity choice.' }
@@ -73,6 +75,8 @@ const demo: Result = {
       'Italian-American comfort',
     ],
     resolvedAnchorCount:3,
+    exactResolutionCount:2,
+    topResultResolutionCount:1,
     categoryHintCount:2,
     explainabilityResultCount:0,
     aggregateExplainabilityAvailable:false,
@@ -328,7 +332,8 @@ export default function App() {
       <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
         <div className="evidenceColumn">
           <div className="evidenceHeading"><b>Input evidence</b><h3 id="evidence-bridge-title">Resolved favorites</h3></div>
-          <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
+          <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
+          {result.evidence.topResultResolutionCount > 0 && <div className="resolutionNote" role="note"><b>Review entity matches</b><span>{result.evidence.topResultResolutionCount} resolved anchor{result.evidence.topResultResolutionCount === 1 ? '' : 's'} used Qloo's top returned entity without an exact name match. Refine the anchor or category if a match looks unexpected.</span></div>}
         </div>
         <div className="evidenceHandoff" aria-label={source === 'live' ? 'Resolved favorites are sent together into Qloo taste analysis' : 'Illustrative favorites feed the example Qloo taste-analysis path'}>
           <span>{source === 'live' ? 'sent together to' : 'illustrate input to'}</span>
@@ -361,6 +366,8 @@ export default function App() {
         </div>
         <div className="evidenceMetrics">
           <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
+          <span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span>
+          <span><b>{result.evidence.topResultResolutionCount}</b> top matches to review</span>
           <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
           <span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span>
           <span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span>
