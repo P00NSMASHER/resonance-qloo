@@ -14,7 +14,7 @@ export function resolveQlooBaseUrl(raw: string | undefined) {
     throw new Error('QLOO_API_BASE_URL must use HTTPS.');
   }
 
-  if (url.username || url.password || url.search || url.hash) {
+  if (url.username || url.password || url.search || url.hash || (url.pathname && url.pathname !== '/')) {
     throw new Error('QLOO_API_BASE_URL must be a clean HTTPS origin.');
   }
 
