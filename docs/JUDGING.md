@@ -9,7 +9,8 @@
 5. Inspect:
    - the result metadata strip: source mode, evidence basis, non-secret Qloo API origin, and live generation timestamp;
    - resolved Qloo entity IDs, category hints, and whether each resolution is an **Exact name** or **Qloo top match · review**;
-   - the visible aggregate handoff from resolved favorites into Qloo taste analysis;
+   - when a top match is non-exact, the **Qloo match review required** gate: taste analysis must not run until the user confirms those exact entity IDs or edits the input;
+   - after confirmation, the same mapping is labeled **Qloo top match · confirmed** and only then feeds the visible aggregate handoff into Qloo taste analysis;
    - the returned taste evidence, including the **selected / returned** signal count;
    - the selection rule: highest real numeric Qloo affinities when enough scores exist, otherwise Qloo's returned rank order with no invented percentage;
    - numbered **Plan signal #N** badges that identify exactly which returned signals were selected (up to four);
@@ -30,7 +31,9 @@ The implementation now matches current Qloo public documentation more defensibly
 - Search results are resolved to Qloo entity UUIDs (with entity-URN fallback).
 - Category-aware search can constrain ambiguous anchors through Qloo's documented `types` parameter.
 - The agent reports how many category hints were actually applied and preserves them beside the resolved anchors.
-- Resolution is not presented as hidden confidence: each resolved entity is classified as an exact normalized-name match or a Qloo top-result match that should be reviewed. Top-result matches visibly warn the facilitator and the same review evidence is preserved in exports.
+- Resolution is not presented as hidden confidence: each resolved entity is classified as an exact normalized-name match or a Qloo top-result match that should be reviewed.
+- A non-exact top result triggers HTTP 409 and stops before taste analysis. The response returns the resolved candidates; the browser shows the input → Qloo mapping and requires explicit confirmation of those exact entity IDs. Editing the inputs clears the pending review. If Qloo resolves to a different ID on the next pass, that new ID must be reviewed again.
+- Confirmed top-result matches are preserved as such in the live evidence rather than being relabeled as exact matches.
 - Independent anchor-resolution calls run concurrently to reduce live latency.
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
 - Live status and recommendation provenance expose the non-secret Qloo API origin, allowing judges to verify that event traffic is using the hackathon gateway without exposing the credential.
