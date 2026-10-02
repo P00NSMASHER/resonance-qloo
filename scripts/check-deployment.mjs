@@ -115,22 +115,51 @@ if (!['preview','live'].includes(status.mode) || !['preview','ready','degraded',
 console.log(`Public backend status passed via ${statusResult.path}: contract=${status.contractVersion}, mode=${status.mode}, qlooStatus=${status.qlooStatus}, qlooApiOrigin=${status.qlooApiOrigin}.`);
 
 const html = await fetchText(BASE_URL);
-const scriptSources = [...new Set(
+const appOrigin = new URL(BASE_URL).origin;
+const initialScripts = [...new Set(
   [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)]
     .map(match => new URL(match[1], BASE_URL).toString())
+    .filter(url => new URL(url).origin === appOrigin)
 )];
 
-if (!scriptSources.length) {
-  console.error('FAIL: No public JavaScript bundle references were found.');
+if (!initialScripts.length) {
+  console.error('FAIL: No same-origin public JavaScript bundle references were found.');
   process.exit(1);
 }
 
-const bundleResults = await Promise.allSettled(scriptSources.map(fetchText));
+function scriptReferences(source, parentUrl) {
+  const urls = [];
+  for (const match of source.matchAll(/["'`]([^"'`]+\.js)["'`]/g)) {
+    const raw = match[1];
+    let resolved;
+    try {
+      resolved = raw.startsWith('_assets/')
+        ? new URL('/' + raw, BASE_URL)
+        : new URL(raw, parentUrl);
+    } catch {
+      continue;
+    }
+    if (resolved.origin === appOrigin && resolved.pathname.startsWith('/_assets/')) urls.push(resolved.toString());
+  }
+  return urls;
+}
+
+const queue = [...initialScripts];
+const visited = new Set();
 const bundles = [];
-for (let index = 0; index < bundleResults.length; index += 1) {
-  const result = bundleResults[index];
-  if (result.status === 'fulfilled') bundles.push(result.value);
-  else console.warn(`WARN: Could not inspect script ${scriptSources[index]}: ${result.reason instanceof Error ? result.reason.message : String(result.reason)}`);
+while (queue.length && visited.size < 40) {
+  const url = queue.shift();
+  if (!url || visited.has(url)) continue;
+  visited.add(url);
+  try {
+    const source = await fetchText(url);
+    bundles.push(source);
+    for (const child of scriptReferences(source, url)) {
+      if (!visited.has(child) && !queue.includes(child)) queue.push(child);
+    }
+  } catch (error) {
+    console.warn(`WARN: Could not inspect script ${url}: ${error instanceof Error ? error.message : String(error)}`);
+  }
 }
 
 if (!bundles.length) {
@@ -141,7 +170,7 @@ if (!bundles.length) {
 const searchable = [html, ...bundles].join('\n');
 const missing = requiredMarkers.filter(marker => !searchable.includes(marker));
 
-console.log(`Inspected ${bundles.length} of ${scriptSources.length} public script(s) at ${BASE_URL}.`);
+console.log(`Inspected ${bundles.length} same-origin public script chunk(s) at ${BASE_URL}.`);
 if (missing.length) {
   for (const marker of missing) console.error(`MISSING: ${marker}`);
   console.error('FAIL: Public deployment does not contain the current judge-evidence UI markers. Re-publish before final judging.');
