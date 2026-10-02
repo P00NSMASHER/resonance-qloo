@@ -163,8 +163,9 @@ export default function App() {
       .then(x => {
         const nextState = normalizeQlooState(x);
         const origin = typeof x?.qlooApiOrigin === 'string' ? x.qlooApiOrigin : '';
-        setQlooApiOrigin(origin);
-        setQlooState(nextState === 'ready' && !origin ? 'degraded' : nextState);
+        const contractMatches = x?.contractVersion === deploymentContract.version;
+        setQlooApiOrigin(contractMatches ? origin : '');
+        setQlooState(!contractMatches || (nextState === 'ready' && !origin) ? 'degraded' : nextState);
       })
       .catch(() => {
         setQlooApiOrigin('');
