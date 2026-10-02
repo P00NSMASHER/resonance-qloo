@@ -3,6 +3,7 @@ import { access, readFile } from 'node:fs/promises';
 const LIVE_URL = 'https://resonance-qloo.floot.app';
 const requiredFiles = [
   'LICENSE',
+  'deployment-contract.json',
   'package-lock.json',
   'README.md',
   'openapi.yaml',
@@ -132,6 +133,9 @@ try {
   if (!openapi.includes('qlooApiOrigin') || !openapi.includes('apiOrigin')) {
     failures.push('OpenAPI contract is missing non-secret Qloo origin provenance.');
   }
+  if (!openapi.includes('contractVersion')) {
+    failures.push('OpenAPI status contract is missing the deployment contract version.');
+  }
   if (!openapi.includes('confirmedEntityIds') || !openapi.includes('QLOO_RESOLUTION_REVIEW_REQUIRED')) {
     failures.push('OpenAPI contract is missing the pre-taste entity-confirmation handshake.');
   }
@@ -212,6 +216,9 @@ try {
 
 try {
   const deploymentCheck = await readFile('scripts/check-deployment.mjs', 'utf8');
+  if (!deploymentCheck.includes('EXPECTED_CONTRACT_VERSION') || !deploymentCheck.includes('status.contractVersion')) {
+    failures.push('Deployment parity check is not enforcing the exact shared contract version.');
+  }
   for (const marker of [
     'Qloo top match · review',
     'Qloo top match · confirmed',
@@ -264,6 +271,9 @@ try {
 
 try {
   const app = await readFile('src/App.tsx', 'utf8');
+  if (!app.includes('data-deployment-contract={deploymentContract.version}')) {
+    failures.push('Frontend is not embedding the shared deployment contract version.');
+  }
   if (!app.includes('hasConsistentRecommendationResult')) {
     failures.push('Results UI is not validating live recommendation evidence consistency before rendering.');
   }
@@ -382,6 +392,9 @@ try {
 
 try {
   const server = await readFile('server/index.ts', 'utf8');
+  if (!server.includes('contractVersion: deploymentContract.version')) {
+    failures.push('Backend status is not exposing the shared deployment contract version.');
+  }
   if (!server.includes('ResolutionReviewRequiredError') || !server.includes("code: 'QLOO_RESOLUTION_REVIEW_REQUIRED'")) {
     failures.push('Server is missing the 409 Qloo resolution-confirmation response path.');
   }
