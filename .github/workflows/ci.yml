@@ -31,5 +31,7 @@ jobs:
         run: npm run build
       - name: Preview-mode smoke test
         run: npm run smoke:preview
+      - name: Deployment checker syntax
+        run: node --check scripts/check-deployment.mjs
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
