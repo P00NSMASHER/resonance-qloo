@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "smoke:preview": "node scripts/smoke-preview.mjs",
     "qloo:proof": "node scripts/qloo-mcp-proof.mjs",
+    "qloo:proof:redaction:selftest": "node scripts/test-proof-redaction.mjs",
     "submission:preflight": "node scripts/submission-preflight.mjs",
     "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline",
     "deployment:check": "node scripts/check-deployment.mjs",
