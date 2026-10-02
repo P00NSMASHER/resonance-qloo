@@ -39,7 +39,11 @@ Resonance is not a clinical, diagnostic, dietary, medication, or medical decisio
 
 ## Sparse or ambiguous input
 
-Two vague anchors may resolve ambiguously. Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewer than three usable affinity signals. Exactly three usable signals are accepted: the four-step plan reuses the third real selected signal for the closing step, and the UI/export disclose that reuse instead of inventing a synthetic fourth signal. A future refinement may add explicit user confirmation of ambiguous entity matches.
+Two vague anchors may resolve ambiguously. Resonance classifies each resolved entity as either an exact normalized-name match or a **Qloo top-result match to review**. Top-result matches are visibly labeled, counted in the decision evidence, and preserved in copied session evidence rather than being presented as equally certain.
+
+This is a review aid, not a confidence score. The current flow does not pause for an explicit user-confirmation step before taste analysis; a future refinement may add that confirmation when a top-result match would materially change the session.
+
+Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewer than three usable affinity signals. Exactly three usable signals are accepted: the four-step plan reuses the third real selected signal for the closing step, and the UI/export disclose that reuse instead of inventing a synthetic fourth signal.
 
 ## Event quotas and upstream availability
 
