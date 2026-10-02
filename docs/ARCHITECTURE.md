@@ -62,7 +62,7 @@ The current live path uses:
 1. `GET /search` to resolve a cultural anchor.
 2. The returned Qloo entity UUID as `signal.interests.entities`.
 3. `GET /v2/insights?filter.type=urn:tag` for taste analysis.
-4. `feature.explainability=true` so Qloo may return attribution metadata when available.
+4. `feature.explainability=true` so Qloo may return attribution metadata when available. Because that feature flag is optional rather than required for the core taste result, an HTTP 400/422 validation rejection triggers one bounded retry of the same Insights query without the explainability flag; authentication, quota, redirect, and server errors are never retried through this fallback.
 5. `GET /v2/tags/types?take=1` as the lightweight credential/connectivity probe.
 
 Qloo's taste-analysis documentation says tag results are returned under `results.tags`. Resonance keeps their result order. If the payload includes a numeric `affinity` / `score`, it is normalized and used; if no score exists, the rank is retained and the UI says **Rank #N**.
