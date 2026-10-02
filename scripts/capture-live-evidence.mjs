@@ -6,6 +6,7 @@ const confirmedEntityIds = (process.env.RESONANCE_CONFIRMED_ENTITY_IDS || '')
   .map(value => value.trim())
   .filter(Boolean)
   .slice(0,4);
+const reviewToken = (process.env.RESONANCE_REVIEW_TOKEN || '').trim();
 
 const expectedRequestContext = {
   anchors:anchors.map(query => ({ query })),
@@ -70,13 +71,16 @@ const run = await getJson('/api/recommend', {
     energy:'calm',
     setting:'small-group',
     confirmedEntityIds,
+    ...(reviewToken ? { reviewToken } : {}),
   }),
 });
 
 if (
   run.response.status === 409 &&
   run.body?.code === 'QLOO_RESOLUTION_REVIEW_REQUIRED' &&
-  Array.isArray(run.body?.resolvedAnchors)
+  Array.isArray(run.body?.resolvedAnchors) &&
+  typeof run.body?.reviewToken === 'string' &&
+  run.body.reviewToken.length > 0
 ) {
   if (!requestContextMatches(run.body)) {
     throw new Error('Qloo review response did not match the live evidence request context.');
@@ -93,7 +97,8 @@ if (
   throw new Error(
     'Qloo entity confirmation is required before live evidence capture. ' +
     'Review the returned non-exact matches in the product, confirm them, then rerun with ' +
-    `RESONANCE_CONFIRMED_ENTITY_IDS=${ids}. Candidates: ${JSON.stringify(review)}`
+    `RESONANCE_CONFIRMED_ENTITY_IDS=${ids} RESONANCE_REVIEW_TOKEN=${run.body.reviewToken}. ` +
+    `Candidates: ${JSON.stringify(review)}`
   );
 }
 if (!run.response.ok) {
@@ -112,6 +117,9 @@ const confirmedTopResults = Array.isArray(run.body?.resolvedAnchors)
   ? run.body.resolvedAnchors.filter(item => item?.resolutionMatch === 'top-result')
   : [];
 const confirmedIdSet = new Set(confirmedEntityIds);
+if (confirmedTopResults.length > 0 && !reviewToken) {
+  throw new Error('Live evidence response contains reviewed Qloo top results but no review receipt was supplied.');
+}
 const unconfirmedTopResults = confirmedTopResults.filter(item => !confirmedIdSet.has(item.entityId));
 if (unconfirmedTopResults.length) {
   throw new Error(
@@ -141,6 +149,7 @@ const evidence = {
   },
   confirmation_receipt:{
     required:confirmedTopResults.length > 0,
+    reviewTokenUsed:Boolean(reviewToken),
     confirmedTopResultCount:confirmedTopResults.length,
     confirmedTopResults:confirmedTopResults.map(item => ({
       query:item.query,
