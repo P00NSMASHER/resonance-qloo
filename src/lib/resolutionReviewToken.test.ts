@@ -34,9 +34,10 @@ describe('resolution review token', () => {
   });
 
   it('verifies across server instances sharing the same Qloo credential', () => {
-    const instanceAKey = resolutionReviewSigningKey('event-credential');
-    const instanceBKey = resolutionReviewSigningKey('event-credential');
-    const rotatedKey = resolutionReviewSigningKey('rotated-event-credential');
+    const origin = 'https://hackathon.api.qloo.com';
+    const instanceAKey = resolutionReviewSigningKey('event-credential', origin);
+    const instanceBKey = resolutionReviewSigningKey('event-credential', origin);
+    const rotatedKey = resolutionReviewSigningKey('rotated-event-credential', origin);
     const token = createResolutionReviewToken(instanceAKey, baseContext, [reviewedId], now);
 
     expect(verifyResolutionReviewToken(instanceBKey, baseContext, [reviewedId], token, now + 1000)).toBe(true);
