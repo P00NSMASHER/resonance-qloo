@@ -61,15 +61,31 @@ async function fetchJson(url) {
     );
   }
   try {
-    return JSON.parse(bodyText);
+    const parsed = JSON.parse(bodyText);
+    return parsed && typeof parsed === 'object' && parsed.json && typeof parsed.json === 'object'
+      ? parsed.json
+      : parsed;
   } catch {
     throw new Error(`${url} returned invalid JSON despite content-type ${contentType}.`);
   }
 }
 
-let status;
+async function fetchPublicStatus() {
+  const failures = [];
+  for (const path of ['/api/status','/_api/status']) {
+    try {
+      const status = await fetchJson(BASE_URL + path);
+      return { status, path };
+    } catch (error) {
+      failures.push(`${path}: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+  throw new Error(failures.join(' | '));
+}
+
+let statusResult;
 try {
-  status = await fetchJson(BASE_URL + '/api/status');
+  statusResult = await fetchPublicStatus();
 } catch (error) {
   console.error(
     'FAIL: Public backend status endpoint is not serving the current Resonance API contract. ' +
@@ -77,6 +93,7 @@ try {
   );
   process.exit(1);
 }
+const status = statusResult.status;
 if (status.service !== 'resonance') {
   console.error(`FAIL: Public backend service marker is ${JSON.stringify(status.service)}, expected "resonance".`);
   process.exit(1);
@@ -95,7 +112,7 @@ if (!['preview','live'].includes(status.mode) || !['preview','ready','degraded',
   console.error('FAIL: Public backend returned an invalid Qloo status contract: ' + JSON.stringify(status));
   process.exit(1);
 }
-console.log(`Public backend status passed: contract=${status.contractVersion}, mode=${status.mode}, qlooStatus=${status.qlooStatus}, qlooApiOrigin=${status.qlooApiOrigin}.`);
+console.log(`Public backend status passed via ${statusResult.path}: contract=${status.contractVersion}, mode=${status.mode}, qlooStatus=${status.qlooStatus}, qlooApiOrigin=${status.qlooApiOrigin}.`);
 
 const html = await fetchText(BASE_URL);
 const scriptSources = [...new Set(
