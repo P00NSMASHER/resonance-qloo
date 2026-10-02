@@ -28,6 +28,6 @@ Resonance was started specifically for the Qloo Agentic Hackathon, so it is not 
 - GitHub detects the MIT license;
 - text description is present on Devpost.
 
-## Final blocker before submitting
+## Final blocker before treating the entry as final
 
-Do not submit until a real event-issued Qloo credential is connected and the live Qloo path is verified end-to-end. The official requirement calls for a functional demo that judges can use end-to-end.
+The Devpost account currently reports Resonance as registered and submitted to the Qloo Agentic Hackathon, and submissions remain editable while the submission window is open. Do not treat that entry as final or stop updating it until a real event-issued Qloo credential is connected, the public live path is verified end-to-end, and the Floot deployment matches the reviewed GitHub head. The official requirement calls for a functional demo that judges can use end-to-end.
