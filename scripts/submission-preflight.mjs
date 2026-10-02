@@ -131,6 +131,9 @@ try {
   if (!openapi.includes('confirmedEntityIds') || !openapi.includes('QLOO_RESOLUTION_REVIEW_REQUIRED')) {
     failures.push('OpenAPI contract is missing the pre-taste entity-confirmation handshake.');
   }
+  if (!openapi.includes("name: refresh") || !openapi.includes("enum: ['1']")) {
+    failures.push('OpenAPI status contract is missing the bounded Qloo re-verification query.');
+  }
   if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
     failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
   }
@@ -256,6 +259,9 @@ try {
   if (!app.includes('function invalidateGeneratedState()') || !app.includes('disabled={loading}')) {
     failures.push('Results UI is missing stale-state invalidation or live-request input locking.');
   }
+  if (!app.includes("'/api/status?refresh=1'") || !app.includes('Retry Qloo verification')) {
+    failures.push('Results UI manual Qloo retry is not routed through explicit server re-verification.');
+  }
   if (
     !app.includes("import { hasVerifiedLiveProvenance } from './lib/liveProvenance'") ||
     !app.includes('hasVerifiedLiveProvenance(data, qlooApiOrigin)')
@@ -302,6 +308,14 @@ try {
   }
   if (!server.includes("QLOO_ALLOW_LOCAL_MOCK === '1' && process.env.NODE_ENV !== 'production'")) {
     failures.push('Server does not disable the local Qloo mock escape hatch in production.');
+  }
+  if (
+    !server.includes('qlooProbeRefreshLimiter') ||
+    !server.includes('processQlooProbeRefreshLimiter') ||
+    !server.includes('qlooProbeCache.delete(keyFingerprint)') ||
+    !server.includes("url.searchParams.get('refresh') === '1'")
+  ) {
+    failures.push('Server is missing bounded cache-bypassing Qloo verification retry semantics.');
   }
 } catch {}
 
