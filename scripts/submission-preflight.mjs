@@ -425,6 +425,8 @@ try {
   if (
     !server.includes('qlooProbeRefreshLimiter') ||
     !server.includes('processQlooProbeRefreshLimiter') ||
+    !server.includes('if (cachedStatus)') ||
+    server.includes("cachedStatus && cachedStatus !== 'ready'") ||
     !server.includes('qlooProbeCache.delete(keyFingerprint)') ||
     !server.includes("url.searchParams.get('refresh') === '1'")
   ) {
