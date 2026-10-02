@@ -32,6 +32,9 @@ export function resolveQlooBaseUrl(raw: string | undefined, allowLocalMock = fal
   if (!trustedQlooHost && !allowedLocalMock) {
     throw new Error('QLOO_API_BASE_URL must use a trusted Qloo API origin.');
   }
+  if (trustedQlooHost && url.port && url.port !== '443') {
+    throw new Error('QLOO_API_BASE_URL must use the standard HTTPS port for Qloo.');
+  }
 
   return url.origin;
 }
