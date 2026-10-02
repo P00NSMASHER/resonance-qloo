@@ -31,6 +31,7 @@ describe('ttl cache', () => {
     const first = cache.getOrLoad('x', loader, 1000);
     const second = cache.getOrLoad('x', loader, 1000);
 
+    await Promise.resolve();
     expect(loader).toHaveBeenCalledTimes(1);
     release(42);
 
