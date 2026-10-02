@@ -44,35 +44,62 @@ export function recommendationRequestContext(input: ContextInput): Recommendatio
   };
 }
 
-export function payloadHasMatchingRequestContext(
-  payload: unknown,
-  expected: RecommendationRequestContext,
-) {
-  if (!isRecord(payload) || !isRecord(payload.requestContext)) return false;
+export function readRecommendationRequestContext(payload: unknown): RecommendationRequestContext | null {
+  if (!isRecord(payload) || !isRecord(payload.requestContext)) return null;
   const actual = payload.requestContext;
-
   if (
-    actual.energy !== expected.energy ||
-    actual.setting !== expected.setting ||
-    actual.durationMinutes !== expected.durationMinutes ||
     !Array.isArray(actual.anchors) ||
-    actual.anchors.length !== expected.anchors.length
-  ) return false;
+    actual.anchors.length < 2 ||
+    actual.anchors.length > 4 ||
+    !isNonEmptyString(actual.energy) ||
+    !isNonEmptyString(actual.setting) ||
+    !Number.isInteger(actual.durationMinutes)
+  ) return null;
 
-  for (let index = 0; index < expected.anchors.length; index += 1) {
-    const item = actual.anchors[index];
-    const wanted = expected.anchors[index];
-    if (!isRecord(item) || !isNonEmptyString(item.query)) return false;
+  const anchors: RecommendationRequestContext['anchors'] = [];
+  for (const item of actual.anchors) {
+    if (!isRecord(item) || !isNonEmptyString(item.query)) return null;
     const typeUrn = item.typeUrn === undefined
       ? undefined
       : isNonEmptyString(item.typeUrn)
         ? item.typeUrn
         : null;
-    if (typeUrn === null) return false;
-    if (requestAnchorKey(item.query, typeUrn) !== requestAnchorKey(wanted.query, wanted.typeUrn)) {
-      return false;
-    }
+    if (typeUrn === null) return null;
+    anchors.push({
+      query:item.query,
+      ...(typeUrn ? { typeUrn } : {}),
+    });
   }
 
-  return true;
+  return {
+    anchors,
+    energy:actual.energy,
+    setting:actual.setting,
+    durationMinutes:Number(actual.durationMinutes),
+  };
+}
+
+export function requestContextsMatch(
+  actual: RecommendationRequestContext,
+  expected: RecommendationRequestContext,
+) {
+  if (
+    actual.energy !== expected.energy ||
+    actual.setting !== expected.setting ||
+    actual.durationMinutes !== expected.durationMinutes ||
+    actual.anchors.length !== expected.anchors.length
+  ) return false;
+
+  return actual.anchors.every((item,index) =>
+    requestAnchorKey(item.query, item.typeUrn) ===
+    requestAnchorKey(expected.anchors[index].query, expected.anchors[index].typeUrn)
+  );
+}
+
+export function payloadHasMatchingRequestContext(
+  payload: unknown,
+  expected: RecommendationRequestContext,
+) {
+  const actual = readRecommendationRequestContext(payload);
+  return Boolean(actual && requestContextsMatch(actual, expected));
 }
