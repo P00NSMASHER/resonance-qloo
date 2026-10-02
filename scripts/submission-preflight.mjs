@@ -115,6 +115,22 @@ try {
 } catch {}
 
 try {
+  const deploymentCheck = await readFile('scripts/check-deployment.mjs', 'utf8');
+  for (const marker of [
+    'Qloo top match · review',
+    'Qloo top match · confirmed',
+    'Top matches confirmed',
+    'Qloo API',
+    'No synthetic signal',
+    'QLOO_RESOLUTION_REVIEW_REQUIRED',
+  ]) {
+    if (!deploymentCheck.includes(marker)) {
+      failures.push(`Deployment parity check is missing current UI marker: ${marker}`);
+    }
+  }
+} catch {}
+
+try {
   const app = await readFile('src/App.tsx', 'utf8');
   if (!app.includes('className="signalCount"')) {
     failures.push('Results UI is missing selected-versus-returned signal counts.');
