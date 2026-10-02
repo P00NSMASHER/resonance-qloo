@@ -124,7 +124,7 @@ npm run submission:preflight
 npm run deployment:check
 ```
 
-All must pass. The deployment check reads the public Floot HTML and JavaScript bundles and verifies that the current judge-facing evidence UI is actually present; a merely reachable but stale deployment fails this step.
+All must pass. The deployment check validates both production layers: `/api/status` must expose the Resonance contract and trusted Qloo hackathon origin, and the public Floot HTML/JavaScript bundles must contain the current judge-facing evidence UI. A reachable but stale frontend or backend fails this step.
 
 ## 8. Final Devpost checks
 
@@ -137,8 +137,8 @@ Required by the current Qloo submission form:
 - external hosting live;
 - MIT license visible/detected.
 
-The authenticated Devpost account has a registered Resonance project and an in-progress hackathon entry, but the project record still reports `submitted_at: null`; the Devpost confirmation email also says the submission is not finished yet. Treat the entry as a draft/provisional submission until the final submit action succeeds and Devpost confirms completion. As of October 2, 2026, submissions remain open until October 30, 2026 at 11:45 PM Eastern Time. Re-check the live Devpost deadline before final lock in case the organizer changes it. Demo video is not required.
+As of October 2, 2026 at 8:25 AM Eastern Time, the authenticated Devpost project record reports Resonance submitted to the Qloo Agentic Hackathon (`submitted_at: 2026-10-02T08:25:09.325-04:00`). The submission window remains open until October 30, 2026 at 11:45 PM Eastern Time, so the submitted entry should continue to be updated as live proof improves. Re-check the live deadline before final lock in case the organizer changes it. Demo video is not required.
 
-## 9. Finalize the existing Devpost entry only after end-to-end proof
+## 9. Treat the submitted Devpost entry as provisional until end-to-end proof
 
-The existing submission can remain provisional while work continues. Do not treat it as final or stop updating it until the public app itself works end-to-end with real Qloo data, deployment parity passes, and the submission description/evidence reflect the verified live path.
+The submit action is complete, but judge-readiness is not. Keep updating the existing submission while the window is open. Do not treat Resonance as final until the public app works end-to-end with real Qloo data, live evidence capture succeeds, deployment parity passes, and the Devpost description/evidence reflect that verified live path.
