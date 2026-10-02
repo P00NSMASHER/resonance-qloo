@@ -278,7 +278,7 @@ components:
       description: Normalized submitted session context executed by the server and echoed back as a provenance receipt.
     Provenance:
       type: object
-      required: [source, apiOrigin, generatedAt]
+      required: [source, apiOrigin, contractVersion, generatedAt]
       properties:
         source:
           type: string
@@ -287,6 +287,10 @@ components:
           type: string
           format: uri
           description: Non-secret Qloo API origin used for this live recommendation.
+        contractVersion:
+          type: string
+          minLength: 1
+          description: Shared frontend/backend deployment contract version that produced this live recommendation.
         generatedAt:
           type: string
           format: date-time
@@ -316,7 +320,7 @@ components:
         provenance: { $ref: '#/components/schemas/Provenance' }
     ResolutionReviewRequired:
       type: object
-      required: [error, code, requestContext, resolvedAnchors, reviewToken]
+      required: [error, code, contractVersion, requestContext, resolvedAnchors, reviewToken]
       properties:
         error:
           type: string
@@ -324,6 +328,10 @@ components:
         code:
           type: string
           const: QLOO_RESOLUTION_REVIEW_REQUIRED
+        contractVersion:
+          type: string
+          minLength: 1
+          description: Backend deployment contract version that minted this review receipt.
         requestContext: { $ref: '#/components/schemas/RequestContext' }
         reviewToken:
           type: string
