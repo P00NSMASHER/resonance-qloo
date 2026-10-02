@@ -31,6 +31,7 @@ describe('session export', () => {
       resolvedAnchorCount:2,
       categoryHintCount:2,
       selectedAffinityCount:2,
+      selectedAffinityLabels:['Jazz','Musicals'],
       sessionDurationMinutes:45,
       energy:'social',
       setting:'small-group',
@@ -116,6 +117,13 @@ describe('session export', () => {
       'Selection evidence: 2 affinity signal(s) selected for the plan'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Selection evidence:');
+  });
+
+  it('keeps selected Qloo labels in live exports', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Selected Qloo signals: Jazz | Musicals'
+    );
+    expect(formatSessionText(session, 'demo')).not.toContain('Selected Qloo signals:');
   });
 
   it('keeps target session length in live exports', () => {
