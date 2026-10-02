@@ -19,6 +19,8 @@ const requiredFiles = [
   'scripts/test-evidence-capture.mjs',
   'scripts/test-ui-state-safety.mjs',
   'scripts/test-deployment-checker.mjs',
+  'src/lib/clientIdentity.ts',
+  'src/lib/clientIdentity.test.ts',
   'src/App.tsx',
   'src/lib/recommendationResult.ts',
   'src/lib/liveProvenance.ts',
@@ -219,6 +221,20 @@ try {
     if (!deploymentCheck.includes(marker)) {
       failures.push(`Deployment parity check is missing current UI marker: ${marker}`);
     }
+  }
+} catch {}
+
+try {
+  const clientIdentity = await readFile('src/lib/clientIdentity.ts', 'utf8');
+  if (!clientIdentity.includes('forwardedValues.at(-1)')) {
+    failures.push('Rate-limit identity is not using the proxy-nearest forwarded address.');
+  }
+  if (!clientIdentity.includes("createHash('sha256')")) {
+    failures.push('Rate-limit identity is not hashing the network address before limiter storage.');
+  }
+  const server = await readFile('server/index.ts', 'utf8');
+  if (!server.includes('rateLimitClientKey(')) {
+    failures.push('Server is not using the tested minimized client-identity helper.');
   }
 } catch {}
 
