@@ -56,6 +56,9 @@ try {
   if (!openapi.includes('qlooApiOrigin') || !openapi.includes('apiOrigin')) {
     failures.push('OpenAPI contract is missing non-secret Qloo origin provenance.');
   }
+  if (!openapi.includes('resolutionMatch') || !openapi.includes('topResultResolutionCount')) {
+    failures.push('OpenAPI contract is missing entity-resolution review evidence.');
+  }
   if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
     failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
   }
@@ -111,6 +114,9 @@ try {
   if (!app.includes('<b>Qloo API</b>')) {
     failures.push('Results UI is missing live Qloo API origin provenance.');
   }
+  if (!app.includes('Qloo top match · review') || !app.includes('Review entity matches')) {
+    failures.push('Results UI is missing non-exact entity-resolution review cues.');
+  }
   if (!app.includes('No synthetic signal')) {
     failures.push('Results UI is missing the sparse-evidence no-synthetic-signal disclosure.');
   }
@@ -132,6 +138,9 @@ try {
   }
   if (!sessionExport.includes('Qloo API origin:')) {
     failures.push('Session export is missing live Qloo API origin provenance.');
+  }
+  if (!sessionExport.includes('Qloo top-result match(es) to review')) {
+    failures.push('Session export is missing entity-resolution review evidence.');
   }
   if (!sessionExport.includes('Signal reuse:')) {
     failures.push('Session export is missing the sparse-evidence signal-reuse disclosure.');
