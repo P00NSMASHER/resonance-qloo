@@ -110,6 +110,7 @@ The real event key must never be committed or pasted into a public artifact.
 - [Architecture](docs/ARCHITECTURE.md)
 - [Judge guide](docs/JUDGING.md)
 - [Finalization runbook](docs/FINALIZATION_RUNBOOK.md)
+- [Floot live-Qloo cutover](docs/FLOOT_QLOO_CUTOVER.md)
 - [Security](SECURITY.md)
 - [OpenAPI contract](openapi.yaml)
 
