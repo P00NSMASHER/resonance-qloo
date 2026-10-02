@@ -212,6 +212,20 @@ try {
     throw new Error('Unknown API route should return 404, got ' + missing.status);
   }
 
+  const missingAsset = await fetch(previewBase + '/assets/definitely-missing.js');
+  if (missingAsset.status !== 404) {
+    throw new Error('Missing hashed/static asset should return 404, got ' + missingAsset.status);
+  }
+  const missingAssetBody = await missingAsset.json();
+  if (!String(missingAssetBody.error || '').includes('Static asset not found')) {
+    throw new Error('Missing static asset did not return the explicit 404 contract.');
+  }
+
+  const spaRoute = await fetch(previewBase + '/judge-walkthrough');
+  if (spaRoute.status !== 200 || !String(spaRoute.headers.get('content-type') || '').includes('text/html')) {
+    throw new Error('Extensionless SPA route should still fall back to index.html.');
+  }
+
   await stopChild(previewChild);
   previewChild = null;
 
