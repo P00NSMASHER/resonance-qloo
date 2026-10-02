@@ -55,7 +55,7 @@ Safety/reliability controls:
 
 ## Qloo
 
-The Agentic Hackathon build defaults to the event Qloo API origin required by the starter instructions: `https://hackathon.api.qloo.com`. The origin is still configurable through `QLOO_API_BASE_URL`, but only clean HTTPS origins are accepted.
+The Agentic Hackathon build defaults to the event Qloo API origin required by the starter instructions: `https://hackathon.api.qloo.com`. `QLOO_API_BASE_URL` is configurable only across an explicit allowlist of reviewed Qloo API hosts (`hackathon.api.qloo.com` and `api.qloo.com`). Loopback HTTPS is available solely behind the local smoke-test flag. A new organizer-approved gateway requires an intentional allowlist-and-test change rather than an arbitrary environment override.
 
 The current live path uses:
 
