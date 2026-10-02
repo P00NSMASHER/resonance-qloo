@@ -11,6 +11,8 @@ const requiredFiles = [
   'docs/DEVPOST_FIELDS.md',
   'SECURITY.md',
   'scripts/qloo-mcp-proof.mjs',
+  'scripts/proof-redaction.mjs',
+  'scripts/test-proof-redaction.mjs',
   'src/App.tsx',
   'server/index.ts',
 ];
@@ -91,6 +93,22 @@ try {
   }
   if (!proof.includes('harness_version')) {
     failures.push('Qloo MCP proof artifact no longer records the harness version.');
+  }
+  if (!proof.includes('assertSecretAbsent')) {
+    failures.push('Qloo MCP proof is missing the final serialized secret guard.');
+  }
+  if (!proof.includes('redactProof')) {
+    failures.push('Qloo MCP proof is not using the shared redaction utility.');
+  }
+} catch {}
+
+try {
+  const redaction = await readFile('scripts/proof-redaction.mjs', 'utf8');
+  if (!redaction.includes("value.includes(sensitive)")) {
+    failures.push('Proof redaction no longer scrubs secret values under benign field names.');
+  }
+  if (!redaction.includes('serialized.includes(sensitive)')) {
+    failures.push('Proof redaction no longer rejects leaked secrets in final serialized output.');
   }
 } catch {}
 
