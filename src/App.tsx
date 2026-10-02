@@ -47,6 +47,7 @@ type Result = {
   provenance: {
     source:'qloo-live'|'illustrative-demo';
     apiOrigin?:string;
+    contractVersion?:string;
     generatedAt?:string;
   };
 };
@@ -233,7 +234,8 @@ export default function App() {
         Array.isArray(data.resolvedAnchors) &&
         typeof data.reviewToken === 'string' &&
         data.reviewToken.length > 0 &&
-        data.reviewToken.length <= 128
+        data.reviewToken.length <= 128 &&
+        data.contractVersion === deploymentContract.version
       ) {
         if (!payloadHasMatchingRequestContext(data, requestContext)) {
           setQlooState('degraded');
@@ -256,7 +258,7 @@ export default function App() {
         setQlooState('degraded');
         throw new Error('Live Qloo response did not match the submitted session context. Please retry.');
       }
-      if (!hasVerifiedLiveProvenance(data, qlooApiOrigin)) {
+      if (!hasVerifiedLiveProvenance(data, qlooApiOrigin, deploymentContract.version)) {
         setQlooState('degraded');
         throw new Error('Live Qloo provenance could not be verified. Please retry after the connection status refreshes.');
       }
