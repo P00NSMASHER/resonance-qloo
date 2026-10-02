@@ -19,6 +19,7 @@ type Result = {
     meanNormalizedScore: number|null;
     evidenceBasis: 'normalized-score'|'ranked-order';
     selectedAffinityCount: number;
+    selectedAffinityLabels: string[];
     resolvedAnchorCount: number;
     categoryHintCount: number;
     explainabilityResultCount: number;
@@ -62,6 +63,12 @@ const demo: Result = {
     meanNormalizedScore:null,
     evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
+    selectedAffinityLabels:[
+      'classic jazz vocals',
+      'Golden Age musicals',
+      'mid-century elegance',
+      'Italian-American comfort',
+    ],
     resolvedAnchorCount:3,
     categoryHintCount:2,
     explainabilityResultCount:0,
@@ -325,6 +332,10 @@ export default function App() {
           <span><b>{source === 'live' ? result.evidence.explainabilityResultCount : '—'}</b>{source === 'live' ? ' Qloo-explained results' : ' live explainability'}</span>
           <span><b>{result.evidence.meanNormalizedScore === null ? 'Ranked' : `${Math.round(result.evidence.meanNormalizedScore*100)}%`}</b>{result.evidence.evidenceBasis === 'ranked-order' ? ' Qloo result order' : ' mean normalized score'}</span>
         </div>
+        <p className="fieldHint">
+          <b>{source === 'live' ? 'Selected Qloo signals:' : 'Illustrative selected signals:'}</b>{' '}
+          {result.evidence.selectedAffinityLabels.join(' · ')}
+        </p>
         <ol className="agentTraceList">
           {result.agentTrace.map(step=><li key={step.stage} className={step.status}>
             <span>{step.stage}</span>
