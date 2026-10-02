@@ -32,7 +32,7 @@ describe('session export', () => {
       {stage:'resolve',status:'ok' as const,detail:'Resolved two anchors.'},
       {stage:'evaluate',status:'warning' as const,detail:'Used ranked Qloo evidence.'},
     ],
-    provenance:{generatedAt:'2026-10-01T17:12:00.000Z',apiOrigin:'https://hackathon.api.qloo.com'},
+    provenance:{generatedAt:'2026-10-01T17:12:00.000Z',apiOrigin:'https://hackathon.api.qloo.com',contractVersion:'2026-10-02.review-origin-v1'},
     evidence:{
       evidenceBasis:'ranked-order' as const,
       meanNormalizedScore:null,
@@ -119,6 +119,13 @@ describe('session export', () => {
     const demo = formatSessionText(session, 'demo');
     expect(demo).toContain('Illustrative request context: 45 minutes; energy=social; setting=small-group');
     expect(demo).toContain('Illustrative anchors: Ella Fitzgerald [Artist] | Singin\' in the Rain [Film]');
+  });
+
+  it('keeps the deployment contract in live exports only', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Deployment contract: 2026-10-02.review-origin-v1'
+    );
+    expect(formatSessionText(session, 'demo')).not.toContain('Deployment contract:');
   });
 
   it('keeps the live evidence basis in exported evidence', () => {
