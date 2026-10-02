@@ -7,7 +7,7 @@
 3. If the event credential is still pending, use **Preview with example data**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
-   - the result metadata strip: source mode, evidence basis, non-secret Qloo API origin, and live generation timestamp;
+   - the result metadata strip: source mode, evidence basis, visible **Request receipt**, non-secret Qloo API origin, and live generation timestamp;
    - resolved Qloo entity IDs, category hints, and whether each resolution is an **Exact name** or **Qloo top match · review**;
    - when a top match is non-exact, the **Qloo match review required** gate: taste analysis must not run until the user confirms those exact entity IDs or edits the input;
    - after confirmation, the same mapping is labeled **Qloo top match · confirmed** and only then feeds the visible aggregate handoff into Qloo taste analysis;
@@ -33,7 +33,8 @@ The implementation now matches current Qloo public documentation more defensibly
 - Category-aware search can constrain ambiguous anchors through Qloo's documented `types` parameter.
 - The agent reports how many category hints were actually applied and preserves them beside the resolved anchors.
 - Resolution is not presented as hidden confidence: each resolved entity is classified as an exact normalized-name match or a Qloo top-result match that should be reviewed.
-- A non-exact top result triggers HTTP 409 and stops before taste analysis. The response returns the resolved candidates; the browser shows the input → Qloo mapping and requires explicit confirmation of those exact entity IDs. Editing the inputs clears the pending review. If Qloo resolves to a different ID on the next pass, that new ID must be reviewed again.
+- Both the HTTP 409 review response and HTTP 200 recommendation carry a normalized `requestContext` receipt (submitted anchors/type URNs, energy, setting, duration). The browser rejects either response if that receipt does not exactly match the form that initiated the request, and the receipt is preserved in copied/live evidence.
+- A non-exact top result triggers HTTP 409 and stops before taste analysis. The response returns the request receipt plus the resolved candidates; the browser shows the input → Qloo mapping and requires explicit confirmation of those exact entity IDs. Editing the inputs clears the pending review. If Qloo resolves to a different ID on the next pass, that new ID must be reviewed again.
 - Confirmed top-result matches are preserved as such in the live evidence rather than being relabeled as exact matches.
 - Independent anchor-resolution calls run concurrently to reduce live latency.
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
@@ -52,7 +53,7 @@ The server also keeps the event credential private, bounds inputs, times out ups
 
 ### Design
 
-The app is one focused, responsive flow with live connection-state awareness, visible provenance, explicit rank-vs-score labeling, loading/error handling, keyboard-focus support, and a no-login path for judges. Session-defining controls lock while a live request is running; editing an anchor/category/context invalidates stale output and pending match confirmation; and the browser refuses to label a 200 response **LIVE QLOO** unless its `qloo-live` provenance, generation timestamp, and Qloo API origin agree with the verified status endpoint.
+The app is one focused, responsive flow with live connection-state awareness, visible provenance, explicit rank-vs-score labeling, loading/error handling, keyboard-focus support, and a no-login path for judges. Session-defining controls lock while a live request is running; editing an anchor/category/context invalidates stale output and pending match confirmation; and the browser refuses to show a review card or label a 200 response **LIVE QLOO** unless the normalized request receipt matches the initiating form; successful results must also have `qloo-live` provenance, a valid generation timestamp, and the same Qloo API origin as the verified status endpoint.
 
 ### Potential Impact
 
