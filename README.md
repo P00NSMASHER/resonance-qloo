@@ -173,7 +173,7 @@ After publishing or re-publishing the public app, also run:
 npm run deployment:check
 ```
 
-`deployment:check` verifies both sides of the public Floot deployment: `/api/status` must expose the Resonance contract and `https://hackathon.api.qloo.com` origin, and the public HTML/JavaScript bundles must contain the current judge-evidence UI markers. A reachable but stale frontend or backend therefore fails the check.
+`deployment:check` verifies both sides of the public Floot deployment. The backend `/api/status` and frontend bundle must both carry the exact shared version from `deployment-contract.json`; the status endpoint must also expose the Resonance service contract and `https://hackathon.api.qloo.com` origin, and the public bundle must contain the current judge-evidence UI markers. A reachable but stale or mixed-version frontend/backend therefore fails the check.
 
 The smoke test verifies:
 
