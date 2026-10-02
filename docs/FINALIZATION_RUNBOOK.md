@@ -22,7 +22,14 @@ https://resonance-qloo.floot.app
 
 Confirm the header says **Live Qloo connected**.
 
-If it still says access pending, stop and fix hosting configuration before doing anything else.
+Before continuing, also verify production UI parity with the repository:
+- **Preview with example data** immediately renders an illustrative result;
+- the example result visibly shows Artist / Film category hints where expected;
+- the plan cards show favorite → Qloo bridge labels;
+- Add/remove anchor controls respond on mobile;
+- the public app does not show older labels or controls from a stale deployment.
+
+If the status is still pending when a key is configured, or the public interactions do not match the current repository build, stop and fix/re-publish hosting before doing anything else.
 
 ## 3. Run the official-tooling proof
 
