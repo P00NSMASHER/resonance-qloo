@@ -21,6 +21,7 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 
   const resolvedAnchors = payload.resolvedAnchors;
   if (!Array.isArray(resolvedAnchors) || resolvedAnchors.length < 2 || resolvedAnchors.length > 4) return false;
+  const resolvedEntityIds = new Set<string>();
   for (const item of resolvedAnchors) {
     if (
       !isRecord(item) ||
@@ -29,17 +30,24 @@ export function hasConsistentRecommendationResult(payload: unknown) {
       !isNonEmptyString(item.entityId) ||
       !RESOLUTION_MATCHES.has(String(item.resolutionMatch))
     ) return false;
+    if (resolvedEntityIds.has(item.entityId)) return false;
+    resolvedEntityIds.add(item.entityId);
     if (item.requestedTypeUrn !== undefined && !isNonEmptyString(item.requestedTypeUrn)) return false;
   }
 
   const affinities = payload.affinities;
   if (!Array.isArray(affinities) || affinities.length < 3 || affinities.length > 8) return false;
   const affinityLabels = new Set<string>();
+  const affinityLabelsNormalized = new Set<string>();
+  let previousRank = 0;
   for (const item of affinities) {
     if (!isRecord(item) || !isNonEmptyString(item.label)) return false;
-    if (affinityLabels.has(item.label)) return false;
+    const normalizedLabel = item.label.toLocaleLowerCase('en-US');
+    if (affinityLabelsNormalized.has(normalizedLabel)) return false;
     affinityLabels.add(item.label);
-    if (!Number.isInteger(item.rank) || Number(item.rank) < 1) return false;
+    affinityLabelsNormalized.add(normalizedLabel);
+    if (!Number.isInteger(item.rank) || Number(item.rank) <= previousRank) return false;
+    previousRank = Number(item.rank);
     if (
       item.score !== null &&
       (typeof item.score !== 'number' || !Number.isFinite(item.score) || item.score < 0 || item.score > 1)
