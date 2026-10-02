@@ -52,7 +52,7 @@ The server also keeps the event credential private, bounds inputs, times out ups
 
 ### Design
 
-The app is one focused, responsive flow with live connection-state awareness, visible provenance, explicit rank-vs-score labeling, loading/error handling, keyboard-focus support, and a no-login path for judges.
+The app is one focused, responsive flow with live connection-state awareness, visible provenance, explicit rank-vs-score labeling, loading/error handling, keyboard-focus support, and a no-login path for judges. Session-defining controls lock while a live request is running; editing an anchor/category/context invalidates stale output and pending match confirmation; and the browser refuses to label a 200 response **LIVE QLOO** unless its `qloo-live` provenance, generation timestamp, and Qloo API origin agree with the verified status endpoint.
 
 ### Potential Impact
 
