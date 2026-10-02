@@ -35,6 +35,9 @@ try {
   if (!openapi.includes('selectedAffinityLabels')) {
     failures.push('OpenAPI contract is missing selectedAffinityLabels evidence.');
   }
+  if (!openapi.includes('returnedAffinityCount')) {
+    failures.push('OpenAPI contract is missing returnedAffinityCount evidence.');
+  }
   if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
     failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
   }
@@ -59,6 +62,9 @@ try {
   if (!app.includes('className="signalCount"')) {
     failures.push('Results UI is missing selected-versus-returned signal counts.');
   }
+  if (!app.includes('result.evidence.returnedAffinityCount')) {
+    failures.push('Results UI is not using first-class returnedAffinityCount evidence.');
+  }
   if (!app.includes('Selection rule')) {
     failures.push('Results UI is missing the Qloo signal selection rule.');
   }
@@ -80,6 +86,9 @@ try {
   }
   if (!sessionExport.includes('Selection evidence:')) {
     failures.push('Session export is missing selected-versus-returned evidence counts.');
+  }
+  if (!sessionExport.includes('returnedAffinityCount')) {
+    failures.push('Session export is not preserving first-class returnedAffinityCount evidence.');
   }
 } catch {}
 
