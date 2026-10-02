@@ -16,9 +16,9 @@ Resonance accepts cultural entities and preference examples only. Do not send a 
 
 ## Resolution review receipts
 
-Non-exact Qloo entity confirmation uses an ephemeral capability receipt rather than trusting entity IDs alone. The server creates a random in-memory HMAC key at process start and signs a receipt over the canonical submitted anchors/category hints, energy, setting, duration, reviewed Qloo entity IDs, and an expiry timestamp. Receipts expire after five minutes. A changed request, changed reviewed ID set, expiry, or server restart invalidates the receipt and forces review again.
+Non-exact Qloo entity confirmation uses an ephemeral capability receipt rather than trusting entity IDs alone. The server derives a domain-separated HMAC signing key from the server-side Qloo credential and signs a receipt over the canonical submitted anchors/category hints, energy, setting, duration, reviewed Qloo entity IDs, and an expiry timestamp. Receipts expire after five minutes. The derived signer is consistent across ordinary replicas/server restarts that share the same Qloo credential, while a changed request, changed reviewed ID set, expiry, or Qloo credential rotation invalidates the receipt and forces review again.
 
-The receipt is not a Qloo credential, but it is still treated as transient capability data: it stays in browser state only long enough to complete the reviewed follow-up, is cleared when session-defining inputs change, and is never included in copied sessions or captured submission evidence.
+The receipt is not a Qloo credential, but it is still treated as transient capability data: it stays in browser state only long enough to complete the reviewed follow-up, is cleared when session-defining inputs change, and is never included in copied sessions or captured submission evidence. The domain-separated derivation never exposes or returns the Qloo credential itself.
 
 ## Network-rate-limit identity
 
