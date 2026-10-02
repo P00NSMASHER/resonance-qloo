@@ -274,6 +274,9 @@ try {
   if (!app.includes('data-deployment-contract={deploymentContract.version}')) {
     failures.push('Frontend is not embedding the shared deployment contract version.');
   }
+  if (!app.includes('x?.contractVersion === deploymentContract.version') || !app.includes('!contractMatches')) {
+    failures.push('Frontend is not failing closed when backend/frontend deployment contract versions differ.');
+  }
   if (!app.includes('hasConsistentRecommendationResult')) {
     failures.push('Results UI is not validating live recommendation evidence consistency before rendering.');
   }
