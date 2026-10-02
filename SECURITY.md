@@ -6,7 +6,7 @@ The Qloo API credential is server-side only and must be supplied through `QLOO_A
 
 Submission proof tooling treats the credential as a value-level secret, not only a suspicious field name: nested proof output replaces any literal key value with `[REDACTED]`, and the final serialized artifact is rejected if the original `QLOO_API_KEY` is still present. CI runs an adversarial redaction self-test for this behavior.
 
-The server also constrains `QLOO_API_BASE_URL` to the documented Qloo API hosts (`hackathon.api.qloo.com` and `api.qloo.com`) before any request can carry the key. Loopback HTTPS is accepted only when the explicit local smoke-test flag is enabled; that flag is intentionally absent from the deployment environment example.
+The server also constrains `QLOO_API_BASE_URL` to the documented Qloo API hosts (`hackathon.api.qloo.com` and `api.qloo.com`) before any request can carry the key. Trusted Qloo hosts must use the standard HTTPS port, credential-bearing fetches refuse redirects, and loopback HTTPS is accepted only when the explicit local smoke-test flag is enabled outside `NODE_ENV=production`. That test flag is intentionally absent from the deployment environment example.
 
 ## Data minimization
 
