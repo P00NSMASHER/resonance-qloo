@@ -74,10 +74,15 @@ describe('session export', () => {
     expect(demo).not.toContain('Qloo ID:');
   });
 
+  it('keeps illustrative top-result matches marked for review', () => {
+    expect(formatSessionText(session, 'demo')).toContain('Resolution: Qloo top result — review');
+    expect(formatSessionText(session, 'demo')).not.toContain('Resolution: Qloo top result — explicitly confirmed');
+  });
+
   it('keeps input-to-resolution evidence in live exports', () => {
     const live = formatSessionText(session, 'live');
     expect(live).toContain('Ella -> Ella Fitzgerald [Artist]');
-    expect(live).toContain('Resolution: Qloo top result — review');
+    expect(live).toContain('Resolution: Qloo top result — explicitly confirmed');
     expect(live).toContain("Singin' in the Rain [Film]");
     expect(live).toContain('Resolution: exact name');
   });
@@ -118,7 +123,7 @@ describe('session export', () => {
 
   it('keeps anchor-resolution evidence in live exports', () => {
     expect(formatSessionText(session, 'live')).toContain(
-      'Resolution evidence: 2 anchor(s) resolved; 1 exact-name match(es); 1 Qloo top-result match(es) to review; 2 category hint(s) used'
+      'Resolution evidence: 2 anchor(s) resolved; 1 exact-name match(es); 1 Qloo top-result match(es) explicitly confirmed before taste analysis; 2 category hint(s) used'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Resolution evidence:');
   });
