@@ -39,7 +39,7 @@ describe('QlooClient', () => {
     await client.search('Ella Fitzgerald');
 
     const [url] = calls[0]!;
-    expect(String(url)).toBe('https://hackathon.api.qloo.com/search?query=Ella+Fitzgerald&take=5&sort_by=match');
+    expect(String(url)).toBe('https://hackathon.api.qloo.com/search?query=Ella+Fitzgerald&take=5');
   });
 
   it('supports an explicit public Qloo API override', async () => {
@@ -69,7 +69,6 @@ describe('QlooClient', () => {
     const parsed = new URL(String(url));
     expect(parsed.searchParams.get('query')).toBe("Singin' in the Rain");
     expect(parsed.searchParams.getAll('types')).toEqual(['urn:entity:movie']);
-    expect(parsed.searchParams.get('sort_by')).toBe('match');
   });
 
   it('sends resolved Qloo entity IDs into tag taste analysis and requests explainability', async () => {
