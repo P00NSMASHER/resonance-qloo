@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Resonance API
-  version: 0.11.0
+  version: 0.12.0
   description: >
     Server-side API for Resonance, a Qloo-powered cultural engagement agent.
     The Qloo credential remains on the server and is never returned to clients.
@@ -141,12 +141,18 @@ components:
           description: Position in Qloo's affinity-ranked tag results.
     PlanItem:
       type: object
-      required: [title, duration, action, why]
+      required: [title, duration, action, why, affinityLabel]
       properties:
         title: { type: string }
         duration: { type: string }
         action: { type: string }
         why: { type: string }
+        anchorName:
+          type: string
+          description: Supplied favorite explicitly grounding this plan step when available.
+        affinityLabel:
+          type: string
+          description: Qloo-ranked affinity signal used as the adjacent cultural bridge for this step.
     AgentTraceStep:
       type: object
       required: [stage, status, detail]
@@ -156,7 +162,7 @@ components:
         detail: { type: string }
     Evidence:
       type: object
-      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, resolvedAnchorCount, categoryHintCount, explainabilityResultCount, aggregateExplainabilityAvailable, sessionDurationMinutes]
+      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, resolvedAnchorCount, categoryHintCount, explainabilityResultCount, aggregateExplainabilityAvailable, sessionDurationMinutes, energy, setting]
       properties:
         meanNormalizedScore:
           oneOf:
@@ -184,6 +190,14 @@ components:
           type: integer
           enum: [30, 45, 60]
           description: Session length used to allocate the four activity timeboxes.
+        energy:
+          type: string
+          enum: [calm, social, active]
+          description: Energy setting used by the agent when composing the session.
+        setting:
+          type: string
+          enum: [one-on-one, small-group, community]
+          description: Facilitation setting used by the agent when composing the session.
     Provenance:
       type: object
       required: [source, generatedAt]
