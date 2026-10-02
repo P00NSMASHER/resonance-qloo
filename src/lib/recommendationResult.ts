@@ -5,6 +5,12 @@ const DURATIONS = new Set([30,45,60]);
 const ENERGIES = new Set(['calm','social','active']);
 const SETTINGS = new Set(['one-on-one','small-group','community']);
 const RESOLUTION_MATCHES = new Set(['exact-name','top-result']);
+const PLAN_TITLES = ['Opening cue','Story bridge','Shared choice','Closing ritual'] as const;
+const PLAN_DURATIONS: Record<number, string[]> = {
+  30:['5 min','10 min','10 min','5 min'],
+  45:['10 min','10 min','15 min','10 min'],
+  60:['10 min','20 min','20 min','10 min'],
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value));
@@ -25,6 +31,7 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   if (!Array.isArray(resolvedAnchors) || resolvedAnchors.length < 2 || resolvedAnchors.length > 4) return false;
   const resolvedEntityIds = new Set<string>();
   const resolvedNames = new Set<string>();
+  const resolvedAnchorSequence: string[] = [];
   let exactResolutionCount = 0;
   let topResultResolutionCount = 0;
   let categoryHintCount = 0;
@@ -40,6 +47,7 @@ export function hasConsistentRecommendationResult(payload: unknown) {
     if (resolvedEntityIds.has(entityIdentity)) return false;
     resolvedEntityIds.add(entityIdentity);
     resolvedNames.add(item.name);
+    resolvedAnchorSequence.push(item.name);
     if (item.requestedTypeUrn !== undefined && !isNonEmptyString(item.requestedTypeUrn)) return false;
     if (item.resolutionMatch === 'exact-name') exactResolutionCount += 1;
     else topResultResolutionCount += 1;
@@ -128,10 +136,20 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 
   const plan = payload.plan;
   if (!Array.isArray(plan) || plan.length !== 4) return false;
+  const expectedPlanLabels = [
+    selectedSequence[0],
+    selectedSequence[1],
+    selectedSequence[2],
+    selectedSequence[3] ?? selectedSequence[2],
+  ];
+  const expectedDurations = PLAN_DURATIONS[Number(evidence.sessionDurationMinutes)];
+  if (!expectedDurations) return false;
+
   const planLabels = new Set<string>();
   const firstPlanLabelSequence: string[] = [];
   let planMinutes = 0;
-  for (const item of plan) {
+  for (let index = 0; index < plan.length; index += 1) {
+    const item = plan[index];
     if (
       !isRecord(item) ||
       !isNonEmptyString(item.title) ||
@@ -141,9 +159,17 @@ export function hasConsistentRecommendationResult(payload: unknown) {
       !isNonEmptyString(item.affinityLabel) ||
       !selectedLabels.has(item.affinityLabel)
     ) return false;
-    if (item.anchorName !== undefined) {
-      if (!isNonEmptyString(item.anchorName) || !resolvedNames.has(item.anchorName)) return false;
+    if (item.title !== PLAN_TITLES[index]) return false;
+    if (item.duration !== expectedDurations[index]) return false;
+    if (item.affinityLabel !== expectedPlanLabels[index]) return false;
+
+    const expectedAnchorName = resolvedAnchorSequence[index];
+    if (expectedAnchorName !== undefined) {
+      if (item.anchorName !== expectedAnchorName) return false;
+    } else if (item.anchorName !== undefined) {
+      return false;
     }
+
     const durationMatch = item.duration.match(/^(\d+) min$/);
     if (!durationMatch) return false;
     planMinutes += Number(durationMatch[1]);
