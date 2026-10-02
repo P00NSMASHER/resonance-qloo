@@ -3,6 +3,7 @@ import { normalizeQlooState, qlooPresentation, type QlooUiState } from './lib/co
 import { formatSessionText } from './lib/sessionExport';
 import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, type AnchorType } from './lib/anchorTypes';
 import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
+import { hasConsistentRecommendationResult } from './lib/recommendationResult';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -199,6 +200,9 @@ export default function App() {
         return;
       }
       if (!r.ok) throw new Error(data.error || 'Qloo request failed');
+      if (!hasConsistentRecommendationResult(data)) {
+        throw new Error('Live Qloo response did not match the expected evidence contract. Please retry.');
+      }
       if (!hasVerifiedLiveProvenance(data, qlooApiOrigin)) {
         throw new Error('Live Qloo provenance could not be verified. Please retry after the connection status refreshes.');
       }
