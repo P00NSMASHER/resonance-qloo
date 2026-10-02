@@ -48,6 +48,8 @@ A configured secret is **not** treated as proof that Qloo works.
 
 The live button only becomes available in the verified `ready` state. This prevents the demo from advertising a live integration merely because an environment variable exists. Live status and recommendation provenance also expose the non-secret Qloo API origin so the event gateway can be audited without exposing the credential.
 
+The browser independently checks successful recommendation provenance before showing **LIVE QLOO**: the response must declare `qloo-live`, include a valid generation timestamp, and report the exact same Qloo API origin returned by the verified status endpoint. Session-defining inputs are locked while a live request is in flight, and changing an anchor, category, energy, setting, or duration invalidates any prior result and pending entity confirmation so stale evidence cannot appear to belong to edited inputs.
+
 ## 60-second judge path
 
 1. Open the live demo.
