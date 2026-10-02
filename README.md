@@ -66,6 +66,7 @@ The Qloo starter kit lists `qloo mcp` as a supported event surface. Resonance in
 
 ```bash
 npm install --global @qloo/qloo-harness
+qloo --version # must be 0.1.26 or newer for the current event kit
 qloo setup --qloo
 npm run qloo:proof -- "classic jazz vocals"
 ```
