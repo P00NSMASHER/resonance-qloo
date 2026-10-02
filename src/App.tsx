@@ -223,6 +223,7 @@ export default function App() {
 
   function previewDemo() {
     setError('');
+    setResolutionReview(null);
     setAnchors(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
     setAnchorTypes(['artist','movie','any']);
     setEnergy('calm');
@@ -248,6 +249,7 @@ export default function App() {
     setSource(null);
     setError('');
     setCopied(false);
+    setResolutionReview(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -329,6 +331,24 @@ export default function App() {
         <small>{qlooUi.helper}</small>
         {usableAnchors.length < 2 && <div className="validation" role="status">Enter at least two distinct cultural anchors.</div>}
         {error && <div className="error" role="alert">{error}</div>}
+        {resolutionReview && <section className="resolutionReview" aria-labelledby="resolution-review-title">
+          <div>
+            <b>Qloo match review required</b>
+            <h3 id="resolution-review-title">Confirm non-exact entity matches before taste analysis</h3>
+            <p>Qloo returned these as its top entity matches, but their names do not exactly match the anchors you entered. Confirm them only if they represent what you meant.</p>
+          </div>
+          <div className="resolutionReviewList">
+            {resolutionReview.filter(item => item.resolutionMatch === 'top-result').map(item=><div key={item.entityId}>
+              <span><small>Your anchor</small><strong>{item.query}</strong></span>
+              <i aria-hidden="true">→</i>
+              <span><small>Qloo top match</small><strong>{item.name}</strong>{item.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(item.requestedTypeUrn) ?? item.requestedTypeUrn}</em>}<code>{item.entityId}</code></span>
+            </div>)}
+          </div>
+          <div className="resolutionReviewActions">
+            <button type="button" disabled={loading} onClick={()=>runLive(resolutionReview.filter(item => item.resolutionMatch === 'top-result').map(item => item.entityId))}>Confirm matches & build</button>
+            <button type="button" className="secondary" disabled={loading} onClick={()=>setResolutionReview(null)}>Edit anchors instead</button>
+          </div>
+        </section>}
       </div>
       <aside className="trace" aria-label="Agent loop">
         <h3>Agent loop</h3>
