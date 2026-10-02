@@ -8,7 +8,7 @@ import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
 import { buildRecommendation, ResolutionReviewRequiredError } from '../src/lib/recommendationService';
-import { normalizeRecommendationRequest } from '../src/lib/requestNormalization';
+import { normalizeRecommendationRequest, recommendationRequestValidationError } from '../src/lib/requestNormalization';
 import { qlooEntityIdentity } from '../src/lib/qlooEntityIdentity';
 
 const PORT = Number(process.env.PORT || 8787);
@@ -156,6 +156,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       return json(res, 413, { error: 'Request body is too large.' });
     }
     return json(res, 400, { error: 'Request body must be valid JSON.' });
+  }
+
+  const requestValidationError = recommendationRequestValidationError(body);
+  if (requestValidationError) {
+    return json(res, 400, { error: requestValidationError });
   }
 
   const { anchors, energy, setting, durationMinutes, confirmedEntityIds } = normalizeRecommendationRequest(body);
