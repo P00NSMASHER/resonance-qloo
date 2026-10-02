@@ -17,6 +17,7 @@
     "submission:preflight": "node scripts/submission-preflight.mjs",
     "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline",
     "deployment:check": "node scripts/check-deployment.mjs",
+    "qloo:live:check": "node scripts/check-live-qloo.mjs",
     "deployment:check:selftest": "node scripts/test-deployment-checker.mjs",
     "evidence:capture": "node scripts/capture-live-evidence.mjs",
     "evidence:capture:selftest": "node scripts/test-evidence-capture.mjs",
