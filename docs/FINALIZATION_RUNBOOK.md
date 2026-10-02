@@ -126,8 +126,8 @@ Required by the current Qloo submission form:
 - external hosting live;
 - MIT license visible/detected.
 
-Demo video is not required.
+The authenticated Devpost account currently reports Resonance as registered and submitted. As of October 2, 2026, submissions remain open until October 30, 2026 at 11:45 PM Eastern Time. Re-check the live Devpost deadline before final lock in case the organizer changes it. Demo video is not required.
 
-## 9. Submit only after end-to-end proof
+## 9. Finalize the existing Devpost entry only after end-to-end proof
 
-Do not mark the hackathon submission complete until the public app itself works end-to-end with real Qloo data.
+The existing submission can remain provisional while work continues. Do not treat it as final or stop updating it until the public app itself works end-to-end with real Qloo data, deployment parity passes, and the submission description/evidence reflect the verified live path.
