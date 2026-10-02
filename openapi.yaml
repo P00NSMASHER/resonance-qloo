@@ -162,7 +162,7 @@ components:
         detail: { type: string }
     Evidence:
       type: object
-      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, selectedAffinityLabels, resolvedAnchorCount, categoryHintCount, explainabilityResultCount, aggregateExplainabilityAvailable, sessionDurationMinutes, energy, setting]
+      required: [meanNormalizedScore, evidenceBasis, selectedAffinityCount, returnedAffinityCount, selectedAffinityLabels, resolvedAnchorCount, categoryHintCount, explainabilityResultCount, aggregateExplainabilityAvailable, sessionDurationMinutes, energy, setting]
       properties:
         meanNormalizedScore:
           oneOf:
@@ -173,6 +173,11 @@ components:
           type: string
           enum: [normalized-score, ranked-order]
         selectedAffinityCount: { type: integer, minimum: 3, maximum: 4 }
+        returnedAffinityCount:
+          type: integer
+          minimum: 3
+          maximum: 8
+          description: Number of distinct Qloo affinity signals retained from the taste-analysis response before plan selection.
         selectedAffinityLabels:
           type: array
           minItems: 3
