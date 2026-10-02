@@ -13,7 +13,7 @@ type Result = {
   summary: string;
   resolvedAnchors: { query:string; name:string; entityId:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
-  plan: { title:string; duration:string; action:string; why:string }[];
+  plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace: AgentTraceStep[];
   evidence: {
     meanNormalizedScore: number|null;
@@ -47,10 +47,10 @@ const demo: Result = {
     { label:'Italian-American comfort', score:null, rank:4 }
   ],
   plan: [
-    { title:'Opening cue', duration:'10 min', action:'Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.', why:'Illustrative rationale for the preview state.' },
-    { title:'Story bridge', duration:'10 min', action:'Use a classic musical prompt to invite stories about theaters, dancing, or favorite performers.', why:'Illustrative rationale for the preview state.' },
-    { title:'Shared choice', duration:'15 min', action:'Offer adjacent prompts across music, fashion, or travel and let the group choose.', why:'Illustrative rationale for the preview state.' },
-    { title:'Closing ritual', duration:'10 min', action:'Close around an Italian comfort-food prompt and ask what should return next time.', why:'Illustrative rationale for the preview state.' }
+    { title:'Opening cue', duration:'10 min', action:'Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.', why:'Illustrative rationale for the preview state.', anchorName:'Ella Fitzgerald', affinityLabel:'classic jazz vocals' },
+    { title:'Story bridge', duration:'10 min', action:'Use a classic musical prompt to invite stories about theaters, dancing, or favorite performers.', why:'Illustrative rationale for the preview state.', anchorName:"Singin' in the Rain", affinityLabel:'Golden Age musicals' },
+    { title:'Shared choice', duration:'15 min', action:'Offer adjacent prompts across music, fashion, or travel and let the group choose.', why:'Illustrative rationale for the preview state.', anchorName:'Italian cuisine', affinityLabel:'mid-century elegance' },
+    { title:'Closing ritual', duration:'10 min', action:'Close around an Italian comfort-food prompt and ask what should return next time.', why:'Illustrative rationale for the preview state.', affinityLabel:'Italian-American comfort' }
   ],
   agentTrace: [
     { stage:'resolve', status:'ok', detail:'Illustrative: resolve three cultural anchors into Qloo-backed evidence.' },
@@ -333,7 +333,7 @@ export default function App() {
         </ol>
       </section>
 
-      <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3><p>{x.action}</p><div><b>Why it fits</b><br/>{x.why}</div></article>)}</div>
+      <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <p><b>{x.anchorName ? "Known favorite → Qloo bridge" : "Qloo signal"}</b><br/>{x.anchorName ? x.anchorName + " → " + x.affinityLabel : x.affinityLabel}</p>}<p>{x.action}</p><div><b>Why it fits</b><br/>{x.why}</div></article>)}</div>
     </section>}
 
     <section className="impact"><h2>Personalization without a profile, history, or identity graph.</h2><p>Start from a few real favorites instead of a generic age-based activity list. No personal identifiers are required, and Resonance is not a medical tool.</p></section>
