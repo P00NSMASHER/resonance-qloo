@@ -4,11 +4,25 @@ export function normalizeQlooState(payload: unknown): Exclude<QlooUiState, 'chec
   if (!payload || typeof payload !== 'object') return 'degraded';
   const record = payload as Record<string, unknown>;
 
-  if (record.qlooConnected === true || record.qlooStatus === 'ready') return 'ready';
-  if (record.qlooStatus === 'rate-limited') return 'rate-limited';
-  if (record.qlooConfigured === true && record.qlooStatus === 'degraded') return 'degraded';
-  if (record.qlooConfigured === true && record.qlooConnected !== true) return 'degraded';
-  return 'preview';
+  if (
+    record.qlooConfigured === true &&
+    record.qlooConnected === true &&
+    record.qlooStatus === 'ready'
+  ) return 'ready';
+
+  if (
+    record.qlooConfigured === true &&
+    record.qlooConnected === false &&
+    record.qlooStatus === 'rate-limited'
+  ) return 'rate-limited';
+
+  if (
+    record.qlooConfigured === false &&
+    record.qlooConnected === false &&
+    record.qlooStatus === 'preview'
+  ) return 'preview';
+
+  return 'degraded';
 }
 
 export function qlooPresentation(state: QlooUiState) {
