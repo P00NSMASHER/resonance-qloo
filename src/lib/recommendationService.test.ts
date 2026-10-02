@@ -64,6 +64,26 @@ describe('recommendation service', () => {
     expect(gateway.tasteAnalysis).toHaveBeenCalledWith([uuidA, uuidB]);
   });
 
+  it('flows structured favorite-to-Qloo bridges through the service response', async () => {
+    const gateway = gatewayWithTags([
+      { name:'Jazz' },
+      { name:'Musicals' },
+      { name:'Classic cinema' },
+      { name:'Italian cuisine' },
+    ]);
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:"Singin' in the Rain"}],
+      energy:'social',
+      setting:'small-group',
+    });
+
+    expect(result.plan[0].anchorName).toBe('Ella Fitzgerald');
+    expect(result.plan[0].affinityLabel).toBe('Jazz');
+    expect(result.plan[1].anchorName).toBe("Singin' in the Rain");
+    expect(result.plan[1].affinityLabel).toBe('Musicals');
+  });
+
   it('resolves independent anchors concurrently', async () => {
     const releases: Array<() => void> = [];
     let nextId = 0;
