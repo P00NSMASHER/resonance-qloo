@@ -56,3 +56,5 @@ Live Qloo behavior is subject to the event-issued credential, quota, rate limits
 ## Hosted environment
 
 The current public demo is externally hosted on Floot. The public repository is the reproducible source of truth for code, tests, architecture, and the event-tooling proof path. Source changes do not by themselves prove the public deployment is current; finalization therefore includes a public bundle parity check and requires re-publishing Floot when the hosted feature set is stale.
+
+**Current observed blocker (October 2, 2026):** the advisory deployment checker reaches the public Floot URL, but `/api/status` returns `text/html` instead of the current Resonance JSON status contract. That proves the published Floot build is stale or missing the current API backend even though the website itself is reachable. Judge-readiness remains blocked until Floot is republished and `npm run deployment:check` passes against the public URL.
