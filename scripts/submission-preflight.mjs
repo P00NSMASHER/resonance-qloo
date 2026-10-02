@@ -62,20 +62,14 @@ try {
   if (!openapi.includes('qlooApiOrigin') || !openapi.includes('apiOrigin')) {
     failures.push('OpenAPI contract is missing non-secret Qloo origin provenance.');
   }
-  if (!openapi.includes('resolutionMatch') || !openapi.includes('topResultResolutionCount')) {
-    failures.push('OpenAPI contract is missing entity-resolution review evidence.');
+  if (!openapi.includes('confirmedEntityIds') || !openapi.includes('QLOO_RESOLUTION_REVIEW_REQUIRED')) {
+    failures.push('OpenAPI contract is missing the pre-taste entity-confirmation handshake.');
   }
   if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
     failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
   }
   if (!/const:\s*qloo-live/.test(openapi)) {
     failures.push('OpenAPI provenance no longer pins live responses to qloo-live.');
-  }
-  if (!openapi.includes('qlooApiOrigin')) {
-    failures.push('OpenAPI status contract is missing qlooApiOrigin runtime evidence.');
-  }
-  if (!openapi.includes('apiOrigin')) {
-    failures.push('OpenAPI live provenance is missing apiOrigin runtime evidence.');
   }
 } catch {}
 
@@ -120,11 +114,14 @@ try {
   if (!app.includes('Qloo top match · review') || !app.includes('Review entity matches')) {
     failures.push('Results UI is missing Qloo top-result resolution review cues.');
   }
+  if (!app.includes('Qloo match review required') || !app.includes('Confirm matches & build')) {
+    failures.push('Results UI is missing the explicit pre-taste Qloo match confirmation flow.');
+  }
+  if (!app.includes('confirmedEntityIds')) {
+    failures.push('Results UI is not sending explicitly confirmed Qloo entity IDs.');
+  }
   if (!app.includes('<b>Qloo API</b>')) {
     failures.push('Results UI is missing live Qloo API origin provenance.');
-  }
-  if (!app.includes('Qloo top match · review') || !app.includes('Review entity matches')) {
-    failures.push('Results UI is missing non-exact entity-resolution review cues.');
   }
   if (!app.includes('No synthetic signal')) {
     failures.push('Results UI is missing the sparse-evidence no-synthetic-signal disclosure.');
@@ -156,6 +153,23 @@ try {
   }
   if (!sessionExport.includes('Signal reuse:')) {
     failures.push('Session export is missing the sparse-evidence signal-reuse disclosure.');
+  }
+} catch {}
+
+try {
+  const server = await readFile('server/index.ts', 'utf8');
+  if (!server.includes('ResolutionReviewRequiredError') || !server.includes("code: 'QLOO_RESOLUTION_REVIEW_REQUIRED'")) {
+    failures.push('Server is missing the 409 Qloo resolution-confirmation response path.');
+  }
+} catch {}
+
+try {
+  const recommendationService = await readFile('src/lib/recommendationService.ts', 'utf8');
+  if (!recommendationService.includes('ResolutionReviewRequiredError')) {
+    failures.push('Recommendation service no longer blocks taste analysis pending Qloo match confirmation.');
+  }
+  if (!recommendationService.includes('confirmedEntityIds')) {
+    failures.push('Recommendation service no longer checks explicit confirmed Qloo entity IDs.');
   }
 } catch {}
 
