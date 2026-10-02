@@ -4,6 +4,7 @@ import { formatSessionText } from './lib/sessionExport';
 import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, anchorTypeUrn, type AnchorType } from './lib/anchorTypes';
 import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
 import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './lib/recommendationResult';
+import { payloadHasMatchingRequestContext, type RecommendationRequestContext } from './lib/recommendationContext';
 
 type AgentTraceStep = {
   stage: 'resolve' | 'evaluate' | 'compose' | 'explain';
@@ -20,6 +21,7 @@ type ResolvedAnchor = {
 };
 
 type Result = {
+  requestContext: RecommendationRequestContext;
   summary: string;
   resolvedAnchors: ResolvedAnchor[];
   affinities: { label:string; score:number|null; rank:number }[];
@@ -49,6 +51,16 @@ type Result = {
 };
 
 const demo: Result = {
+  requestContext: {
+    anchors:[
+      { query:'Ella Fitzgerald', typeUrn:'urn:entity:artist' },
+      { query:"Singin' in the Rain", typeUrn:'urn:entity:movie' },
+      { query:'Italian food' },
+    ],
+    energy:'calm',
+    setting:'small-group',
+    durationMinutes:45,
+  },
   summary: 'Illustrative preview only — this is not live Qloo data.',
   resolvedAnchors: [
     { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
@@ -180,6 +192,16 @@ export default function App() {
     setSource(null);
     if (!confirmedEntityIds.length) setResolutionReview(null);
 
+    const requestContext: RecommendationRequestContext = {
+      anchors:usableAnchors.map(item => ({
+        query:item.query,
+        typeUrn:anchorTypeUrn(item.type),
+      })),
+      energy,
+      setting,
+      durationMinutes,
+    };
+
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), LIVE_REQUEST_TIMEOUT_MS);
 
@@ -196,6 +218,10 @@ export default function App() {
         data?.code === 'QLOO_RESOLUTION_REVIEW_REQUIRED' &&
         Array.isArray(data.resolvedAnchors)
       ) {
+        if (!payloadHasMatchingRequestContext(data, requestContext)) {
+          setQlooState('degraded');
+          throw new Error('Qloo review response did not match the submitted session context. Please retry.');
+        }
         setResolutionReview(data.resolvedAnchors);
         return;
       }
@@ -208,15 +234,7 @@ export default function App() {
         setQlooState('degraded');
         throw new Error('Live Qloo response did not match the expected evidence contract. Please retry.');
       }
-      if (!matchesRecommendationRequestContext(data, {
-        anchors:usableAnchors.map(item => ({
-          query:item.query,
-          typeUrn:anchorTypeUrn(item.type),
-        })),
-        energy,
-        setting,
-        durationMinutes,
-      })) {
+      if (!matchesRecommendationRequestContext(data, requestContext)) {
         setQlooState('degraded');
         throw new Error('Live Qloo response did not match the submitted session context. Please retry.');
       }
