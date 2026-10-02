@@ -1,3 +1,5 @@
+import { qlooEntityIdentity } from './qlooEntityIdentity';
+
 const STAGES = ['resolve','evaluate','compose','explain'] as const;
 const DURATIONS = new Set([30,45,60]);
 const ENERGIES = new Set(['calm','social','active']);
@@ -34,8 +36,9 @@ export function hasConsistentRecommendationResult(payload: unknown) {
       !isNonEmptyString(item.entityId) ||
       !RESOLUTION_MATCHES.has(String(item.resolutionMatch))
     ) return false;
-    if (resolvedEntityIds.has(item.entityId)) return false;
-    resolvedEntityIds.add(item.entityId);
+    const entityIdentity = qlooEntityIdentity(item.entityId);
+    if (resolvedEntityIds.has(entityIdentity)) return false;
+    resolvedEntityIds.add(entityIdentity);
     resolvedNames.add(item.name);
     if (item.requestedTypeUrn !== undefined && !isNonEmptyString(item.requestedTypeUrn)) return false;
     if (item.resolutionMatch === 'exact-name') exactResolutionCount += 1;
@@ -51,7 +54,7 @@ export function hasConsistentRecommendationResult(payload: unknown) {
   let previousRank = 0;
   for (const item of affinities) {
     if (!isRecord(item) || !isNonEmptyString(item.label)) return false;
-    const normalizedLabel = item.label.toLocaleLowerCase('en-US');
+    const normalizedLabel = item.label.normalize('NFKC').trim().toLocaleLowerCase('en-US');
     if (affinityLabelsNormalized.has(normalizedLabel)) return false;
     affinityLabels.add(item.label);
     affinityLabelsNormalized.add(normalizedLabel);
