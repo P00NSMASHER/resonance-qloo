@@ -36,6 +36,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 ### Verified now
 
 - Request shape, input validation, result provenance, and fail-closed behavior are covered by source and CI.
+- Direct npm dependencies are exact-version pinned, the npm v3 lockfile is committed, CI installs with `npm ci`, and submission preflight verifies the root lock maps exactly to `package.json`.
 - Live status and recommendation provenance carry the non-secret Qloo API origin; the evidence-capture script requires it to match the trusted hackathon gateway before emitting a proof artifact.
 - Search parsing supports the UUID IDs documented for Qloo entity signals.
 - Each resolved entity is classified as either an exact normalized-name match or a Qloo top-result match; no confidence score is invented.
@@ -87,7 +88,7 @@ See the root README for full setup. The minimum path is:
 ```bash
 git clone https://github.com/P00NSMASHER/resonance-qloo.git
 cd resonance-qloo
-npm install
+npm ci
 npm install --global @qloo/qloo-harness
 cp .env.example .env
 # add the event-issued QLOO_API_KEY to .env
