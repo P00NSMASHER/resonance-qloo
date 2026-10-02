@@ -53,6 +53,9 @@ try {
   if (!openapi.includes('returnedAffinityCount')) {
     failures.push('OpenAPI contract is missing returnedAffinityCount evidence.');
   }
+  if (!openapi.includes('qlooApiOrigin') || !openapi.includes('apiOrigin')) {
+    failures.push('OpenAPI contract is missing non-secret Qloo origin provenance.');
+  }
   if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
     failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
   }
@@ -105,6 +108,9 @@ try {
   if (!app.includes('Additional evidence')) {
     failures.push('Results UI no longer distinguishes supporting Qloo evidence.');
   }
+  if (!app.includes('<b>Qloo API</b>')) {
+    failures.push('Results UI is missing live Qloo API origin provenance.');
+  }
   if (!app.includes('No synthetic signal')) {
     failures.push('Results UI is missing the sparse-evidence no-synthetic-signal disclosure.');
   }
@@ -124,8 +130,21 @@ try {
   if (!sessionExport.includes('returnedAffinityCount')) {
     failures.push('Session export is not preserving first-class returnedAffinityCount evidence.');
   }
+  if (!sessionExport.includes('Qloo API origin:')) {
+    failures.push('Session export is missing live Qloo API origin provenance.');
+  }
   if (!sessionExport.includes('Signal reuse:')) {
     failures.push('Session export is missing the sparse-evidence signal-reuse disclosure.');
+  }
+} catch {}
+
+try {
+  const capture = await readFile('scripts/capture-live-evidence.mjs', 'utf8');
+  if (!capture.includes('QLOO_TRUSTED_BASE_URL')) {
+    failures.push('Live evidence capture is not bound to a trusted Qloo origin.');
+  }
+  if (!capture.includes('provenance?.apiOrigin') && !capture.includes('provenance.apiOrigin')) {
+    failures.push('Live evidence capture is not checking recommendation Qloo origin provenance.');
   }
 } catch {}
 
