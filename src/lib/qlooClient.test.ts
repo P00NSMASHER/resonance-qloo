@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { QlooClient } from './qlooClient';
+import { QlooClient, QlooHttpError } from './qlooClient';
 
 function ok(body: unknown) {
   return new Response(JSON.stringify(body), {
@@ -146,9 +146,17 @@ describe('QlooClient', () => {
     ])).rejects.toMatchObject({
       status,
       endpoint:'insights',
-      responseDetail:expect.stringContaining('Invalid entity signal'),
+      explainabilityUnsupported:false,
     });
     expect(calls).toHaveLength(1);
+
+    try {
+      await client.tasteAnalysis(['FCE8B172-4795-43E4-B222-3B550DC05FD9']);
+    } catch (error) {
+      expect(error).toBeInstanceOf(QlooHttpError);
+      expect(String(error)).not.toContain('Invalid entity signal');
+      expect(Object.keys(error as object)).not.toContain('responseDetail');
+    }
   });
 
   it('does not retry taste analysis for non-validation Qloo errors', async () => {
