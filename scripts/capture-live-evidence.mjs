@@ -1,4 +1,5 @@
 const base = (process.env.RESONANCE_BASE_URL || 'http://localhost:8787').replace(/\/$/, '');
+const trustedQlooOrigin = (process.env.QLOO_TRUSTED_BASE_URL || 'https://hackathon.api.qloo.com').replace(/\/$/, '');
 const anchors = ['Ella Fitzgerald', "Singin' in the Rain", 'Italian food'];
 
 async function getJson(path, init) {
@@ -17,6 +18,11 @@ if (!status.response.ok) {
 if (!status.body.qlooConnected) {
   throw new Error('Qloo is not connected. Refusing to capture fake live evidence.');
 }
+if (status.body.qlooApiOrigin !== trustedQlooOrigin) {
+  throw new Error(
+    `Unexpected Qloo API origin: ${status.body.qlooApiOrigin || '(missing)'}; expected ${trustedQlooOrigin}.`,
+  );
+}
 
 const run = await getJson('/api/recommend', {
   method:'POST',
@@ -31,10 +37,16 @@ const run = await getJson('/api/recommend', {
 if (!run.response.ok) {
   throw new Error(`Live recommendation failed: HTTP ${run.response.status} ${JSON.stringify(run.body)}`);
 }
+if (run.body?.provenance?.apiOrigin !== status.body.qlooApiOrigin) {
+  throw new Error(
+    `Qloo origin provenance mismatch: status=${status.body.qlooApiOrigin || '(missing)'} recommendation=${run.body?.provenance?.apiOrigin || '(missing)'}.`,
+  );
+}
 
 const evidence = {
   captured_at:new Date().toISOString(),
   base_url:base,
+  qloo_api_origin:status.body.qlooApiOrigin,
   request:{
     anchors,
     energy:'calm',
