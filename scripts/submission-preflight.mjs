@@ -18,6 +18,7 @@ const requiredFiles = [
   'scripts/test-ui-state-safety.mjs',
   'scripts/test-deployment-checker.mjs',
   'src/App.tsx',
+  'src/lib/recommendationResult.ts',
   'src/lib/liveProvenance.ts',
   'src/lib/liveProvenance.test.ts',
   'server/index.ts',
@@ -196,6 +197,9 @@ try {
 
 try {
   const app = await readFile('src/App.tsx', 'utf8');
+  if (!app.includes('hasConsistentRecommendationResult')) {
+    failures.push('Results UI is not validating live recommendation evidence consistency before rendering.');
+  }
   if (!app.includes('className="signalCount"')) {
     failures.push('Results UI is missing selected-versus-returned signal counts.');
   }
@@ -296,6 +300,22 @@ try {
   }
   if (qlooClient.includes('public readonly responseDetail')) {
     failures.push('Qloo client is retaining raw upstream validation detail on public error objects.');
+  }
+} catch {}
+
+try {
+  const recommendationResult = await readFile('src/lib/recommendationResult.ts', 'utf8');
+  for (const marker of [
+    'returnedAffinityCount !== affinities.length',
+    'exactResolutionCount',
+    'topResultResolutionCount',
+    'selectedAffinityLabels',
+    'planLabels.size !== selectedLabels.size',
+    "const STAGES = ['resolve','evaluate','compose','explain']",
+  ]) {
+    if (!recommendationResult.includes(marker)) {
+      failures.push(`Live recommendation result validator is missing integrity rule: ${marker}`);
+    }
   }
 } catch {}
 
