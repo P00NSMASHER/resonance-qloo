@@ -275,10 +275,13 @@ try {
   if (
     !qlooClient.includes("feature.explainability") ||
     !qlooClient.includes("[400, 422]") ||
-    !qlooClient.includes('responseDetail') ||
-    !qlooClient.includes('explainabilityRejected')
+    !qlooClient.includes('explainabilityUnsupported') ||
+    !qlooClient.includes("url.searchParams.has('feature.explainability')")
   ) {
     failures.push('Qloo client is missing the explainability-specific compatibility fallback.');
+  }
+  if (qlooClient.includes('public readonly responseDetail')) {
+    failures.push('Qloo client is retaining raw upstream validation detail on public error objects.');
   }
 } catch {}
 
