@@ -66,11 +66,20 @@ export class QlooClient {
   }
 
   async tasteAnalysis(entityIds: string[]) {
-    const url = new URL('/v2/insights', this.baseUrl);
-    url.searchParams.set('filter.type', 'urn:tag');
-    url.searchParams.set('signal.interests.entities', entityIds.join(','));
-    url.searchParams.set('take', '8');
-    url.searchParams.set('feature.explainability', 'true');
-    return this.request('insights', url);
+    const buildUrl = (includeExplainability: boolean) => {
+      const url = new URL('/v2/insights', this.baseUrl);
+      url.searchParams.set('filter.type', 'urn:tag');
+      url.searchParams.set('signal.interests.entities', entityIds.join(','));
+      url.searchParams.set('take', '8');
+      if (includeExplainability) url.searchParams.set('feature.explainability', 'true');
+      return url;
+    };
+
+    try {
+      return await this.request('insights', buildUrl(true));
+    } catch (error) {
+      if (!(error instanceof QlooHttpError) || ![400, 422].includes(error.status)) throw error;
+      return this.request('insights', buildUrl(false));
+    }
   }
 }
