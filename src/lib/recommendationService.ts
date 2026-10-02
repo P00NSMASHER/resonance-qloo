@@ -1,6 +1,7 @@
 import { extractAffinities, extractExplainabilitySummary, extractResolved, type ResolvedAnchor } from './qlooLogic';
 import { orchestrateSession } from './agentPlanner';
 import { qlooEntityIdentity } from './qlooEntityIdentity';
+import { recommendationRequestContext, type RecommendationRequestContext } from './recommendationContext';
 
 export type RecommendationAnchor = {
   query: string;
@@ -21,7 +22,10 @@ export type RecommendationInput = {
 };
 
 export class ResolutionReviewRequiredError extends Error {
-  constructor(public readonly resolvedAnchors: ResolvedAnchor[]) {
+  constructor(
+    public readonly resolvedAnchors: ResolvedAnchor[],
+    public readonly requestContext: RecommendationRequestContext,
+  ) {
     super('QLOO_RESOLUTION_REVIEW_REQUIRED');
   }
 }
@@ -30,6 +34,7 @@ export async function buildRecommendation(
   gateway: RecommendationGateway,
   input: RecommendationInput,
 ) {
+  const requestContext = recommendationRequestContext(input);
   const resolvedCandidates = await Promise.all(
     input.anchors.map(async (anchor) => {
       const found = extractResolved(
@@ -61,7 +66,7 @@ export async function buildRecommendation(
     item => item.resolutionMatch === 'top-result' && !confirmedEntityIds.has(qlooEntityIdentity(item.entityId)),
   );
   if (unresolvedReview.length) {
-    throw new ResolutionReviewRequiredError(resolved);
+    throw new ResolutionReviewRequiredError(resolved, requestContext);
   }
 
   const tastePayload = await gateway.tasteAnalysis(resolved.map(x => x.entityId));
@@ -91,6 +96,7 @@ export async function buildRecommendation(
   );
 
   return {
+    requestContext,
     summary: `Built from ${resolved.length} resolved Qloo entities and ${affinities.length} cross-category affinity signals.${reviewSuffix}`,
     resolvedAnchors: resolved,
     affinities,
