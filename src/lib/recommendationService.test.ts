@@ -105,6 +105,41 @@ describe('recommendation service', () => {
     ]);
   });
 
+  it('propagates Qloo top-result resolution review evidence through the service', async () => {
+    const ids = [uuidA, uuidB];
+    let searchIndex = 0;
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[{
+          entity_id:ids[searchIndex++],
+          name:query === 'Italian food' ? 'Italian cuisine' : query,
+        }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+        ]},
+      })),
+    };
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Italian food'}],
+      energy:'calm',
+      setting:'small-group',
+    });
+
+    expect(result.resolvedAnchors.map(item => item.resolutionMatch)).toEqual([
+      'exact-name',
+      'top-result',
+    ]);
+    expect(result.evidence.exactResolutionCount).toBe(1);
+    expect(result.evidence.topResultResolutionCount).toBe(1);
+    expect(result.agentTrace[0].status).toBe('warning');
+    expect(result.agentTrace[0].detail).toContain('Qloo top-result match(es) to review');
+  });
+
   it('flows structured favorite-to-Qloo bridges through the service response', async () => {
     const gateway = gatewayWithTags([
       { name:'Jazz' },
