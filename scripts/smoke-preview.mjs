@@ -307,7 +307,12 @@ try {
     if (
       reviewResponse.status !== 409 ||
       reviewBody.code !== 'QLOO_RESOLUTION_REVIEW_REQUIRED' ||
-      !Array.isArray(reviewBody.resolvedAnchors)
+      !Array.isArray(reviewBody.resolvedAnchors) ||
+      reviewBody.requestContext?.energy !== 'calm' ||
+      reviewBody.requestContext?.setting !== 'small-group' ||
+      reviewBody.requestContext?.durationMinutes !== 45 ||
+      !Array.isArray(reviewBody.requestContext?.anchors) ||
+      reviewBody.requestContext.anchors.map(item => item.query).join('|') !== 'Ella Fitzgerald|Italian food'
     ) {
       throw new Error('Review-required HTTP contract failed: ' + reviewResponse.status + ' ' + JSON.stringify(reviewBody));
     }
@@ -344,6 +349,11 @@ try {
     if (
       confirmedBody.provenance?.source !== 'qloo-live' ||
       confirmedBody.provenance?.apiOrigin !== mockQloo.baseUrl ||
+      confirmedBody.requestContext?.energy !== 'calm' ||
+      confirmedBody.requestContext?.setting !== 'small-group' ||
+      confirmedBody.requestContext?.durationMinutes !== 45 ||
+      !Array.isArray(confirmedBody.requestContext?.anchors) ||
+      confirmedBody.requestContext.anchors.map(item => item.query).join('|') !== 'Ella Fitzgerald|Italian food' ||
       confirmedBody.evidence?.topResultResolutionCount !== 1 ||
       confirmedBody.evidence?.selectedAffinityCount !== 3 ||
       confirmedBody.evidence?.returnedAffinityCount !== 3
