@@ -40,12 +40,21 @@ try {
   if (!envExample.includes('QLOO_API_BASE_URL=https://hackathon.api.qloo.com')) {
     failures.push('.env.example is not pinned to the Qloo Agentic Hackathon API origin.');
   }
+  if (envExample.includes('QLOO_ALLOW_LOCAL_MOCK')) {
+    failures.push('.env.example must not advertise the local Qloo mock escape hatch.');
+  }
 } catch {}
 
 try {
   const qlooConfig = await readFile('src/lib/qlooConfig.ts', 'utf8');
   if (!qlooConfig.includes("DEFAULT_QLOO_API_BASE_URL = 'https://hackathon.api.qloo.com'")) {
     failures.push('Qloo runtime default is not the Agentic Hackathon API origin.');
+  }
+  if (!qlooConfig.includes("'hackathon.api.qloo.com'") || !qlooConfig.includes("'api.qloo.com'")) {
+    failures.push('Qloo runtime is missing the trusted Qloo host allowlist.');
+  }
+  if (!qlooConfig.includes('allowLocalMock') || !qlooConfig.includes('isLoopbackHostname')) {
+    failures.push('Qloo runtime is missing the explicit loopback-only local mock gate.');
   }
 } catch {}
 
