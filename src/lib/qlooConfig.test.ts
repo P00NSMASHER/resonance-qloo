@@ -15,5 +15,6 @@ describe('Qloo base URL configuration', () => {
     expect(() => resolveQlooBaseUrl('http://api.qloo.com')).toThrow('HTTPS');
     expect(() => resolveQlooBaseUrl('not-a-url')).toThrow('valid HTTPS URL');
     expect(() => resolveQlooBaseUrl('https://user:pass@example.com')).toThrow('clean HTTPS origin');
+    expect(() => resolveQlooBaseUrl('https://hackathon.api.qloo.com/v2')).toThrow('clean HTTPS origin');
   });
 });
