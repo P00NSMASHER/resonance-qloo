@@ -109,7 +109,7 @@ The real event key must never be committed or pasted into a public artifact.
 - TypeScript
 - Vite
 - Node.js 22.19+
-- Qloo Search + Insights integration
+- Qloo Search + Insights integration against the event hackathon API origin
 - verified-Qloo status probe
 - Official Qloo MCP proof path
 - Vitest
@@ -124,13 +124,14 @@ npm install
 cp .env.example .env
 ```
 
-Add the **event-issued** Qloo key to `.env`:
+Add the **event-issued** Qloo key to `.env`. Hackathon keys only work against the event API origin, so keep both values:
 
 ```env
 QLOO_API_KEY=your_event_key_here
+QLOO_API_BASE_URL=https://hackathon.api.qloo.com
 ```
 
-Never commit the real key.
+Never commit the real key. Resonance defaults to the hackathon origin for this event, and still allows an explicit HTTPS override when Qloo instructs otherwise.
 
 Run the API server:
 
