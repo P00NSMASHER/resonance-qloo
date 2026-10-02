@@ -27,7 +27,7 @@ Each anchor can optionally include a Qloo entity category such as Artist, Film, 
 
 Independent anchor lookups run concurrently, reducing live latency without increasing the number of Qloo calls.
 
-Resolved entities are also classified as either an **exact normalized-name match** or a **Qloo top-result match to review**. The UI does not turn that into a made-up confidence score. If a top result is non-exact, Resonance stops **before taste analysis**, shows the input → Qloo entity mapping, and requires the user to explicitly confirm those exact entity IDs or edit the anchors/category hints. Only confirmed matches can feed the taste-analysis step, and the confirmation is cleared if the inputs change.
+Resolved entities are also classified as either an **exact normalized-name match** or a **Qloo top-result match to review**. The UI does not turn that into a made-up confidence score. If a top result is non-exact, Resonance stops **before taste analysis**, shows the input → Qloo entity mapping, and returns a five-minute server-issued review receipt. The follow-up must include both the exact reviewed Qloo entity IDs and that receipt; IDs alone are insufficient. The receipt is HMAC-bound to the normalized anchors/category hints, energy, setting, duration, and reviewed IDs, so an edited request or expired receipt must be reviewed again.
 
 ### Qloo-native explainability
 
