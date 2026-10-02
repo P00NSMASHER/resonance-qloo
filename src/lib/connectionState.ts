@@ -59,3 +59,21 @@ export function qlooPresentation(state: QlooUiState) {
       };
   }
 }
+
+
+export function qlooStateAfterRecommendationFailure(
+  status: number,
+  errorMessage: unknown,
+): Extract<QlooUiState, 'degraded' | 'rate-limited'> | null {
+  const message = typeof errorMessage === 'string' ? errorMessage : '';
+
+  if (status === 429 && message.startsWith('Qloo rate limit reached')) {
+    return 'rate-limited';
+  }
+
+  if (status === 502 || status === 504) {
+    return 'degraded';
+  }
+
+  return null;
+}
