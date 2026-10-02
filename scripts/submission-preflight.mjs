@@ -3,6 +3,7 @@ import { access, readFile } from 'node:fs/promises';
 const LIVE_URL = 'https://resonance-qloo.floot.app';
 const requiredFiles = [
   'LICENSE',
+  'package-lock.json',
   'README.md',
   'openapi.yaml',
   'docs/JUDGING.md',
@@ -34,6 +35,28 @@ try {
   const license = await readFile('LICENSE', 'utf8');
   if (!/MIT License/i.test(license)) failures.push('LICENSE is not recognizably MIT.');
 } catch {}
+
+try {
+  const pkg = JSON.parse(await readFile('package.json', 'utf8'));
+  const lock = JSON.parse(await readFile('package-lock.json', 'utf8'));
+  for (const section of ['dependencies','devDependencies']) {
+    for (const [name, version] of Object.entries(pkg[section] ?? {})) {
+      if (typeof version !== 'string' || !/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(version)) {
+        failures.push(`package.json ${section} must pin ${name} to an exact version; found ${JSON.stringify(version)}.`);
+      }
+    }
+  }
+  const rootLock = lock?.packages?.[''] ?? {};
+  for (const section of ['dependencies','devDependencies']) {
+    for (const [name, version] of Object.entries(pkg[section] ?? {})) {
+      if (rootLock?.[section]?.[name] !== version) {
+        failures.push(`package-lock.json does not match package.json for ${section} ${name}.`);
+      }
+    }
+  }
+} catch (error) {
+  failures.push(`Dependency lock verification failed: ${error instanceof Error ? error.message : String(error)}`);
+}
 
 try {
   const envExample = await readFile('.env.example', 'utf8');
