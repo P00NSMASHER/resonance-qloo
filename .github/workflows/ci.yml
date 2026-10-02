@@ -33,6 +33,8 @@ jobs:
         run: npm run smoke:preview
       - name: Deployment checker syntax
         run: node --check scripts/check-deployment.mjs
+      - name: Deployment checker self-test
+        run: npm run deployment:check:selftest
       - name: Qloo proof script syntax
         run: node --check scripts/qloo-mcp-proof.mjs
       - name: Live evidence capture syntax
