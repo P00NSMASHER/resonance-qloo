@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hasConsistentRecommendationResult } from './recommendationResult';
+import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './recommendationResult';
 
 function validResult() {
   return {
@@ -58,6 +58,49 @@ function validResult() {
     },
   };
 }
+
+describe('live recommendation request binding', () => {
+  const expected = {
+    anchors:[
+      { query:'Ella Fitzgerald' },
+      { query:'Italian food' },
+    ],
+    energy:'calm',
+    setting:'small-group',
+    durationMinutes:45,
+  };
+
+  it('accepts the resolved-anchor subsequence and session context for the submitted request', () => {
+    expect(matchesRecommendationRequestContext(validResult(), expected)).toBe(true);
+  });
+
+  it('rejects anchors from another request or a reordered response', () => {
+    const wrongAnchor = validResult();
+    wrongAnchor.resolvedAnchors[1].query = 'French food';
+    expect(matchesRecommendationRequestContext(wrongAnchor, expected)).toBe(false);
+
+    const reordered = validResult();
+    reordered.resolvedAnchors.reverse();
+    expect(matchesRecommendationRequestContext(reordered, expected)).toBe(false);
+  });
+
+  it('binds category hints and session-defining context', () => {
+    const typed = validResult();
+    typed.resolvedAnchors[0].requestedTypeUrn = 'urn:entity:artist';
+    expect(matchesRecommendationRequestContext(typed, {
+      ...expected,
+      anchors:[
+        { query:'Ella Fitzgerald', typeUrn:'urn:entity:artist' },
+        { query:'Italian food' },
+      ],
+    })).toBe(true);
+
+    expect(matchesRecommendationRequestContext(typed, expected)).toBe(false);
+    expect(matchesRecommendationRequestContext(validResult(), { ...expected, energy:'active' })).toBe(false);
+    expect(matchesRecommendationRequestContext(validResult(), { ...expected, setting:'community' })).toBe(false);
+    expect(matchesRecommendationRequestContext(validResult(), { ...expected, durationMinutes:60 })).toBe(false);
+  });
+});
 
 describe('live recommendation result integrity', () => {
   it('accepts a structurally and relationally consistent result', () => {
