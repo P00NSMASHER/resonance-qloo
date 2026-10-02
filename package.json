@@ -14,6 +14,7 @@
     "qloo:proof": "node scripts/qloo-mcp-proof.mjs",
     "submission:preflight": "node scripts/submission-preflight.mjs",
     "submission:preflight:offline": "node scripts/submission-preflight.mjs --offline",
+    "deployment:check": "node scripts/check-deployment.mjs",
     "evidence:capture": "node scripts/capture-live-evidence.mjs"
   },
   "dependencies": {
