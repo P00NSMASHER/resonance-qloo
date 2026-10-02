@@ -64,6 +64,7 @@ async function handleStatus(res: import('node:http').ServerResponse) {
       qlooConfigured: false,
       qlooConnected: false,
       qlooStatus: 'preview',
+      qlooApiOrigin: QLOO_BASE_URL,
       mode: 'preview',
       service: 'resonance',
     });
@@ -86,6 +87,7 @@ async function handleStatus(res: import('node:http').ServerResponse) {
     qlooConfigured: true,
     qlooConnected: ready,
     qlooStatus,
+    qlooApiOrigin: QLOO_BASE_URL,
     mode: ready ? 'live' : 'preview',
     service: 'resonance',
   });
@@ -153,6 +155,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       ...recommendation,
       provenance: {
         source: 'qloo-live',
+        apiOrigin: QLOO_BASE_URL,
         generatedAt: new Date().toISOString(),
       },
     });
