@@ -56,6 +56,15 @@ describe('recommendation service', () => {
       setting:'small-group',
     });
 
+    expect(result.requestContext).toEqual({
+      anchors:[
+        { query:'Ella Fitzgerald' },
+        { query:"Singin' in the Rain" },
+      ],
+      energy:'social',
+      setting:'small-group',
+      durationMinutes:45,
+    });
     expect(result.resolvedAnchors).toHaveLength(2);
     expect(result.affinities).toHaveLength(4);
     expect(result.evidence.evidenceBasis).toBe('ranked-order');
@@ -127,6 +136,15 @@ describe('recommendation service', () => {
       setting:'small-group',
     })).rejects.toMatchObject({
       message:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+      requestContext:{
+        anchors:[
+          { query:'Ella Fitzgerald' },
+          { query:'Italian food' },
+        ],
+        energy:'calm',
+        setting:'small-group',
+        durationMinutes:45,
+      },
       resolvedAnchors:[
         expect.objectContaining({ entityId:uuidA, resolutionMatch:'exact-name' }),
         expect.objectContaining({
@@ -176,6 +194,15 @@ describe('recommendation service', () => {
       confirmedEntityIds:[uuidB],
     });
 
+    expect(result.requestContext).toEqual({
+      anchors:[
+        { query:'Ella Fitzgerald' },
+        { query:'Italian food' },
+      ],
+      energy:'calm',
+      setting:'small-group',
+      durationMinutes:45,
+    });
     expect(result.resolvedAnchors.map(item => item.resolutionMatch)).toEqual([
       'exact-name',
       'top-result',
