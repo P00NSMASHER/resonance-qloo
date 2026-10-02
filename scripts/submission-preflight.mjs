@@ -171,6 +171,9 @@ try {
   if (!app.includes('No synthetic signal')) {
     failures.push('Results UI is missing the sparse-evidence no-synthetic-signal disclosure.');
   }
+  if (!app.includes('Interpretation limit') || !app.includes('aggregate cultural relationships')) {
+    failures.push('Results UI is missing the aggregate-affinity interpretation limit.');
+  }
 } catch {}
 
 try {
@@ -193,14 +196,14 @@ try {
   if (!sessionExport.includes('Qloo API origin:')) {
     failures.push('Session export is missing live Qloo API origin provenance.');
   }
-  if (!sessionExport.includes('Resolution: Qloo top result — review')) {
-    failures.push('Session export is missing illustrative top-result review evidence.');
-  }
   if (!sessionExport.includes('explicitly confirmed before taste analysis')) {
     failures.push('Session export is missing live top-result confirmation evidence.');
   }
   if (!sessionExport.includes('Signal reuse:')) {
     failures.push('Session export is missing the sparse-evidence signal-reuse disclosure.');
+  }
+  if (!sessionExport.includes('Interpretation limit: Qloo affinities are aggregate cultural signals')) {
+    failures.push('Session export is missing the aggregate-affinity interpretation limit.');
   }
 } catch {}
 
