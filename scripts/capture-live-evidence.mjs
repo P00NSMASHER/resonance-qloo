@@ -7,6 +7,39 @@ const confirmedEntityIds = (process.env.RESONANCE_CONFIRMED_ENTITY_IDS || '')
   .filter(Boolean)
   .slice(0,4);
 
+const expectedRequestContext = {
+  anchors:anchors.map(query => ({ query })),
+  energy:'calm',
+  setting:'small-group',
+  durationMinutes:45,
+};
+
+function normalizeText(value) {
+  return String(value ?? '')
+    .normalize('NFKC')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLocaleLowerCase('en-US');
+}
+
+function requestContextMatches(payload) {
+  const context = payload?.requestContext;
+  if (
+    !context ||
+    !Array.isArray(context.anchors) ||
+    context.anchors.length !== expectedRequestContext.anchors.length ||
+    context.energy !== expectedRequestContext.energy ||
+    context.setting !== expectedRequestContext.setting ||
+    context.durationMinutes !== expectedRequestContext.durationMinutes
+  ) return false;
+
+  return context.anchors.every((item,index) =>
+    item &&
+    normalizeText(item.query) === normalizeText(expectedRequestContext.anchors[index].query) &&
+    item.typeUrn === undefined
+  );
+}
+
 async function getJson(path, init) {
   const response = await fetch(base + path, {
     ...init,
@@ -45,6 +78,9 @@ if (
   run.body?.code === 'QLOO_RESOLUTION_REVIEW_REQUIRED' &&
   Array.isArray(run.body?.resolvedAnchors)
 ) {
+  if (!requestContextMatches(run.body)) {
+    throw new Error('Qloo review response did not match the live evidence request context.');
+  }
   const review = run.body.resolvedAnchors
     .filter(item => item?.resolutionMatch === 'top-result')
     .map(item => ({
@@ -62,6 +98,9 @@ if (
 }
 if (!run.response.ok) {
   throw new Error(`Live recommendation failed: HTTP ${run.response.status} ${JSON.stringify(run.body)}`);
+}
+if (!requestContextMatches(run.body)) {
+  throw new Error('Live recommendation did not match the evidence-capture request context.');
 }
 if (run.body?.provenance?.apiOrigin !== status.body.qlooApiOrigin) {
   throw new Error(
@@ -111,6 +150,7 @@ const evidence = {
     })),
   },
   response_summary:{
+    requestContext:run.body.requestContext,
     summary:run.body.summary,
     resolvedAnchors:run.body.resolvedAnchors,
     affinities:run.body.affinities,
