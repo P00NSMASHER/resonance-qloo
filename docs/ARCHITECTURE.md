@@ -52,7 +52,7 @@ Safety/reliability controls:
 
 ## Qloo
 
-The server uses the public Qloo API base documented by Qloo: `https://api.qloo.com`.
+The Agentic Hackathon build defaults to the event Qloo API origin required by the starter instructions: `https://hackathon.api.qloo.com`. The origin is still configurable through `QLOO_API_BASE_URL`, but only clean HTTPS origins are accepted.
 
 The current live path uses:
 
