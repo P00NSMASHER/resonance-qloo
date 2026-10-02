@@ -159,7 +159,7 @@ npm run submission:preflight:offline
 npm run deployment:check
 ```
 
-`deployment:check` inspects the public Floot page and its JavaScript bundles for the current judge-evidence UI markers, so a reachable but stale deployment is not mistaken for a current one.
+`deployment:check` verifies both sides of the public Floot deployment: `/api/status` must expose the Resonance contract and `https://hackathon.api.qloo.com` origin, and the public HTML/JavaScript bundles must contain the current judge-evidence UI markers. A reachable but stale frontend or backend therefore fails the check.
 
 The preview smoke test verifies:
 
