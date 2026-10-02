@@ -6,6 +6,7 @@ const requiredFiles = [
   'package-lock.json',
   'README.md',
   'openapi.yaml',
+  'package-lock.json',
   'docs/JUDGING.md',
   'docs/SUBMISSION_EVIDENCE.md',
   'docs/KNOWN_LIMITATIONS.md',
@@ -29,6 +30,30 @@ for (const path of requiredFiles) {
   } catch {
     failures.push(`Missing required project artifact: ${path}`);
   }
+}
+
+try {
+  const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
+  const packageLock = JSON.parse(await readFile('package-lock.json', 'utf8'));
+  const lockRoot = packageLock?.packages?.[''] ?? {};
+  const sameManifest = (left = {}, right = {}) =>
+    JSON.stringify(Object.fromEntries(Object.entries(left).sort())) ===
+    JSON.stringify(Object.fromEntries(Object.entries(right).sort()));
+
+  if (packageLock?.lockfileVersion !== 3) {
+    failures.push('package-lock.json is not using lockfileVersion 3.');
+  }
+  if (!sameManifest(packageJson.dependencies, lockRoot.dependencies)) {
+    failures.push('package-lock.json runtime dependencies do not match package.json.');
+  }
+  if (!sameManifest(packageJson.devDependencies, lockRoot.devDependencies)) {
+    failures.push('package-lock.json devDependencies do not match package.json.');
+  }
+  if (packageJson.engines?.node !== lockRoot.engines?.node) {
+    failures.push('package-lock.json Node engine does not match package.json.');
+  }
+} catch (error) {
+  failures.push(`Dependency lock could not be validated: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
