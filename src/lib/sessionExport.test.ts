@@ -47,6 +47,12 @@ describe('session export', () => {
     expect(formatSessionText(session, 'demo')).toContain('Scope: cultural engagement guidance, not medical advice');
   });
 
+  it('keeps aggregate-affinity interpretation limits explicit in every export', () => {
+    const expected = 'Interpretation limit: Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual';
+    expect(formatSessionText(session, 'live')).toContain(expected);
+    expect(formatSessionText(session, 'demo')).toContain(expected);
+  });
+
   it('keeps facilitator control explicit in every export', () => {
     const expected = 'Human review: facilitator may accept, modify, reorder, or reject any suggestion';
     expect(formatSessionText(session, 'live')).toContain(expected);
