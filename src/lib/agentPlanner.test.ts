@@ -31,6 +31,7 @@ describe('agent planner', () => {
       'Classic cinema',
       'Italian cuisine',
     ]);
+    expect(session.evidence.returnedAffinityCount).toBe(4);
     expect(session.evidence.meanNormalizedScore).toBeGreaterThan(.7);
     expect(session.evidence.categoryHintCount).toBe(2);
     expect(session.evidence.sessionDurationMinutes).toBe(45);
@@ -108,6 +109,7 @@ describe('agent planner', () => {
     );
 
     expect(session.evidence.evidenceBasis).toBe('ranked-order');
+    expect(session.evidence.returnedAffinityCount).toBe(4);
     expect(session.evidence.meanNormalizedScore).toBeNull();
     expect(session.agentTrace[1].detail).toContain('No numeric score was invented');
   });
