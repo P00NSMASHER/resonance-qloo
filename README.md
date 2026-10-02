@@ -27,6 +27,8 @@ Each anchor can optionally include a Qloo entity category such as Artist, Film, 
 
 Independent anchor lookups run concurrently, reducing live latency without increasing the number of Qloo calls.
 
+Resolved entities are also classified as either an **exact normalized-name match** or a **Qloo top-result match to review**. The UI does not turn that into a made-up confidence score: non-exact matches are visibly flagged for facilitator review and preserved in the copied audit trail.
+
 ### Qloo-native explainability
 
 Taste analysis requests `feature.explainability=true`. Resonance does not assume or reinterpret Qloo's attribution schema: it records only whether Qloo actually returned non-empty per-result or aggregate `query.explainability` metadata. The live evidence panel shows that availability, while absent metadata stays absent rather than being simulated.
