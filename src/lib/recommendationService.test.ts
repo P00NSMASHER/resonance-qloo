@@ -90,6 +90,43 @@ describe('recommendation service', () => {
     expect(result.plan[1].affinityLabel).toBe('Musicals');
   });
 
+  it('grounds the fourth favorite in the closing step', async () => {
+    const ids = [
+      'FCE8B172-4795-43E4-B222-3B550DC05FD9',
+      '9A25B172-4795-43E4-B222-3B550DC05AAA',
+      '7B25B172-4795-43E4-B222-3B550DC05AAB',
+      '6C25B172-4795-43E4-B222-3B550DC05AAC',
+    ];
+    let searchIndex = 0;
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[{ entity_id:ids[searchIndex++], name:query }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+          { name:'Italian cuisine' },
+        ]},
+      })),
+    };
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[
+        {query:'Ella Fitzgerald'},
+        {query:"Singin' in the Rain"},
+        {query:'Italian food'},
+        {query:'Rome'},
+      ],
+      energy:'social',
+      setting:'small-group',
+    });
+
+    expect(result.plan[3].anchorName).toBe('Rome');
+    expect(result.plan[3].affinityLabel).toBe('Italian cuisine');
+  });
+
   it('resolves independent anchors concurrently', async () => {
     const releases: Array<() => void> = [];
     let nextId = 0;
