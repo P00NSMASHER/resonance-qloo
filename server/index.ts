@@ -14,9 +14,12 @@ import { qlooEntityIdentity } from '../src/lib/qlooEntityIdentity';
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
+const ALLOW_LOCAL_QLOO_MOCK =
+  process.env.QLOO_ALLOW_LOCAL_MOCK === '1' &&
+  (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test');
 const QLOO_BASE_URL = resolveQlooBaseUrl(
   process.env.QLOO_API_BASE_URL,
-  process.env.QLOO_ALLOW_LOCAL_MOCK === '1' && process.env.NODE_ENV !== 'production',
+  ALLOW_LOCAL_QLOO_MOCK,
 );
 const liveLimiter = createRateLimiter(12, 60_000);
 const processLiveLimiter = createRateLimiter(60, 60_000);
