@@ -86,14 +86,14 @@ The real event key must never be committed or pasted into a public artifact.
 
 ## Current hackathon status
 
+- Resonance is formally **Submitted** to the Qloo Agentic Hackathon; the Devpost project record reports `submitted_at: 2026-10-02T08:25:09.325-04:00`. The submission remains editable while the window is open.
 - Public live demo is deployed on Floot. GitHub `main` is the source of truth; after source changes, republish the Floot app before final judging so the public demo matches the reviewed head.
-- Public MIT-licensed source repo is complete.
-- GitHub recognizes the MIT license.
-- CI covers typecheck, unit tests, production build, and preview/fail-closed smoke tests.
-- OpenAPI 3.1 contract is public.
-- Submission evidence and known limitations are documented.
-- Event-issued Qloo credential has been requested and is still pending.
-- Live-Qloo execution remains disabled until the credential is both configured and verified.
+- Public MIT-licensed source repo is complete and GitHub recognizes the MIT license.
+- CI covers typecheck, unit tests, production build, preview/fail-closed smoke tests, proof/deployment-checker syntax, submission preflight, and an advisory public deployment parity check.
+- OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
+- Event-issued Qloo credential has been requested and is still pending; no key-delivery message has been found yet.
+- Live-Qloo execution remains disabled until the credential is configured, verified against the hackathon API origin, and captured end-to-end.
+- Formal submission is complete, but judge-readiness remains provisional until live Qloo evidence and public deployment parity both pass.
 
 ## Evidence and reproducibility
 
