@@ -109,6 +109,63 @@ describe('live recommendation result integrity', () => {
     expect(hasConsistentRecommendationResult(mismatchedBasis)).toBe(false);
   });
 
+  it('rejects selected-signal order that does not match the declared evidence rule', () => {
+    const ranked = validResult();
+    ranked.evidence.selectedAffinityLabels = ['Musicals','Jazz','Classic cinema'];
+    expect(hasConsistentRecommendationResult(ranked)).toBe(false);
+
+    const scored = validResult();
+    scored.affinities[0].score = .7;
+    scored.affinities[1].score = .9;
+    scored.affinities[2].score = .8;
+    scored.evidence.evidenceBasis = 'normalized-score';
+    scored.evidence.meanNormalizedScore = .8;
+    scored.evidence.selectedAffinityLabels = ['Musicals','Classic cinema','Jazz'];
+    scored.plan[0].affinityLabel = 'Musicals';
+    scored.plan[1].affinityLabel = 'Classic cinema';
+    scored.plan[2].affinityLabel = 'Jazz';
+    scored.plan[3].affinityLabel = 'Jazz';
+    expect(hasConsistentRecommendationResult(scored)).toBe(true);
+
+    scored.evidence.selectedAffinityLabels = ['Jazz','Musicals','Classic cinema'];
+    expect(hasConsistentRecommendationResult(scored)).toBe(false);
+  });
+
+  it('rejects a numeric evidence mean that does not match selected scores', () => {
+    const result = validResult();
+    result.affinities[0].score = .9;
+    result.affinities[1].score = .8;
+    result.affinities[2].score = .7;
+    result.evidence.evidenceBasis = 'normalized-score';
+    result.evidence.meanNormalizedScore = .75;
+    expect(hasConsistentRecommendationResult(result)).toBe(false);
+  });
+
+  it('rejects resolution and category counts that do not match the resolved anchors', () => {
+    const topCount = validResult();
+    topCount.evidence.topResultResolutionCount = 0;
+    expect(hasConsistentRecommendationResult(topCount)).toBe(false);
+
+    const categoryCount = validResult();
+    categoryCount.evidence.categoryHintCount = 1;
+    expect(hasConsistentRecommendationResult(categoryCount)).toBe(false);
+  });
+
+  it('rejects plan durations and signal order that drift from session evidence', () => {
+    const badMinutes = validResult();
+    badMinutes.plan[0].duration = '5 min';
+    expect(hasConsistentRecommendationResult(badMinutes)).toBe(false);
+
+    const wrongOrder = validResult();
+    wrongOrder.plan[0].affinityLabel = 'Musicals';
+    wrongOrder.plan[1].affinityLabel = 'Jazz';
+    expect(hasConsistentRecommendationResult(wrongOrder)).toBe(false);
+
+    const unknownAnchor = validResult();
+    unknownAnchor.plan[0].anchorName = 'Unresolved favorite';
+    expect(hasConsistentRecommendationResult(unknownAnchor)).toBe(false);
+  });
+
   it('rejects missing or reordered agent stages', () => {
     const result = validResult();
     [result.agentTrace[0], result.agentTrace[1]] = [result.agentTrace[1], result.agentTrace[0]];
