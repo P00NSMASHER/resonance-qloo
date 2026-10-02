@@ -6,7 +6,7 @@ The Qloo API credential is server-side only and must be supplied through `QLOO_A
 
 ## Data minimization
 
-Resonance does not require names, emails, health information, or other personal identifiers. Cultural anchors should be preference examples only.
+Resonance accepts cultural entities and preference examples only. Do not send a resident/client name, email, account ID, device identifier, health information, location history, or other personal data to Qloo. A cultural entity can itself contain a public person's name (for example, a favorite artist); that is different from identifying the person using the product.
 
 ## Reporting
 
