@@ -273,6 +273,13 @@ try {
     failures.push('Results UI is missing live Qloo provenance consistency verification.');
   }
   if (
+    !app.includes('matchesRecommendationRequestContext(data, {') ||
+    !app.includes('typeUrn:anchorTypeUrn(item.type)') ||
+    !app.includes('Live Qloo response did not match the submitted session context.')
+  ) {
+    failures.push('Results UI is missing live recommendation request-context binding.');
+  }
+  if (
     !app.includes('qlooStateAfterRecommendationFailure(r.status, data?.error)') ||
     !app.includes("setQlooState('degraded')")
   ) {
@@ -370,6 +377,8 @@ try {
     'const PLAN_DURATIONS',
     'const expectedPlanLabels',
     'const expectedAnchorName',
+    'matchesRecommendationRequestContext',
+    'requestAnchorKey',
     "const STAGES = ['resolve','evaluate','compose','explain']",
   ]) {
     if (!recommendationResult.includes(marker)) {
