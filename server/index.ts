@@ -7,7 +7,7 @@ import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
 import { resolveQlooBaseUrl } from '../src/lib/qlooConfig';
-import { buildRecommendation } from '../src/lib/recommendationService';
+import { buildRecommendation, ResolutionReviewRequiredError } from '../src/lib/recommendationService';
 import { normalizeRecommendationRequest } from '../src/lib/requestNormalization';
 
 const PORT = Number(process.env.PORT || 8787);
@@ -125,7 +125,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     return json(res, 400, { error: 'Request body must be valid JSON.' });
   }
 
-  const { anchors, energy, setting, durationMinutes } = normalizeRecommendationRequest(body);
+  const { anchors, energy, setting, durationMinutes, confirmedEntityIds } = normalizeRecommendationRequest(body);
 
   if (anchors.length < 2) {
     return json(res, 400, { error: 'Provide at least two distinct cultural anchors.' });
@@ -149,6 +149,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       energy,
       setting,
       durationMinutes,
+      confirmedEntityIds,
     });
 
     return json(res, 200, {
@@ -160,6 +161,13 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       },
     });
   } catch (error) {
+    if (error instanceof ResolutionReviewRequiredError) {
+      return json(res, 409, {
+        error: 'Review Qloo entity matches before continuing.',
+        code: 'QLOO_RESOLUTION_REVIEW_REQUIRED',
+        resolvedAnchors: error.resolvedAnchors,
+      });
+    }
     if (error instanceof Error && error.message === 'QLOO_TIMEOUT') {
       return json(res, 504, { error: 'Qloo took too long to respond. Please try again.' });
     }
