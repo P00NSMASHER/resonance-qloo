@@ -221,6 +221,11 @@ async function serveStatic(pathname: string, res: import('node:http').ServerResp
     });
     res.end(data);
   } catch {
+    const isAssetLike = relativePath.startsWith('assets/') || extname(relativePath) !== '';
+    if (isAssetLike) {
+      return json(res, 404, { error: 'Static asset not found.' });
+    }
+
     try {
       const data = await readFile(resolve(DIST, 'index.html'));
       res.writeHead(200, {
