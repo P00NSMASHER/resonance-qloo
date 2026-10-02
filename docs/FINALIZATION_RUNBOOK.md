@@ -38,6 +38,7 @@ Before continuing, also verify production UI parity with the repository:
 - **Confirm matches & build** continues only with the exact reviewed entity IDs; editing an anchor/category clears the pending confirmation;
 - the result metadata strip clearly separates source, evidence basis, the non-secret Qloo API origin, and generation time;
 - the evidence panel shows the selected / returned signal count and the selection rule;
+- the result view visibly states the interpretation limit: Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual, and facilitator review remains explicit;
 - selected Qloo evidence uses stable Plan signal #N numbering (up to four selected signals), while unselected results remain visible as Additional evidence;
 - the plan cards repeat those signal numbers; when only three signals are selected, the closing step may truthfully reuse Signal #3 rather than inventing a fourth Qloo signal;
 - Add/remove anchor controls respond on mobile;
