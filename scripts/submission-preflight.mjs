@@ -136,6 +136,12 @@ try {
   if (!openapi.includes('contractVersion')) {
     failures.push('OpenAPI status contract is missing the deployment contract version.');
   }
+  if (!/Provenance:[\s\S]*?required:\s*\[[^\]]*contractVersion[^\]]*\]/.test(openapi)) {
+    failures.push('OpenAPI live recommendation provenance is missing required contractVersion.');
+  }
+  if (!/ResolutionReviewRequired:[\s\S]*?required:\s*\[[^\]]*contractVersion[^\]]*\]/.test(openapi)) {
+    failures.push('OpenAPI Qloo review response is missing required contractVersion.');
+  }
   if (!openapi.includes('confirmedEntityIds') || !openapi.includes('QLOO_RESOLUTION_REVIEW_REQUIRED')) {
     failures.push('OpenAPI contract is missing the pre-taste entity-confirmation handshake.');
   }
@@ -374,6 +380,9 @@ try {
   if (!sessionExport.includes('Qloo API origin:')) {
     failures.push('Session export is missing live Qloo API origin provenance.');
   }
+  if (!sessionExport.includes('Deployment contract:')) {
+    failures.push('Session export is missing live deployment-contract provenance.');
+  }
   if (
     !sessionExport.includes('session.requestContext') ||
     !sessionExport.includes("'Submitted' : 'Illustrative'") ||
@@ -397,6 +406,9 @@ try {
   const server = await readFile('server/index.ts', 'utf8');
   if (!server.includes('contractVersion: deploymentContract.version')) {
     failures.push('Backend status is not exposing the shared deployment contract version.');
+  }
+  if ((server.match(/contractVersion:\s*deploymentContract\.version/g) || []).length < 4) {
+    failures.push('Backend is not binding status, live recommendation provenance, and review responses to the shared deployment contract.');
   }
   if (!server.includes('ResolutionReviewRequiredError') || !server.includes("code: 'QLOO_RESOLUTION_REVIEW_REQUIRED'")) {
     failures.push('Server is missing the 409 Qloo resolution-confirmation response path.');
@@ -570,6 +582,9 @@ try {
   }
   if (!capture.includes('requestContextMatches') || !capture.includes('did not match the evidence-capture request context')) {
     failures.push('Live evidence capture is not binding artifacts to the normalized request receipt.');
+  }
+  if (!capture.includes('Qloo review response deployment contract mismatch')) {
+    failures.push('Live evidence capture is not rejecting stale-contract Qloo review receipts.');
   }
   if (!capture.includes('interpretation_limit') || !capture.includes('aggregate cultural signals')) {
     failures.push('Live evidence capture is missing the responsible Qloo interpretation limit.');
