@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash } from 'node:crypto';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
@@ -12,7 +12,7 @@ import { normalizeRecommendationRequest, recommendationRequestValidationError } 
 import { qlooSearchCacheKey, qlooTasteCacheKey } from '../src/lib/qlooCacheKey';
 import { rateLimitClientKey } from '../src/lib/clientIdentity';
 import { recommendationRequestContext } from '../src/lib/recommendationContext';
-import { createResolutionReviewToken, verifyResolutionReviewToken } from '../src/lib/resolutionReviewToken';
+import { createResolutionReviewToken, resolutionReviewSigningKey, verifyResolutionReviewToken } from '../src/lib/resolutionReviewToken';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -31,7 +31,6 @@ const processQlooProbeRefreshLimiter = createRateLimiter(20, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
-const REVIEW_TOKEN_KEY = randomBytes(32);
 
 const SECURITY_HEADERS: import('node:http').OutgoingHttpHeaders = {
   'content-security-policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
@@ -161,10 +160,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     setting,
     durationMinutes,
   });
+  const reviewSigningKey = resolutionReviewSigningKey(key);
   const confirmationVerified =
     confirmedEntityIds.length > 0 &&
     verifyResolutionReviewToken(
-      REVIEW_TOKEN_KEY,
+      reviewSigningKey,
       requestContext,
       confirmedEntityIds,
       reviewToken,
@@ -229,7 +229,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
         requestContext: error.requestContext,
         resolvedAnchors: error.resolvedAnchors,
         reviewToken:createResolutionReviewToken(
-          REVIEW_TOKEN_KEY,
+          reviewSigningKey,
           error.requestContext,
           reviewEntityIds,
         ),
