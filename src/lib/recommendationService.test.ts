@@ -196,11 +196,22 @@ describe('recommendation service', () => {
     });
     expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
 
+    await expect(buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Italian food'}],
+      energy:'calm',
+      setting:'small-group',
+      confirmedEntityIds:[uuidB],
+    })).rejects.toMatchObject({
+      message:'QLOO_RESOLUTION_REVIEW_REQUIRED',
+    });
+    expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
+
     const result = await buildRecommendation(gateway, {
       anchors:[{query:'Ella Fitzgerald'},{query:'Italian food'}],
       energy:'calm',
       setting:'small-group',
       confirmedEntityIds:[uuidB],
+      confirmationVerified:true,
     });
 
     expect(result.requestContext).toEqual({
