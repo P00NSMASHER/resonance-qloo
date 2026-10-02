@@ -37,6 +37,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     'Resonance session',
     source === 'live' ? 'Source: Live Qloo' : 'Source: Illustrative demo — not live Qloo data',
     'Scope: cultural engagement guidance, not medical advice',
+    'Interpretation limit: Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual',
     'Human review: facilitator may accept, modify, reorder, or reject any suggestion',
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
     ...(source === 'live' && session.provenance?.apiOrigin
