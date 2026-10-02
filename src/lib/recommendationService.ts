@@ -19,6 +19,7 @@ export type RecommendationInput = {
   setting: string;
   durationMinutes?: number;
   confirmedEntityIds?: string[];
+  confirmationVerified?: boolean;
 };
 
 export class ResolutionReviewRequiredError extends Error {
@@ -63,7 +64,9 @@ export async function buildRecommendation(
 
   const confirmedEntityIds = new Set((input.confirmedEntityIds ?? []).map(qlooEntityIdentity));
   const unresolvedReview = resolved.filter(
-    item => item.resolutionMatch === 'top-result' && !confirmedEntityIds.has(qlooEntityIdentity(item.entityId)),
+    item =>
+      item.resolutionMatch === 'top-result' &&
+      (!input.confirmationVerified || !confirmedEntityIds.has(qlooEntityIdentity(item.entityId))),
   );
   if (unresolvedReview.length) {
     throw new ResolutionReviewRequiredError(resolved, requestContext);
