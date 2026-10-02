@@ -91,16 +91,32 @@ async function withMockDeployment(mode, fn) {
 
     if (req.url === '/' || req.url === '') {
       res.writeHead(200, { 'content-type':'text/html; charset=utf-8' });
-      res.end('<!doctype html><script src="/app.js"></script>');
+      res.end('<!doctype html><script src="/_assets/app.js"></script>');
       return;
     }
 
-    if (req.url === '/app.js') {
+    if (req.url === '/_assets/app.js') {
       const visibleMarkers = mode === 'missing-marker'
         ? markers.filter(marker => marker !== 'Confirm matches & build')
         : markers;
       res.writeHead(200, { 'content-type':'text/javascript; charset=utf-8' });
-      res.end(visibleMarkers.map(marker => JSON.stringify(marker)).join(';\n'));
+      if (mode === 'floot-dynamic') {
+        res.end('const __vite__mapDeps=(m=["_assets/page.js","_assets/vendor.js"]);');
+      } else {
+        res.end(visibleMarkers.map(marker => JSON.stringify(marker)).join(';\n'));
+      }
+      return;
+    }
+
+    if (req.url === '/_assets/page.js' && mode === 'floot-dynamic') {
+      res.writeHead(200, { 'content-type':'text/javascript; charset=utf-8' });
+      res.end(markers.map(marker => JSON.stringify(marker)).join(';\n'));
+      return;
+    }
+
+    if (req.url === '/_assets/vendor.js' && mode === 'floot-dynamic') {
+      res.writeHead(200, { 'content-type':'text/javascript; charset=utf-8' });
+      res.end('export const vendor=true;');
       return;
     }
 
@@ -136,6 +152,15 @@ if (
   !floot.stdout.includes('Public deployment frontend + backend parity passed.')
 ) {
   throw new Error(`Expected Floot SuperJSON deployment to pass. stdout=${floot.stdout} stderr=${floot.stderr}`);
+}
+
+const flootDynamic = await withMockDeployment('floot-dynamic', runChecker);
+if (
+  flootDynamic.code !== 0 ||
+  !flootDynamic.stdout.includes('Public deployment frontend + backend parity passed.') ||
+  !flootDynamic.stdout.includes('same-origin public script chunk')
+) {
+  throw new Error(`Expected dynamically chunked deployment to pass. stdout=${flootDynamic.stdout} stderr=${flootDynamic.stderr}`);
 }
 
 const wrongContract = await withMockDeployment('wrong-contract', runChecker);
