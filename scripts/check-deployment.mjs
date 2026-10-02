@@ -14,6 +14,7 @@ const requiredMarkers = [
   'No synthetic signal',
   'Interpretation limit',
   'aggregate cultural relationships',
+  'Retry Qloo verification',
   'Qloo match review required',
   'Confirm matches & build',
   'QLOO_RESOLUTION_REVIEW_REQUIRED',
