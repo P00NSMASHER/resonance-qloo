@@ -92,6 +92,8 @@ const evidence = {
   captured_at:new Date().toISOString(),
   base_url:base,
   qloo_api_origin:status.body.qlooApiOrigin,
+  interpretation_limit:'Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual. The session is a facilitator-reviewed starting point, not an inferred personal profile.',
+  human_review:'Facilitator may accept, modify, reorder, or reject any suggestion based on the person’s actual response.',
   request:{
     anchors,
     energy:'calm',
