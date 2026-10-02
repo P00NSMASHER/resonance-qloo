@@ -21,6 +21,20 @@ describe('ttl cache', () => {
     expect(loader).toHaveBeenCalledTimes(2);
   });
 
+  it('starts TTL when a slow loader completes', async () => {
+    let now = 1000;
+    const cache = createTtlCache<number>(1000, 250, () => now);
+    const loader = vi.fn(async () => {
+      now = 1800;
+      return 42;
+    });
+
+    expect(await cache.getOrLoad('x', loader)).toBe(42);
+    expect(cache.get('x', 2500)).toBe(42);
+    expect(cache.get('x', 2800)).toBeUndefined();
+    expect(loader).toHaveBeenCalledTimes(1);
+  });
+
   it('coalesces concurrent loads for the same key', async () => {
     const cache = createTtlCache<number>(1000);
     let release: ((value: number) => void) | undefined;
