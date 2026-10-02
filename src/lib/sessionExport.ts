@@ -6,7 +6,7 @@ export type ExportableSession = {
   affinities: { label:string; score:number|null; rank:number }[];
   plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace?: { stage:string; status?:'ok'|'warning'; detail:string }[];
-  provenance?: { generatedAt?: string };
+  provenance?: { generatedAt?: string; apiOrigin?: string };
   evidence?: {
     evidenceBasis?: 'normalized-score' | 'ranked-order';
     meanNormalizedScore?: number | null;
@@ -37,6 +37,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     'Scope: cultural engagement guidance, not medical advice',
     'Human review: facilitator may accept, modify, reorder, or reject any suggestion',
     ...(generatedAt ? [`Generated: ${generatedAt}`] : []),
+    ...(source === 'live' && session.provenance?.apiOrigin
+      ? [`Qloo API origin: ${session.provenance.apiOrigin}`]
+      : []),
     ...(source === 'live' && session.evidence?.evidenceBasis
       ? [`Evidence basis: ${session.evidence.evidenceBasis === 'normalized-score' ? 'Qloo numeric scores' : 'Qloo ranked result order'}`]
       : []),
