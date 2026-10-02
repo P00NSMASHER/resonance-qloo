@@ -33,6 +33,8 @@ Resolved entities are also classified as either an **exact normalized-name match
 
 Taste analysis requests `feature.explainability=true`. Resonance does not assume or reinterpret Qloo's attribution schema: it records only whether Qloo actually returned non-empty per-result or aggregate `query.explainability` metadata. The live evidence panel shows that availability, while absent metadata stays absent rather than being simulated.
 
+If Qloo returns HTTP 400/422 and the response detail specifically identifies the optional explainability feature as unsupported, Resonance retries the same bounded taste-analysis request once without that flag. Unrelated 400/422 validation failures are not retried or reinterpreted as an explainability compatibility issue.
+
 ## Live-mode truthfulness
 
 A configured secret is **not** treated as proof that Qloo works.
