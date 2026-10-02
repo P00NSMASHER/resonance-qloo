@@ -354,6 +354,61 @@ describe('recommendation service', () => {
     expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
   });
 
+  it('treats mixed-case UUIDs as the same resolved Qloo entity', async () => {
+    let call = 0;
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[{
+          entity_id:call++ === 0 ? uuidA : uuidA.toLowerCase(),
+          name:query,
+        }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+        ]},
+      })),
+    };
+
+    await expect(buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Ella'}],
+      energy:'calm',
+      setting:'one-on-one',
+    })).rejects.toThrow('QLOO_EVIDENCE_TOO_SPARSE');
+
+    expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
+  });
+
+  it('accepts confirmation for the same Qloo UUID regardless of hex casing', async () => {
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[{
+          entity_id:query === 'Italian food' ? uuidB.toLowerCase() : uuidA,
+          name:query === 'Italian food' ? 'Italian cuisine' : query,
+        }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+        ]},
+      })),
+    };
+
+    const result = await buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Italian food'}],
+      energy:'calm',
+      setting:'small-group',
+      confirmedEntityIds:[uuidB],
+    });
+
+    expect(result.evidence.topResultResolutionCount).toBe(1);
+    expect(gateway.tasteAnalysis).toHaveBeenCalledOnce();
+  });
+
   it('fails closed when too few anchors resolve', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => query === 'known'
