@@ -20,7 +20,7 @@ qloo setup --qloo
 npm run qloo:proof -- "classic jazz vocals"
 ```
 
-The proof script requires the event kit's minimum public harness version (0.1.26+), starts the canonical `qloo mcp` server, checks `qloo_capabilities`, and runs `qloo_find_tags`. It records the harness version in the request-to-result artifact. Redaction covers both suspicious field names and the literal `QLOO_API_KEY` value under arbitrary nested fields; a final serialized-output guard refuses to emit the artifact if the original key survives.
+The proof script requires the event kit's minimum public harness version (0.1.26+), starts the canonical `qloo mcp` server, checks `qloo_capabilities`, and runs `qloo_find_tags`. It records the harness version in the request-to-result artifact. Redaction covers both suspicious field names and the literal `QLOO_API_KEY` value under arbitrary nested fields; a final serialized-output guard refuses to emit the artifact if the original key survives. The MCP subprocess receives a minimal environment allowlist, so unrelated parent-process secrets are not forwarded into the proof tool.
 
 The application code uses the Qloo Agentic Hackathon event gateway required by the starter instructions:
 
