@@ -386,7 +386,7 @@ export default function App() {
           <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
         </div>
         <small>{qlooUi.helper}</small>
-        {qlooState !== 'ready' && qlooState !== 'checking' && <button
+        {(qlooState === 'degraded' || qlooState === 'rate-limited') && <button
           type="button"
           className="connectionRetry"
           disabled={loading}
