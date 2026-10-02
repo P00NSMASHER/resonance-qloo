@@ -340,7 +340,7 @@ try {
   }
   if (
     !app.includes("import { hasVerifiedLiveProvenance } from './lib/liveProvenance'") ||
-    !app.includes('hasVerifiedLiveProvenance(data, qlooApiOrigin)')
+    !app.includes('hasVerifiedLiveProvenance(data, qlooApiOrigin, deploymentContract.version)')
   ) {
     failures.push('Results UI is missing live Qloo provenance consistency verification.');
   }
