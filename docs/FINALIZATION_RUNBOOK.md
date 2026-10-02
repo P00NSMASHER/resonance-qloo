@@ -56,7 +56,7 @@ qloo --version # must be 0.1.26 or newer
 export QLOO_BASE_URL=https://hackathon.api.qloo.com
 export QLOO_TRUSTED_BASE_URL=https://hackathon.api.qloo.com
 qloo setup --qloo
-npm install
+npm ci
 npm run qloo:proof -- "classic jazz vocals"
 ```
 
