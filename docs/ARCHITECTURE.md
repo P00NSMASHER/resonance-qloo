@@ -41,7 +41,7 @@ Safety/reliability controls:
 - 2–4 distinct, trimmed anchors;
 - allowed-value validation for energy and setting;
 - 8-second upstream timeout;
-- per-client and global live-request ceilings;
+- per-client and per-process aggregate live-request ceilings;
 - bounded TTL caches for repeated Qloo searches/taste analysis;
 - in-flight coalescing for identical cache keys, so simultaneous judges do not duplicate the same Qloo Search, Insights, or connectivity-probe call before the first response fills the cache;
 - cached credential verification so page loads do not repeatedly burn quota;
