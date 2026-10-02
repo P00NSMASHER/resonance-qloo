@@ -74,6 +74,9 @@ try {
   if (!app.includes('Additional evidence')) {
     failures.push('Results UI no longer distinguishes supporting Qloo evidence.');
   }
+  if (!app.includes('No synthetic signal')) {
+    failures.push('Results UI is missing the sparse-evidence no-synthetic-signal disclosure.');
+  }
 } catch {}
 
 try {
@@ -89,6 +92,9 @@ try {
   }
   if (!sessionExport.includes('returnedAffinityCount')) {
     failures.push('Session export is not preserving first-class returnedAffinityCount evidence.');
+  }
+  if (!sessionExport.includes('Signal reuse:')) {
+    failures.push('Session export is missing the sparse-evidence signal-reuse disclosure.');
   }
 } catch {}
 
