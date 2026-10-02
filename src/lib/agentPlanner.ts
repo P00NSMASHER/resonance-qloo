@@ -14,6 +14,7 @@ export type AgentSession = {
     meanNormalizedScore: number | null;
     evidenceBasis: 'normalized-score' | 'ranked-order';
     selectedAffinityCount: number;
+    selectedAffinityLabels: string[];
     resolvedAnchorCount: number;
     categoryHintCount: number;
     explainabilityResultCount: number;
@@ -66,6 +67,7 @@ export function orchestrateSession(
       meanNormalizedScore,
       evidenceBasis,
       selectedAffinityCount: selected.length,
+      selectedAffinityLabels: selected.map(item => item.label),
       resolvedAnchorCount: resolvedAnchors.length,
       categoryHintCount,
       explainabilityResultCount:qlooExplainability.resultCount,
