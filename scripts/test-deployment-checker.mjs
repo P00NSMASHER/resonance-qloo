@@ -8,6 +8,7 @@ const checkerPath = fileURLToPath(new URL('./check-deployment.mjs', import.meta.
 const markers = [
   'How Qloo changed this plan',
   'Selection rule',
+  'Request receipt',
   'Plan signal #',
   'Additional evidence',
   'Qloo top match · review',
