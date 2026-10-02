@@ -23,6 +23,13 @@ async function waitForServer() {
   throw new Error('Server did not become ready in time. ' + stderr.slice(-1000));
 }
 
+function requireHeader(response, name, expectedFragment) {
+  const value = response.headers.get(name) || '';
+  if (!value.includes(expectedFragment)) {
+    throw new Error(`Missing/invalid ${name}: expected ${expectedFragment}, got ${value || '(missing)'}`);
+  }
+}
+
 try {
   await waitForServer();
 
@@ -31,6 +38,19 @@ try {
   if (status.status !== 200 || statusBody.qlooConnected !== false || statusBody.mode !== 'preview') {
     throw new Error('Preview status contract failed: ' + JSON.stringify(statusBody));
   }
+  requireHeader(status, 'content-security-policy', "default-src 'self'");
+  requireHeader(status, 'content-security-policy', "frame-ancestors 'none'");
+  requireHeader(status, 'permissions-policy', 'camera=()');
+  requireHeader(status, 'x-frame-options', 'DENY');
+  requireHeader(status, 'x-content-type-options', 'nosniff');
+  requireHeader(status, 'referrer-policy', 'no-referrer');
+
+  const page = await fetch(base + '/');
+  if (page.status !== 200) throw new Error('Static app shell should return 200, got ' + page.status);
+  requireHeader(page, 'content-security-policy', "default-src 'self'");
+  requireHeader(page, 'x-frame-options', 'DENY');
+  requireHeader(page, 'referrer-policy', 'same-origin');
+  requireHeader(page, 'cache-control', 'no-cache');
 
   const recommend = await fetch(base + '/api/recommend', {
     method: 'POST',
