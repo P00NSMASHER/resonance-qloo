@@ -347,6 +347,24 @@ export default function App() {
         </ol>
       </section>
 
+      <section className="qlooImpactSummary" aria-labelledby="qloo-impact-title">
+        <div>
+          <b>{source === 'live' ? 'Qloo contribution' : 'Illustrative Qloo path'}</b>
+          <h3 id="qloo-impact-title">{source === 'live' ? 'How Qloo changed this plan' : 'How Qloo would shape this plan'}</h3>
+          <p>{source === 'live'
+            ? `Qloo expanded ${result.resolvedAnchors.length} resolved favorites into ${result.evidence.selectedAffinityCount} selected cross-category signals. The agent mapped those signals into the ${result.plan.length} activities below instead of starting from a generic profile.`
+            : `This example shows how ${result.resolvedAnchors.length} cultural anchors can become ${result.evidence.selectedAffinityCount} adjacent signals and then ${result.plan.length} tailored activities. These values are illustrative, not live Qloo results.`
+          }</p>
+        </div>
+        <div className="impactFlow" aria-label="Evidence flow summary">
+          <span><strong>{result.resolvedAnchors.length}</strong> favorites</span>
+          <i aria-hidden="true">→</i>
+          <span><strong>{result.evidence.selectedAffinityCount}</strong> {source === 'live' ? 'Qloo signals' : 'example signals'}</span>
+          <i aria-hidden="true">→</i>
+          <span><strong>{result.plan.length}</strong> activities</span>
+        </div>
+      </section>
+
       <div className="plan">{result.plan.map(x=><article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <div className="bridge">{x.anchorName && <div className="bridgeNode"><b>Known favorite</b><span>{x.anchorName}</span></div>}<div className="bridgeNode"><b>Qloo signal</b><span>{x.affinityLabel}</span></div></div>}<div className="activityEvidence"><b>Resulting activity</b><p>{x.action}</p></div><div className="rationale"><b>Evidence-backed rationale</b>{x.affinityLabel && <div className="rationalePath">{x.anchorName ? `${x.anchorName} + ${x.affinityLabel} → ${x.title}` : `${x.affinityLabel} → ${x.title}`}</div>}<p>{x.why}</p></div></article>)}</div>
     </section>}
 
