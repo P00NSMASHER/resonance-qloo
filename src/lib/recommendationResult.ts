@@ -3,6 +3,7 @@ const DURATIONS = new Set([30,45,60]);
 const ENERGIES = new Set(['calm','social','active']);
 const SETTINGS = new Set(['one-on-one','small-group','community']);
 const RESOLUTION_MATCHES = new Set(['exact-name','top-result']);
+const PLAN_TITLES = ['Opening cue','Story bridge','Shared choice','Closing ritual'] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value));
@@ -129,6 +130,11 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 
   const plan = payload.plan;
   if (!Array.isArray(plan) || plan.length !== 4) return false;
+  const expectedDurations = Number(evidence.sessionDurationMinutes) === 30
+    ? ['5 min','10 min','10 min','5 min']
+    : Number(evidence.sessionDurationMinutes) === 60
+      ? ['10 min','20 min','20 min','10 min']
+      : ['10 min','10 min','15 min','10 min'];
   for (let index = 0; index < plan.length; index += 1) {
     const item = plan[index];
     if (
@@ -139,6 +145,7 @@ export function hasConsistentRecommendationResult(payload: unknown) {
       !isNonEmptyString(item.why) ||
       !isNonEmptyString(item.affinityLabel)
     ) return false;
+    if (item.title !== PLAN_TITLES[index] || item.duration !== expectedDurations[index]) return false;
 
     const expectedLabel = evidence.selectedAffinityLabels[
       Math.min(index, evidence.selectedAffinityLabels.length - 1)
