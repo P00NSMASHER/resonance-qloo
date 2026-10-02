@@ -1,4 +1,5 @@
 const BASE_URL = (process.env.RESONANCE_BASE_URL || 'https://resonance-qloo.floot.app').replace(/\/$/, '');
+const EXPECTED_QLOO_API_ORIGIN = (process.env.EXPECTED_QLOO_API_ORIGIN || 'https://hackathon.api.qloo.com').replace(/\/$/, '');
 
 const requiredMarkers = [
   'How Qloo changed this plan',
@@ -19,6 +20,36 @@ async function fetchText(url) {
   }
   return response.text();
 }
+
+async function fetchJson(url) {
+  const response = await fetch(url, {
+    redirect: 'follow',
+    signal: AbortSignal.timeout(10000),
+    headers: {
+      accept: 'application/json',
+      'user-agent': 'resonance-deployment-check/1.0',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`${url} returned HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+const status = await fetchJson(BASE_URL + '/api/status');
+if (status.service !== 'resonance') {
+  console.error(`FAIL: Public backend service marker is ${JSON.stringify(status.service)}, expected "resonance".`);
+  process.exit(1);
+}
+if (status.qlooApiOrigin !== EXPECTED_QLOO_API_ORIGIN) {
+  console.error(`FAIL: Public backend Qloo origin is ${JSON.stringify(status.qlooApiOrigin)}, expected ${EXPECTED_QLOO_API_ORIGIN}.`);
+  process.exit(1);
+}
+if (!['preview','live'].includes(status.mode) || !['preview','ready','degraded','rate-limited'].includes(status.qlooStatus)) {
+  console.error('FAIL: Public backend returned an invalid Qloo status contract: ' + JSON.stringify(status));
+  process.exit(1);
+}
+console.log(`Public backend status passed: mode=${status.mode}, qlooStatus=${status.qlooStatus}, qlooApiOrigin=${status.qlooApiOrigin}.`);
 
 const html = await fetchText(BASE_URL);
 const scriptSources = [...new Set(
@@ -55,4 +86,4 @@ if (missing.length) {
 }
 
 for (const marker of requiredMarkers) console.log(`FOUND: ${marker}`);
-console.log('Public deployment feature parity passed.');
+console.log('Public deployment frontend + backend parity passed.');
