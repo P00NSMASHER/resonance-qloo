@@ -36,8 +36,8 @@ type Result = {
 const demo: Result = {
   summary: 'Illustrative preview only — this is not live Qloo data.',
   resolvedAnchors: [
-    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella' },
-    { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'demo:rain' },
+    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella', requestedTypeUrn:'urn:entity:artist' },
+    { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'demo:rain', requestedTypeUrn:'urn:entity:movie' },
     { query:'Italian food', name:'Italian cuisine', entityId:'demo:italian' }
   ],
   affinities: [
