@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { QlooClient, QlooHttpError } from '../src/lib/qlooClient';
 import { createRateLimiter } from '../src/lib/rateLimiter';
 import { createTtlCache } from '../src/lib/ttlCache';
@@ -11,6 +11,8 @@ import { buildRecommendation, ResolutionReviewRequiredError } from '../src/lib/r
 import { normalizeRecommendationRequest, recommendationRequestValidationError } from '../src/lib/requestNormalization';
 import { qlooSearchCacheKey, qlooTasteCacheKey } from '../src/lib/qlooCacheKey';
 import { rateLimitClientKey } from '../src/lib/clientIdentity';
+import { recommendationRequestContext } from '../src/lib/recommendationContext';
+import { createResolutionReviewToken, verifyResolutionReviewToken } from '../src/lib/resolutionReviewToken';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -29,6 +31,7 @@ const processQlooProbeRefreshLimiter = createRateLimiter(20, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
+const REVIEW_TOKEN_KEY = randomBytes(32);
 
 const SECURITY_HEADERS: import('node:http').OutgoingHttpHeaders = {
   'content-security-policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
@@ -146,11 +149,26 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     return json(res, 400, { error: requestValidationError });
   }
 
-  const { anchors, energy, setting, durationMinutes, confirmedEntityIds } = normalizeRecommendationRequest(body);
+  const { anchors, energy, setting, durationMinutes, confirmedEntityIds, reviewToken } = normalizeRecommendationRequest(body);
 
   if (anchors.length < 2) {
     return json(res, 400, { error: 'Provide at least two distinct cultural anchors.' });
   }
+
+  const requestContext = recommendationRequestContext({
+    anchors,
+    energy,
+    setting,
+    durationMinutes,
+  });
+  const confirmationVerified =
+    confirmedEntityIds.length > 0 &&
+    verifyResolutionReviewToken(
+      REVIEW_TOKEN_KEY,
+      requestContext,
+      confirmedEntityIds,
+      reviewToken,
+    );
 
   // Charge the Qloo/live quota only after the request is bounded and valid.
   // Malformed public traffic should not be able to exhaust the upstream-call budget.
@@ -189,6 +207,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       setting,
       durationMinutes,
       confirmedEntityIds,
+      confirmationVerified,
     });
 
     return json(res, 200, {
@@ -201,11 +220,19 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
     });
   } catch (error) {
     if (error instanceof ResolutionReviewRequiredError) {
+      const reviewEntityIds = error.resolvedAnchors
+        .filter(item => item.resolutionMatch === 'top-result')
+        .map(item => item.entityId);
       return json(res, 409, {
         error: 'Review Qloo entity matches before continuing.',
         code: 'QLOO_RESOLUTION_REVIEW_REQUIRED',
         requestContext: error.requestContext,
         resolvedAnchors: error.resolvedAnchors,
+        reviewToken:createResolutionReviewToken(
+          REVIEW_TOKEN_KEY,
+          error.requestContext,
+          reviewEntityIds,
+        ),
       });
     }
     if (error instanceof Error && error.message === 'QLOO_TIMEOUT') {
