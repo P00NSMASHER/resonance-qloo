@@ -10,6 +10,7 @@ export type NormalizedRecommendationRequest = {
   energy: string;
   setting: string;
   durationMinutes: number;
+  confirmedEntityIds: string[];
 };
 
 export function normalizeRecommendationRequest(body: Record<string, unknown>): NormalizedRecommendationRequest {
@@ -49,6 +50,13 @@ export function normalizeRecommendationRequest(body: Record<string, unknown>): N
   const durationMinutes = typeof body.durationMinutes === 'number' && ALLOWED_DURATION_MINUTES.has(body.durationMinutes)
     ? body.durationMinutes
     : 45;
+  const confirmedEntityIds = Array.isArray(body.confirmedEntityIds)
+    ? [...new Set(body.confirmedEntityIds.flatMap(value => {
+        if (typeof value !== 'string') return [];
+        const id = value.trim();
+        return id.length > 0 && id.length <= 200 ? [id] : [];
+      }))].slice(0,4)
+    : [];
 
-  return { anchors, energy, setting, durationMinutes };
+  return { anchors, energy, setting, durationMinutes, confirmedEntityIds };
 }
