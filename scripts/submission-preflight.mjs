@@ -148,8 +148,11 @@ try {
   if (!sessionExport.includes('Qloo API origin:')) {
     failures.push('Session export is missing live Qloo API origin provenance.');
   }
-  if (!sessionExport.includes('Qloo top-result match(es) to review')) {
-    failures.push('Session export is missing entity-resolution review evidence.');
+  if (!sessionExport.includes('Resolution: Qloo top result — review')) {
+    failures.push('Session export is missing illustrative top-result review evidence.');
+  }
+  if (!sessionExport.includes('explicitly confirmed before taste analysis')) {
+    failures.push('Session export is missing live top-result confirmation evidence.');
   }
   if (!sessionExport.includes('Signal reuse:')) {
     failures.push('Session export is missing the sparse-evidence signal-reuse disclosure.');
