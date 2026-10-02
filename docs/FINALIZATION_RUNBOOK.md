@@ -33,6 +33,7 @@ Confirm the header says **Live Qloo connected**. If it reports degraded immediat
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
 - the example result visibly shows Artist / Film category hints where expected;
+- each resolved anchor visibly distinguishes **Exact name** from **Qloo top match · review**, and any top-result match is counted in the review note/evidence metrics;
 - the result metadata strip clearly separates source, evidence basis, the non-secret Qloo API origin, and generation time;
 - the evidence panel shows the selected / returned signal count and the selection rule;
 - selected Qloo evidence uses stable Plan signal #N numbering (up to four selected signals), while unselected results remain visible as Additional evidence;
@@ -68,6 +69,7 @@ Use the public app with:
 
 Confirm:
 - at least two anchors resolve;
+- every resolved entity shows its exact-name vs Qloo top-result classification; review any top-result match before treating the live result as final evidence;
 - Qloo taste evidence is returned;
 - the agent decision trace is visible;
 - the evidence basis says either `normalized-score` or `ranked-order`;
