@@ -107,6 +107,12 @@ export default function App() {
   }, [anchors,anchorTypes]);
   const qlooUi = qlooPresentation(qlooState);
   const canRun = usableAnchors.length >= 2 && qlooUi.liveReady && !loading;
+  const selectedAffinityLabels = new Set<string>(result
+    ? (Array.isArray(result.evidence.selectedAffinityLabels) && result.evidence.selectedAffinityLabels.length
+      ? result.evidence.selectedAffinityLabels
+      : result.affinities.slice(0, result.evidence.selectedAffinityCount).map(item => item.label))
+    : []
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -323,8 +329,8 @@ export default function App() {
           <i aria-hidden="true">→</i>
         </div>
         <div className="evidenceColumn">
-          <div className="evidenceHeading"><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Selected taste signals':'Example taste signals'}</h3></div>
-          <div className="affinities">{result.affinities.map(x=><div key={x.label}><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>)}</div>
+          <div className="evidenceHeading"><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div>
+          <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? 'Selected for plan' : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
         </div>
       </section>
 
