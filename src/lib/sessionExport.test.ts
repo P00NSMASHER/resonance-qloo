@@ -23,7 +23,7 @@ describe('session export', () => {
       {stage:'resolve',status:'ok' as const,detail:'Resolved two anchors.'},
       {stage:'evaluate',status:'warning' as const,detail:'Used ranked Qloo evidence.'},
     ],
-    provenance:{generatedAt:'2026-10-01T17:12:00.000Z'},
+    provenance:{generatedAt:'2026-10-01T17:12:00.000Z',apiOrigin:'https://hackathon.api.qloo.com'},
     evidence:{
       evidenceBasis:'ranked-order' as const,
       meanNormalizedScore:null,
@@ -80,6 +80,11 @@ describe('session export', () => {
 
   it('keeps the live generation timestamp in exported evidence', () => {
     expect(formatSessionText(session, 'live')).toContain('Generated: 2026-10-01T17:12:00.000Z');
+  });
+
+  it('keeps the non-secret Qloo API origin in live exports only', () => {
+    expect(formatSessionText(session, 'live')).toContain('Qloo API origin: https://hackathon.api.qloo.com');
+    expect(formatSessionText(session, 'demo')).not.toContain('Qloo API origin:');
   });
 
   it('keeps the live evidence basis in exported evidence', () => {
