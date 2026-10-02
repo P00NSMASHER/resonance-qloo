@@ -17,8 +17,9 @@ Only `ready` enables live recommendations.
 
 Live results expose:
 
-- resolved anchors and their Qloo IDs/category hints;
-- the aggregate handoff from resolved favorites into Qloo taste analysis;
+- resolved anchors, their Qloo IDs/category hints, and exact-name vs top-result classification;
+- an explicit confirmation gate for non-exact Qloo top-result matches before taste analysis;
+- the aggregate handoff from confirmed resolved favorites into Qloo taste analysis;
 - all retained Qloo taste evidence, up to eight distinct signals;
 - first-class returned-versus-selected signal counts;
 - the explicit selection rule and evidence basis: numeric scores or Qloo rank order;
@@ -32,7 +33,7 @@ Live results expose:
 The server owns the Qloo credential and provides two routes:
 
 - `GET /api/status`: reports whether the key is configured and whether Qloo was actually verified; probe results are cached for five minutes.
-- `POST /api/recommend`: validates a bounded request, resolves anchors through Qloo Search, requests Qloo tag insights, hands the evidence to the agent planner, and returns the plan plus trace/evidence metadata.
+- `POST /api/recommend`: validates a bounded request and resolves anchors through Qloo Search. If any first valid Qloo result is not an exact normalized-name match, the route returns HTTP 409 with those resolved candidates and stops **before** taste analysis. A second request may carry the explicitly confirmed entity IDs; only then does the server request Qloo tag insights, hand the evidence to the agent planner, and return the plan plus trace/evidence metadata.
 
 Safety/reliability controls:
 
@@ -43,6 +44,8 @@ Safety/reliability controls:
 - per-client and global live-request ceilings;
 - bounded TTL caches for repeated Qloo searches/taste analysis;
 - cached credential verification so page loads do not repeatedly burn quota;
+- explicit user confirmation before any non-exact Qloo top-result entity is used in taste analysis;
+- confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result must be reviewed again;
 - fail-closed behavior when too few anchors or affinities are resolved;
 - fail-closed behavior when explicit numeric evidence is too weak;
 - no invented affinity score when the Qloo response supplies only ranked tags;
@@ -70,10 +73,11 @@ The repository also contains an event-supported `qloo mcp` proof script. It chec
 
 The agent planner is deterministic and inspectable:
 
-1. **Resolve** — require at least two Qloo-backed anchors.
-2. **Evaluate** — retain up to eight returned affinity signals, then select at most four for the plan. Prefer the highest numeric scores when at least three are present; otherwise preserve Qloo's ranked order.
-3. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as stable **#1–#N** numbering (up to four selected signals). If only three real signals are available, signal #3 is reused for the closing activity rather than synthesizing a fourth evidence item.
-4. **Explain** — return a visible rationale for every step.
+1. **Resolve** — require at least two Qloo-backed anchors and classify each as an exact normalized-name match or a Qloo top-result match.
+2. **Confirm when needed** — if any resolution is a non-exact top result, stop before taste analysis and require the user to confirm those exact Qloo entity IDs or edit the anchors/category hints.
+3. **Evaluate** — retain up to eight returned affinity signals, then select at most four for the plan. Prefer the highest numeric scores when at least three are present; otherwise preserve Qloo's ranked order.
+4. **Compose** — adapt the four-step plan to the selected energy and setting while preserving the selected signal sequence as stable **#1–#N** numbering (up to four selected signals). If only three real signals are available, signal #3 is reused for the closing activity rather than synthesizing a fourth evidence item.
+5. **Explain** — return a visible rationale for every step.
 
 Evidence metadata states its basis explicitly:
 
