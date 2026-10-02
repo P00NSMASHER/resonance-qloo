@@ -4,7 +4,7 @@ export type ExportableSession = {
   summary: string;
   resolvedAnchors: { query?:string; name:string; entityId?:string; requestedTypeUrn?:string }[];
   affinities: { label:string; score:number|null; rank:number }[];
-  plan: { title:string; duration:string; action:string; why:string }[];
+  plan: { title:string; duration:string; action:string; why:string; anchorName?:string; affinityLabel?:string }[];
   agentTrace?: { stage:string; status?:'ok'|'warning'; detail:string }[];
   provenance?: { generatedAt?: string };
   evidence?: {
@@ -82,6 +82,9 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
     'Session plan:',
     ...session.plan.flatMap((item, index) => [
       `${index + 1}. ${item.title} (${item.duration})`,
+      ...(item.affinityLabel
+        ? [`   Bridge: ${item.anchorName ? `${item.anchorName} -> ${item.affinityLabel}` : item.affinityLabel}`]
+        : []),
       `   ${item.action}`,
       `   Why it fits: ${item.why}`,
     ]),
