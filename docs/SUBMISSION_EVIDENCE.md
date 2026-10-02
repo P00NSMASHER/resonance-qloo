@@ -22,9 +22,10 @@ npm run qloo:proof -- "classic jazz vocals"
 
 The proof script requires the event kit's minimum public harness version (0.1.26+), starts the canonical `qloo mcp` server, checks `qloo_capabilities`, and runs `qloo_find_tags`. It records the harness version in the redacted request-to-result artifact and never prints the credential.
 
-The application code also follows current public Qloo API documentation:
+The application code uses the Qloo Agentic Hackathon event gateway required by the starter instructions:
 
-- API base: `https://api.qloo.com`
+- Event API base: `https://hackathon.api.qloo.com`
+- The base URL remains an explicit HTTPS configuration point for future Qloo instructions
 - Search: `/search`
 - Taste analysis: `/v2/insights?filter.type=urn:tag`
 - Input entity signal: `signal.interests.entities=<Qloo entity UUID>`
@@ -83,6 +84,7 @@ npm install
 npm install --global @qloo/qloo-harness
 cp .env.example .env
 # add the event-issued QLOO_API_KEY to .env
+# keep QLOO_API_BASE_URL=https://hackathon.api.qloo.com
 npm run typecheck
 npm test
 npm run build
