@@ -50,6 +50,8 @@ The live button only becomes available in the verified `ready` state. This preve
 
 If verification is non-ready, the UI exposes **Retry Qloo verification**. That button calls `GET /api/status?refresh=1`, which invalidates only a cached degraded/rate-limited probe and performs a fresh bounded verification. A healthy cached `ready` state is never thrown away. Forced retries are separately capped at two per client per minute and twenty per server process per minute.
 
+A later live recommendation can also invalidate the optimistic connection display: upstream Qloo rate limiting moves the UI to `rate-limited`, upstream 502/504 failures move it to `degraded`, and a malformed/inconsistent supposedly-live response also fails closed to `degraded`. Local public-demo throttling and valid “insufficient evidence” responses do **not** downgrade the Qloo connection state.
+
 The browser independently checks successful recommendation provenance before showing **LIVE QLOO**: the response must declare `qloo-live`, include a valid generation timestamp, and report the exact same Qloo API origin returned by the verified status endpoint. Session-defining inputs are locked while a live request is in flight, and changing an anchor, category, energy, setting, or duration invalidates any prior result and pending entity confirmation so stale evidence cannot appear to belong to edited inputs.
 
 ## 60-second judge path
