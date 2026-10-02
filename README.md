@@ -151,23 +151,32 @@ Open http://localhost:5173.
 
 ## Verify
 
+Run the full offline repository verification in one command:
+
 ```bash
-npm run typecheck
-npm test
-npm run build
-npm run smoke:preview
-npm run submission:preflight:offline
-# After publishing/re-publishing the public app:
+npm run verify:offline
+```
+
+That command covers typecheck, unit tests, production build, preview/live-handshake smoke tests, deployment-checker self-tests, MCP-proof redaction self-tests, evidence-capture self-tests, and offline submission preflight.
+
+After publishing or re-publishing the public app, also run:
+
+```bash
 npm run deployment:check
 ```
 
 `deployment:check` verifies both sides of the public Floot deployment: `/api/status` must expose the Resonance contract and `https://hackathon.api.qloo.com` origin, and the public HTML/JavaScript bundles must contain the current judge-evidence UI markers. A reachable but stale frontend or backend therefore fails the check.
 
-The preview smoke test verifies:
+The smoke test verifies:
 
 - preview status when no key is connected,
 - HTTP 503 fail-closed behavior for live requests without a key,
-- HTTP 404 for unknown API routes.
+- HTTP 404 for unknown API routes,
+- a local HTTPS Qloo-backed live status probe,
+- HTTP 409 before a non-exact Qloo top match is confirmed,
+- zero taste-analysis calls before confirmation,
+- HTTP 200 after the exact returned Qloo entity ID is confirmed,
+- truthful reuse of the third selected signal when only three usable Qloo signals are returned.
 
 ## API
 
