@@ -49,6 +49,7 @@ Safety/reliability controls:
 - bounded TTL caches for repeated Qloo searches/taste analysis;
 - in-flight coalescing for identical cache keys, so simultaneous judges do not duplicate the same Qloo Search, Insights, or connectivity-probe call before the first response fills the cache;
 - cached credential verification so page loads do not repeatedly burn quota;
+- a manual verification retry path that invalidates only cached non-ready probe results; healthy cached `ready` state is retained, and forced retries are separately bounded to two per client per minute and twenty per server process per minute;
 - explicit user confirmation before any non-exact Qloo top-result entity is used in taste analysis;
 - confirmation IDs are matched against the entity IDs produced by the current resolution pass, so a changed Qloo result must be reviewed again;
 - fail-closed behavior when too few anchors or affinities are resolved;
