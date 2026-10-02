@@ -42,6 +42,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - A non-exact Qloo top result cannot feed taste analysis immediately. Resonance returns a review-required response first, shows the resolved input → entity mapping, and requires explicit confirmation of those exact Qloo entity IDs or an input edit before continuing.
 - Confirmation is bound to the current resolved entity IDs, so a changed Qloo match must be reviewed again rather than inheriting stale approval.
 - After confirmation, the live trace records that the Qloo top-result match was explicitly confirmed before taste analysis, and exports preserve the resolution classification.
+- Live evidence capture emits a redaction-safe `confirmation_receipt` for confirmed non-exact Qloo matches and verifies that every successful top-result match was actually present in the explicit confirmation set.
 - Tag parsing matches the documented `results.tags` response shape.
 - Taste analysis requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields.
 - Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
