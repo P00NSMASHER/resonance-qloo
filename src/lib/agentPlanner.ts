@@ -94,7 +94,7 @@ export function orchestrateSession(
       },
       {
         stage: 'explain',
-        status: 'ok',
+        status: qlooExplainability.resultCount > 0 || qlooExplainability.aggregateAvailable ? 'ok' : 'warning',
         detail: qlooExplainability.resultCount > 0
           ? `Attached a visible why-it-fits rationale to every activity. Qloo also returned per-result explainability metadata on ${qlooExplainability.resultCount} taste result(s)${qlooExplainability.aggregateAvailable ? ' plus aggregate explainability metadata.' : '.'}`
           : qlooExplainability.aggregateAvailable
