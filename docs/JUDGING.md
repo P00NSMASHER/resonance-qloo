@@ -7,7 +7,7 @@
 3. If the event credential is still pending, use **Preview with example data**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
 4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
-   - the result metadata strip: source mode, evidence basis, and live generation timestamp;
+   - the result metadata strip: source mode, evidence basis, non-secret Qloo API origin, and live generation timestamp;
    - resolved Qloo entity IDs and the category hints used to disambiguate them;
    - the visible aggregate handoff from resolved favorites into Qloo taste analysis;
    - the returned taste evidence, including the **selected / returned** signal count;
@@ -32,6 +32,7 @@ The implementation now matches current Qloo public documentation more defensibly
 - The agent reports how many category hints were actually applied and preserves them beside the resolved anchors.
 - Independent anchor-resolution calls run concurrently to reduce live latency.
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
+- Live status and recommendation provenance expose the non-secret Qloo API origin, allowing judges to verify that event traffic is using the hackathon gateway without exposing the credential.
 - Tag results are read from `results.tags`.
 - Numeric affinity values are used only if Qloo actually returns them.
 - Taste analysis requests Qloo's documented `feature.explainability=true`. Resonance reports how many returned taste results actually contain non-empty `query.explainability` metadata and whether aggregate explainability is present; it does not invent attribution when Qloo omits it.
