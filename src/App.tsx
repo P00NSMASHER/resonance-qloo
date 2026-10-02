@@ -99,6 +99,7 @@ const demo: Result = {
 };
 
 const anchorExamples = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place', 'Another favorite'];
+const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
 export default function App() {
   const [anchors, setAnchors] = useState(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
@@ -179,7 +180,7 @@ export default function App() {
     if (!confirmedEntityIds.length) setResolutionReview(null);
 
     const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 10000);
+    const timer = window.setTimeout(() => controller.abort(), LIVE_REQUEST_TIMEOUT_MS);
 
     try {
       const r = await fetch('/api/recommend', {
