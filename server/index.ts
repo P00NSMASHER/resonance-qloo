@@ -13,7 +13,10 @@ import { normalizeRecommendationRequest } from '../src/lib/requestNormalization'
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
 const MAX_BODY_BYTES = 16 * 1024;
-const QLOO_BASE_URL = resolveQlooBaseUrl(process.env.QLOO_API_BASE_URL);
+const QLOO_BASE_URL = resolveQlooBaseUrl(
+  process.env.QLOO_API_BASE_URL,
+  process.env.QLOO_ALLOW_LOCAL_MOCK === '1',
+);
 const liveLimiter = createRateLimiter(12, 60_000);
 const globalLiveLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
