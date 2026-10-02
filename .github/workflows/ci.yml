@@ -32,6 +32,8 @@ jobs:
         run: npm run build
       - name: Preview-mode smoke test
         run: npm run smoke:preview
+      - name: UI stale-state safety self-test
+        run: npm run ui:state:selftest
       - name: Deployment checker syntax
         run: node --check scripts/check-deployment.mjs
       - name: Deployment checker self-test
