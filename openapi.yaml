@@ -20,11 +20,15 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [qlooConfigured, qlooConnected, qlooStatus, mode, service]
+                required: [qlooConfigured, qlooConnected, qlooStatus, qlooApiOrigin, mode, service]
                 properties:
                   qlooConfigured: { type: boolean }
                   qlooConnected: { type: boolean }
                   qlooStatus: { type: string, enum: [preview, ready, degraded, rate-limited] }
+                  qlooApiOrigin:
+                    type: string
+                    format: uri
+                    description: Non-secret HTTPS origin used for Qloo requests.
                   mode: { type: string, enum: [live, preview] }
                   service: { type: string, const: resonance }
   /api/recommend:
@@ -211,11 +215,15 @@ components:
           description: Facilitation setting used by the agent when composing the session.
     Provenance:
       type: object
-      required: [source, generatedAt]
+      required: [source, apiOrigin, generatedAt]
       properties:
         source:
           type: string
           const: qloo-live
+        apiOrigin:
+          type: string
+          format: uri
+          description: Non-secret Qloo API origin used for this live recommendation.
         generatedAt:
           type: string
           format: date-time
