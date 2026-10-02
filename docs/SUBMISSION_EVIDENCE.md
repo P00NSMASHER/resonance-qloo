@@ -44,7 +44,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - After confirmation, the live trace records that the Qloo top-result match was explicitly confirmed before taste analysis, and exports preserve the resolution classification.
 - Live evidence capture emits a redaction-safe `confirmation_receipt` for confirmed non-exact Qloo matches and verifies that every successful top-result match was actually present in the explicit confirmation set.
 - Tag parsing matches the documented `results.tags` response shape.
-- Taste analysis requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields.
+- Taste analysis first requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields. If Qloo rejects that optional feature parameter with HTTP 400/422, the client makes one bounded compatibility retry without the flag so core taste evidence can still be returned; auth, quota, redirect, and server failures are not retried by this fallback.
 - Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
 - When Qloo supplies ordered-but-unscored tags, the agent records `ranked-order` as its evidence basis.
 - The service retains up to eight returned taste signals for inspection while selecting at most four to drive the four-step session.
