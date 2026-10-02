@@ -167,11 +167,14 @@ npm run verify:offline
 
 That command covers typecheck, unit tests, production build, preview/live-handshake smoke tests, deployment-checker self-tests, MCP-proof redaction self-tests, evidence-capture self-tests, and offline submission preflight.
 
-After publishing or re-publishing the public app, also run:
+After publishing or re-publishing the public app, run both public checks:
 
 ```bash
 npm run deployment:check
+npm run qloo:live:check
 ```
+
+`deployment:check` answers **“is the published frontend/backend current?”**. `qloo:live:check` separately answers **“has the public app verified the event-issued Qloo credential?”** and only passes when status is `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, and `qlooConnected=true`.
 
 `deployment:check` verifies both sides of the public Floot deployment. The backend `/api/status` and frontend bundle must both carry the exact shared version from `deployment-contract.json`; the status endpoint must also expose the Resonance service contract and `https://hackathon.api.qloo.com` origin, and the public bundle must contain the current judge-evidence UI markers. A reachable but stale or mixed-version frontend/backend therefore fails the check.
 
