@@ -18,7 +18,8 @@
     "deployment:check": "node scripts/check-deployment.mjs",
     "deployment:check:selftest": "node scripts/test-deployment-checker.mjs",
     "evidence:capture": "node scripts/capture-live-evidence.mjs",
-    "evidence:capture:selftest": "node scripts/test-evidence-capture.mjs"
+    "evidence:capture:selftest": "node scripts/test-evidence-capture.mjs",
+    "verify:offline": "npm run typecheck && npm test && npm run build && npm run smoke:preview && npm run deployment:check:selftest && npm run qloo:proof:redaction:selftest && npm run evidence:capture:selftest && npm run submission:preflight:offline"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.1",
