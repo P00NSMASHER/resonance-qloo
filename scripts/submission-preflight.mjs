@@ -59,6 +59,12 @@ try {
   if (!/const:\s*qloo-live/.test(openapi)) {
     failures.push('OpenAPI provenance no longer pins live responses to qloo-live.');
   }
+  if (!openapi.includes('qlooApiOrigin')) {
+    failures.push('OpenAPI status contract is missing qlooApiOrigin runtime evidence.');
+  }
+  if (!openapi.includes('apiOrigin')) {
+    failures.push('OpenAPI live provenance is missing apiOrigin runtime evidence.');
+  }
 } catch {}
 
 try {
