@@ -330,6 +330,30 @@ describe('recommendation service', () => {
     expect(result.agentTrace[3].detail).toContain('did not include attribution metadata');
   });
 
+  it('fails closed when distinct anchors collapse to the same Qloo entity', async () => {
+    const gateway: RecommendationGateway = {
+      search: vi.fn(async (query: string) => ({
+        results:[{ entity_id:uuidA, name:query }],
+      })),
+      tasteAnalysis: vi.fn(async () => ({
+        results:{ tags:[
+          { name:'Jazz' },
+          { name:'Musicals' },
+          { name:'Classic cinema' },
+        ]},
+      })),
+    };
+
+    await expect(buildRecommendation(gateway, {
+      anchors:[{query:'Ella Fitzgerald'},{query:'Ella'}],
+      energy:'calm',
+      setting:'one-on-one',
+    })).rejects.toThrow('QLOO_EVIDENCE_TOO_SPARSE');
+
+    expect(gateway.search).toHaveBeenCalledTimes(2);
+    expect(gateway.tasteAnalysis).not.toHaveBeenCalled();
+  });
+
   it('fails closed when too few anchors resolve', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => query === 'known'
