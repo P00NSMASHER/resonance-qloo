@@ -13,7 +13,7 @@ describe('session export', () => {
       {label:'Musicals',score:.82,rank:2},
     ],
     plan:[
-      {title:'Opening cue',duration:'10 min',action:'Play a familiar song.',why:'Qloo-ranked evidence.'},
+      {title:'Opening cue',duration:'10 min',action:'Play a familiar song.',why:'Qloo-ranked evidence.',anchorName:'Ella Fitzgerald',affinityLabel:'Jazz'},
       {title:'Story bridge',duration:'15 min',action:'Invite a story.',why:'Related cultural signal.'},
       {title:'Shared choice',duration:'15 min',action:'Offer choices.',why:'Preserves agency.'},
       {title:'Closing ritual',duration:'10 min',action:'Close gently.',why:'Keeps continuity.'},
@@ -128,6 +128,12 @@ describe('session export', () => {
       'Session context: energy=social; setting=small-group'
     );
     expect(formatSessionText(session, 'demo')).not.toContain('Session context:');
+  });
+
+  it('keeps structured favorite-to-Qloo bridges in exports', () => {
+    expect(formatSessionText(session, 'live')).toContain(
+      'Bridge: Ella Fitzgerald -> Jazz'
+    );
   });
 
   it('keeps the agent decision trace in exports', () => {
