@@ -1,4 +1,10 @@
 import { qlooEntityIdentity } from './qlooEntityIdentity';
+import {
+  payloadHasMatchingRequestContext,
+  readRecommendationRequestContext,
+  requestAnchorKey,
+  type RecommendationRequestContext,
+} from './recommendationContext';
 
 const STAGES = ['resolve','evaluate','compose','explain'] as const;
 const DURATIONS = new Set([30,45,60]);
@@ -183,6 +189,24 @@ export function hasConsistentRecommendationResult(payload: unknown) {
     firstPlanLabelSequence.some((label,index) => label !== selectedSequence[index])
   ) return false;
 
+  const requestContext = readRecommendationRequestContext(payload);
+  if (!requestContext) return false;
+  if (
+    requestContext.energy !== evidence.energy ||
+    requestContext.setting !== evidence.setting ||
+    requestContext.durationMinutes !== evidence.sessionDurationMinutes
+  ) return false;
+  const requestIndexByKey = new Map(
+    requestContext.anchors.map((anchor,index) => [requestAnchorKey(anchor.query, anchor.typeUrn),index]),
+  );
+  let previousRequestIndex = -1;
+  for (const item of resolvedAnchors) {
+    const typeUrn = item.requestedTypeUrn === undefined ? undefined : String(item.requestedTypeUrn);
+    const requestIndex = requestIndexByKey.get(requestAnchorKey(String(item.query), typeUrn));
+    if (requestIndex === undefined || requestIndex <= previousRequestIndex) return false;
+    previousRequestIndex = requestIndex;
+  }
+
   const trace = payload.agentTrace;
   if (!Array.isArray(trace) || trace.length !== STAGES.length) return false;
   for (let index = 0; index < STAGES.length; index += 1) {
@@ -199,32 +223,12 @@ export function hasConsistentRecommendationResult(payload: unknown) {
 }
 
 
-export type RecommendationRequestContext = {
-  anchors: Array<{ query:string; typeUrn?:string }>;
-  energy: string;
-  setting: string;
-  durationMinutes: number;
-};
-
-function normalizedRequestQuery(value: string) {
-  return value
-    .normalize('NFKC')
-    .trim()
-    .replace(/\s+/g, ' ')
-    .toLocaleLowerCase('en-US');
-}
-
-function requestAnchorKey(query: string, typeUrn?: string) {
-  return `${typeUrn ?? 'any'}|${normalizedRequestQuery(query)}`;
-}
-
 export function matchesRecommendationRequestContext(
   payload: unknown,
   expected: RecommendationRequestContext,
 ) {
-  if (!isRecord(payload) || !Array.isArray(payload.resolvedAnchors) || !isRecord(payload.evidence)) {
-    return false;
-  }
+  if (!payloadHasMatchingRequestContext(payload, expected) || !isRecord(payload)) return false;
+  if (!Array.isArray(payload.resolvedAnchors) || !isRecord(payload.evidence)) return false;
 
   const expectedIndexByKey = new Map(
     expected.anchors.map((anchor,index) => [requestAnchorKey(anchor.query, anchor.typeUrn),index]),
