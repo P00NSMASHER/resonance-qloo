@@ -18,7 +18,7 @@ const QLOO_BASE_URL = resolveQlooBaseUrl(
   process.env.QLOO_ALLOW_LOCAL_MOCK === '1' && process.env.NODE_ENV !== 'production',
 );
 const liveLimiter = createRateLimiter(12, 60_000);
-const globalLiveLimiter = createRateLimiter(60, 60_000);
+const processLiveLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
@@ -104,11 +104,11 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
   const clientKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0])?.trim()
     || req.socket.remoteAddress
     || 'unknown';
-  const globalLimit = globalLiveLimiter.check('global');
-  if (!globalLimit.allowed) {
+  const processLimit = processLiveLimiter.check('process');
+  if (!processLimit.allowed) {
     return json(res, 429, {
-      error: `The public Qloo demo is temporarily busy. Try again in ${globalLimit.retryAfterSeconds}s.`,
-    }, { 'retry-after': String(globalLimit.retryAfterSeconds) });
+      error: `The public Qloo demo is temporarily busy. Try again in ${processLimit.retryAfterSeconds}s.`,
+    }, { 'retry-after': String(processLimit.retryAfterSeconds) });
   }
 
   const limit = liveLimiter.check(clientKey);
