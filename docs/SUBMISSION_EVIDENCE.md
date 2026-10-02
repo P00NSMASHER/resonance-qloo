@@ -42,7 +42,7 @@ The application code also follows current public Qloo API documentation:
 - When Qloo supplies ordered-but-unscored tags, the agent records `ranked-order` as its evidence basis.
 - The service retains up to eight returned taste signals for inspection while selecting at most four to drive the four-step session.
 - The selection rule is exposed in the UI: use the highest real numeric Qloo affinities when enough scores exist; otherwise preserve Qloo's returned rank order.
-- The UI shows the selected-versus-returned count and marks the chosen evidence as **Plan signal #1–#4** while leaving unselected results visible as **Additional evidence**.
+- The UI shows the selected-versus-returned count and marks chosen evidence with stable **Plan signal #N** numbering (up to four selected signals) while leaving unselected results visible as **Additional evidence**.
 - Those same signal numbers are carried into the activity cards and copied session audit trail, so a judge can trace a selected Qloo signal into the plan step it influenced.
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
