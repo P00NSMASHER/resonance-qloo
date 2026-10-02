@@ -73,7 +73,6 @@ export class QlooClient {
     url.searchParams.set('query', query);
     if (entityType) url.searchParams.append('types', entityType);
     url.searchParams.set('take', '5');
-    url.searchParams.set('sort_by', 'match');
     return this.request('search', url);
   }
 
