@@ -1,10 +1,14 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const capturePath = fileURLToPath(new URL('./capture-live-evidence.mjs', import.meta.url));
 const QLOO_ORIGIN = 'https://hackathon.api.qloo.com';
+const CONTRACT_VERSION = JSON.parse(
+  await readFile(new URL('../deployment-contract.json', import.meta.url), 'utf8'),
+).version;
 const CONFIRMED_ID = '9A25B172-4795-43E4-B222-3B550DC05AAA';
 const SECRET = 'qloo-capture-selftest-secret';
 const REVIEW_TOKEN = 'selftest-review-receipt';
@@ -50,6 +54,7 @@ const server = createServer(async (req, res) => {
       qlooConfigured:true,
       qlooStatus:'ready',
       qlooApiOrigin:QLOO_ORIGIN,
+      contractVersion:responseMode === 'status-contract-mismatch' ? 'stale-contract' : CONTRACT_VERSION,
       mode:'live',
       service:'resonance',
     });
@@ -128,6 +133,7 @@ const server = createServer(async (req, res) => {
       provenance:{
         source:'qloo-live',
         apiOrigin:QLOO_ORIGIN,
+        contractVersion:responseMode === 'provenance-contract-mismatch' ? 'stale-contract' : CONTRACT_VERSION,
         generatedAt:'2026-10-02T00:00:00.000Z',
       },
       agentTrace:[
@@ -203,7 +209,8 @@ try {
     artifact.confirmation_receipt?.required !== true ||
     artifact.confirmation_receipt?.reviewTokenUsed !== true ||
     artifact.confirmation_receipt?.confirmedTopResultCount !== 1 ||
-    artifact.confirmation_receipt?.confirmedTopResults?.[0]?.entityId !== CONFIRMED_ID
+    artifact.confirmation_receipt?.confirmedTopResults?.[0]?.entityId !== CONFIRMED_ID ||
+    artifact.deployment_contract_version !== CONTRACT_VERSION
   ) {
     throw new Error('Confirmation receipt did not preserve the reviewed top-result mapping.');
   }
@@ -216,6 +223,26 @@ try {
     !wrongOutput.includes('were not in the explicit confirmation set')
   ) {
     throw new Error(`Expected unconfirmed successful response to be rejected. stdout=${wrongConfirmation.stdout} stderr=${wrongConfirmation.stderr}`);
+  }
+
+  responseMode = 'status-contract-mismatch';
+  const wrongStatusContract = await runCapture(baseUrl, CONFIRMED_ID, REVIEW_TOKEN);
+  const wrongStatusContractOutput = wrongStatusContract.stdout + '\n' + wrongStatusContract.stderr;
+  if (
+    wrongStatusContract.code === 0 ||
+    !wrongStatusContractOutput.includes('Unexpected deployment contract')
+  ) {
+    throw new Error(`Expected status deployment-contract mismatch to be rejected. stdout=${wrongStatusContract.stdout} stderr=${wrongStatusContract.stderr}`);
+  }
+
+  responseMode = 'provenance-contract-mismatch';
+  const wrongProvenanceContract = await runCapture(baseUrl, CONFIRMED_ID, REVIEW_TOKEN);
+  const wrongProvenanceContractOutput = wrongProvenanceContract.stdout + '\n' + wrongProvenanceContract.stderr;
+  if (
+    wrongProvenanceContract.code === 0 ||
+    !wrongProvenanceContractOutput.includes('Deployment contract provenance mismatch')
+  ) {
+    throw new Error(`Expected recommendation deployment-contract mismatch to be rejected. stdout=${wrongProvenanceContract.stdout} stderr=${wrongProvenanceContract.stderr}`);
   }
 
   responseMode = 'context-mismatch';
