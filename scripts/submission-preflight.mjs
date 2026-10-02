@@ -224,6 +224,15 @@ try {
   if (!app.includes('Interpretation limit') || !app.includes('aggregate cultural relationships')) {
     failures.push('Results UI is missing the aggregate-affinity interpretation limit.');
   }
+  if (!app.includes('function invalidateGeneratedState()') || !app.includes('disabled={loading}')) {
+    failures.push('Results UI is missing stale-state invalidation or live-request input locking.');
+  }
+  if (
+    !app.includes("data?.provenance?.source !== 'qloo-live'") ||
+    !app.includes('data.provenance.apiOrigin !== qlooApiOrigin')
+  ) {
+    failures.push('Results UI is missing live Qloo provenance consistency verification.');
+  }
 } catch {}
 
 try {
