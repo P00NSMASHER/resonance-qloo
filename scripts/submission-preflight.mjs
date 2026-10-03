@@ -155,6 +155,9 @@ try {
   if (!openapi.includes("name: refresh") || !openapi.includes("enum: ['1']")) {
     failures.push('OpenAPI status contract is missing the bounded Qloo re-verification query.');
   }
+  if (!openapi.includes('invalidating any cached Qloo probe state, including ready')) {
+    failures.push('OpenAPI Qloo refresh description no longer matches server behavior for cached ready state.');
+  }
   if (!/required:\s*\[title, duration, action, why, affinityLabel\]/.test(openapi)) {
     failures.push('OpenAPI PlanItem no longer requires affinityLabel bridge evidence.');
   }
