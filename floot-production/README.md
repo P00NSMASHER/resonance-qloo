@@ -1,6 +1,6 @@
 # Exact Floot production source
 
-This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791052195858`.
+This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791060657641`.
 
 - Floot project ID: `49082a23-f25f-41f4-a147-f908c8dcc860`
 - Published URL: https://resonance-qloo.floot.app
@@ -9,14 +9,14 @@ This directory is a public snapshot of the **actual judge-facing Floot source** 
 
 ## Scope
 
-The snapshot contains every runtime file directly involved in the public Resonance experience and anonymous target-user study:
+The snapshot contains every runtime file directly involved in the public Resonance experience plus the closed Phase 5 study notice:
 
 - public page and responsive styling;
 - recommendation and status endpoint handlers plus schemas;
 - shared Qloo parsing/selection/session logic;
 - directly imported Button/Input/Select/Badge components and styles;
 - global provider/config glue and base CSS;
-- anonymous study page, schema, response endpoint, and Textarea dependency;
+- closed study notice, historical schema, HTTP-410 response endpoint, and retained supporting UI dependency;
 - Floot's deployed dependency manifest.
 
 Floot's many **unused seeded component examples** are intentionally excluded because they do not participate in the Resonance runtime.
@@ -41,6 +41,6 @@ This removes the need for judges to infer production behavior from a parallel im
 
 ## Live-byte verification receipt
 
-On 2026-10-03, the Floot runtime snapshot was refreshed to project version `1791052195858`. The 28-file runtime snapshot now includes the judge-facing app, anonymous validation-study page/endpoint, shared Qloo logic, imported UI components, and dependency manifest. After the canonical-demo/study alignment, `pages/_index.tsx` and `pages/study.tsx` were directly re-read from Floot and replaced byte-for-byte; the other manifested files retain their prior direct-source receipts.
+On 2026-10-03, the Floot runtime snapshot was refreshed to project version `1791060657641`. Phase 5 external validation was intentionally skipped: `pages/study.tsx` is now a static no-collection closure notice and `endpoints/study-response_POST.ts` returns HTTP 410 without logging responses. Both files were directly re-read from Floot and replaced byte-for-byte; the other manifested files retain their prior direct-source receipts.
 
 That point-in-time receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not pretend to have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe.
