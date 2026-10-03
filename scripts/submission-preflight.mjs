@@ -175,6 +175,24 @@ try {
 } catch {}
 
 try {
+  const cutover = await readFile('docs/FLOOT_QLOO_CUTOVER.md', 'utf8');
+  for (const required of [
+    'QLOO_API_KEY',
+    'QLOO_API_BASE_URL=https://hackathon.api.qloo.com',
+    'npm run deployment:check',
+    'npm run qloo:live:check',
+    'mode=live',
+    'qlooStatus=ready',
+    'qlooConfigured=true',
+    'qlooConnected=true',
+  ]) {
+    if (!cutover.includes(required)) {
+      failures.push(`Floot live-Qloo cutover checklist is missing required verification content: ${required}`);
+    }
+  }
+} catch {}
+
+try {
   const proof = await readFile('scripts/qloo-mcp-proof.mjs', 'utf8');
   if (!proof.includes('0.1.26')) {
     failures.push('Qloo MCP proof no longer enforces the event harness minimum version 0.1.26.');
