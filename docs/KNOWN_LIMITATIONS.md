@@ -11,7 +11,7 @@ The event-issued Qloo credential is now connected to the Floot production enviro
 
 That proves the deployed backend can authenticate to Qloo. A separate public exact-match recommendation has also completed end-to-end with HTTP 200 and `qloo-live` provenance; its redaction-safe artifact is committed at `docs/LIVE_QLOO_EVIDENCE.json`.
 
-The narrower remaining proof gap is the non-exact review-gated follow-up: that path reaches the intended HTTP 409 review gate and requires the signed review receipt plus exact entity ID, but its most recent confirmed taste-analysis request received Qloo HTTP 429 before completion.
+The non-exact review-gated path is now verified end-to-end: the first request returns the intended HTTP 409 review gate, the follow-up supplies the signed review receipt plus exact entity ID, and production completes the taste-analysis request with HTTP 200 `qloo-live` provenance. The redaction-safe artifact is committed at `docs/LIVE_QLOO_REVIEW_EVIDENCE.json`.
 
 Resonance still does **not** call the integration “live” merely because an environment variable exists. A lightweight Qloo probe must succeed first. A bad/expired credential therefore appears as a degraded state rather than a false green status.
 
@@ -65,4 +65,4 @@ The current public demo is externally hosted on Floot. The public repository is 
 
 The current Floot deployment is parity-verified against the shared deployment contract. Floot serves its endpoint handlers under `/_api/*`; the deployment checker intentionally probes both `/api/status` and `/_api/status` and unwraps Floot's JSON transport envelope. The previous “stale backend” diagnosis was a route mismatch and is no longer a blocker.
 
-**Current observed blocker:** there is no blocker to the verified exact-match live path. The remaining incomplete proof is specifically the post-review taste-analysis completion for a non-exact top-result match because the latest confirmed follow-up received upstream Qloo HTTP 429.
+**Current observed blocker:** none for the verified public Qloo flows. Both exact-match and signed review-gated paths are captured end-to-end. Operational Qloo rate limits and upstream availability can still affect individual future requests.
