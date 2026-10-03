@@ -108,7 +108,7 @@ The analyzer re-validates each row, deduplicates response IDs, reports invalid r
 
 ## Recruitment
 
-On October 3, 2026, ten one-time noncommercial research invitations were sent directly to publicly listed activity/life-enrichment professionals at senior-living organizations. One direct address hard-bounced, leaving nine direct invitations with no hard bounce observed. Three additional one-time forwarding requests were sent to senior-engagement/activity-professional organizations; one hard-bounced, while two association requests had no hard bounce observed. No unsolicited follow-up will be sent.
+On October 3, 2026, the recruitment ledger was reconciled directly against Gmail. Nineteen current-study invitations containing the public study URL are visible in Sent: **17 one-time direct invitations** to publicly listed activity/life-enrichment contacts at senior-living organizations and **2 one-time forwarding requests** to activity-professional organizations. Exactly **2 direct study invitations hard-bounced**, leaving **17 study messages with no hard bounce observed** at the latest check. Six of the direct invitations were added in the latest recruitment expansion and none of those six had hard-bounced as of that check. No unsolicited follow-up will be sent.
 
 The outreach:
 
