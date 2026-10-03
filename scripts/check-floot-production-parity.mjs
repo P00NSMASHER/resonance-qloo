@@ -14,7 +14,7 @@ const gitBlobSha = body => createHash('sha1')
   .digest('hex');
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791052195858') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791060657641') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
@@ -110,19 +110,17 @@ for (const needle of ['@media(max-width:1000px)','@media(max-width:650px)','.evi
 }
 
 
-requireBoth('anonymous study contract', prodStudySchema,
-  ['STUDY_VERSION = "2026-10-03-v1"','activity-director','family-caregiver','baselineSeconds','resonanceSeconds','relevance','novelty','usefulness','wouldUse','consent:z.literal(true)','noContactInfo'],
-  canonicalStudy,
-  ["STUDY_VERSION = '2026-10-03-v1'","activity-director","family-caregiver","baselineSeconds","resonanceSeconds","relevance","novelty","usefulness","wouldUse","consent: true","hasLikelyPersonalContact"]);
+requireBoth('closed study route', prodStudyEndpoint,
+  ['Study closed. Phase 5 external validation was intentionally skipped','},410'],
+  canonicalServer,
+  ['Study closed. Phase 5 external validation was intentionally skipped','return json(res, 410']);
 
-for (const needle of ['RESONANCE_STUDY_RESPONSE','submittedAt:new Date().toISOString()']) {
-  if (!prodStudyEndpoint.includes(needle)) failures.push(`Production study endpoint missing privacy/audit marker: ${needle}`);
-  if (!canonicalServer.includes(needle.replace('submittedAt:new Date().toISOString()','submittedAt:new Date().toISOString()'))) failures.push(`Canonical study endpoint missing privacy/audit marker: ${needle}`);
+for (const needle of ['noindex,nofollow','Phase 5 skipped','This study is closed.','zero valid target-user responses','no participant response collection']) {
+  if (!prodStudyPage.includes(needle)) failures.push(`Production closed-study page missing transparency marker: ${needle}`);
 }
-for (const needle of ['noindex,nofollow','Aretha Franklin','The Sound of Music','do not use Resonance or another AI tool','Would you use something like this in real planning?','What would make this genuinely useful to you?','No name, email, IP address, resident/client information, or health data']) {
-  if (!prodStudyPage.includes(needle)) failures.push(`Production study page missing research/privacy marker: ${needle}`);
-}
-if (!canonicalServer.includes("url.pathname === '/api/study-response'")) failures.push('Canonical server is missing the anonymous study-response route.');
+if (!canonicalServer.includes("url.pathname === '/api/study-response'")) failures.push('Canonical server is missing the closed study-response route.');
+if (prodStudyEndpoint.includes('RESONANCE_STUDY_RESPONSE')) failures.push('Production study endpoint unexpectedly logs participant responses after Phase 5 closure.');
+if (canonicalServer.includes('RESONANCE_STUDY_RESPONSE')) failures.push('Canonical server unexpectedly logs participant responses after Phase 5 closure.');
 
 if (failures.length) {
   failures.forEach(failure => console.error('FAIL:', failure));
