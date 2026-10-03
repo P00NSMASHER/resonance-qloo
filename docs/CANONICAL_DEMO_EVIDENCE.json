@@ -1,0 +1,179 @@
+{
+  "captured_at": "2026-10-03T17:01:25.947Z",
+  "base_url": "https://resonance-qloo.floot.app",
+  "http_status": 200,
+  "request": {
+    "anchors": [
+      {
+        "query": "Aretha Franklin",
+        "type": "artist"
+      },
+      {
+        "query": "The Sound of Music",
+        "type": "movie"
+      }
+    ],
+    "energy": "calm",
+    "setting": "small-group",
+    "durationMinutes": 30
+  },
+  "response": {
+    "requestContext": {
+      "anchors": [
+        {
+          "query": "Aretha Franklin",
+          "typeUrn": "urn:entity:artist"
+        },
+        {
+          "query": "The Sound of Music",
+          "typeUrn": "urn:entity:movie"
+        }
+      ],
+      "energy": "calm",
+      "setting": "small-group",
+      "durationMinutes": 30
+    },
+    "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+    "resolvedAnchors": [
+      {
+        "query": "Aretha Franklin",
+        "name": "Aretha Franklin",
+        "entityId": "97053D92-D12F-4AD0-8E85-89037806B85F",
+        "urn": "97053D92-D12F-4AD0-8E85-89037806B85F",
+        "requestedTypeUrn": "urn:entity:artist",
+        "resolutionMatch": "exact-name"
+      },
+      {
+        "query": "The Sound of Music",
+        "name": "The Sound of Music",
+        "entityId": "5D54CE58-DC3E-4294-A359-581A9C072952",
+        "urn": "5D54CE58-DC3E-4294-A359-581A9C072952",
+        "requestedTypeUrn": "urn:entity:movie",
+        "resolutionMatch": "exact-name"
+      }
+    ],
+    "affinities": [
+      {
+        "label": "Entertainment",
+        "score": 1,
+        "rank": 1
+      },
+      {
+        "label": "soul",
+        "score": 0.9995902311096542,
+        "rank": 2
+      },
+      {
+        "label": "funk",
+        "score": 0.999508277331585,
+        "rank": 3
+      },
+      {
+        "label": "rhythm & blues",
+        "score": 0.9991804622193083,
+        "rank": 4
+      },
+      {
+        "label": "Timeless",
+        "score": 0.9991074026597041,
+        "rank": 5
+      },
+      {
+        "label": "Jazz",
+        "score": 0.9986887395508932,
+        "rank": 6
+      },
+      {
+        "label": "blues",
+        "score": 0.9984428782166859,
+        "rank": 7
+      },
+      {
+        "label": "Musically Inclined",
+        "score": 0.9982447645563491,
+        "rank": 8
+      }
+    ],
+    "plan": [
+      {
+        "title": "Opening cue",
+        "duration": "5 min",
+        "action": "Start with “Aretha Franklin” as the familiar cue, then branch toward “Entertainment.” keep the pace gentle and low-pressure.",
+        "why": "The session starts from the supplied favorite “Aretha Franklin” and uses Qloo-ranked “Entertainment” as adjacent cultural evidence.",
+        "anchorName": "Aretha Franklin",
+        "affinityLabel": "Entertainment"
+      },
+      {
+        "title": "Story bridge",
+        "duration": "10 min",
+        "action": "Bridge from “The Sound of Music” into “soul” with a film scene, photo, lyric, or memory prompt. Keep it for a small group with room for individual responses.",
+        "why": "“The Sound of Music” is a supplied favorite; Qloo-ranked “soul” provides the adjacent cultural bridge instead of a generic nostalgia prompt.",
+        "anchorName": "The Sound of Music",
+        "affinityLabel": "soul"
+      },
+      {
+        "title": "Shared choice",
+        "duration": "10 min",
+        "action": "Offer two or three simple choices connected to “funk” and let participants steer the next activity.",
+        "why": "“funk” extends the known tastes into a related domain while preserving participant choice.",
+        "affinityLabel": "funk"
+      },
+      {
+        "title": "Closing ritual",
+        "duration": "5 min",
+        "action": "Close with a snack, sensory cue, or conversation card inspired by “rhythm & blues,” then ask what should return next time.",
+        "why": "“rhythm & blues” keeps the closing step grounded in selected Qloo evidence so the plan ends in the same cultural neighborhood it started in.",
+        "affinityLabel": "rhythm & blues"
+      }
+    ],
+    "agentTrace": [
+      {
+        "stage": "resolve",
+        "status": "ok",
+        "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+      },
+      {
+        "stage": "evaluate",
+        "status": "ok",
+        "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+      },
+      {
+        "stage": "compose",
+        "status": "ok",
+        "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+      },
+      {
+        "stage": "explain",
+        "status": "warning",
+        "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+      }
+    ],
+    "evidence": {
+      "meanNormalizedScore": 0.9995697426651369,
+      "evidenceBasis": "normalized-score",
+      "selectedAffinityCount": 4,
+      "returnedAffinityCount": 8,
+      "selectedAffinityLabels": [
+        "Entertainment",
+        "soul",
+        "funk",
+        "rhythm & blues"
+      ],
+      "resolvedAnchorCount": 2,
+      "exactResolutionCount": 2,
+      "topResultResolutionCount": 0,
+      "categoryHintCount": 2,
+      "explainabilityResultCount": 0,
+      "aggregateExplainabilityAvailable": false,
+      "sessionDurationMinutes": 30,
+      "energy": "calm",
+      "setting": "small-group"
+    },
+    "provenance": {
+      "source": "qloo-live",
+      "apiOrigin": "https://hackathon.api.qloo.com",
+      "contractVersion": "2026-10-02.review-origin-v1",
+      "generatedAt": "2026-10-03T17:01:25.935Z"
+    }
+  }
+}
