@@ -98,6 +98,14 @@ When the threshold is met, publish:
 
 The raw study records remain out of the public repository. Only aggregate, non-identifying results are published.
 
+Analyze a private local export with:
+
+```bash
+npm run study:analyze -- /path/to/private-study-export.jsonl
+```
+
+The analyzer re-validates each row, deduplicates response IDs, reports invalid rows, and computes the completion threshold plus all promised aggregate metrics. Raw feedback is emitted only for private manual thematic review and must not be committed.
+
 ## Recruitment
 
 On October 3, 2026, five one-time noncommercial research invitations were sent to publicly listed activity/life-enrichment contacts at unrelated senior-living organizations.
