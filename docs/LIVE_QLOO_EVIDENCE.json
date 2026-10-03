@@ -1,0 +1,179 @@
+{
+  "captured_at": "2026-10-03T03:18:40.252Z",
+  "base_url": "https://resonance-qloo.floot.app",
+  "http_status": 200,
+  "request": {
+    "anchors": [
+      {
+        "query": "Ella Fitzgerald",
+        "type": "artist"
+      },
+      {
+        "query": "Singin' in the Rain",
+        "type": "movie"
+      }
+    ],
+    "energy": "calm",
+    "setting": "small-group",
+    "durationMinutes": 30
+  },
+  "response_summary": {
+    "requestContext": {
+      "anchors": [
+        {
+          "query": "Ella Fitzgerald",
+          "typeUrn": "urn:entity:artist"
+        },
+        {
+          "query": "Singin' in the Rain",
+          "typeUrn": "urn:entity:movie"
+        }
+      ],
+      "energy": "calm",
+      "setting": "small-group",
+      "durationMinutes": 30
+    },
+    "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+    "resolvedAnchors": [
+      {
+        "query": "Ella Fitzgerald",
+        "name": "Ella Fitzgerald",
+        "entityId": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+        "urn": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+        "requestedTypeUrn": "urn:entity:artist",
+        "resolutionMatch": "exact-name"
+      },
+      {
+        "query": "Singin' in the Rain",
+        "name": "Singin' in the Rain",
+        "entityId": "59775A1E-5968-480C-94B2-47BE50CA3CD2",
+        "urn": "59775A1E-5968-480C-94B2-47BE50CA3CD2",
+        "requestedTypeUrn": "urn:entity:movie",
+        "resolutionMatch": "exact-name"
+      }
+    ],
+    "affinities": [
+      {
+        "label": "Christian",
+        "score": 1,
+        "rank": 1
+      },
+      {
+        "label": "Jazz",
+        "score": 0.9997543802194203,
+        "rank": 2
+      },
+      {
+        "label": "Inventive",
+        "score": 0.9986925651750207,
+        "rank": 3
+      },
+      {
+        "label": "swing",
+        "score": 0.9982806615359423,
+        "rank": 4
+      },
+      {
+        "label": "Optimistic",
+        "score": 0.9981431224110842,
+        "rank": 5
+      },
+      {
+        "label": "piano",
+        "score": 0.9977075487145899,
+        "rank": 6
+      },
+      {
+        "label": "Vocal-Jazz",
+        "score": 0.997052562633044,
+        "rank": 7
+      },
+      {
+        "label": "oldies",
+        "score": 0.9968888161126577,
+        "rank": 8
+      }
+    ],
+    "evidence": {
+      "meanNormalizedScore": 0.9991819017325958,
+      "evidenceBasis": "normalized-score",
+      "selectedAffinityCount": 4,
+      "returnedAffinityCount": 8,
+      "selectedAffinityLabels": [
+        "Christian",
+        "Jazz",
+        "Inventive",
+        "swing"
+      ],
+      "resolvedAnchorCount": 2,
+      "exactResolutionCount": 2,
+      "topResultResolutionCount": 0,
+      "categoryHintCount": 2,
+      "explainabilityResultCount": 0,
+      "aggregateExplainabilityAvailable": false,
+      "sessionDurationMinutes": 30,
+      "energy": "calm",
+      "setting": "small-group"
+    },
+    "provenance": {
+      "source": "qloo-live",
+      "apiOrigin": "https://hackathon.api.qloo.com",
+      "contractVersion": "2026-10-02.review-origin-v1",
+      "generatedAt": "2026-10-03T03:18:40.241Z"
+    },
+    "agentTrace": [
+      {
+        "stage": "resolve",
+        "status": "ok",
+        "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+      },
+      {
+        "stage": "evaluate",
+        "status": "ok",
+        "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+      },
+      {
+        "stage": "compose",
+        "status": "ok",
+        "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+      },
+      {
+        "stage": "explain",
+        "status": "warning",
+        "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+      }
+    ],
+    "plan": [
+      {
+        "title": "Opening cue",
+        "duration": "5 min",
+        "action": "Start with “Ella Fitzgerald” as the familiar cue, then branch toward “Christian.” keep the pace gentle and low-pressure.",
+        "why": "The session starts from the supplied favorite “Ella Fitzgerald” and uses Qloo-ranked “Christian” as adjacent cultural evidence.",
+        "anchorName": "Ella Fitzgerald",
+        "affinityLabel": "Christian"
+      },
+      {
+        "title": "Story bridge",
+        "duration": "10 min",
+        "action": "Bridge from “Singin' in the Rain” into “Jazz” with a film scene, photo, lyric, or memory prompt. Keep it for a small group with room for individual responses.",
+        "why": "“Singin' in the Rain” is a supplied favorite; Qloo-ranked “Jazz” provides the adjacent cultural bridge instead of a generic nostalgia prompt.",
+        "anchorName": "Singin' in the Rain",
+        "affinityLabel": "Jazz"
+      },
+      {
+        "title": "Shared choice",
+        "duration": "10 min",
+        "action": "Offer two or three simple choices connected to “Inventive” and let participants steer the next activity.",
+        "why": "“Inventive” extends the known tastes into a related domain while preserving participant choice.",
+        "affinityLabel": "Inventive"
+      },
+      {
+        "title": "Closing ritual",
+        "duration": "5 min",
+        "action": "Close with a snack, sensory cue, or conversation card inspired by “swing,” then ask what should return next time.",
+        "why": "“swing” keeps the closing step grounded in selected Qloo evidence so the plan ends in the same cultural neighborhood it started in.",
+        "affinityLabel": "swing"
+      }
+    ]
+  }
+}
