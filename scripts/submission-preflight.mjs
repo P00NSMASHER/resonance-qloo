@@ -388,6 +388,12 @@ try {
   if (!devpostFields.includes('live Devpost project description was refreshed after public Qloo verification')) {
     failures.push('Devpost field notes no longer record the post-verification project-description refresh.');
   }
+  if (!devpostFields.includes('Devpost project version 18')) {
+    failures.push('Devpost field notes no longer record the review-gated evidence refresh version.');
+  }
+  if (!devpostFields.includes('HTTP 409 → signed confirmation → HTTP 200 review-gated artifact')) {
+    failures.push('Devpost field notes no longer record the verified review-gated live flow.');
+  }
 } catch {}
 
 try {
