@@ -32,7 +32,8 @@ try {
     throw new Error(`Expected safe fixture to pass. stdout=${safe.stdout} stderr=${safe.stderr}`);
   }
 
-  await writeFile(join(root, 'leak.txt'), 'example only: hack_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n');
+  const syntheticKey = 'hack_' + 'a'.repeat(40);
+  await writeFile(join(root, 'leak.txt'), `example only: ${syntheticKey}\n`);
   const leaked = await runScanner(root);
   const output = leaked.stdout + '\n' + leaked.stderr;
   if (
