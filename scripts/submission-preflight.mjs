@@ -334,6 +334,9 @@ try {
   if (!devpostFields.includes('docs/LIVE_QLOO_EVIDENCE.json')) {
     failures.push('Devpost field notes no longer reference the committed live-Qloo evidence artifact.');
   }
+  if (!devpostFields.includes('live Devpost project description was refreshed after public Qloo verification')) {
+    failures.push('Devpost field notes no longer record the post-verification project-description refresh.');
+  }
 } catch {}
 
 try {
