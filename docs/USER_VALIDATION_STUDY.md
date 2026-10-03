@@ -1,131 +1,30 @@
-# Target-user validation study
+# Target-user validation study — closed
 
-Status: **Recruiting real participants**
+Status: **Closed / intentionally skipped**
 
-Public study page: https://resonance-qloo.floot.app/study
+Phase 5 external user validation was intentionally skipped by product decision on October 3, 2026. Resonance does **not** use outside-user study results, testimonials, time-savings claims, or inferred user-research metrics in the hackathon submission.
 
-Study version: `2026-10-03-v1`
+## Evidence status
 
-Canonical demo evidence: `docs/CANONICAL_DEMO_EVIDENCE.json`
+- valid real target-user responses: **0**
+- no synthetic, test, developer-generated, inferred, or proxy response is counted as user evidence
+- no impact metric, testimonial, time-savings percentage, or user quote is claimed from this study
+- no further recruitment or unsolicited follow-up will be sent
+- the public study page is retained only as a closed notice for previously distributed links
+- the study submission endpoint is closed and returns HTTP 410
 
-## Purpose
+## Historical protocol
 
-Test whether Resonance materially improves a real activity-planning workflow for people who plausibly perform or support that work.
-
-This study is product validation, not clinical research. It does not ask about residents/clients, health conditions, or patient outcomes.
-
-## Eligible perspectives
-
-The study accepts these role categories:
-
-- activity / life-enrichment director;
-- activity assistant;
-- family caregiver;
-- recreation / engagement staff;
-- assisted-living staff;
-- other closely adjacent role.
-
-## Controlled task
-
-Every participant receives the same prompt:
+Before the study was closed, the proposed controlled task was:
 
 > Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Aretha Franklin and The Sound of Music.
 
-### Baseline
+The proposed measures were baseline planning time, Resonance planning time, perceived relevance, novelty, usefulness, reuse intent, and one short improvement comment. The protocol intentionally excluded resident/client names, health information, contact details, and other personal data.
 
-The participant creates a usable four-part plan using their normal approach, without Resonance or another AI tool.
+No valid response was collected before the study was closed, so none of those measures are used as evidence.
 
-The study page times this step.
+## Historical recruitment note
 
-### Resonance
+A one-time outreach batch had already been sent before the decision to skip Phase 5. No unsolicited follow-up will be sent. Recipient addresses are not committed to this repository.
 
-The participant repeats the exact same planning task using the public Resonance app, which opens with the same favorites and session context.
-
-The study page times the task until the participant says they have a plan they could use or adapt.
-
-## Measures
-
-The anonymous response contract stores only:
-
-- role category;
-- baseline planning time in seconds;
-- Resonance planning time in seconds;
-- perceived relevance, 1–5;
-- perceived novelty, 1–5;
-- confidence / usefulness, 1–5;
-- whether the participant would use something like Resonance in real planning;
-- one short answer to: “What would make this genuinely useful to you?”;
-- anonymous response ID, study version, consent, and submission timestamp.
-
-## Privacy and integrity rules
-
-The page instructs participants not to enter names, email addresses, phone numbers, resident/client details, health information, or other personal data.
-
-The response schema:
-
-- rejects unknown fields;
-- rejects likely email addresses or phone numbers in open feedback;
-- bounds all timing/rating values;
-- requires explicit aggregate-use consent;
-- does not include a name/email field.
-
-The study page is `noindex,nofollow`.
-
-No direct participant quote will be published because this study version does not request separate quotation permission. Open-text feedback may be summarized or paraphrased only.
-
-## Completion rule
-
-Phase 5 is complete only when at least **3 valid real target-user responses** exist.
-
-No synthetic, test, developer-generated, or inferred response counts as user evidence.
-
-Duplicate response IDs are counted once.
-
-## Aggregate analysis
-
-When the threshold is met, publish:
-
-- valid sample size and role mix;
-- median baseline planning time;
-- median Resonance planning time;
-- median absolute time saved;
-- median percentage time reduction;
-- mean relevance rating;
-- mean novelty rating;
-- mean usefulness rating;
-- count / percentage answering yes to real-world reuse;
-- anonymized thematic summary of the improvement feedback.
-
-The raw study records remain out of the public repository. Only aggregate, non-identifying results are published.
-
-Analyze a private local export with:
-
-```bash
-npm run study:analyze -- /path/to/private-study-export.jsonl
-```
-
-The analyzer re-validates each row, deduplicates response IDs, reports invalid rows, and computes the completion threshold plus all promised aggregate metrics. Raw feedback is emitted only for private manual thematic review and must not be committed.
-
-## Recruitment
-
-On October 3, 2026, the recruitment ledger was reconciled directly against Gmail. Twenty-eight current-study invitations containing the public study URL are visible in Sent: **26 one-time direct invitations** to publicly listed activity/life-enrichment contacts at senior-living organizations and **2 one-time forwarding requests** to activity-professional organizations. Exactly **4 direct study invitations hard-bounced or were blocked**, leaving **24 study messages with no hard bounce observed** at the latest check. The two most recent direct invitations were sent to fresh publicly listed life-enrichment contacts and had no immediate hard bounce or human reply at the latest check. No unsolicited follow-up will be sent.
-
-The outreach:
-
-- linked only to the anonymous study page;
-- stated the study is not a sales pitch;
-- requested no resident/client or health information;
-- promised no unsolicited follow-up if the recipient did not respond.
-
-Recipient email addresses are intentionally not committed to this public repository.
-
-
-## Current evidence status
-
-As of the latest production-log verification on October 3, 2026:
-
-- valid real target-user responses: **0**;
-- the completion threshold is **not met**;
-- no impact metric, testimonial, time-savings claim, or user quote is being reported as evidence yet.
-
-This section must be replaced with aggregate results only after at least three valid real responses exist.
+This file is retained solely for transparency about work that was started and then intentionally stopped.
