@@ -208,6 +208,7 @@ try {
     'QLOO_API_KEY',
     'QLOO_API_BASE_URL=https://hackathon.api.qloo.com',
     'npm run deployment:check',
+    'QLOO_LIVE_REFRESH=1 npm run qloo:live:check',
     'npm run qloo:live:check',
     'mode=live',
     'qlooStatus=ready',
