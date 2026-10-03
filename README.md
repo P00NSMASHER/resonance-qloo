@@ -172,6 +172,9 @@ After publishing or re-publishing the public app, run both public checks:
 
 ```bash
 npm run deployment:check
+# First check immediately after connecting/rotating the event key:
+QLOO_LIVE_REFRESH=1 npm run qloo:live:check
+# Normal subsequent checks:
 npm run qloo:live:check
 ```
 
