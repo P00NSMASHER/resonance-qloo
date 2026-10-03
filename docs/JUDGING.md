@@ -14,20 +14,10 @@ The non-exact path is also fully verified in production: `Italian food` resolves
 2. Confirm the header reports **Live Qloo verified**.
 3. Enter 2–4 cultural favorites and run the live agent. For the already captured exact-match path, `Ella Fitzgerald` and `Singin' in the Rain` produced the committed live artifact.
 4. Use **Preview with example data** only as the explicitly labeled **ILLUSTRATIVE DEMO** fallback.
-5. Inspect:
-   - the result metadata strip: source mode, evidence basis, visible **Request receipt**, non-secret Qloo API origin, and live generation timestamp;
-   - resolved Qloo entity IDs, category hints, and whether each resolution is an **Exact name** or **Qloo top match · review**;
-   - when a top match is non-exact, the **Qloo match review required** gate: the server issues a five-minute review receipt and taste analysis must not run until the user returns that receipt with the exact reviewed entity IDs or edits the input;
-   - after confirmation, the same mapping is labeled **Qloo top match · confirmed** and only then feeds the visible aggregate handoff into Qloo taste analysis;
-   - the returned taste evidence, including the **selected / returned** signal count;
-   - the visible **Interpretation limit**: Qloo affinities are aggregate cultural relationships, not probabilities or claims about the individual, and the facilitator keeps control;
-   - the selection rule: highest real numeric Qloo affinities when enough scores exist, otherwise Qloo's returned rank order with no invented percentage;
-   - numbered **Plan signal #N** badges that identify exactly which returned signals were selected (up to four);
-   - when only three signals are usable, the visible **No synthetic signal** note explaining that signal #3 is reused for the closing step;
-   - the four-stage agent decision trace;
-   - the four-step session, where the same signal numbers reappear beside the activities they drive;
-   - each step's evidence-backed "why it fits" explanation;
-   - the exported session audit trail, which preserves source mode, generation time, Qloo IDs, resolution path, evidence basis, explainability availability, selected-versus-returned counts, numbered selected signals, target duration, and agent trace.
+5. The default result intentionally shows only three concepts: **Your favorites → What Qloo discovered → Your session**.
+6. Read **How Qloo changed this session**. The left side is a deterministic anchor-only baseline that can use only the submitted favorites/category hints; the right side is grounded in the actual Qloo taste signals. The metrics quantify favorites supplied, signals returned, signals selected, activities influenced, and selected discoveries not literally named in the inputs.
+7. Open **View evidence & audit trail** for the technical layer: Qloo IDs, exact-vs-top-result classification, request receipt, provenance, API origin, contract version, all retained signals, selection rule, explainability metadata, sparse-evidence **No synthetic signal** disclosure, four-stage agent trace, and activity-to-evidence rationale mapping.
+8. If a top match is non-exact, verify the **Qloo match review required** gate appears before taste analysis and that confirmation is required before the final live session.
 
 ## Judging-criteria mapping
 
@@ -61,11 +51,15 @@ The server also keeps the event credential private, bounds inputs, times out ups
 
 ### Design
 
-The app is one focused, responsive flow with live connection-state awareness, visible provenance, explicit rank-vs-score labeling, loading/error handling, keyboard-focus support, and a no-login path for judges. Session-defining controls lock while a live request is running; editing an anchor/category/context invalidates stale output and pending match confirmation; and the browser refuses to show a review card or label a 200 response **LIVE QLOO** unless the normalized request receipt matches the initiating form; successful results must also have `qloo-live` provenance, a valid generation timestamp, and the same Qloo API origin as the verified status endpoint.
+The app is one focused, responsive flow with a judge-first default hierarchy: **Your favorites → What Qloo discovered → Your session**. A native **View evidence & audit trail** disclosure preserves provenance, IDs, rank-vs-score labeling, review classifications, explainability, and agent trace without forcing the technical layer into the primary product experience. It also includes loading/error handling, keyboard-focus support, and a no-login path for judges. Session-defining controls lock while a live request is running; editing an anchor/category/context invalidates stale output and pending match confirmation; and the browser refuses to show a review card or label a 200 response **LIVE QLOO** unless the normalized request receipt matches the initiating form; successful results must also have `qloo-live` provenance, a valid generation timestamp, and the same Qloo API origin as the verified status endpoint.
 
 ### Potential Impact
 
 The product targets a concrete workflow: senior-living activity staff and families often know only fragments of a person's preferences. Resonance reduces the work required to translate those fragments into culturally coherent engagement ideas while leaving the final choice with the human facilitator.
+
+### Visible Qloo differentiation
+
+The anchor-only baseline is deliberately competent rather than a strawman: it can reuse the literal favorites and their category hints, but it cannot claim adjacent tastes. The Qloo side displays the real selected taste signals and quantifies how many selected discoveries were not named in the inputs and how many activities they influenced. A judge can therefore see what Qloo uniquely adds with the same starting inputs.
 
 ### Quality of the Idea
 
