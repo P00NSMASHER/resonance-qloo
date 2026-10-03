@@ -44,10 +44,10 @@ The submission window remains open until October 30, 2026 at 11:45 PM Eastern Ti
 
 A submitted Devpost record is not yet proof of a finished hackathon entry. Treat Resonance as provisional until:
 
-- the event-issued Qloo credential is connected;
+- the received event-issued Qloo credential is securely connected to the Floot production environment;
+- `npm run qloo:cutover:verify` passes, proving both deployment parity and a fresh live-Qloo `ready` status;
 - the public live path is verified end-to-end;
 - live evidence capture succeeds against the trusted hackathon Qloo origin;
-- the Floot deployment matches the reviewed GitHub head and `npm run deployment:check` passes;
 - the Devpost description/evidence are refreshed after that live proof.
 
 The official requirement calls for a functional demo that judges can use end-to-end.
