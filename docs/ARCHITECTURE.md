@@ -2,6 +2,20 @@
 
 Resonance is split into three trust zones plus an explicit agent-orchestration layer.
 
+## Public production-source parity
+
+The repository now contains two intentionally related source surfaces:
+
+1. the portable canonical React/Node implementation under `src/` + `server/`, which owns the deep unit/smoke/security test suite; and
+2. the **exact Floot-native judge-facing runtime source** under `floot-production/`, captured from Floot project version `1791023061990`.
+
+The Floot snapshot includes the production page/styling, status and recommendation endpoint handlers/schemas, shared Qloo session logic, directly imported UI components, provider/config glue, and deployed dependency manifest. `floot-production/manifest.json` records each file's content-addressed Git blob SHA.
+
+`npm run floot:production:parity` recomputes those blob identities and compares critical invariants across the two implementations: Qloo Search and Insights request semantics, signed five-minute entity-review receipts, credential-scoped bounded caching, evidence accounting, provenance, live status, and judge-facing UI markers. CI and submission preflight require this check.
+
+This makes the hosted implementation directly auditable from the public repository rather than relying only on black-box deployment parity.
+
+
 ## Browser
 
 The React client collects 2–4 cultural anchors plus an energy and setting preference. It never receives the Qloo credential.

@@ -23,10 +23,11 @@
     "deployment:check:selftest": "node scripts/test-deployment-checker.mjs",
     "evidence:capture": "node scripts/capture-live-evidence.mjs",
     "evidence:capture:selftest": "node scripts/test-evidence-capture.mjs",
-    "verify:offline": "npm run security:secrets:selftest && npm run security:secrets:check && npm run typecheck && npm test && npm run build && npm run smoke:preview && npm run ui:state:selftest && npm run deployment:check:selftest && npm run qloo:live:selftest && npm run qloo:proof:redaction:selftest && npm run qloo:proof:env:selftest && npm run evidence:capture:selftest && npm run submission:preflight:offline",
+    "verify:offline": "npm run security:secrets:selftest && npm run security:secrets:check && npm run floot:production:parity && npm run typecheck && npm test && npm run build && npm run smoke:preview && npm run ui:state:selftest && npm run deployment:check:selftest && npm run qloo:live:selftest && npm run qloo:proof:redaction:selftest && npm run qloo:proof:env:selftest && npm run evidence:capture:selftest && npm run submission:preflight:offline",
     "ui:state:selftest": "node scripts/test-ui-state-safety.mjs",
     "security:secrets:check": "node scripts/check-secret-leaks.mjs",
-    "security:secrets:selftest": "node scripts/test-secret-leaks.mjs"
+    "security:secrets:selftest": "node scripts/test-secret-leaks.mjs",
+    "floot:production:parity": "node scripts/check-floot-production-parity.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.1",

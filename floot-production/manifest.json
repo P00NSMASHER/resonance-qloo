@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
+  "flootProjectVersion": "1791023061990",
+  "publishedUrl": "https://resonance-qloo.floot.app",
+  "qlooApiOrigin": "https://hackathon.api.qloo.com",
+  "deploymentContractVersion": "2026-10-02.review-origin-v1",
+  "snapshotScope": "Exact judge-facing Floot runtime slice: public page/styling, status and recommendation endpoints/schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
+  "files": [
+    {
+      "path": "base.css",
+      "gitBlobSha": "ebeca3c6436dd13260267062e44f84e861bc38cd"
+    },
+    {
+      "path": "components/_globalContextProviders.tsx",
+      "gitBlobSha": "bd56d0e9e7e660f42fbfa79a7f470c38551c21b4"
+    },
+    {
+      "path": "components/_globalContextProviders.module.css",
+      "gitBlobSha": "d2284fa5a3f85ed0135c61fbca8817144809f4c1"
+    },
+    {
+      "path": "components/Button.tsx",
+      "gitBlobSha": "5768177a356c29951b05ca92494bf79745be2cb3"
+    },
+    {
+      "path": "components/Button.module.css",
+      "gitBlobSha": "faef6a53f39f8e80132b9abe957aa81976868332"
+    },
+    {
+      "path": "components/Input.tsx",
+      "gitBlobSha": "34448217709cc4e4eb96b8dd2d2445c60b3692f8"
+    },
+    {
+      "path": "components/Input.module.css",
+      "gitBlobSha": "39dfe807fa9337f9a60748b87c399d699fd2d7d0"
+    },
+    {
+      "path": "components/Select.tsx",
+      "gitBlobSha": "44d94770d9f337e9e6877ef21cc1f487d1971abd"
+    },
+    {
+      "path": "components/Select.module.css",
+      "gitBlobSha": "dfea1883b98f9f18a2c9c2b2db4d33eec45e2f59"
+    },
+    {
+      "path": "components/Badge.tsx",
+      "gitBlobSha": "da554c67f31316cb3ca01eba81ea745f349a0534"
+    },
+    {
+      "path": "components/Badge.module.css",
+      "gitBlobSha": "8f7989ae3a7cf2b25b10524f53a7af6715b40996"
+    },
+    {
+      "path": "endpoints/recommend_POST.ts",
+      "gitBlobSha": "4071bfc90fe282ff8345f5eae6626bfed824cda9"
+    },
+    {
+      "path": "endpoints/recommend_POST.schema.ts",
+      "gitBlobSha": "6dd2d2429299553494bb07942862b96fbc072cda"
+    },
+    {
+      "path": "endpoints/status_GET.ts",
+      "gitBlobSha": "6a7bd09874ab5ce51df9a81455b998a84af0a89b"
+    },
+    {
+      "path": "endpoints/status_GET.schema.ts",
+      "gitBlobSha": "1cff03c71dd333bf830d522df27fdca25cfcb91e"
+    },
+    {
+      "path": "helpers/_publicConfigs.tsx",
+      "gitBlobSha": "e4a41e08f71f4e99fad6dc2648e84b61208c54a4"
+    },
+    {
+      "path": "helpers/qlooSessionLogic.tsx",
+      "gitBlobSha": "f8b702b5271f518ade72678b07390b05a80dfae1"
+    },
+    {
+      "path": "pages/_index.tsx",
+      "gitBlobSha": "7cb93a513a0fe1c5d2c3a484fdb07c2ebee576ad"
+    },
+    {
+      "path": "pages/_index.module.css",
+      "gitBlobSha": "0a563ab9608a4fd8350340d6f051d379e40d3f05"
+    },
+    {
+      "path": "pages/_index.pageLayout.tsx",
+      "gitBlobSha": "9859f0797256b2e0c9d3e4e994a8303efa853e80"
+    },
+    {
+      "path": "static/__dev/dependencies.json",
+      "gitBlobSha": "b84a2276584b7a16c4ab7ca21035d521e46d0082"
+    }
+  ]
+}

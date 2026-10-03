@@ -17,6 +17,14 @@ const requiredFiles = [
   'docs/FLOOT_QLOO_CUTOVER.md',
   'docs/LIVE_QLOO_EVIDENCE.json',
   'docs/LIVE_QLOO_REVIEW_EVIDENCE.json',
+  'floot-production/manifest.json',
+  'floot-production/README.md',
+  'floot-production/pages/_index.tsx',
+  'floot-production/endpoints/recommend_POST.ts',
+  'floot-production/endpoints/recommend_POST.schema.ts',
+  'floot-production/endpoints/status_GET.ts',
+  'floot-production/helpers/qlooSessionLogic.tsx',
+  'scripts/check-floot-production-parity.mjs',
   'SECURITY.md',
   'scripts/qloo-mcp-proof.mjs',
   'scripts/proof-redaction.mjs',
@@ -92,6 +100,20 @@ try {
 }
 
 try {
+  const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
+  if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
+  if (flootManifest.flootProjectVersion !== '1791023061990') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
+  if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 21) failures.push('Floot production manifest no longer enumerates the 21-file judge-facing runtime snapshot.');
+  const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
+  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Production judge UI']) {
+    if (!parity.includes(required)) failures.push(`Floot production parity verifier is missing critical invariant group: ${required}`);
+  }
+} catch (error) {
+  failures.push(`Floot production snapshot validation failed: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
   const license = await readFile('LICENSE', 'utf8');
   if (!/MIT License/i.test(license)) failures.push('LICENSE is not recognizably MIT.');
 } catch {}
@@ -103,6 +125,9 @@ try {
   }
   if (!ci.includes('id: deployment_parity') || !ci.includes('GITHUB_STEP_SUMMARY')) {
     failures.push('CI is not surfacing public deployment parity in the Actions summary.');
+  }
+  if (!ci.includes('npm run floot:production:parity')) {
+    failures.push('CI is not validating the exact Floot production source snapshot.');
   }
 } catch (error) {
   failures.push(`CI workflow could not be validated: ${error instanceof Error ? error.message : String(error)}`);
@@ -236,6 +261,9 @@ try {
   }
   if (packageJson.scripts?.['security:secrets:selftest'] !== 'node scripts/test-secret-leaks.mjs') {
     failures.push('package.json is missing the repository secret scanner self-test command.');
+  }
+  if (packageJson.scripts?.['floot:production:parity'] !== 'node scripts/check-floot-production-parity.mjs') {
+    failures.push('package.json is missing the exact Floot production parity command.');
   }
   if (!String(packageJson.scripts?.['submission:preflight'] || '').startsWith('npm run security:secrets:check && ')) {
     failures.push('submission:preflight no longer runs the repository secret scan first.');

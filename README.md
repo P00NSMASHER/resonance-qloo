@@ -101,6 +101,7 @@ The real event key must never be committed or pasted into a public artifact.
 - OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
 - The event-issued Qloo credential is connected to the Floot production environment and has passed a forced public readiness probe: `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, `qlooConnected=true`.
 - Public live-Qloo execution is verified end-to-end for both the exact-match path and the non-exact review-gated path. The exact-match artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The review-gated artifact records HTTP 409 before taste analysis, one signed confirmed top-result match, then a successful HTTP 200 `qloo-live` plan with 3 resolved entities.
+- The exact judge-facing Floot runtime source is now committed under `floot-production/` with project version `1791023061990`, content-addressed file identities, and `npm run floot:production:parity` to verify Qloo/review/cache/provenance/UI invariants against the canonical implementation.
 - Formal submission is complete, but judge-readiness remains provisional until live Qloo evidence and public deployment parity both pass.
 
 ## Evidence and reproducibility
@@ -113,6 +114,7 @@ The real event key must never be committed or pasted into a public artifact.
 - [Floot live-Qloo cutover](docs/FLOOT_QLOO_CUTOVER.md)
 - [Verified live Qloo evidence](docs/LIVE_QLOO_EVIDENCE.json)
 - [Verified review-gated Qloo evidence](docs/LIVE_QLOO_REVIEW_EVIDENCE.json)
+- [Exact Floot production source](floot-production/README.md)
 - [Security](SECURITY.md)
 - [OpenAPI contract](openapi.yaml)
 
@@ -168,7 +170,7 @@ Run the full offline repository verification in one command:
 npm run verify:offline
 ```
 
-That command covers typecheck, unit tests, production build, preview/live-handshake smoke tests, deployment-checker self-tests, MCP-proof redaction self-tests, evidence-capture self-tests, and offline submission preflight.
+That command covers exact Floot production-source parity, typecheck, unit tests, production build, preview/live-handshake smoke tests, deployment-checker self-tests, MCP-proof redaction self-tests, evidence-capture self-tests, and offline submission preflight.
 
 After connecting or rotating the event key, run the cross-platform cutover check:
 

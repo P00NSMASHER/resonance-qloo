@@ -28,6 +28,8 @@ jobs:
         run: npm run security:secrets:selftest
       - name: Qloo secret leak scan
         run: npm run security:secrets:check
+      - name: Exact Floot production source parity
+        run: npm run floot:production:parity
       - name: Typecheck
         run: npm run typecheck
       - name: Unit tests
