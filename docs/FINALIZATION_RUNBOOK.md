@@ -28,7 +28,7 @@ Open:
 
 https://resonance-qloo.floot.app
 
-Confirm the header says **Live Qloo connected**, then run `npm run qloo:live:check`. Do not continue until that command passes with `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, and `qlooConnected=true`. If the app reports degraded after adding the key or after a live request failure, first verify the hosted environment is using `https://hackathon.api.qloo.com`, then use **Retry Qloo verification**. The retry must issue `/api/status?refresh=1`, invalidate any cached probe (including stale `ready`), and recover to `ready` only when a fresh Qloo probe succeeds. Ordinary status reads should continue using the cache, and repeated forced retries must remain rate-limited.
+Confirm the header says **Live Qloo connected**, then run `QLOO_LIVE_REFRESH=1 npm run qloo:live:check` for the first post-credential check so cached status is deliberately bypassed. Subsequent checks can use `npm run qloo:live:check`. Do not continue until the readiness command passes with `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, and `qlooConnected=true`. If the app reports degraded after adding the key or after a live request failure, first verify the hosted environment is using `https://hackathon.api.qloo.com`, then use **Retry Qloo verification**. The retry must issue `/api/status?refresh=1`, invalidate any cached probe (including stale `ready`), and recover to `ready` only when a fresh Qloo probe succeeds. Ordinary status reads should continue using the cache, and repeated forced retries must remain rate-limited.
 
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
