@@ -85,21 +85,39 @@ try {
 } catch {}
 
 try {
-  const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
-  if (packageJson.scripts?.['study:analyze'] !== 'tsx scripts/analyze-study-responses.ts') {
-    failures.push('Study validation workflow is missing the private aggregate-analysis command.');
-  }
   const studyProtocol = await readFile('docs/USER_VALIDATION_STUDY.md', 'utf8');
+  const canonicalServer = await readFile('server/index.ts', 'utf8');
+  const productionStudyEndpoint = await readFile('floot-production/endpoints/study-response_POST.ts', 'utf8');
+  const productionStudyPage = await readFile('floot-production/pages/study.tsx', 'utf8');
   for (const required of [
-    'Phase 5 is complete only when at least **3 valid real target-user responses** exist.',
-    'No synthetic, test, developer-generated, or inferred response counts as user evidence.',
+    'Status: **Closed / intentionally skipped**',
     'valid real target-user responses: **0**',
-    'completion threshold is **not met**',
+    'no synthetic, test, developer-generated, inferred, or proxy response is counted as user evidence',
+    'no impact metric, testimonial, time-savings percentage, or user quote is claimed from this study',
+    'no further recruitment or unsolicited follow-up will be sent',
+    'study submission endpoint is closed and returns HTTP 410',
   ]) {
-    if (!studyProtocol.includes(required)) failures.push(`Study validation protocol is missing integrity marker: ${required}`);
+    if (!studyProtocol.includes(required)) failures.push(`Closed Phase 5 record is missing integrity marker: ${required}`);
+  }
+  for (const [name, body] of [
+    ['canonical server', canonicalServer],
+    ['production study endpoint', productionStudyEndpoint],
+  ]) {
+    if (!body.includes('Study closed. Phase 5 external validation was intentionally skipped')) {
+      failures.push(`${name} no longer records the closed Phase 5 state.`);
+    }
+    if (body.includes('RESONANCE_STUDY_RESPONSE')) {
+      failures.push(`${name} unexpectedly contains active study-response logging after closure.`);
+    }
+  }
+  if (!canonicalServer.includes('return json(res, 410')) {
+    failures.push('Canonical server no longer returns HTTP 410 for the closed study endpoint.');
+  }
+  for (const required of ['Phase 5 skipped','This study is closed.','zero valid target-user responses','no participant response collection']) {
+    if (!productionStudyPage.includes(required)) failures.push(`Production closed-study page is missing marker: ${required}`);
   }
 } catch (error) {
-  failures.push(`Study validation workflow could not be validated: ${error instanceof Error ? error.message : String(error)}`);
+  failures.push(`Closed Phase 5 state could not be validated: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
@@ -136,11 +154,11 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791052195858') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791060657641') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
   if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
-  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','anonymous study contract','Production judge UI']) {
+  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','closed study route','Production judge UI']) {
     if (!parity.includes(required)) failures.push(`Floot production parity verifier is missing critical invariant group: ${required}`);
   }
 } catch (error) {
