@@ -56,8 +56,8 @@ type Result = {
 const demo: Result = {
   requestContext: {
     anchors:[
-      { query:'Ella Fitzgerald', typeUrn:'urn:entity:artist' },
-      { query:'Duke Ellington', typeUrn:'urn:entity:artist' },
+      { query:'Aretha Franklin', typeUrn:'urn:entity:artist' },
+      { query:'The Sound of Music', typeUrn:'urn:entity:artist' },
     ],
     energy:'calm',
     setting:'small-group',
@@ -65,18 +65,18 @@ const demo: Result = {
   },
   summary: 'Illustrative preview only — this is not live Qloo data.',
   resolvedAnchors: [
-    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
-    { query:'Duke Ellington', name:'Duke Ellington', entityId:'demo:duke', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
+    { query:'Aretha Franklin', name:'Aretha Franklin', entityId:'demo:aretha', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
+    { query:'The Sound of Music', name:'The Sound of Music', entityId:'demo:sound-of-music', requestedTypeUrn:'urn:entity:movie', resolutionMatch:'exact-name' },
   ],
   affinities: [
-    { label:'Jazz', score:null, rank:1 },
-    { label:'swing', score:null, rank:2 },
-    { label:'piano', score:null, rank:3 },
-    { label:'Vocal-Jazz', score:null, rank:4 },
+    { label:'Entertainment', score:null, rank:1 },
+    { label:'soul', score:null, rank:2 },
+    { label:'funk', score:null, rank:3 },
+    { label:'rhythm & blues', score:null, rank:4 },
   ],
   plan: [
-    { title:'Opening cue', duration:'5 min', action:'Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.', why:'Illustrative rationale showing how a known favorite can anchor the session.', anchorName:'Ella Fitzgerald', affinityLabel:'Jazz' },
-    { title:'Story bridge', duration:'10 min', action:'Use Duke Ellington as a bridge into swing-era photos, songs, dancing, or performance memories.', why:'Illustrative rationale showing how a second known favorite can connect to adjacent cultural evidence.', anchorName:'Duke Ellington', affinityLabel:'swing' },
+    { title:'Opening cue', duration:'5 min', action:'Open with a familiar Aretha Franklin track and invite a low-pressure choice between two songs.', why:'Illustrative rationale showing how a known favorite can anchor the session.', anchorName:'Aretha Franklin', affinityLabel:'Jazz' },
+    { title:'Story bridge', duration:'10 min', action:'Use The Sound of Music as a bridge into swing-era photos, songs, dancing, or performance memories.', why:'Illustrative rationale showing how a second known favorite can connect to adjacent cultural evidence.', anchorName:'The Sound of Music', affinityLabel:'swing' },
     { title:'Shared choice', duration:'10 min', action:'Offer simple listening or conversation choices connected to piano and let the group steer the next activity.', why:'Illustrative rationale preserving participant choice while branching into adjacent culture.', affinityLabel:'piano' },
     { title:'Closing ritual', duration:'5 min', action:'Close with a favorite-vocalist prompt connected to Vocal-Jazz and ask what should return next time.', why:'Illustrative rationale for ending in the same cultural neighborhood.', affinityLabel:'Vocal-Jazz' },
   ],
@@ -91,7 +91,7 @@ const demo: Result = {
     evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
     returnedAffinityCount:4,
-    selectedAffinityLabels:['Jazz','swing','piano','Vocal-Jazz'],
+    selectedAffinityLabels:['Entertainment','soul','funk','rhythm & blues'],
     resolvedAnchorCount:2,
     exactResolutionCount:2,
     topResultResolutionCount:0,
@@ -112,8 +112,8 @@ const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
 export default function App() {
-  const [anchors, setAnchors] = useState(['Ella Fitzgerald','Duke Ellington']);
-  const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','artist']);
+  const [anchors, setAnchors] = useState(['Aretha Franklin','The Sound of Music']);
+  const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
   const [durationMinutes, setDurationMinutes] = useState(30);
@@ -327,8 +327,8 @@ export default function App() {
   function previewDemo() {
     setError('');
     setResolutionReview(null);
-    setAnchors(['Ella Fitzgerald','Duke Ellington']);
-    setAnchorTypes(['artist','artist']);
+    setAnchors(['Aretha Franklin','The Sound of Music']);
+    setAnchorTypes(['artist','movie']);
     setEnergy('calm');
     setSetting('small-group');
     setDurationMinutes(30);
