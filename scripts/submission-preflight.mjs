@@ -16,6 +16,7 @@ const requiredFiles = [
   'docs/DEVPOST_FIELDS.md',
   'docs/FLOOT_QLOO_CUTOVER.md',
   'docs/LIVE_QLOO_EVIDENCE.json',
+  'docs/LIVE_QLOO_REVIEW_EVIDENCE.json',
   'SECURITY.md',
   'scripts/qloo-mcp-proof.mjs',
   'scripts/proof-redaction.mjs',
@@ -308,6 +309,43 @@ try {
   }
 } catch (error) {
   failures.push(`Could not validate committed live Qloo evidence artifact: ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const reviewEvidence = JSON.parse(await readFile('docs/LIVE_QLOO_REVIEW_EVIDENCE.json', 'utf8'));
+  if (reviewEvidence.review_gate?.first_status !== 409 || reviewEvidence.review_gate?.code !== 'QLOO_RESOLUTION_REVIEW_REQUIRED') {
+    failures.push('Review-gated live evidence no longer records the required 409 review gate.');
+  }
+  if (reviewEvidence.review_gate?.confirmation_receipt?.reviewTokenUsed !== true) {
+    failures.push('Review-gated live evidence no longer records use of the signed review receipt.');
+  }
+  if (reviewEvidence.review_gate?.confirmation_receipt?.confirmedTopResultCount !== 1) {
+    failures.push('Review-gated live evidence no longer records exactly one confirmed top-result match.');
+  }
+  if (reviewEvidence.final_response?.http_status !== 200) {
+    failures.push('Review-gated live evidence final response is not HTTP 200.');
+  }
+  if (reviewEvidence.final_response?.provenance?.source !== 'qloo-live') {
+    failures.push('Review-gated live evidence final response is not qloo-live.');
+  }
+  if (reviewEvidence.final_response?.provenance?.apiOrigin !== 'https://hackathon.api.qloo.com') {
+    failures.push('Review-gated live evidence does not use the trusted hackathon origin.');
+  }
+  if (reviewEvidence.final_response?.evidence?.resolvedAnchorCount !== 3 ||
+      reviewEvidence.final_response?.evidence?.topResultResolutionCount !== 1 ||
+      reviewEvidence.final_response?.evidence?.returnedAffinityCount !== 8 ||
+      reviewEvidence.final_response?.evidence?.selectedAffinityCount !== 4) {
+    failures.push('Review-gated live evidence counts no longer match the verified production run.');
+  }
+  if (!Array.isArray(reviewEvidence.final_response?.plan) || reviewEvidence.final_response.plan.length !== 4) {
+    failures.push('Review-gated live evidence no longer records a four-step plan.');
+  }
+  const serializedReviewEvidence = JSON.stringify(reviewEvidence);
+  if (/\\bhack_[A-Za-z0-9]{20,}\\b/.test(serializedReviewEvidence) || serializedReviewEvidence.includes('reviewToken":"')) {
+    failures.push('Review-gated live evidence contains credential/review-token material.');
+  }
+} catch (error) {
+  failures.push(`Could not validate review-gated live Qloo evidence artifact: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
