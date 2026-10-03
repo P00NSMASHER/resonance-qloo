@@ -1,8 +1,8 @@
 # Finalization runbook
 
-The event-issued Qloo API credential has arrived. Use this runbook to connect it securely to Floot and complete live verification.
+The event-issued Qloo API credential is connected to Floot and the public readiness probe has passed. Use this runbook from the live-flow/evidence stages forward; if the upstream Qloo rate limit clears, rerun the public flow and capture final evidence.
 
-## 1. Connect the credential
+## 1. Connect the credential — complete
 
 Add the credential to the hosted app as `QLOO_API_KEY`.
 
@@ -22,7 +22,7 @@ Do not paste it into:
 - logs,
 - issue comments.
 
-## 2. Verify the public app flips to live mode
+## 2. Verify the public app flips to live mode — complete
 
 Open:
 
