@@ -45,7 +45,7 @@ Before continuing, also verify production UI parity with the repository:
 - Add/remove anchor controls respond on mobile;
 - the public app does not show older labels or controls from a stale deployment.
 
-If the status is still pending when a key is configured, or the public interactions do not match the current repository build, stop and fix/re-publish hosting before doing anything else.
+If the status remains `preview` after the key is configured, or becomes `degraded` / `rate-limited`, or the public interactions do not match the current repository build, stop and fix the hosted configuration or re-publish before doing anything else.
 
 ## 3. Run the official-tooling proof
 
