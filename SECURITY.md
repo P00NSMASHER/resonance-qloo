@@ -2,7 +2,7 @@
 
 ## Secrets
 
-The Qloo API credential is server-side only and must be supplied through `QLOO_API_KEY`. Never place the credential in browser code, screenshots, issues, commits, or demo recordings.
+The Qloo API credential is server-side only and must be supplied through `QLOO_API_KEY`. Never place the credential in browser code, screenshots, issues, commits, or demo recordings. Local `.env` and `.env.*` files are gitignored; only the blank `.env.example` template is permitted in source control.
 
 Submission proof tooling treats the credential as a value-level secret, not only a suspicious field name: nested proof output replaces any literal key value with `[REDACTED]`, and the final serialized artifact is rejected if the original `QLOO_API_KEY` is still present. CI runs an adversarial redaction self-test for this behavior.
 
