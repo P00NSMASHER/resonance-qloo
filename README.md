@@ -168,15 +168,13 @@ npm run verify:offline
 
 That command covers typecheck, unit tests, production build, preview/live-handshake smoke tests, deployment-checker self-tests, MCP-proof redaction self-tests, evidence-capture self-tests, and offline submission preflight.
 
-After publishing or re-publishing the public app, run both public checks:
+After connecting or rotating the event key, run the cross-platform cutover check:
 
 ```bash
-npm run deployment:check
-# First check immediately after connecting/rotating the event key:
-QLOO_LIVE_REFRESH=1 npm run qloo:live:check
-# Normal subsequent checks:
-npm run qloo:live:check
+npm run qloo:cutover:verify
 ```
+
+That command first runs `deployment:check`, then forces a fresh Qloo verification with `qloo:live:check -- --refresh`. For normal later readiness checks, use `npm run qloo:live:check` without forcing another probe.
 
 `deployment:check` answers **“is the published frontend/backend current?”**. `qloo:live:check` separately answers **“has the public app verified the event-issued Qloo credential?”** and only passes when status is `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, and `qlooConnected=true`.
 
