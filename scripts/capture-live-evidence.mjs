@@ -197,11 +197,12 @@ const evidence = {
 const serialized = JSON.stringify(evidence, null, 2);
 const suspicious = [
   process.env.QLOO_API_KEY,
+  reviewToken,
 ].filter(Boolean);
 
 for (const secret of suspicious) {
   if (serialized.includes(secret)) {
-    throw new Error('Refusing to emit evidence containing QLOO_API_KEY.');
+    throw new Error('Refusing to emit evidence containing a credential or ephemeral review receipt.');
   }
 }
 
