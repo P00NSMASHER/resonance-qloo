@@ -57,24 +57,44 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
-### Credential connected and readiness verified; end-to-end live evidence pending
+### Verified public live-Qloo evidence
 
-The final evidence block will record:
+A redaction-safe live artifact is committed at [LIVE_QLOO_EVIDENCE.json](./LIVE_QLOO_EVIDENCE.json).
 
-- the exact Qloo tool/workflow, public harness version, and Qloo API origin used;
-- a redacted request and the normalized request-context receipt echoed by the live response;
-- the resolved entity/tag choice, including whether each entity was an exact-name match or a Qloo top-result match and, for any non-exact match, evidence that its exact Qloo entity ID was confirmed before taste analysis;
-- the returned status and summary;
-- the full returned taste-signal subset retained for inspection and the exact numbered signals selected for the plan;
-- the selected-versus-returned signal count;
-- whether the evidence used Qloo numeric scores or ranked result order;
-- how many taste results carried Qloo-native explainability metadata and whether aggregate explainability was present;
-- the numbered signal-to-activity mapping used by the resulting session plan;
-- the artifact-level interpretation limit stating that Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual;
-- the explicit facilitator-control statement preserved with the artifact;
-- why that evidence was sufficient for the resulting session plan.
+Verified public run:
 
-No claim about a specific live Qloo result should be treated as verified until this section is replaced with captured event evidence.
+- Public endpoint: `https://resonance-qloo.floot.app/_api/recommend`
+- HTTP status: `200`
+- Qloo API origin: `https://hackathon.api.qloo.com`
+- Provenance source: `qloo-live`
+- Deployment contract: `2026-10-02.review-origin-v1`
+- Generated: `2026-10-03T03:18:40.241Z`
+- Request context: calm, small-group, 30 minutes
+- Resolved anchors:
+  - `Ella Fitzgerald` → `Ella Fitzgerald` → Qloo entity `C9A0AD41-7EDF-4C3E-A816-D1E73A17605E` → exact-name
+  - `Singin' in the Rain` → `Singin' in the Rain` → Qloo entity `59775A1E-5968-480C-94B2-47BE50CA3CD2` → exact-name
+- Returned Qloo taste signals: 8
+- Selected plan signals: 4
+- Evidence basis: `normalized-score`
+- Mean selected normalized score: `0.9991819017325958`
+- Selected signals:
+  1. `Christian`
+  2. `Jazz`
+  3. `Inventive`
+  4. `swing`
+- Four-step result:
+  1. Opening cue — Ella Fitzgerald + Christian
+  2. Story bridge — Singin' in the Rain + Jazz
+  3. Shared choice — Inventive
+  4. Closing ritual — swing
+
+The returned Qloo signal set also retained `Optimistic`, `piano`, `Vocal-Jazz`, and `oldies` as additional evidence rather than silently discarding them.
+
+The public result contained the normalized request-context receipt, two exact-name Qloo resolutions, an explicit agent trace, the selected-vs-returned evidence counts, and a four-step plan. Qloo-native explainability metadata was requested but not present in this response, so the artifact records `explainabilityResultCount: 0` and `aggregateExplainabilityAvailable: false` rather than inventing attribution.
+
+The artifact contains no Qloo API credential and no ephemeral review receipt.
+
+The separate non-exact review-gated path has also been exercised in production: `Italian food` resolved to Qloo's top result `Italian Food Berlin`, returned HTTP 409 before taste analysis, and required the signed review receipt plus exact entity ID. The confirmed follow-up was correctly constructed but most recently received upstream Qloo HTTP 429, so the review-gated taste-analysis completion remains a narrower follow-up proof rather than a blocker to the already verified exact-match live path.
 
 ## 4. Demo and screenshots
 
