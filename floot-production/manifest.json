@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791052195858",
+  "flootProjectVersion": "1791060657641",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact Floot runtime slice for the judge experience and anonymous user-validation study: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
+  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the closed Phase 5 study notice: public pages/styling, status/recommendation/closed-study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
   "files": [
     {
       "path": "base.css",
@@ -99,8 +99,8 @@
     },
     {
       "path": "endpoints/study-response_POST.ts",
-      "gitBlobSha": "0613fef35a318238e6650de65b8930b72579dcfe",
-      "sourceCharCount": 1366
+      "gitBlobSha": "2f313c65db6d3f569938d1ed0d8c0070114cec5a",
+      "sourceCharCount": 418
     },
     {
       "path": "helpers/_publicConfigs.tsx",
@@ -139,8 +139,8 @@
     },
     {
       "path": "pages/study.tsx",
-      "gitBlobSha": "c4a1f8d45b290d0307971e5780bbe0a0b9699acd",
-      "sourceCharCount": 8760
+      "gitBlobSha": "e0e77ce41927b656ad80ee5a0a1bdda04f545621",
+      "sourceCharCount": 1448
     },
     {
       "path": "static/__dev/dependencies.json",
@@ -150,9 +150,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-03",
-    "flootProjectVersion": "1791052195858",
+    "flootProjectVersion": "1791060657641",
     "exactFileCount": 28,
-    "verificationMethod": "The exact public runtime snapshot was refreshed after resolving the Phase 4 concurrent-demo audit and restoring the fixed Phase 5 controlled task. pages/_index.tsx and pages/study.tsx were directly re-read from live Floot project version 1791052195858 and replaced byte-for-byte; all other manifested files retain their prior direct-source receipts.",
+    "verificationMethod": "The exact runtime snapshot was refreshed after Phase 5 external validation was intentionally closed. pages/study.tsx now contains only the no-collection closure notice and endpoints/study-response_POST.ts returns HTTP 410; both were directly re-read from Floot project version 1791060657641 and replaced byte-for-byte. Other manifested files retain their prior direct-source receipts.",
     "directComparisonStatus": "28/28 exact",
     "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }
