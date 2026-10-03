@@ -1,11 +1,19 @@
 # Judge guide
 
+## Verified live proof
+
+The public demo is live at https://resonance-qloo.floot.app and the server currently reports verified Qloo readiness against `https://hackathon.api.qloo.com`.
+
+A redaction-safe HTTP 200 public live artifact is committed at [LIVE_QLOO_EVIDENCE.json](LIVE_QLOO_EVIDENCE.json). That run resolved two exact Qloo entities, retained eight returned affinity signals, selected four real numeric signals, and produced a four-step `qloo-live` session.
+
+The separate non-exact path is also observable in production: `Italian food` resolves to Qloo's top result `Italian Food Berlin` and returns the signed HTTP 409 review gate before taste analysis. The most recent confirmed post-review attempt received upstream Qloo HTTP 429, so that narrower follow-up is additional evidence rather than a blocker to the verified exact-match path.
+
 ## 60-second evaluation path
 
 1. Open the live app: https://resonance-qloo.floot.app
-2. Confirm the header reports whether Qloo is actually connected.
-3. If the event credential is still pending, use **Preview with example data**. The result is visibly labeled **ILLUSTRATIVE DEMO**.
-4. Once Qloo is connected, enter 2–4 cultural favorites and run the live agent.
+2. Confirm the header reports **Live Qloo verified**.
+3. Enter 2–4 cultural favorites and run the live agent. For the already captured exact-match path, `Ella Fitzgerald` and `Singin' in the Rain` produced the committed live artifact.
+4. Use **Preview with example data** only as the explicitly labeled **ILLUSTRATIVE DEMO** fallback.
 5. Inspect:
    - the result metadata strip: source mode, evidence basis, visible **Request receipt**, non-secret Qloo API origin, and live generation timestamp;
    - resolved Qloo entity IDs, category hints, and whether each resolution is an **Exact name** or **Qloo top match · review**;
@@ -66,9 +74,10 @@ Instead of using Qloo for a conventional shopping or entertainment recommendatio
 ## Reproducibility evidence
 
 - Public source: https://github.com/P00NSMASHER/resonance-qloo
+- Verified live Qloo artifact: [LIVE_QLOO_EVIDENCE.json](LIVE_QLOO_EVIDENCE.json)
 - Submission evidence: [SUBMISSION_EVIDENCE.md](SUBMISSION_EVIDENCE.md)
 - Known limitations: [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md)
 - API contract: [../openapi.yaml](../openapi.yaml)
 - Official Qloo MCP proof path: `npm run qloo:proof -- "classic jazz vocals"`
 
-The live Qloo path should not be treated as verified until the event-issued key arrives and a real end-to-end call is captured.
+The exact-match public Qloo path is verified end-to-end and captured in the committed artifact above. The remaining narrower proof gap is the confirmed post-review taste-analysis completion for a non-exact top-result match, whose latest attempt was upstream-rate-limited.
