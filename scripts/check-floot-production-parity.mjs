@@ -66,7 +66,7 @@ requireBoth('credential-scoped caching', prodRecommend,
   canonicalServer,
   ['searchCache = createTtlCache<unknown>(10 * 60_000','tasteCache = createTtlCache<unknown>(5 * 60_000','qlooCredentialFingerprint','qlooSearchCacheKey','qlooTasteCacheKey']);
 
-for (const needle of ['confirmedEntityIds','reviewToken','requestContext','selectedAffinityCount','returnedAffinityCount','topResultResolutionCount']) {
+for (const needle of ['confirmedEntityIds','reviewToken','requestContext','selectedAffinityCount','selectedAffinityLabels','returnedAffinityCount','topResultResolutionCount']) {
   if (!prodRecommendSchema.includes(needle)) failures.push(`Production recommendation schema missing evidence/review field: ${needle}`);
 }
 for (const needle of ['qlooConfigured','qlooConnected','qlooStatus','qlooApiOrigin','contractVersion','mode']) {
@@ -76,7 +76,6 @@ for (const needle of [
   'contractVersion:"2026-10-02.review-origin-v1"',
   'apiOrigin:"https://hackathon.api.qloo.com"',
   'evidenceBasis:usingScores ? "normalized-score" as const : "ranked-order" as const',
-  'selectedAffinityLabels',
   'resolutionMatch',
 ]) if (!prodLogic.includes(needle)) failures.push(`Production shared logic missing: ${needle}`);
 
@@ -93,6 +92,8 @@ for (const needle of ["source: 'qloo-live'","apiOrigin: QLOO_BASE_URL","contract
 
 for (const needle of ['Live Qloo verified','Qloo match review required','Confirm matches & build','How Qloo changed this plan','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!prodPage.includes(needle)) failures.push(`Production judge UI missing: ${needle}`);
+}
+for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','How Qloo changed this plan','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!canonicalApp.includes(needle)) failures.push(`Canonical judge UI missing: ${needle}`);
 }
 for (const needle of ['@media(max-width:1000px)','@media(max-width:650px)','.evidenceBridge','.planGrid','.reviewCard']) {
