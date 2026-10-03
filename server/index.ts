@@ -13,7 +13,6 @@ import { qlooSearchCacheKey, qlooTasteCacheKey } from '../src/lib/qlooCacheKey';
 import { rateLimitClientKey } from '../src/lib/clientIdentity';
 import { recommendationRequestContext } from '../src/lib/recommendationContext';
 import { createResolutionReviewToken, resolutionReviewSigningKey, verifyResolutionReviewToken } from '../src/lib/resolutionReviewToken';
-import { STUDY_VERSION, validateStudyResponse } from '../src/lib/studyResponse';
 import deploymentContract from '../deployment-contract.json';
 
 const PORT = Number(process.env.PORT || 8787);
@@ -30,8 +29,6 @@ const liveLimiter = createRateLimiter(12, 60_000);
 const processLiveLimiter = createRateLimiter(60, 60_000);
 const qlooProbeRefreshLimiter = createRateLimiter(2, 60_000);
 const processQlooProbeRefreshLimiter = createRateLimiter(20, 60_000);
-const studyLimiter = createRateLimiter(5, 60_000);
-const processStudyLimiter = createRateLimiter(60, 60_000);
 const searchCache = createTtlCache<unknown>(10 * 60_000, 200);
 const tasteCache = createTtlCache<unknown>(5 * 60_000, 100);
 const qlooProbeCache = createTtlCache<'ready' | 'degraded' | 'rate-limited'>(5 * 60_000, 4);
@@ -135,36 +132,10 @@ async function handleStatus(
   });
 }
 
-async function handleStudyResponse(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
-  let body: Record<string, unknown>;
-  try {
-    body = await readJson(req);
-  } catch (error) {
-    if (error instanceof Error && error.message === 'REQUEST_TOO_LARGE') {
-      return json(res, 413, { error:'Study response is too large.' });
-    }
-    return json(res, 400, { error:'Study response must be valid JSON.' });
-  }
-
-  let response;
-  try {
-    response = validateStudyResponse(body);
-  } catch {
-    return json(res, 400, { error:'Study response did not match the anonymous validation contract.' });
-  }
-
-  const processLimit = processStudyLimiter.check('process');
-  const clientLimit = studyLimiter.check(requestClientKey(req));
-  if (!processLimit.allowed || !clientLimit.allowed) {
-    const retryAfterSeconds = Math.max(processLimit.retryAfterSeconds ?? 0, clientLimit.retryAfterSeconds ?? 0, 1);
-    return json(res, 429, { error:'Too many study submissions. Please try again later.' }, { 'retry-after':String(retryAfterSeconds) });
-  }
-
-  console.info('RESONANCE_STUDY_RESPONSE', JSON.stringify({
-    ...response,
-    submittedAt:new Date().toISOString(),
-  }));
-  return json(res, 200, { accepted:true, studyVersion:STUDY_VERSION });
+async function handleStudyResponse(_req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
+  return json(res, 410, {
+    error:'Study closed. Phase 5 external validation was intentionally skipped; no further responses are being collected.',
+  });
 }
 
 async function handleRecommend(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
