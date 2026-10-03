@@ -40,7 +40,7 @@ As of October 2, 2026 at 8:25 AM Eastern Time, Devpost returned:
 
 The submission window remains open until October 30, 2026 at 11:45 PM Eastern Time, so the entry can continue to be improved.
 
-On October 2, 2026 at 11:25 PM Eastern Time, the live Devpost project description was refreshed after public Qloo verification. It records the connected/ready credential state, the verified HTTP 200 `qloo-live` recommendation, the committed exact-match artifact, and the signed non-exact review gate. On October 3, 2026 the review-gated flow also completed end-to-end and is captured in `docs/LIVE_QLOO_REVIEW_EVIDENCE.json`; the Devpost description should reflect that stronger proof.
+On October 2, 2026 at 11:25 PM Eastern Time, the live Devpost project description was refreshed after public Qloo verification. On October 3, 2026 it was refreshed again after the review-gated flow completed end-to-end. Devpost project version 18 now records the connected/ready credential state, the verified exact-match HTTP 200 `qloo-live` artifact, and the verified HTTP 409 → signed confirmation → HTTP 200 review-gated artifact. The project remained published/submitted after the edit.
 
 ## Judge-readiness status
 
