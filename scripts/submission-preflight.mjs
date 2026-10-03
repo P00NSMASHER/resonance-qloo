@@ -104,7 +104,7 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791046302328') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791047041893') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
   if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 21) failures.push('Floot production manifest no longer enumerates the 21-file judge-facing runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
