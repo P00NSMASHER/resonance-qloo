@@ -108,7 +108,7 @@ The analyzer re-validates each row, deduplicates response IDs, reports invalid r
 
 ## Recruitment
 
-On October 3, 2026, eight one-time noncommercial research invitations were sent directly to publicly listed activity/life-enrichment professionals at senior-living organizations. One additional one-time invitation was sent to a senior-engagement nonprofit that works with activity directors and was asked only to forward the study to an eligible professional.
+On October 3, 2026, ten one-time noncommercial research invitations were sent directly to publicly listed activity/life-enrichment professionals at senior-living organizations. One direct address hard-bounced, leaving nine direct invitations with no hard bounce observed. Three additional one-time forwarding requests were sent to senior-engagement/activity-professional organizations; one hard-bounced, while two association requests had no hard bounce observed. No unsolicited follow-up will be sent.
 
 The outreach:
 
@@ -118,3 +118,14 @@ The outreach:
 - promised no unsolicited follow-up if the recipient did not respond.
 
 Recipient email addresses are intentionally not committed to this public repository.
+
+
+## Current evidence status
+
+As of the latest production-log verification on October 3, 2026:
+
+- valid real target-user responses: **0**;
+- the completion threshold is **not met**;
+- no impact metric, testimonial, time-savings claim, or user quote is being reported as evidence yet.
+
+This section must be replaced with aggregate results only after at least three valid real responses exist.
