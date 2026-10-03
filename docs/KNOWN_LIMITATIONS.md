@@ -2,7 +2,7 @@
 
 ## Credential-dependent live verification
 
-The event-issued Qloo credential has been requested and is still pending. Until it is connected:
+The event-issued Qloo credential has been received but is not yet connected to the Floot production environment. Until it is connected and verified:
 
 - the hosted live-Qloo action remains disabled;
 - no illustrative value is presented as a real Qloo result;
