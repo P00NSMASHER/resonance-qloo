@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791047559850",
+  "flootProjectVersion": "1791051870519",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -124,8 +124,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "971e16629e9603fcfaf91f416422106b7d878743",
-      "sourceCharCount": 35075
+      "gitBlobSha": "5962da251eeec1791691790a04cc8288fb5b51e1",
+      "sourceCharCount": 34950
     },
     {
       "path": "pages/study.module.css",
@@ -139,8 +139,8 @@
     },
     {
       "path": "pages/study.tsx",
-      "gitBlobSha": "c4a1f8d45b290d0307971e5780bbe0a0b9699acd",
-      "sourceCharCount": 8755
+      "gitBlobSha": "23d6f45efb5419d64e0ea421649a2855f8f713b1",
+      "sourceCharCount": 8756
     },
     {
       "path": "static/__dev/dependencies.json",
@@ -150,9 +150,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-03",
-    "flootProjectVersion": "1791047559850",
+    "flootProjectVersion": "1791051870519",
     "exactFileCount": 28,
-    "verificationMethod": "The prior 21-file judge runtime snapshot remains exact. Seven study runtime files were directly read from live Floot project version 1791047559850 and added byte-for-byte after removing connector-added line-number transport prefixes.",
+    "verificationMethod": "The exact public runtime snapshot was refreshed after Phase 4 canonical-demo alignment and Phase 5 study-task alignment. pages/_index.tsx and pages/study.tsx were directly re-read from live Floot project version 1791051870519 and replaced byte-for-byte; the remaining manifested files were unchanged from their prior direct-source receipts.",
     "directComparisonStatus": "28/28 exact",
     "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }
