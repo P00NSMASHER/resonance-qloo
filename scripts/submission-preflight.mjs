@@ -194,6 +194,7 @@ try {
     ['docs/KNOWN_LIMITATIONS.md', await readFile('docs/KNOWN_LIMITATIONS.md', 'utf8')],
     ['docs/SUBMISSION_EVIDENCE.md', await readFile('docs/SUBMISSION_EVIDENCE.md', 'utf8')],
     ['docs/FINALIZATION_RUNBOOK.md', await readFile('docs/FINALIZATION_RUNBOOK.md', 'utf8')],
+    ['docs/DEVPOST_FIELDS.md', await readFile('docs/DEVPOST_FIELDS.md', 'utf8')],
   ];
   const staleCredentialPhrases = [
     'credential is still pending',
@@ -259,6 +260,16 @@ try {
     if (!cutover.includes(required)) {
       failures.push(`Floot live-Qloo cutover checklist is missing required verification content: ${required}`);
     }
+  }
+} catch {}
+
+try {
+  const devpostFields = await readFile('docs/DEVPOST_FIELDS.md', 'utf8');
+  if (!devpostFields.includes('received event-issued Qloo credential is securely connected')) {
+    failures.push('Devpost field notes no longer record the received-but-not-connected Qloo credential state.');
+  }
+  if (!devpostFields.includes('npm run qloo:cutover:verify')) {
+    failures.push('Devpost field notes no longer require the live Qloo cutover verification command.');
   }
 } catch {}
 
