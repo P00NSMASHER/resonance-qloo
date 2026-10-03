@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791046302328",
+  "flootProjectVersion": "1791047041893",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -94,8 +94,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "b54d4c44b705ec63898c945f7d16ff7cf941c8a2",
-      "sourceCharCount": 35395
+      "gitBlobSha": "971e16629e9603fcfaf91f416422106b7d878743",
+      "sourceCharCount": 35075
     },
     {
       "path": "pages/_index.module.css",
@@ -115,9 +115,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-03",
-    "flootProjectVersion": "1791046302328",
+    "flootProjectVersion": "1791047041893",
     "exactFileCount": 21,
-    "verificationMethod": "The 19 untouched runtime files retain the prior direct exact-source receipt. The Phase 2/3 stylesheet was directly re-read and refreshed at version 1791045863245; the final page source was directly re-read and refreshed again at live Floot project version 1791046302328 after restoring the sparse-evidence audit disclosure.",
+    "verificationMethod": "The 20 untouched runtime files retain the prior direct exact-source receipt. The canonical-demo page source was directly re-read and refreshed byte-for-byte at live Floot project version 1791047041893.",
     "directComparisonStatus": "21/21 exact",
     "manifestBlobStatus": "21/21 manifest hashes match current exact snapshot blobs"
   }
