@@ -57,7 +57,7 @@ const demo: Result = {
   requestContext: {
     anchors:[
       { query:'Aretha Franklin', typeUrn:'urn:entity:artist' },
-      { query:'The Sound of Music', typeUrn:'urn:entity:artist' },
+      { query:'The Sound of Music', typeUrn:'urn:entity:movie' },
     ],
     energy:'calm',
     setting:'small-group',
@@ -75,10 +75,10 @@ const demo: Result = {
     { label:'rhythm & blues', score:null, rank:4 },
   ],
   plan: [
-    { title:'Opening cue', duration:'5 min', action:'Open with a familiar Aretha Franklin track and invite a low-pressure choice between two songs.', why:'Illustrative rationale showing how a known favorite can anchor the session.', anchorName:'Aretha Franklin', affinityLabel:'Jazz' },
-    { title:'Story bridge', duration:'10 min', action:'Use The Sound of Music as a bridge into swing-era photos, songs, dancing, or performance memories.', why:'Illustrative rationale showing how a second known favorite can connect to adjacent cultural evidence.', anchorName:'The Sound of Music', affinityLabel:'swing' },
-    { title:'Shared choice', duration:'10 min', action:'Offer simple listening or conversation choices connected to piano and let the group steer the next activity.', why:'Illustrative rationale preserving participant choice while branching into adjacent culture.', affinityLabel:'piano' },
-    { title:'Closing ritual', duration:'5 min', action:'Close with a favorite-vocalist prompt connected to Vocal-Jazz and ask what should return next time.', why:'Illustrative rationale for ending in the same cultural neighborhood.', affinityLabel:'Vocal-Jazz' },
+    { title:'Opening cue', duration:'5 min', action:'Open with a familiar Aretha Franklin track and invite a low-pressure choice between two songs.', why:'Illustrative rationale showing how a known favorite can anchor the session.', anchorName:'Aretha Franklin', affinityLabel:'Entertainment' },
+    { title:'Story bridge', duration:'10 min', action:'Use The Sound of Music as a prompt for favorite songs, performers, theaters, or family viewing memories.', why:'Illustrative rationale showing a film-to-musical-storytelling bridge.', anchorName:'The Sound of Music', affinityLabel:'soul' },
+    { title:'Shared choice', duration:'10 min', action:'Offer simple music or movement choices connected to funk and let the group steer the next activity.', why:'Illustrative rationale preserving participant choice while branching into adjacent culture.', affinityLabel:'funk' },
+    { title:'Closing ritual', duration:'5 min', action:'Close with a favorite-vocalist prompt connected to rhythm & blues and ask what music or film should return next time.', why:'Illustrative rationale for ending in the same cultural neighborhood.', affinityLabel:'rhythm & blues' },
   ],
   agentTrace: [
     { stage:'resolve', status:'ok', detail:'Illustrative: both example anchors are exact-name matches.' },
