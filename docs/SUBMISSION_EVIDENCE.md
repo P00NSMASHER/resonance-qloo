@@ -52,6 +52,8 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - The service retains up to eight returned taste signals for inspection while selecting at most four to drive the four-step session.
 - The selection rule is exposed in the UI: use the highest real numeric Qloo affinities when enough scores exist; otherwise preserve Qloo's returned rank order.
 - The UI shows the selected-versus-returned count and marks chosen evidence with stable **Plan signal #N** numbering (up to four selected signals) while leaving unselected results visible as **Additional evidence**.
+- The default result now reduces the judge-facing story to **Your favorites → What Qloo discovered → Your session**; technical provenance is retained under **View evidence & audit trail** rather than removed.
+- A tested anchor-only baseline uses only literal submitted favorites/category hints, while the Qloo side uses real returned signals. The comparison reports favorites supplied, signals returned, signals selected, activities influenced, and selected Qloo discoveries not literally named in the inputs.
 - Those same signal numbers are carried into the activity cards and copied session audit trail, so a judge can trace a selected Qloo signal into the plan step it influenced.
 - The live and illustrative result views expose an interpretation limit beside the evidence: Qloo affinities are aggregate cultural signals, not probabilities or claims about an individual, and final activity choices remain with the facilitator.
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
