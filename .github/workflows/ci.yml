@@ -24,6 +24,10 @@ jobs:
           package-manager-cache: false
       - name: Install
         run: npm ci --no-audit --no-fund
+      - name: Qloo secret scanner self-test
+        run: npm run security:secrets:selftest
+      - name: Qloo secret leak scan
+        run: npm run security:secrets:check
       - name: Typecheck
         run: npm run typecheck
       - name: Unit tests
