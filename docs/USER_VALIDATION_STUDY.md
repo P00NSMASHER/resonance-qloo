@@ -108,7 +108,7 @@ The analyzer re-validates each row, deduplicates response IDs, reports invalid r
 
 ## Recruitment
 
-On October 3, 2026, five one-time noncommercial research invitations were sent to publicly listed activity/life-enrichment contacts at unrelated senior-living organizations.
+On October 3, 2026, eight one-time noncommercial research invitations were sent directly to publicly listed activity/life-enrichment professionals at senior-living organizations. One additional one-time invitation was sent to a senior-engagement nonprofit that works with activity directors and was asked only to forward the study to an eligible professional.
 
 The outreach:
 
