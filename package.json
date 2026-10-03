@@ -27,7 +27,8 @@
     "ui:state:selftest": "node scripts/test-ui-state-safety.mjs",
     "security:secrets:check": "node scripts/check-secret-leaks.mjs",
     "security:secrets:selftest": "node scripts/test-secret-leaks.mjs",
-    "floot:production:parity": "node scripts/check-floot-production-parity.mjs"
+    "floot:production:parity": "node scripts/check-floot-production-parity.mjs",
+    "study:analyze": "tsx scripts/analyze-study-responses.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.1",
