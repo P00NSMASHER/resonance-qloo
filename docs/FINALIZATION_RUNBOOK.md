@@ -28,7 +28,7 @@ Open:
 
 https://resonance-qloo.floot.app
 
-Confirm the header says **Live Qloo connected**, then run `QLOO_LIVE_REFRESH=1 npm run qloo:live:check` for the first post-credential check so cached status is deliberately bypassed. Subsequent checks can use `npm run qloo:live:check`. Do not continue until the readiness command passes with `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, and `qlooConnected=true`. If the app reports degraded after adding the key or after a live request failure, first verify the hosted environment is using `https://hackathon.api.qloo.com`, then use **Retry Qloo verification**. The retry must issue `/api/status?refresh=1`, invalidate any cached probe (including stale `ready`), and recover to `ready` only when a fresh Qloo probe succeeds. Ordinary status reads should continue using the cache, and repeated forced retries must remain rate-limited.
+Confirm the header says **Live Qloo connected**, then run `npm run qloo:cutover:verify`. That cross-platform command verifies production parity first and forces a fresh Qloo probe, so cached status is deliberately bypassed. Subsequent routine checks can use `npm run qloo:live:check`. Do not continue until the cutover command passes with `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, and `qlooConnected=true`. If the app reports degraded after adding the key or after a live request failure, first verify the hosted environment is using `https://hackathon.api.qloo.com`, then use **Retry Qloo verification**. The retry must issue `/api/status?refresh=1`, invalidate any cached probe (including stale `ready`), and recover to `ready` only when a fresh Qloo probe succeeds. Ordinary status reads should continue using the cache, and repeated forced retries must remain rate-limited.
 
 Before continuing, also verify production UI parity with the repository:
 - **Preview with example data** immediately renders an illustrative result;
@@ -134,8 +134,7 @@ Then run the checks that depend on the public deployment:
 
 ```bash
 npm run submission:preflight
-npm run deployment:check
-npm run qloo:live:check
+npm run qloo:cutover:verify
 ```
 
 All must pass before treating the submission as live-Qloo verified. The offline command includes the HTTP review-handshake smoke, deployment-checker self-test, proof-redaction self-test, evidence-capture self-test, build/tests, and artifact preflight. For the public deployment, check in this order: (1) backend and frontend both match the exact shared version in `deployment-contract.json`; (2) `/api/status` exposes the Resonance contract and trusted Qloo hackathon origin; (3) the public bundle contains the current judge-facing evidence UI; (4) the live Qloo flow and evidence capture succeed. A reachable but stale or mixed-version frontend/backend fails before any live proof is accepted.
