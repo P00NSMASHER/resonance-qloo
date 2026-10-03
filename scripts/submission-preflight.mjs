@@ -12,6 +12,7 @@ const requiredFiles = [
   'docs/KNOWN_LIMITATIONS.md',
   'docs/DEVPOST_FIELDS.md',
   'docs/FLOOT_QLOO_CUTOVER.md',
+  'docs/LIVE_QLOO_EVIDENCE.json',
   'SECURITY.md',
   'scripts/qloo-mcp-proof.mjs',
   'scripts/proof-redaction.mjs',
@@ -271,6 +272,40 @@ try {
     }
   }
 } catch {}
+
+try {
+  const liveEvidence = JSON.parse(await readFile('docs/LIVE_QLOO_EVIDENCE.json', 'utf8'));
+  if (liveEvidence.http_status !== 200) {
+    failures.push('Committed live Qloo evidence is not an HTTP 200 artifact.');
+  }
+  if (liveEvidence.response_summary?.provenance?.source !== 'qloo-live') {
+    failures.push('Committed live Qloo evidence is not marked qloo-live.');
+  }
+  if (liveEvidence.response_summary?.provenance?.apiOrigin !== 'https://hackathon.api.qloo.com') {
+    failures.push('Committed live Qloo evidence does not use the trusted hackathon API origin.');
+  }
+  if (liveEvidence.response_summary?.provenance?.contractVersion !== EXPECTED_CONTRACT_VERSION) {
+    failures.push('Committed live Qloo evidence contract version does not match deployment-contract.json.');
+  }
+  if (liveEvidence.response_summary?.evidence?.resolvedAnchorCount !== 2) {
+    failures.push('Committed live Qloo evidence no longer records the verified two-anchor run.');
+  }
+  if (liveEvidence.response_summary?.evidence?.selectedAffinityCount !== 4) {
+    failures.push('Committed live Qloo evidence no longer records four selected Qloo signals.');
+  }
+  if (liveEvidence.response_summary?.evidence?.returnedAffinityCount !== 8) {
+    failures.push('Committed live Qloo evidence no longer records eight returned Qloo signals.');
+  }
+  if (!Array.isArray(liveEvidence.response_summary?.plan) || liveEvidence.response_summary.plan.length !== 4) {
+    failures.push('Committed live Qloo evidence no longer records a four-step plan.');
+  }
+  const serializedLiveEvidence = JSON.stringify(liveEvidence);
+  if (/\\bhack_[A-Za-z0-9]{20,}\\b/.test(serializedLiveEvidence) || serializedLiveEvidence.includes('reviewToken')) {
+    failures.push('Committed live Qloo evidence contains credential/review-receipt material.');
+  }
+} catch (error) {
+  failures.push('Could not parse committed live Qloo evidence artifact.');
+}
 
 try {
   const limitations = await readFile('docs/KNOWN_LIMITATIONS.md', 'utf8');
