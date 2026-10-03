@@ -14,13 +14,13 @@ const gitBlobSha = body => createHash('sha1')
   .digest('hex');
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791047041893') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791047559850') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
 if (manifest.liveVerification?.flootProjectVersion !== manifest.flootProjectVersion) failures.push('Live Floot verification receipt version differs from the snapshot version.');
 if (manifest.liveVerification?.exactFileCount !== manifest.files.length) failures.push('Live Floot verification receipt file count differs from the manifest file count.');
-if (manifest.liveVerification?.directComparisonStatus !== '21/21 exact') failures.push('Live Floot verification receipt is missing the 21/21 exact direct-comparison status.');
+if (manifest.liveVerification?.directComparisonStatus !== '28/28 exact') failures.push('Live Floot verification receipt is missing the 21/21 exact direct-comparison status.');
 
 for (const entry of manifest.files ?? []) {
   const body = await readSnapshot(entry.path);
@@ -34,6 +34,9 @@ const prodStatusSchema = await readSnapshot('endpoints/status_GET.schema.ts');
 const prodLogic = await readSnapshot('helpers/qlooSessionLogic.tsx');
 const prodPage = await readSnapshot('pages/_index.tsx');
 const prodCss = await readSnapshot('pages/_index.module.css');
+const prodStudySchema = await readSnapshot('endpoints/study-response_POST.schema.ts');
+const prodStudyEndpoint = await readSnapshot('endpoints/study-response_POST.ts');
+const prodStudyPage = await readSnapshot('pages/study.tsx');
 
 const canonicalClient = await readRepo('src/lib/qlooClient.ts');
 const canonicalReview = await readRepo('src/lib/resolutionReviewToken.ts');
@@ -41,6 +44,7 @@ const canonicalServer = await readRepo('server/index.ts');
 const canonicalPlanner = await readRepo('src/lib/agentPlanner.ts');
 const canonicalApp = await readRepo('src/App.tsx');
 const canonicalDelta = await readRepo('src/lib/qlooDelta.ts');
+const canonicalStudy = await readRepo('src/lib/studyResponse.ts');
 
 const requireBoth = (name, prodText, prodNeedles, canonicalText, canonicalNeedles) => {
   for (const needle of prodNeedles) if (!prodText.includes(needle)) failures.push(`Production missing ${name}: ${needle}`);
@@ -104,6 +108,21 @@ requireBoth('Qloo delta comparison', prodPage,
 for (const needle of ['@media(max-width:1000px)','@media(max-width:650px)','.evidenceBridge','.planGrid','.reviewCard']) {
   if (!prodCss.includes(needle)) failures.push(`Production responsive CSS missing: ${needle}`);
 }
+
+
+requireBoth('anonymous study contract', prodStudySchema,
+  ['STUDY_VERSION = "2026-10-03-v1"','activity-director','family-caregiver','baselineSeconds','resonanceSeconds','relevance','novelty','usefulness','wouldUse','consent:z.literal(true)','noContactInfo'],
+  canonicalStudy,
+  ["STUDY_VERSION = '2026-10-03-v1'","activity-director","family-caregiver","baselineSeconds","resonanceSeconds","relevance","novelty","usefulness","wouldUse","consent: true","hasLikelyPersonalContact"]);
+
+for (const needle of ['RESONANCE_STUDY_RESPONSE','submittedAt:new Date().toISOString()']) {
+  if (!prodStudyEndpoint.includes(needle)) failures.push(`Production study endpoint missing privacy/audit marker: ${needle}`);
+  if (!canonicalServer.includes(needle.replace('submittedAt:new Date().toISOString()','submittedAt:new Date().toISOString()'))) failures.push(`Canonical study endpoint missing privacy/audit marker: ${needle}`);
+}
+for (const needle of ['noindex,nofollow','Aretha Franklin','The Sound of Music','do not use Resonance or another AI tool','Would you use something like this in real planning?','What would make this genuinely useful to you?','No name, email, IP address, resident/client information, or health data']) {
+  if (!prodStudyPage.includes(needle)) failures.push(`Production study page missing research/privacy marker: ${needle}`);
+}
+if (!canonicalServer.includes("url.pathname === '/api/study-response'")) failures.push('Canonical server is missing the anonymous study-response route.');
 
 if (failures.length) {
   failures.forEach(failure => console.error('FAIL:', failure));
