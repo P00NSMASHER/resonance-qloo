@@ -16,14 +16,15 @@ Do not paste the credential into chat, GitHub, Devpost, screenshots, logs, or do
 After the hosted environment has been updated and the backend is active:
 
 ```bash
-npm run deployment:check
-QLOO_LIVE_REFRESH=1 npm run qloo:live:check
+npm run qloo:cutover:verify
 ```
+
+This cross-platform command runs deployment parity first and then invokes `qloo:live:check -- --refresh`, forcing the server's bounded `?refresh=1` probe instead of trusting cached status.
 
 Expected results:
 
 1. `deployment:check` passes, proving the public frontend/backend still match the reviewed deployment contract.
-2. The first post-credential `qloo:live:check` is run with `QLOO_LIVE_REFRESH=1`, forcing the server's bounded `?refresh=1` probe instead of trusting cached status, and passes with:
+2. The forced live-Qloo readiness check passes with:
    - `mode=live`
    - `qlooStatus=ready`
    - `qlooConfigured=true`
@@ -43,7 +44,7 @@ Do not capture or publish live-Qloo evidence if any of these are true:
 - the public Qloo API origin differs from `https://hackathon.api.qloo.com`;
 - deployment parity fails.
 
-If status is degraded after the key is connected, use the app's **Retry Qloo verification** control or run `QLOO_LIVE_REFRESH=1 npm run qloo:live:check`. Forced refreshes are rate-limited server-side; ordinary CI/readiness checks do not force refreshes.
+If status is degraded after the key is connected, use the app's **Retry Qloo verification** control or rerun `npm run qloo:cutover:verify`. Forced refreshes are rate-limited server-side; ordinary CI/readiness checks do not force refreshes.
 
 ## After readiness passes
 
