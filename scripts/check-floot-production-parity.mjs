@@ -14,7 +14,7 @@ const gitBlobSha = body => createHash('sha1')
   .digest('hex');
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791023061990') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791045863245') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
@@ -40,6 +40,7 @@ const canonicalReview = await readRepo('src/lib/resolutionReviewToken.ts');
 const canonicalServer = await readRepo('server/index.ts');
 const canonicalPlanner = await readRepo('src/lib/agentPlanner.ts');
 const canonicalApp = await readRepo('src/App.tsx');
+const canonicalDelta = await readRepo('src/lib/qlooDelta.ts');
 
 const requireBoth = (name, prodText, prodNeedles, canonicalText, canonicalNeedles) => {
   for (const needle of prodNeedles) if (!prodText.includes(needle)) failures.push(`Production missing ${name}: ${needle}`);
@@ -90,12 +91,16 @@ for (const needle of ["source: 'qloo-live'","apiOrigin: QLOO_BASE_URL","contract
   if (!canonicalServer.includes(needle)) failures.push(`Canonical provenance missing: ${needle}`);
 }
 
-for (const needle of ['Live Qloo verified','Qloo match review required','Confirm matches & build','How Qloo changed this plan','Plan signal #','Additional evidence','Interpretation limit']) {
+for (const needle of ['Live Qloo verified','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence & audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!prodPage.includes(needle)) failures.push(`Production judge UI missing: ${needle}`);
 }
-for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','How Qloo changed this plan','Plan signal #','Additional evidence','Interpretation limit']) {
+for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence & audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!canonicalApp.includes(needle)) failures.push(`Canonical judge UI missing: ${needle}`);
 }
+requireBoth('Qloo delta comparison', prodPage,
+  ['literalBaselineAction','selectedSignalsNotNamedInInputs','activitiesInfluencedCount'],
+  canonicalDelta,
+  ['buildAnchorOnlyBaseline','selectedSignalsNotNamedInInputs','activitiesInfluencedCount']);
 for (const needle of ['@media(max-width:1000px)','@media(max-width:650px)','.evidenceBridge','.planGrid','.reviewCard']) {
   if (!prodCss.includes(needle)) failures.push(`Production responsive CSS missing: ${needle}`);
 }
