@@ -57,7 +57,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
-### Pending the event credential
+### Credential received; hosted live verification pending
 
 The final evidence block will record:
 
@@ -82,7 +82,7 @@ Live demo:
 
 https://resonance-qloo.floot.app
 
-The app currently exposes a clearly labeled illustrative preview while the event-issued credential is pending. A branded Devpost thumbnail is uploaded. A live-result screenshot should be captured only after the credential is connected.
+The event-issued credential has been received, but it is not yet connected to the Floot production environment. The app therefore still exposes a clearly labeled illustrative preview. A branded Devpost thumbnail is uploaded. A live-result screenshot should be captured only after the credential is securely connected and verified.
 
 ## 5. Clean-environment setup
 
@@ -108,4 +108,4 @@ The official Qloo harness requires Node.js 22.19 or newer.
 
 See [KNOWN_LIMITATIONS.md](./KNOWN_LIMITATIONS.md).
 
-The most important current limitation is that the event-issued Qloo credential has been requested but has not yet arrived, so the hosted app cannot yet demonstrate a real end-to-end Qloo result.
+The most important current limitation is that the event-issued Qloo credential has arrived but is not yet connected to the hosted Floot environment, so the public app cannot yet demonstrate a real end-to-end Qloo result.
