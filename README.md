@@ -69,6 +69,10 @@ The server echoes a normalized `requestContext` receipt on both the HTTP 409 ent
 
 See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
 
+## Canonical judge example
+
+Nine complete live candidate outputs were scored as whole results without filtering awkward signals. **Aretha Franklin + The Sound of Music** is the default judge example because it produced the strongest complete output. The complete audit and winning live response are committed under `docs/DEMO_CASE_AUDIT.*` and `docs/CANONICAL_DEMO_EVIDENCE.json`.
+
 ## Why Qloo changes the result
 
 The judge-facing comparison now uses the same submitted favorites on both sides. The anchor-only baseline is deterministic and may only reuse literal favorites/category hints; it cannot invent adjacent cultural signals. The Qloo side uses the actual returned taste graph evidence. This makes the incremental contribution inspectable instead of asserting that Qloo matters.
@@ -117,6 +121,8 @@ The real event key must never be committed or pasted into a public artifact.
 - [Floot live-Qloo cutover](docs/FLOOT_QLOO_CUTOVER.md)
 - [Verified live Qloo evidence](docs/LIVE_QLOO_EVIDENCE.json)
 - [Verified review-gated Qloo evidence](docs/LIVE_QLOO_REVIEW_EVIDENCE.json)
+- [Canonical demo-case audit](docs/DEMO_CASE_AUDIT.md)
+- [Canonical demo evidence](docs/CANONICAL_DEMO_EVIDENCE.json)
 - [Exact Floot production source](floot-production/README.md)
 - [Security](SECURITY.md)
 - [OpenAPI contract](openapi.yaml)
@@ -207,13 +213,12 @@ The smoke test verifies:
 ```json
 {
   "anchors": [
-    {"query":"Ella Fitzgerald","type":"artist"},
-    {"query":"Singin' in the Rain","type":"movie"},
-    {"query":"Italian food","type":"any"}
+    {"query":"Aretha Franklin","type":"artist"},
+    {"query":"The Sound of Music","type":"movie"}
   ],
   "energy": "calm",
   "setting": "small-group",
-  "durationMinutes": 45
+  "durationMinutes": 30
 }
 ```
 
