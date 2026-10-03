@@ -10,13 +10,14 @@ const EXPECTED_CONTRACT_VERSION = JSON.parse(
 ).version;
 const checkerPath = fileURLToPath(new URL('./check-live-qloo.mjs', import.meta.url));
 
-function runChecker(baseUrl) {
+function runChecker(baseUrl, forceRefresh = false) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [checkerPath], {
       env:{
         ...process.env,
         RESONANCE_BASE_URL:baseUrl,
         EXPECTED_QLOO_API_ORIGIN,
+        QLOO_LIVE_REFRESH:forceRefresh ? '1' : '',
       },
       stdio:['ignore','pipe','pipe'],
     });
@@ -43,7 +44,8 @@ async function withStatus(mode, fn) {
   };
 
   const server = createServer((req, res) => {
-    if (req.url === '/api/status') {
+    const requestUrl = new URL(req.url || '/', 'http://localhost');
+    if (requestUrl.pathname === '/api/status') {
       if (mode === 'floot-ready') {
         res.writeHead(200, { 'content-type':'text/html; charset=utf-8' });
         res.end('<!doctype html><title>frontend shell</title>');
@@ -53,7 +55,7 @@ async function withStatus(mode, fn) {
       res.end(JSON.stringify(statusPayload));
       return;
     }
-    if (req.url === '/_api/status') {
+    if (requestUrl.pathname === '/_api/status') {
       if (mode === 'floot-ready') {
         res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
         res.end(JSON.stringify({ json:statusPayload }));
@@ -91,6 +93,22 @@ if (ready.code !== 0 || !ready.stdout.includes('Live Qloo readiness passed via /
 const flootReady = await withStatus('floot-ready', runChecker);
 if (flootReady.code !== 0 || !flootReady.stdout.includes('Live Qloo readiness passed via /_api/status')) {
   throw new Error(`Expected Floot wrapped ready status to pass. stdout=${flootReady.stdout} stderr=${flootReady.stderr}`);
+}
+
+const refreshedReady = await withStatus('ready', baseUrl => runChecker(baseUrl, true));
+if (
+  refreshedReady.code !== 0 ||
+  !refreshedReady.stdout.includes('Live Qloo readiness passed via /api/status?refresh=1')
+) {
+  throw new Error(`Expected forced direct readiness refresh to pass. stdout=${refreshedReady.stdout} stderr=${refreshedReady.stderr}`);
+}
+
+const refreshedFlootReady = await withStatus('floot-ready', baseUrl => runChecker(baseUrl, true));
+if (
+  refreshedFlootReady.code !== 0 ||
+  !refreshedFlootReady.stdout.includes('Live Qloo readiness passed via /_api/status?refresh=1')
+) {
+  throw new Error(`Expected forced Floot readiness refresh to pass. stdout=${refreshedFlootReady.stdout} stderr=${refreshedFlootReady.stderr}`);
 }
 
 const preview = await withStatus('preview', runChecker);
