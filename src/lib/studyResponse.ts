@@ -44,12 +44,17 @@ export function validateStudyResponse(input: unknown): StudyResponse {
   if (typeof raw.responseId !== 'string' || !/^[0-9a-f-]{20,64}$/i.test(raw.responseId)) throw new Error('STUDY_INVALID');
   if (typeof raw.role !== 'string' || !(STUDY_ROLES as readonly string[]).includes(raw.role)) throw new Error('STUDY_INVALID');
 
-  const whole = (value: unknown, min: number, max: number) =>
+  const whole = (value: unknown, min: number, max: number): value is number =>
     typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max;
-  if (!whole(raw.baselineSeconds, 15, 3600)) throw new Error('STUDY_INVALID');
-  if (!whole(raw.resonanceSeconds, 5, 1800)) throw new Error('STUDY_INVALID');
-  for (const field of ['relevance','novelty','usefulness'] as const) {
-    if (!whole(raw[field],1,5)) throw new Error('STUDY_INVALID');
+  const baselineSeconds = raw.baselineSeconds;
+  const resonanceSeconds = raw.resonanceSeconds;
+  const relevance = raw.relevance;
+  const novelty = raw.novelty;
+  const usefulness = raw.usefulness;
+  if (!whole(baselineSeconds, 15, 3600)) throw new Error('STUDY_INVALID');
+  if (!whole(resonanceSeconds, 5, 1800)) throw new Error('STUDY_INVALID');
+  if (!whole(relevance, 1, 5) || !whole(novelty, 1, 5) || !whole(usefulness, 1, 5)) {
+    throw new Error('STUDY_INVALID');
   }
   if (typeof raw.wouldUse !== 'boolean' || raw.consent !== true) throw new Error('STUDY_INVALID');
   if (typeof raw.feedback !== 'string') throw new Error('STUDY_INVALID');
@@ -60,11 +65,11 @@ export function validateStudyResponse(input: unknown): StudyResponse {
     studyVersion:STUDY_VERSION,
     responseId:raw.responseId,
     role:raw.role as StudyRole,
-    baselineSeconds:raw.baselineSeconds,
-    resonanceSeconds:raw.resonanceSeconds,
-    relevance:raw.relevance,
-    novelty:raw.novelty,
-    usefulness:raw.usefulness,
+    baselineSeconds,
+    resonanceSeconds,
+    relevance,
+    novelty,
+    usefulness,
     wouldUse:raw.wouldUse,
     feedback,
     consent:true,
