@@ -256,10 +256,22 @@ try {
     'qlooStatus=ready',
     'qlooConfigured=true',
     'qlooConnected=true',
+    'RESONANCE_CONFIRMED_ENTITY_IDS',
+    'RESONANCE_REVIEW_TOKEN',
   ]) {
     if (!cutover.includes(required)) {
       failures.push(`Floot live-Qloo cutover checklist is missing required verification content: ${required}`);
     }
+  }
+} catch {}
+
+try {
+  const limitations = await readFile('docs/KNOWN_LIMITATIONS.md', 'utf8');
+  if (!limitations.includes('five-minute server-signed review receipt')) {
+    failures.push('Known limitations no longer document the signed Qloo review receipt.');
+  }
+  if (!limitations.includes('IDs alone cannot authorize a non-exact match')) {
+    failures.push('Known limitations no longer state that entity IDs alone cannot bypass Qloo review.');
   }
 } catch {}
 
