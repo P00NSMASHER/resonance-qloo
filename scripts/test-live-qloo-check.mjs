@@ -37,9 +37,9 @@ async function withStatus(mode, fn) {
     contractVersion:mode === 'wrong-contract' ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
     qlooApiOrigin:EXPECTED_QLOO_API_ORIGIN,
     mode:mode === 'preview' ? 'preview' : 'live',
-    qlooStatus:mode === 'preview' ? 'preview' : 'ready',
+    qlooStatus:mode === 'preview' ? 'preview' : mode === 'degraded' ? 'degraded' : mode === 'rate-limited' ? 'rate-limited' : 'ready',
     qlooConfigured:mode !== 'preview',
-    qlooConnected:mode !== 'preview',
+    qlooConnected:!['preview','degraded','rate-limited'].includes(mode),
   };
 
   const server = createServer((req, res) => {
@@ -97,12 +97,33 @@ const preview = await withStatus('preview', runChecker);
 const previewOutput = preview.stdout + '\n' + preview.stderr;
 if (
   preview.code !== 2 ||
-  !previewOutput.includes('NOT READY:') ||
+  !previewOutput.includes('NOT READY [credential-missing]') ||
   !previewOutput.includes('mode=preview') ||
   !previewOutput.includes('qlooConfigured=false') ||
   !previewOutput.includes('qlooConnected=false')
 ) {
   throw new Error(`Expected current preview deployment to exit 2 as not ready. stdout=${preview.stdout} stderr=${preview.stderr}`);
+}
+
+const degraded = await withStatus('degraded', runChecker);
+const degradedOutput = degraded.stdout + '\n' + degraded.stderr;
+if (
+  degraded.code !== 3 ||
+  !degradedOutput.includes('NOT READY [verification-failed]') ||
+  !degradedOutput.includes('qlooStatus=degraded') ||
+  !degradedOutput.includes('Retry Qloo verification')
+) {
+  throw new Error(`Expected degraded status to exit 3 with verification guidance. stdout=${degraded.stdout} stderr=${degraded.stderr}`);
+}
+
+const rateLimited = await withStatus('rate-limited', runChecker);
+const rateOutput = rateLimited.stdout + '\n' + rateLimited.stderr;
+if (
+  rateLimited.code !== 4 ||
+  !rateOutput.includes('NOT READY [rate-limited]') ||
+  !rateOutput.includes('qlooStatus=rate-limited')
+) {
+  throw new Error(`Expected rate-limited status to exit 4 with retry guidance. stdout=${rateLimited.stdout} stderr=${rateLimited.stderr}`);
 }
 
 const wrongContract = await withStatus('wrong-contract', runChecker);
