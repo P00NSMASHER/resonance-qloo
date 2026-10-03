@@ -91,5 +91,11 @@
       "path": "static/__dev/dependencies.json",
       "gitBlobSha": "b84a2276584b7a16c4ab7ca21035d521e46d0082"
     }
-  ]
+  ],
+  "liveVerification": {
+    "verifiedDate": "2026-10-03",
+    "flootProjectVersion": "1791023061990",
+    "exactFileCount": 21,
+    "verificationMethod": "Read the current Floot source for every manifested runtime file, stripped only connector-added line-number transport prefixes, recomputed Git blob SHA-1, and matched all 21 hashes exactly."
+  }
 }
