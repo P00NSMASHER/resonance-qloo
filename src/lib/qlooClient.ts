@@ -40,6 +40,9 @@ export class QlooClient {
     }
 
     if (!response.ok) {
+      console.warn(
+        `[qloo-upstream] endpoint=${endpoint} status=${response.status} explainabilityRequested=${url.searchParams.has('feature.explainability')}`,
+      );
       const responseDetail = (await response.text().catch(() => '')).slice(0, 1_000);
       const normalizedDetail = responseDetail.toLocaleLowerCase('en-US');
       const explainabilityUnsupported =
