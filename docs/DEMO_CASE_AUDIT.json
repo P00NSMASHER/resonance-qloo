@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "methodology": {
+    "evaluatedCandidateCount": 9,
+    "selectionRule": "Score complete live outputs; never hide or remove returned signals to improve a candidate.",
+    "dimensions": [
+      "exactResolution",
+      "intuitiveCrossCategory",
+      "visualClarity",
+      "activityUsefulness",
+      "lowSemanticWeirdness",
+      "meaningfulSurprise"
+    ],
+    "dimensionScale": "0-5",
+    "overallFormula": "unweighted mean of six dimensions × 20",
+    "status": "All nine candidates completed with HTTP 200 live Qloo output and exact-name resolution."
+  },
+  "winner": {
+    "id": "aretha-sound-of-music",
+    "rationale": "Highest whole-output score. All eight returned signals form a coherent music/culture cluster, both anchors resolve exactly, and the selected set is clear enough for a first-time judge without hiding any output."
+  },
+  "candidates": [
+    {
+      "id": "ella-singin-rain",
+      "anchors": [
+        "Ella Fitzgerald",
+        "Singin' in the Rain"
+      ],
+      "selected": [
+        "Christian",
+        "Jazz",
+        "Inventive",
+        "swing"
+      ],
+      "affinities": [
+        "Christian",
+        "Jazz",
+        "Inventive",
+        "swing",
+        "Optimistic",
+        "piano",
+        "Vocal-Jazz",
+        "oldies"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Ella Fitzgerald",
+          "Christian"
+        ],
+        [
+          "Story bridge",
+          "Singin' in the Rain",
+          "Jazz"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Inventive"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "swing"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 3.5,
+        "visualClarity": 3,
+        "activityUsefulness": 3.5,
+        "lowSemanticWeirdness": 2.5,
+        "meaningfulSurprise": 4
+      },
+      "overall": 71.7,
+      "note": "Strong music coherence after the first tag, but 'Christian' is distracting as the top selected signal."
+    },
+    {
+      "id": "aretha-sound-of-music",
+      "anchors": [
+        "Aretha Franklin",
+        "The Sound of Music"
+      ],
+      "selected": [
+        "Entertainment",
+        "soul",
+        "funk",
+        "rhythm & blues"
+      ],
+      "affinities": [
+        "Entertainment",
+        "soul",
+        "funk",
+        "rhythm & blues",
+        "Timeless",
+        "Jazz",
+        "blues",
+        "Musically Inclined"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Aretha Franklin",
+          "Entertainment"
+        ],
+        [
+          "Story bridge",
+          "The Sound of Music",
+          "soul"
+        ],
+        [
+          "Shared choice",
+          null,
+          "funk"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "rhythm & blues"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4.5,
+        "visualClarity": 4.5,
+        "activityUsefulness": 4.5,
+        "lowSemanticWeirdness": 4.5,
+        "meaningfulSurprise": 4.5
+      },
+      "overall": 91.7,
+      "note": "Best complete output. Exact resolution and the entire returned set is musically coherent; only 'Entertainment' is broad rather than odd."
+    },
+    {
+      "id": "johnny-cash-butch-cassidy",
+      "anchors": [
+        "Johnny Cash",
+        "Butch Cassidy and the Sundance Kid"
+      ],
+      "selected": [
+        "Triumphant",
+        "Classics",
+        "VISA",
+        "Record Label"
+      ],
+      "affinities": [
+        "Triumphant",
+        "Classics",
+        "VISA",
+        "Record Label",
+        "Loyal Sidekick",
+        "Confessional",
+        "Panoramic",
+        "History"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Johnny Cash",
+          "Triumphant"
+        ],
+        [
+          "Story bridge",
+          "Butch Cassidy and the Sundance Kid",
+          "Classics"
+        ],
+        [
+          "Shared choice",
+          null,
+          "VISA"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "Record Label"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 2.5,
+        "visualClarity": 1.5,
+        "activityUsefulness": 2,
+        "lowSemanticWeirdness": 1,
+        "meaningfulSurprise": 3
+      },
+      "overall": 50,
+      "note": "VISA and Record Label materially weaken judge confidence despite exact resolution."
+    },
+    {
+      "id": "beatles-mary-poppins",
+      "anchors": [
+        "The Beatles",
+        "Mary Poppins"
+      ],
+      "selected": [
+        "Entertainment",
+        "LGBTQ+ friendly",
+        "Three Star",
+        "American Express"
+      ],
+      "affinities": [
+        "Entertainment",
+        "LGBTQ+ friendly",
+        "Three Star",
+        "American Express",
+        "Moderately expensive",
+        "rock",
+        "Wholesome",
+        "psychedelic"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "The Beatles",
+          "Entertainment"
+        ],
+        [
+          "Story bridge",
+          "Mary Poppins",
+          "LGBTQ+ friendly"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Three Star"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "American Express"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 2,
+        "visualClarity": 1.5,
+        "activityUsefulness": 1.5,
+        "lowSemanticWeirdness": 1,
+        "meaningfulSurprise": 2.5
+      },
+      "overall": 45,
+      "note": "Payment and star-rating tags dominate the selected set."
+    },
+    {
+      "id": "sinatra-casablanca",
+      "anchors": [
+        "Frank Sinatra",
+        "Casablanca"
+      ],
+      "selected": [
+        "Five Star",
+        "Record Label",
+        "Discover",
+        "LGBTQ+ friendly"
+      ],
+      "affinities": [
+        "Five Star",
+        "Record Label",
+        "Discover",
+        "LGBTQ+ friendly",
+        "History museum",
+        "Very expensive",
+        "Robin Hood",
+        "Luxurious"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Frank Sinatra",
+          "Five Star"
+        ],
+        [
+          "Story bridge",
+          "Casablanca",
+          "Record Label"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Discover"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "LGBTQ+ friendly"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 2,
+        "visualClarity": 1.5,
+        "activityUsefulness": 1.5,
+        "lowSemanticWeirdness": 1,
+        "meaningfulSurprise": 2.5
+      },
+      "overall": 45,
+      "note": "Selected tags are not a persuasive cultural bridge for judges."
+    },
+    {
+      "id": "louis-armstrong-new-orleans",
+      "anchors": [
+        "Louis Armstrong",
+        "New Orleans"
+      ],
+      "selected": [
+        "Four Star",
+        "Moderately expensive",
+        "Cultural Arts",
+        "Prohibition"
+      ],
+      "affinities": [
+        "Four Star",
+        "Moderately expensive",
+        "Cultural Arts",
+        "Prohibition",
+        "Joyous",
+        "Music",
+        "Optimism",
+        "Robin Hood"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Louis Armstrong",
+          "Four Star"
+        ],
+        [
+          "Story bridge",
+          "New Orleans",
+          "Moderately expensive"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Cultural Arts"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "Prohibition"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 3,
+        "visualClarity": 2,
+        "activityUsefulness": 2.5,
+        "lowSemanticWeirdness": 2,
+        "meaningfulSurprise": 4
+      },
+      "overall": 61.7,
+      "note": "Cultural Arts and Prohibition are interesting, but pricing/rating tags dominate the first half."
+    },
+    {
+      "id": "supremes-roman-holiday",
+      "anchors": [
+        "The Supremes",
+        "Roman Holiday"
+      ],
+      "selected": [
+        "Record Label",
+        "Reporter",
+        "60s",
+        "soul"
+      ],
+      "affinities": [
+        "Record Label",
+        "Reporter",
+        "60s",
+        "soul",
+        "oldies",
+        "funk",
+        "rhythm & blues",
+        "Rome"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "The Supremes",
+          "Record Label"
+        ],
+        [
+          "Story bridge",
+          "Roman Holiday",
+          "Reporter"
+        ],
+        [
+          "Shared choice",
+          null,
+          "60s"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "soul"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4,
+        "visualClarity": 3.5,
+        "activityUsefulness": 3.5,
+        "lowSemanticWeirdness": 3,
+        "meaningfulSurprise": 4.5
+      },
+      "overall": 78.3,
+      "note": "A credible cross-category bridge, but Record Label and Reporter are less immediately persuasive than the stronger music tags."
+    },
+    {
+      "id": "aretha-blues-brothers",
+      "anchors": [
+        "Aretha Franklin",
+        "The Blues Brothers"
+      ],
+      "selected": [
+        "Games",
+        "soul",
+        "Blues",
+        "funk"
+      ],
+      "affinities": [
+        "Games",
+        "soul",
+        "Blues",
+        "funk",
+        "rhythm & blues",
+        "Timeless",
+        "Orphanage"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Aretha Franklin",
+          "Games"
+        ],
+        [
+          "Story bridge",
+          "The Blues Brothers",
+          "soul"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Blues"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "funk"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4.5,
+        "visualClarity": 4,
+        "activityUsefulness": 4,
+        "lowSemanticWeirdness": 3.5,
+        "meaningfulSurprise": 4.5
+      },
+      "overall": 85,
+      "note": "Three selected signals are excellent; 'Games' as the top selected signal prevents it from beating the winner."
+    },
+    {
+      "id": "elvis-jailhouse-rock",
+      "anchors": [
+        "Elvis Presley",
+        "Jailhouse Rock"
+      ],
+      "selected": [
+        "Salmon Blt",
+        "Food & Beverage",
+        "Tourist attraction",
+        "Four Star"
+      ],
+      "affinities": [
+        "Salmon Blt",
+        "Food & Beverage",
+        "Tourist attraction",
+        "Four Star",
+        "LGBTQ+ friendly",
+        "Inexpensive",
+        "American Express",
+        "60s"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Elvis Presley",
+          "Salmon Blt"
+        ],
+        [
+          "Story bridge",
+          "Jailhouse Rock",
+          "Food & Beverage"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Tourist attraction"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "Four Star"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 1,
+        "visualClarity": 0.5,
+        "activityUsefulness": 1,
+        "lowSemanticWeirdness": 0.5,
+        "meaningfulSurprise": 2
+      },
+      "overall": 33.3,
+      "note": "Full output is semantically distracting and unsuitable as a canonical demo."
+    }
+  ]
+}
