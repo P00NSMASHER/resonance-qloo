@@ -13,6 +13,7 @@ const requiredFiles = [
   'docs/JUDGING.md',
   'docs/SUBMISSION_EVIDENCE.md',
   'docs/KNOWN_LIMITATIONS.md',
+  'docs/USER_VALIDATION_STUDY.md',
   'docs/DEVPOST_FIELDS.md',
   'docs/FLOOT_QLOO_CUTOVER.md',
   'docs/LIVE_QLOO_EVIDENCE.json',
@@ -43,6 +44,7 @@ const requiredFiles = [
   'scripts/test-proof-environment.mjs',
   'scripts/test-evidence-capture.mjs',
   'scripts/test-ui-state-safety.mjs',
+  'scripts/analyze-study-responses.ts',
   'scripts/test-deployment-checker.mjs',
   'scripts/check-secret-leaks.mjs',
   'scripts/test-secret-leaks.mjs',
@@ -81,6 +83,24 @@ try {
     failures.push('Repository secret scanner no longer emits a clear failure marker.');
   }
 } catch {}
+
+try {
+  const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
+  if (packageJson.scripts?.['study:analyze'] !== 'tsx scripts/analyze-study-responses.ts') {
+    failures.push('Study validation workflow is missing the private aggregate-analysis command.');
+  }
+  const studyProtocol = await readFile('docs/USER_VALIDATION_STUDY.md', 'utf8');
+  for (const required of [
+    'Phase 5 is complete only when at least **3 valid real target-user responses** exist.',
+    'No synthetic, test, developer-generated, or inferred response counts as user evidence.',
+    'valid real target-user responses: **0**',
+    'completion threshold is **not met**',
+  ]) {
+    if (!studyProtocol.includes(required)) failures.push(`Study validation protocol is missing integrity marker: ${required}`);
+  }
+} catch (error) {
+  failures.push(`Study validation workflow could not be validated: ${error instanceof Error ? error.message : String(error)}`);
+}
 
 try {
   const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
