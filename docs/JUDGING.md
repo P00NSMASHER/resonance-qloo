@@ -6,7 +6,7 @@ The public demo is live at https://resonance-qloo.floot.app and the server curre
 
 A redaction-safe HTTP 200 public live artifact is committed at [LIVE_QLOO_EVIDENCE.json](LIVE_QLOO_EVIDENCE.json). That run resolved two exact Qloo entities, retained eight returned affinity signals, selected four real numeric signals, and produced a four-step `qloo-live` session.
 
-The separate non-exact path is also observable in production: `Italian food` resolves to Qloo's top result `Italian Food Berlin` and returns the signed HTTP 409 review gate before taste analysis. The most recent confirmed post-review attempt received upstream Qloo HTTP 429, so that narrower follow-up is additional evidence rather than a blocker to the verified exact-match path.
+The non-exact path is also fully verified in production: `Italian food` resolves to Qloo's top result `Italian Food Berlin`, returns the signed HTTP 409 review gate before taste analysis, and the confirmed follow-up completes with HTTP 200 `qloo-live` provenance. See [LIVE_QLOO_REVIEW_EVIDENCE.json](LIVE_QLOO_REVIEW_EVIDENCE.json).
 
 ## 60-second evaluation path
 
@@ -75,9 +75,10 @@ Instead of using Qloo for a conventional shopping or entertainment recommendatio
 
 - Public source: https://github.com/P00NSMASHER/resonance-qloo
 - Verified live Qloo artifact: [LIVE_QLOO_EVIDENCE.json](LIVE_QLOO_EVIDENCE.json)
+- Verified review-gated Qloo artifact: [LIVE_QLOO_REVIEW_EVIDENCE.json](LIVE_QLOO_REVIEW_EVIDENCE.json)
 - Submission evidence: [SUBMISSION_EVIDENCE.md](SUBMISSION_EVIDENCE.md)
 - Known limitations: [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md)
 - API contract: [../openapi.yaml](../openapi.yaml)
 - Official Qloo MCP proof path: `npm run qloo:proof -- "classic jazz vocals"`
 
-The exact-match public Qloo path is verified end-to-end and captured in the committed artifact above. The remaining narrower proof gap is the confirmed post-review taste-analysis completion for a non-exact top-result match, whose latest attempt was upstream-rate-limited.
+Both the exact-match public Qloo path and the signed non-exact review-gated path are verified end-to-end and captured in committed redaction-safe artifacts.
