@@ -58,7 +58,7 @@ The server echoes a normalized `requestContext` receipt on both the HTTP 409 ent
 
 1. Open the live demo.
 2. Check the connection indicator in the header.
-3. If the event credential is still pending, use **Preview with example data**; it is explicitly marked **ILLUSTRATIVE DEMO**.
+3. Until the received event credential is connected and verified in Floot, use **Preview with example data**; it is explicitly marked **ILLUSTRATIVE DEMO**.
 4. Once Qloo is verified, enter 2–4 cultural favorites and run the live agent.
 5. Inspect:
    - resolved anchors, exact-vs-top-result classification, and the pre-taste confirmation step when needed,
@@ -99,8 +99,8 @@ The real event key must never be committed or pasted into a public artifact.
 - Public MIT-licensed source repo is complete and GitHub recognizes the MIT license.
 - Direct npm dependencies are pinned, `package-lock.json` is committed, and CI installs with `npm ci` before typecheck, tests, production build, smoke/self-tests, submission preflight, and the advisory public deployment parity check.
 - OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
-- Event-issued Qloo credential has been requested and is still pending; no key-delivery message has been found yet.
-- Live-Qloo execution remains disabled until the credential is configured, verified against the hackathon API origin, and captured end-to-end.
+- The event-issued Qloo credential has been received. It is not yet connected to the Floot production environment, so public live-Qloo status remains preview.
+- Live-Qloo execution remains disabled until the received credential is securely connected to Floot, verified against the hackathon API origin, and captured end-to-end.
 - Formal submission is complete, but judge-readiness remains provisional until live Qloo evidence and public deployment parity both pass.
 
 ## Evidence and reproducibility
