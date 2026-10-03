@@ -59,6 +59,23 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
+### Canonical judge demo
+
+The default judge example is now **Aretha Franklin + The Sound of Music**.
+
+It was selected from nine complete live Qloo outputs using a published whole-result audit; no returned signal was removed before scoring. The audit is committed at [DEMO_CASE_AUDIT.md](./DEMO_CASE_AUDIT.md) / [DEMO_CASE_AUDIT.json](./DEMO_CASE_AUDIT.json).
+
+The winning case:
+
+- resolves both anchors exactly;
+- returns 8 retained Qloo signals;
+- selects 4 numeric signals: `Entertainment`, `soul`, `funk`, and `rhythm & blues`;
+- preserves the full returned set, including `Timeless`, `Jazz`, `blues`, and `Musically Inclined`;
+- produces a four-step 30-minute calm small-group session;
+- is captured in full at [CANONICAL_DEMO_EVIDENCE.json](./CANONICAL_DEMO_EVIDENCE.json).
+
+The earlier exact-match and review-gated evidence artifacts remain unchanged for historical transparency.
+
 ### Verified public live-Qloo evidence
 
 A redaction-safe live artifact is committed at [LIVE_QLOO_EVIDENCE.json](./LIVE_QLOO_EVIDENCE.json).
