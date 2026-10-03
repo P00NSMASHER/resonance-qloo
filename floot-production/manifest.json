@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791047041893",
+  "flootProjectVersion": "1791047559850",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact judge-facing Floot runtime slice: public page/styling, status and recommendation endpoints/schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
+  "snapshotScope": "Exact Floot runtime slice for the judge experience and anonymous user-validation study: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
   "files": [
     {
       "path": "base.css",
@@ -13,49 +13,14 @@
       "sourceCharCount": 5399
     },
     {
-      "path": "components/_globalContextProviders.tsx",
-      "gitBlobSha": "bd56d0e9e7e660f42fbfa79a7f470c38551c21b4",
-      "sourceCharCount": 837
-    },
-    {
       "path": "components/_globalContextProviders.module.css",
       "gitBlobSha": "d2284fa5a3f85ed0135c61fbca8817144809f4c1",
       "sourceCharCount": 72
     },
     {
-      "path": "components/Button.tsx",
-      "gitBlobSha": "5768177a356c29951b05ca92494bf79745be2cb3",
-      "sourceCharCount": 1087
-    },
-    {
-      "path": "components/Button.module.css",
-      "gitBlobSha": "faef6a53f39f8e80132b9abe957aa81976868332",
-      "sourceCharCount": 6483
-    },
-    {
-      "path": "components/Input.tsx",
-      "gitBlobSha": "34448217709cc4e4eb96b8dd2d2445c60b3692f8",
-      "sourceCharCount": 438
-    },
-    {
-      "path": "components/Input.module.css",
-      "gitBlobSha": "39dfe807fa9337f9a60748b87c399d699fd2d7d0",
-      "sourceCharCount": 2179
-    },
-    {
-      "path": "components/Select.tsx",
-      "gitBlobSha": "44d94770d9f337e9e6877ef21cc1f487d1971abd",
-      "sourceCharCount": 4416
-    },
-    {
-      "path": "components/Select.module.css",
-      "gitBlobSha": "dfea1883b98f9f18a2c9c2b2db4d33eec45e2f59",
-      "sourceCharCount": 3132
-    },
-    {
-      "path": "components/Badge.tsx",
-      "gitBlobSha": "da554c67f31316cb3ca01eba81ea745f349a0534",
-      "sourceCharCount": 474
+      "path": "components/_globalContextProviders.tsx",
+      "gitBlobSha": "bd56d0e9e7e660f42fbfa79a7f470c38551c21b4",
+      "sourceCharCount": 837
     },
     {
       "path": "components/Badge.module.css",
@@ -63,9 +28,49 @@
       "sourceCharCount": 1986
     },
     {
-      "path": "endpoints/recommend_POST.ts",
-      "gitBlobSha": "99f9fb812dcb257edbcbaf06cd6609f294ce8315",
-      "sourceCharCount": 13447
+      "path": "components/Badge.tsx",
+      "gitBlobSha": "da554c67f31316cb3ca01eba81ea745f349a0534",
+      "sourceCharCount": 474
+    },
+    {
+      "path": "components/Button.module.css",
+      "gitBlobSha": "faef6a53f39f8e80132b9abe957aa81976868332",
+      "sourceCharCount": 6483
+    },
+    {
+      "path": "components/Button.tsx",
+      "gitBlobSha": "5768177a356c29951b05ca92494bf79745be2cb3",
+      "sourceCharCount": 1087
+    },
+    {
+      "path": "components/Input.module.css",
+      "gitBlobSha": "39dfe807fa9337f9a60748b87c399d699fd2d7d0",
+      "sourceCharCount": 2179
+    },
+    {
+      "path": "components/Input.tsx",
+      "gitBlobSha": "34448217709cc4e4eb96b8dd2d2445c60b3692f8",
+      "sourceCharCount": 438
+    },
+    {
+      "path": "components/Select.module.css",
+      "gitBlobSha": "dfea1883b98f9f18a2c9c2b2db4d33eec45e2f59",
+      "sourceCharCount": 3132
+    },
+    {
+      "path": "components/Select.tsx",
+      "gitBlobSha": "44d94770d9f337e9e6877ef21cc1f487d1971abd",
+      "sourceCharCount": 4416
+    },
+    {
+      "path": "components/Textarea.module.css",
+      "gitBlobSha": "4208c62488e4499911633e2fac3fb459a2620b43",
+      "sourceCharCount": 474
+    },
+    {
+      "path": "components/Textarea.tsx",
+      "gitBlobSha": "69043008d0a17b83b96b126524c528ccaa9ff066",
+      "sourceCharCount": 768
     },
     {
       "path": "endpoints/recommend_POST.schema.ts",
@@ -73,14 +78,29 @@
       "sourceCharCount": 3371
     },
     {
-      "path": "endpoints/status_GET.ts",
-      "gitBlobSha": "0021f01051822425e31b2286007c07d82008d740",
-      "sourceCharCount": 1733
+      "path": "endpoints/recommend_POST.ts",
+      "gitBlobSha": "99f9fb812dcb257edbcbaf06cd6609f294ce8315",
+      "sourceCharCount": 13447
     },
     {
       "path": "endpoints/status_GET.schema.ts",
       "gitBlobSha": "4078bdd50755e8e982c5cf09ec562bb165f5326e",
       "sourceCharCount": 630
+    },
+    {
+      "path": "endpoints/status_GET.ts",
+      "gitBlobSha": "0021f01051822425e31b2286007c07d82008d740",
+      "sourceCharCount": 1733
+    },
+    {
+      "path": "endpoints/study-response_POST.schema.ts",
+      "gitBlobSha": "bc4cda9dc3382409b2b461759f81f54a0757b082",
+      "sourceCharCount": 1619
+    },
+    {
+      "path": "endpoints/study-response_POST.ts",
+      "gitBlobSha": "0613fef35a318238e6650de65b8930b72579dcfe",
+      "sourceCharCount": 1366
     },
     {
       "path": "helpers/_publicConfigs.tsx",
@@ -93,11 +113,6 @@
       "sourceCharCount": 10865
     },
     {
-      "path": "pages/_index.tsx",
-      "gitBlobSha": "971e16629e9603fcfaf91f416422106b7d878743",
-      "sourceCharCount": 35075
-    },
-    {
       "path": "pages/_index.module.css",
       "gitBlobSha": "9f45493017227657683c37376ee6d83ffc19704c",
       "sourceCharCount": 20740
@@ -108,6 +123,26 @@
       "sourceCharCount": 17
     },
     {
+      "path": "pages/_index.tsx",
+      "gitBlobSha": "971e16629e9603fcfaf91f416422106b7d878743",
+      "sourceCharCount": 35075
+    },
+    {
+      "path": "pages/study.module.css",
+      "gitBlobSha": "69397cdf1d9a5169fb18d54dec0c56835427c35e",
+      "sourceCharCount": 2441
+    },
+    {
+      "path": "pages/study.pageLayout.tsx",
+      "gitBlobSha": "4ad71d6e386ae243fe948064dbe108ba945728c3",
+      "sourceCharCount": 17
+    },
+    {
+      "path": "pages/study.tsx",
+      "gitBlobSha": "c4a1f8d45b290d0307971e5780bbe0a0b9699acd",
+      "sourceCharCount": 8755
+    },
+    {
       "path": "static/__dev/dependencies.json",
       "gitBlobSha": "9c63a2e0b343cac461e47ca4f7cd3c347951d4b3",
       "sourceCharCount": 1348
@@ -115,10 +150,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-03",
-    "flootProjectVersion": "1791047041893",
-    "exactFileCount": 21,
-    "verificationMethod": "The 20 untouched runtime files retain the prior direct exact-source receipt. The canonical-demo page source was directly re-read and refreshed byte-for-byte at live Floot project version 1791047041893.",
-    "directComparisonStatus": "21/21 exact",
-    "manifestBlobStatus": "21/21 manifest hashes match current exact snapshot blobs"
+    "flootProjectVersion": "1791047559850",
+    "exactFileCount": 28,
+    "verificationMethod": "The prior 21-file judge runtime snapshot remains exact. Seven study runtime files were directly read from live Floot project version 1791047559850 and added byte-for-byte after removing connector-added line-number transport prefixes.",
+    "directComparisonStatus": "28/28 exact",
+    "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }
 }
