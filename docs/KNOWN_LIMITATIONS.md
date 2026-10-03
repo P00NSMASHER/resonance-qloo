@@ -2,14 +2,16 @@
 
 ## Credential-dependent live verification
 
-The event-issued Qloo credential has been received but is not yet connected to the Floot production environment. Until it is connected and verified:
+The event-issued Qloo credential is now connected to the Floot production environment. A forced public status probe has verified the expected hackathon origin and reports:
 
-- the hosted live-Qloo action remains disabled;
-- no illustrative value is presented as a real Qloo result;
-- the exact production tool chain cannot be claimed as end-to-end verified;
-- the redacted request-to-result evidence remains intentionally incomplete.
+- `mode=live`;
+- `qlooStatus=ready`;
+- `qlooConfigured=true`;
+- `qlooConnected=true`.
 
-After a credential is configured, Resonance still does **not** immediately call the integration “live.” A lightweight Qloo probe must succeed first. A bad/expired credential therefore appears as a degraded state rather than a false green status.
+That proves the deployed backend can authenticate to Qloo. It does **not** by itself prove a full recommendation round-trip. The first real public recommendation reached the intended non-exact entity-review gate, then the confirmed follow-up received Qloo HTTP 429 before taste analysis completed. Final end-to-end evidence therefore remains pending on upstream rate-limit availability.
+
+Resonance still does **not** call the integration “live” merely because an environment variable exists. A lightweight Qloo probe must succeed first. A bad/expired credential therefore appears as a degraded state rather than a false green status.
 
 ## Qloo rank vs numeric score
 
@@ -57,6 +59,8 @@ Live Qloo behavior is subject to the event-issued credential, quota, rate limits
 
 ## Hosted environment
 
-The current public demo is externally hosted on Floot. The public repository is the reproducible source of truth for code, tests, architecture, and the event-tooling proof path. Source changes do not by themselves prove the public deployment is current; finalization therefore includes a public bundle parity check and requires re-publishing Floot when the hosted feature set is stale.
+The current public demo is externally hosted on Floot. The public repository is the reproducible source of truth for code, tests, architecture, and the event-tooling proof path. Source changes do not by themselves prove the public deployment is current, so finalization includes a public frontend/backend parity check.
 
-**Current observed blocker (October 2, 2026):** the advisory deployment checker reaches the public Floot URL, but `/api/status` returns `text/html` instead of the current Resonance JSON status contract. That proves the published Floot build is stale or missing the current API backend even though the website itself is reachable. Judge-readiness remains blocked until Floot is republished and `npm run deployment:check` passes against the public URL.
+The current Floot deployment is parity-verified against the shared deployment contract. Floot serves its endpoint handlers under `/_api/*`; the deployment checker intentionally probes both `/api/status` and `/_api/status` and unwraps Floot's JSON transport envelope. The previous “stale backend” diagnosis was a route mismatch and is no longer a blocker.
+
+**Current observed blocker:** the credential and deployment are both healthy. The remaining incomplete proof is the full live recommendation after entity confirmation because the latest confirmed follow-up received upstream Qloo HTTP 429 during taste analysis.
