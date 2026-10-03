@@ -104,6 +104,16 @@ try {
 }
 
 try {
+  const gitignore = await readFile('.gitignore', 'utf8');
+  if (!/^\.env$/m.test(gitignore) || !/^\.env\.\*$/m.test(gitignore)) {
+    failures.push('.gitignore no longer blocks local dotenv credential files.');
+  }
+  if (!/^!\.env\.example$/m.test(gitignore)) {
+    failures.push('.gitignore no longer explicitly preserves only the safe .env.example template.');
+  }
+} catch {}
+
+try {
   const envExample = await readFile('.env.example', 'utf8');
   if (!envExample.includes('QLOO_API_BASE_URL=https://hackathon.api.qloo.com')) {
     failures.push('.env.example is not pinned to the Qloo Agentic Hackathon API origin.');
