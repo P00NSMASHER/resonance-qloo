@@ -40,7 +40,7 @@ As of October 2, 2026 at 8:25 AM Eastern Time, Devpost returned:
 
 The submission window remains open until October 30, 2026 at 11:45 PM Eastern Time, so the entry can continue to be improved.
 
-On October 2, 2026 at 11:25 PM Eastern Time, the live Devpost project description was refreshed after public Qloo verification. It now records the connected/ready credential state, the verified HTTP 200 `qloo-live` recommendation, the committed `docs/LIVE_QLOO_EVIDENCE.json` artifact, the signed non-exact review gate, and the remaining narrower upstream-rate-limit caveat. The Devpost project remained published/submitted after the edit.
+On October 2, 2026 at 11:25 PM Eastern Time, the live Devpost project description was refreshed after public Qloo verification. It records the connected/ready credential state, the verified HTTP 200 `qloo-live` recommendation, the committed exact-match artifact, and the signed non-exact review gate. On October 3, 2026 the review-gated flow also completed end-to-end and is captured in `docs/LIVE_QLOO_REVIEW_EVIDENCE.json`; the Devpost description should reflect that stronger proof.
 
 ## Judge-readiness status
 
@@ -54,8 +54,7 @@ The core functional-demo requirements are now verified:
 
 Remaining submission polish:
 
-- refresh the Devpost description/evidence to reference the verified live artifact;
-- add a clean live-result screenshot if useful for judges;
-- optionally complete one post-review taste-analysis run for a non-exact Qloo match after the upstream rate limit permits it.
+- refresh the Devpost description to reference both verified live artifacts;
+- add a clean live-result screenshot if useful for judges.
 
 The official requirement calls for a functional demo that judges can use end-to-end; the exact-match public path now satisfies that functional proof.
