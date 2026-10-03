@@ -60,15 +60,18 @@ The server echoes a normalized `requestContext` receipt on both the HTTP 409 ent
 2. Check the connection indicator in the header.
 3. The received event credential is now connected and verified in Floot. **Preview with example data** remains an explicitly labeled **ILLUSTRATIVE DEMO** fallback when live Qloo is temporarily unavailable.
 4. Once Qloo is verified, enter 2–4 cultural favorites and run the live agent.
-5. Inspect:
-   - resolved anchors, exact-vs-top-result classification, and the pre-taste confirmation step when needed,
-   - cross-category Qloo taste evidence,
-   - the agent decision trace,
-   - the four-part session,
-   - the why-it-fits rationale for every step,
-   - the visible **Request receipt** and exported audit trail for submitted context, provenance, the non-secret Qloo API origin, and numbered evidence.
+5. Read the default result in this order:
+   - **Your favorites** — the resolved cultural anchors,
+   - **What Qloo discovered** — the selected adjacent taste signals,
+   - **Your session** — the four facilitator-ready activities,
+   - **How Qloo changed this session** — a competent anchor-only baseline beside the Qloo-grounded result, with counts for returned signals, selected signals, influenced activities, and selected discoveries not literally named in the inputs.
+6. Open **View evidence & audit trail** only when you want UUIDs, request receipt, provenance, contract version, all retained signals, review classifications, explainability metadata, selection rule, and the agent trace.
 
 See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
+
+## Why Qloo changes the result
+
+The judge-facing comparison now uses the same submitted favorites on both sides. The anchor-only baseline is deterministic and may only reuse literal favorites/category hints; it cannot invent adjacent cultural signals. The Qloo side uses the actual returned taste graph evidence. This makes the incremental contribution inspectable instead of asserting that Qloo matters.
 
 ## Official Qloo event-tooling proof
 
@@ -101,7 +104,7 @@ The real event key must never be committed or pasted into a public artifact.
 - OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
 - The event-issued Qloo credential is connected to the Floot production environment and has passed a forced public readiness probe: `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, `qlooConnected=true`.
 - Public live-Qloo execution is verified end-to-end for both the exact-match path and the non-exact review-gated path. The exact-match artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The review-gated artifact records HTTP 409 before taste analysis, one signed confirmed top-result match, then a successful HTTP 200 `qloo-live` plan with 3 resolved entities.
-- The exact judge-facing Floot runtime source is now committed under `floot-production/` with project version `1791023061990`, content-addressed file identities, and `npm run floot:production:parity` to verify Qloo/review/cache/provenance/UI invariants against the canonical implementation.
+- The exact judge-facing Floot runtime source is now committed under `floot-production/` with project version `1791046302328`, content-addressed file identities, and `npm run floot:production:parity` to verify Qloo/review/cache/provenance/UI invariants against the canonical implementation.
 - Formal submission is complete, but judge-readiness remains provisional until live Qloo evidence and public deployment parity both pass.
 
 ## Evidence and reproducibility
