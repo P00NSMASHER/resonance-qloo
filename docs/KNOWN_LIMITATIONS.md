@@ -47,7 +47,7 @@ Resonance is not a clinical, diagnostic, dietary, medication, or medical decisio
 
 Two vague anchors may resolve ambiguously. Resonance classifies each resolved entity as either an exact normalized-name match or a **Qloo top-result match to review**. Top-result matches are visibly labeled, counted in the decision evidence, and preserved in copied session evidence rather than being presented as equally certain.
 
-This is a review aid, not a confidence score. When a non-exact Qloo top-result match is present, Resonance now pauses **before taste analysis**, returns the resolved candidates for review, and requires the user to explicitly confirm those exact Qloo entity IDs before the plan can continue. Editing the anchors or category hints clears the pending confirmation.
+This is a review aid, not a confidence score. When a non-exact Qloo top-result match is present, Resonance pauses **before taste analysis**, returns the resolved candidates plus a five-minute server-signed review receipt, and requires the follow-up to include both that receipt and the exact reviewed Qloo entity IDs. IDs alone cannot authorize a non-exact match. Editing the anchors/category hints or session context, expiration, a changed Qloo match, Qloo credential/API-origin rotation, or a deployment-contract change requires review again.
 
 Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewer than three usable affinity signals. Exactly three usable signals are accepted: the four-step plan reuses the third real selected signal for the closing step, and the UI/export disclose that reuse instead of inventing a synthetic fourth signal.
 
