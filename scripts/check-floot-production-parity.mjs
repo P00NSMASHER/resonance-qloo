@@ -20,7 +20,7 @@ if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
 if (manifest.liveVerification?.flootProjectVersion !== manifest.flootProjectVersion) failures.push('Live Floot verification receipt version differs from the snapshot version.');
 if (manifest.liveVerification?.exactFileCount !== manifest.files.length) failures.push('Live Floot verification receipt file count differs from the manifest file count.');
-if (!String(manifest.liveVerification?.verificationMethod || '').includes('matched all 21 hashes exactly')) failures.push('Live Floot verification receipt is missing the exact-byte verification statement.');
+if (manifest.liveVerification?.directComparisonStatus !== '21/21 exact') failures.push('Live Floot verification receipt is missing the 21/21 exact direct-comparison status.');
 
 for (const entry of manifest.files ?? []) {
   const body = await readSnapshot(entry.path);
