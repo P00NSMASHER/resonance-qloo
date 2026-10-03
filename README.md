@@ -100,7 +100,7 @@ The real event key must never be committed or pasted into a public artifact.
 - Direct npm dependencies are pinned, `package-lock.json` is committed, and CI installs with `npm ci` before typecheck, tests, production build, smoke/self-tests, submission preflight, and the advisory public deployment parity check.
 - OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
 - The event-issued Qloo credential is connected to the Floot production environment and has passed a forced public readiness probe: `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, `qlooConnected=true`.
-- Live-Qloo search is active in production. The first public end-to-end attempt reached the intended non-exact entity-review gate; the confirmation/taste step then received Qloo HTTP 429, so final live evidence capture remains pending on upstream rate-limit clearance.
+- Public live-Qloo execution is verified end-to-end for the exact-match path. A committed redaction-safe artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The separate non-exact review-gated path still has a narrower follow-up proof pending because its confirmed taste-analysis request most recently received Qloo HTTP 429.
 - Formal submission is complete, but judge-readiness remains provisional until live Qloo evidence and public deployment parity both pass.
 
 ## Evidence and reproducibility
@@ -111,6 +111,7 @@ The real event key must never be committed or pasted into a public artifact.
 - [Judge guide](docs/JUDGING.md)
 - [Finalization runbook](docs/FINALIZATION_RUNBOOK.md)
 - [Floot live-Qloo cutover](docs/FLOOT_QLOO_CUTOVER.md)
+- [Verified live Qloo evidence](docs/LIVE_QLOO_EVIDENCE.json)
 - [Security](SECURITY.md)
 - [OpenAPI contract](openapi.yaml)
 
