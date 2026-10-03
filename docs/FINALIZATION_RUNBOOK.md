@@ -1,6 +1,6 @@
 # Finalization runbook
 
-The event-issued Qloo API credential is connected to Floot and the public readiness probe has passed. Use this runbook from the live-flow/evidence stages forward; if the upstream Qloo rate limit clears, rerun the public flow and capture final evidence.
+The event-issued Qloo API credential is connected to Floot, the public readiness probe has passed, and an exact-match public recommendation has completed end-to-end with committed live evidence. Use this runbook for the remaining submission-polish steps and the optional review-gated follow-up proof.
 
 ## 1. Connect the credential — complete
 
@@ -63,7 +63,7 @@ npm run qloo:proof -- "classic jazz vocals"
 
 Save the redacted output. Never save the API key itself.
 
-## 4. Exercise the actual product path
+## 4. Exercise the actual product path — exact-match path complete
 
 Use the public app with:
 
@@ -89,7 +89,7 @@ Confirm:
 - each activity has a why-it-fits explanation;
 - copied session text preserves the same selected/additional distinction and signal numbering shown in the UI.
 
-## 5. Capture live evidence
+## 5. Capture live evidence — exact-match artifact complete
 
 Against a local production-style server:
 
@@ -107,20 +107,17 @@ RESONANCE_BASE_URL=https://resonance-qloo.floot.app npm run evidence:capture
 
 The capture script refuses to run unless the server reports that Qloo is connected. It also requires the successful response's normalized `requestContext` receipt to match the exact anchors/energy/setting/duration used for evidence capture. Run live capture from a private local terminal, not a shared CI log: when entity review is required, the script temporarily prints the short-lived `RESONANCE_REVIEW_TOKEN` needed for the rerun. Treat that receipt as sensitive and let it expire after use. If non-exact Qloo entity matches require review, the first run prints both `RESONANCE_CONFIRMED_ENTITY_IDS` and the ephemeral `RESONANCE_REVIEW_TOKEN`; rerun with both values. The resulting artifact includes a redaction-safe `confirmation_receipt` with `reviewTokenUsed: true` and the reviewed mappings, but never the token value itself, and cross-checks the successful response against that confirmation set. It also requires the status endpoint and live recommendation provenance to agree on the Qloo API origin and, by default, requires `https://hackathon.api.qloo.com`. Keep `QLOO_TRUSTED_BASE_URL` aligned with the server's reviewed Qloo-origin allowlist. If Qloo introduces another organizer-approved gateway, update and test the server allowlist first; do not use the capture override to bless an origin the application itself would reject. If the chosen evidence anchors produce a non-exact Qloo top result, first confirm that match through the product flow and use confirmed IDs for the final live proof rather than bypassing the review gate.
 
-## 6. Update submission evidence
+## 6. Update submission evidence — complete for exact-match live path
 
-Replace the hosted-live-verification-pending section in:
+The verified exact-match public artifact is committed at:
+
+`docs/LIVE_QLOO_EVIDENCE.json`
+
+and summarized in:
 
 `docs/SUBMISSION_EVIDENCE.md`
 
-with the verified, redacted:
-- Qloo workflow/tool;
-- request inputs;
-- resolved entity IDs;
-- taste evidence used;
-- evidence basis;
-- agent trace;
-- session result.
+It records the request inputs, resolved Qloo IDs, retained/selected taste evidence, evidence basis, agent trace, and session result without exposing the credential or review receipt.
 
 ## 7. Run the full preflight
 
