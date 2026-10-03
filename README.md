@@ -100,7 +100,7 @@ The real event key must never be committed or pasted into a public artifact.
 - Direct npm dependencies are pinned, `package-lock.json` is committed, and CI installs with `npm ci` before typecheck, tests, production build, smoke/self-tests, submission preflight, and the advisory public deployment parity check.
 - OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
 - The event-issued Qloo credential is connected to the Floot production environment and has passed a forced public readiness probe: `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, `qlooConnected=true`.
-- Public live-Qloo execution is verified end-to-end for the exact-match path. A committed redaction-safe artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The separate non-exact review-gated path still has a narrower follow-up proof pending because its confirmed taste-analysis request most recently received Qloo HTTP 429.
+- Public live-Qloo execution is verified end-to-end for both the exact-match path and the non-exact review-gated path. The exact-match artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The review-gated artifact records HTTP 409 before taste analysis, one signed confirmed top-result match, then a successful HTTP 200 `qloo-live` plan with 3 resolved entities.
 - Formal submission is complete, but judge-readiness remains provisional until live Qloo evidence and public deployment parity both pass.
 
 ## Evidence and reproducibility
@@ -112,6 +112,7 @@ The real event key must never be committed or pasted into a public artifact.
 - [Finalization runbook](docs/FINALIZATION_RUNBOOK.md)
 - [Floot live-Qloo cutover](docs/FLOOT_QLOO_CUTOVER.md)
 - [Verified live Qloo evidence](docs/LIVE_QLOO_EVIDENCE.json)
+- [Verified review-gated Qloo evidence](docs/LIVE_QLOO_REVIEW_EVIDENCE.json)
 - [Security](SECURITY.md)
 - [OpenAPI contract](openapi.yaml)
 
