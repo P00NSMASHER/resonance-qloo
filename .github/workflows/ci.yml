@@ -69,15 +69,21 @@ jobs:
         run: |
           if [ "${{ steps.deployment_parity.outcome }}" = "success" ]; then
             echo "### Public deployment parity: ✅ current" >> "$GITHUB_STEP_SUMMARY"
-          else
+          elif [ "${{ steps.deployment_parity.outcome }}" = "failure" ]; then
             echo "::warning title=Public deployment parity failed::The Floot deployment is stale or incomplete. Re-publish the reviewed GitHub head, then run npm run deployment:check."
             echo "### Public deployment parity: ⚠️ stale or incomplete" >> "$GITHUB_STEP_SUMMARY"
             echo "Re-publish the reviewed GitHub head to Floot, then run `npm run deployment:check`." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Public deployment parity: ⏭️ not evaluated" >> "$GITHUB_STEP_SUMMARY"
+            echo "An earlier required CI step stopped the advisory deployment check." >> "$GITHUB_STEP_SUMMARY"
           fi
           if [ "${{ steps.qloo_live_readiness.outcome }}" = "success" ]; then
             echo "### Live Qloo readiness: ✅ ready" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ steps.qloo_live_readiness.outcome }}" = "failure" ]; then
+            echo "::warning title=Live Qloo not ready::See the readiness-step output for credential-missing, verification-failed, or rate-limited classification."
+            echo "### Live Qloo readiness: ⚠️ not ready" >> "$GITHUB_STEP_SUMMARY"
+            echo "After fixing the classified state, run `npm run qloo:cutover:verify`." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning title=Live Qloo not ready::The deployment is current, but the public app has not verified a live Qloo credential yet."
-            echo "### Live Qloo readiness: ⚠️ credential not ready" >> "$GITHUB_STEP_SUMMARY"
-            echo "After connecting the event-issued credential, run `npm run qloo:live:check`." >> "$GITHUB_STEP_SUMMARY"
+            echo "### Live Qloo readiness: ⏭️ not evaluated" >> "$GITHUB_STEP_SUMMARY"
+            echo "An earlier required CI step stopped the advisory readiness check." >> "$GITHUB_STEP_SUMMARY"
           fi
