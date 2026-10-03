@@ -201,6 +201,8 @@ try {
     'credential has been requested and is still pending',
     'has not yet arrived',
     'no key-delivery message has been found yet',
+    'not yet connected to the Floot production environment',
+    'public live-Qloo status remains preview',
   ];
   for (const [path, content] of credentialStateDocs) {
     for (const phrase of staleCredentialPhrases) {
@@ -209,8 +211,13 @@ try {
       }
     }
   }
-  if (!credentialStateDocs[0][1].includes('credential has been received')) {
-    failures.push('README no longer records that the Qloo event credential has been received.');
+  if (!credentialStateDocs[0][1].includes('credential is connected to the Floot production environment')) {
+    failures.push('README no longer records that the Qloo event credential is connected to Floot.');
+  }
+  for (const required of ['mode=live','qlooStatus=ready','qlooConfigured=true','qlooConnected=true']) {
+    if (!credentialStateDocs[0][1].includes(required)) {
+      failures.push(`README no longer records verified live-Qloo readiness: ${required}`);
+    }
   }
 } catch {}
 
@@ -278,10 +285,13 @@ try {
 try {
   const devpostFields = await readFile('docs/DEVPOST_FIELDS.md', 'utf8');
   if (!devpostFields.includes('received event-issued Qloo credential is securely connected')) {
-    failures.push('Devpost field notes no longer record the received-but-not-connected Qloo credential state.');
+    failures.push('Devpost field notes no longer record the connected Qloo credential state.');
   }
-  if (!devpostFields.includes('npm run qloo:cutover:verify')) {
-    failures.push('Devpost field notes no longer require the live Qloo cutover verification command.');
+  if (!devpostFields.includes('fresh live-Qloo `ready` status have been verified')) {
+    failures.push('Devpost field notes no longer record verified live-Qloo readiness.');
+  }
+  if (!devpostFields.includes('upstream Qloo rate limit clears')) {
+    failures.push('Devpost field notes no longer record the current upstream-rate-limit blocker.');
   }
 } catch {}
 
