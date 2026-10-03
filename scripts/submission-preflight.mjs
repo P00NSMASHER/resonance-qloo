@@ -192,6 +192,13 @@ try {
 } catch {}
 
 try {
+  const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
+  if (packageJson.scripts?.['qloo:cutover:verify'] !== 'npm run deployment:check && npm run qloo:live:check -- --refresh') {
+    failures.push('package.json qloo:cutover:verify no longer performs deployment parity plus forced Qloo readiness.');
+  }
+} catch {}
+
+try {
   const readme = await readFile('README.md', 'utf8');
   if (!readme.includes(LIVE_URL)) failures.push('README does not include the public demo URL.');
   if (!readme.includes('https://devpost.com/software/resonance-nud9ek')) {
@@ -207,8 +214,8 @@ try {
   for (const required of [
     'QLOO_API_KEY',
     'QLOO_API_BASE_URL=https://hackathon.api.qloo.com',
-    'npm run deployment:check',
-    'QLOO_LIVE_REFRESH=1 npm run qloo:live:check',
+    'npm run qloo:cutover:verify',
+    'qloo:live:check -- --refresh',
     'npm run qloo:live:check',
     'mode=live',
     'qlooStatus=ready',
