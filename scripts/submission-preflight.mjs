@@ -1,6 +1,9 @@
 import { access, readFile } from 'node:fs/promises';
 
 const LIVE_URL = 'https://resonance-qloo.floot.app';
+const EXPECTED_CONTRACT_VERSION = JSON.parse(
+  await readFile('deployment-contract.json', 'utf8'),
+).version;
 const requiredFiles = [
   'LICENSE',
   'deployment-contract.json',
@@ -304,7 +307,7 @@ try {
     failures.push('Committed live Qloo evidence contains credential/review-receipt material.');
   }
 } catch (error) {
-  failures.push('Could not parse committed live Qloo evidence artifact.');
+  failures.push(`Could not validate committed live Qloo evidence artifact: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
