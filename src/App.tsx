@@ -5,6 +5,7 @@ import { ANCHOR_TYPE_OPTIONS, anchorTypeLabelFromUrn, anchorTypeUrn, type Anchor
 import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
 import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './lib/recommendationResult';
 import { payloadHasMatchingRequestContext, type RecommendationRequestContext } from './lib/recommendationContext';
+import { buildQlooDelta } from './lib/qlooDelta';
 import deploymentContract from '../deployment-contract.json';
 
 type AgentTraceStep = {
@@ -149,6 +150,12 @@ export default function App() {
   const selectedAffinityOrder = new Map<string, number>(
     selectedAffinitySequence.map((label,index) => [label,index + 1]),
   );
+  const qlooDelta = result ? buildQlooDelta(
+    result.requestContext,
+    result.affinities,
+    result.evidence.selectedAffinityLabels,
+    result.plan,
+  ) : null;
 
   useEffect(() => {
     setQlooState('checking');
@@ -467,14 +474,13 @@ export default function App() {
       </aside>
     </section>
 
-    {result && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
-      <div className="resultTop"><div><h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2><p>{result.summary}</p></div></div>
-      <div className="resultMeta" aria-label="Result provenance and evidence">
-        <span className={source === 'live' ? 'metaLive' : 'metaDemo'}><b>Source</b>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
-        <span><b>Evidence</b>{result.evidence.evidenceBasis === 'ranked-order' ? 'Ranked Qloo order' : 'Normalized Qloo score'}</span>
-        <span><b>Request receipt</b>{result.requestContext.anchors.length} anchors · {result.requestContext.energy} · {result.requestContext.setting} · {result.requestContext.durationMinutes} min</span>
-        {source === 'live' && result.provenance.apiOrigin && <span><b>Qloo API</b>{result.provenance.apiOrigin.replace(/^https:\/\//,'')}</span>}
-        <span><b>{result.provenance.generatedAt ? 'Generated' : 'Timestamp'}</b>{result.provenance.generatedAt ? new Date(result.provenance.generatedAt).toLocaleString() : 'Static example · no live timestamp'}</span>
+    {result && qlooDelta && <section ref={resultRef} tabIndex={-1} className="results" aria-labelledby="result-title">
+      <div className="resultTop">
+        <div>
+          <span className={source === 'live' ? 'sourcePill live' : 'sourcePill demo'}>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
+          <h2 id="result-title">{source==='live'?'Your Qloo-grounded session':'Illustrative session preview'}</h2>
+          <p>{source === 'live' ? 'Start with the outcome. Open the audit trail only when you want the full evidence path.' : result.summary}</p>
+        </div>
       </div>
       <div className="resultActions" aria-label="Session actions">
         <button type="button" className="secondary" onClick={copySession}>{copied ? 'Copied' : 'Copy session'}</button>
@@ -483,93 +489,130 @@ export default function App() {
         <span className="copyStatus" role="status" aria-live="polite">{copied ? 'Session copied to clipboard.' : ''}</span>
       </div>
       {source==='demo' && <div className="warning" role="note">Demo mode: these affinity ranks and rationales are placeholders, not Qloo API results.</div>}
+
+      <section className="judgeJourney" aria-label="Favorites to Qloo discoveries to session">
+        <article>
+          <span className="journeyNumber">1</span>
+          <b>Your favorites</b>
+          <div className="journeyChips">{result.resolvedAnchors.map(x=><span key={x.entityId}>{x.name}</span>)}</div>
+        </article>
+        <i aria-hidden="true">→</i>
+        <article>
+          <span className="journeyNumber">2</span>
+          <b>What Qloo discovered</b>
+          <div className="journeyChips qloo">{selectedAffinitySequence.map((label,index)=><span key={label}>#{index+1} {label}</span>)}</div>
+          <small>{result.evidence.returnedAffinityCount} Qloo signals returned · {result.evidence.selectedAffinityCount} selected</small>
+        </article>
+        <i aria-hidden="true">→</i>
+        <article>
+          <span className="journeyNumber">3</span>
+          <b>Your session</b>
+          <strong>{result.plan.length} activities</strong>
+          <small>{result.evidence.sessionDurationMinutes} minutes · {result.evidence.energy} · {result.evidence.setting}</small>
+        </article>
+      </section>
+
+      <section className="qlooDelta" aria-labelledby="qloo-delta-title">
+        <header>
+          <b>Why Qloo matters</b>
+          <h3 id="qloo-delta-title">{source === 'live' ? 'How Qloo changed this session' : 'How Qloo would change this session'}</h3>
+          <p>The baseline below is intentionally competent but limited: it can use only the favorites and category hints you supplied. It does not invent adjacent tastes.</p>
+        </header>
+        <div className="comparisonGrid">
+          <article className="baselineCard">
+            <span>Without Qloo · anchor-only baseline</span>
+            <ul>{qlooDelta.baseline.map(item=><li key={item.anchor}>{item.action}</li>)}</ul>
+            <small>Useful, but confined to what was already typed.</small>
+          </article>
+          <article className="withQlooCard">
+            <span>{source === 'live' ? 'With Qloo · live taste graph' : 'With Qloo · illustrative path'}</span>
+            <p>{source === 'live'
+              ? `Qloo expanded the literal inputs into ${result.evidence.returnedAffinityCount} cross-category signals, selected ${result.evidence.selectedAffinityCount}, and grounded every activity in that additional evidence.`
+              : `The illustrative path shows how adjacent cultural evidence can expand literal favorites into a broader session.`
+            }</p>
+            <div className="deltaSignals">{selectedAffinitySequence.map(label=><span key={label}>{label}</span>)}</div>
+          </article>
+        </div>
+        <div className="deltaMetrics" aria-label="Qloo incremental value">
+          <span><strong>{qlooDelta.inputAnchorCount}</strong> favorites supplied</span>
+          <span><strong>{qlooDelta.returnedSignalCount}</strong> Qloo signals discovered</span>
+          <span><strong>{qlooDelta.selectedSignalCount}</strong> signals selected</span>
+          <span><strong>{qlooDelta.activitiesInfluencedCount}</strong> activities influenced</span>
+          <span><strong>{qlooDelta.selectedSignalsNotNamedInInputs.length}</strong> selected discoveries not named in the inputs</span>
+        </div>
+      </section>
+
+      <section className="sessionSection" aria-labelledby="session-title">
+        <div className="sectionHeading">
+          <b>03 · Your session</b>
+          <h3 id="session-title">A facilitator-ready starting point</h3>
+        </div>
+        <div className="plan">{result.plan.map(x=>{const signalNumber=x.affinityLabel ? selectedAffinityOrder.get(x.affinityLabel) : undefined;return <article key={x.title}>
+          <small>{x.duration}</small>
+          <h3>{x.title}</h3>
+          <p className="sessionAction">{x.action}</p>
+          {x.affinityLabel && <div className="sessionSignal">{signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · from ${x.anchorName}` : ''}</div>}
+        </article>})}</div>
+      </section>
+
       <div className="interpretationLimit" role="note">
         <b>Interpretation limit</b>
-        <span>Qloo affinities describe aggregate cultural relationships, not a probability or claim about this individual. Use the plan as a facilitator-reviewed starting point: accept, modify, reorder, or reject any suggestion based on the person’s actual response.</span>
+        <span>Qloo affinities describe aggregate cultural relationships, not a probability or claim about this individual. The facilitator can accept, modify, reorder, or reject any suggestion.</span>
       </div>
 
-      <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
-        <div className="evidenceColumn">
-          <div className="evidenceHeading"><b>Input evidence</b><h3 id="evidence-bridge-title">Resolved favorites</h3></div>
-          <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : source === 'live' ? 'matchConfirmed' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name' : source === 'live' ? 'Qloo top match · confirmed' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
-          {result.evidence.topResultResolutionCount > 0 && <div className="resolutionNote" role="note"><b>{source === 'live' ? 'Top matches confirmed' : 'Review entity matches'}</b><span>{source === 'live' ? `${result.evidence.topResultResolutionCount} non-exact Qloo top-result match${result.evidence.topResultResolutionCount === 1 ? '' : 'es'} were explicitly confirmed before taste analysis.` : `${result.evidence.topResultResolutionCount} resolved anchor${result.evidence.topResultResolutionCount === 1 ? '' : 's'} used Qloo's top returned entity without an exact name match. Refine the anchor or category if a match looks unexpected.`}</span></div>}
+      <details className="auditTrail">
+        <summary>View evidence &amp; audit trail</summary>
+        <div className="auditIntro">
+          <h3>Full Qloo evidence path</h3>
+          <p>Technical provenance is preserved here without competing with the primary session experience.</p>
         </div>
-        <div className="evidenceHandoff" aria-label={source === 'live' ? 'Resolved favorites are sent together into Qloo taste analysis' : 'Illustrative favorites feed the example Qloo taste-analysis path'}>
-          <span>{source === 'live' ? 'sent together to' : 'illustrate input to'}</span>
-          <strong>Qloo taste analysis</strong>
-          <i aria-hidden="true">→</i>
+        <div className="resultMeta" aria-label="Result provenance and evidence">
+          <span className={source === 'live' ? 'metaLive' : 'metaDemo'}><b>Source</b>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
+          <span><b>Evidence</b>{result.evidence.evidenceBasis === 'ranked-order' ? 'Ranked Qloo order' : 'Normalized Qloo score'}</span>
+          <span><b>Request receipt</b>{result.requestContext.anchors.length} anchors · {result.requestContext.energy} · {result.requestContext.setting} · {result.requestContext.durationMinutes} min</span>
+          {source === 'live' && result.provenance.apiOrigin && <span><b>Qloo API</b>{result.provenance.apiOrigin.replace(/^https:\/\//,'')}</span>}
+          <span><b>Contract</b>{result.provenance.contractVersion ?? deploymentContract.version}</span>
+          <span><b>{result.provenance.generatedAt ? 'Generated' : 'Timestamp'}</b>{result.provenance.generatedAt ? new Date(result.provenance.generatedAt).toLocaleString() : 'Static example · no live timestamp'}</span>
         </div>
-        <div className="evidenceColumn">
-          <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'Taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> {source === 'live' ? 'returned' : 'example'}</span></div>
-          <div className="selectionRule">
-            <b>Selection rule</b>
-            <span>{source === 'demo'
-              ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.`
-              : result.evidence.evidenceBasis === 'normalized-score'
-                ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.`
-                : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`
-            }</span>
+
+        <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
+          <div className="evidenceColumn">
+            <div className="evidenceHeading"><b>Input evidence</b><h3 id="evidence-bridge-title">Resolved favorites</h3></div>
+            <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : source === 'live' ? 'matchConfirmed' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name' : source === 'live' ? 'Qloo top match · confirmed' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
+            {result.evidence.topResultResolutionCount > 0 && <div className="resolutionNote" role="note"><b>{source === 'live' ? 'Top matches confirmed' : 'Review entity matches'}</b><span>{source === 'live' ? `${result.evidence.topResultResolutionCount} non-exact Qloo top-result match${result.evidence.topResultResolutionCount === 1 ? '' : 'es'} were explicitly confirmed before taste analysis.` : `${result.evidence.topResultResolutionCount} resolved anchor${result.evidence.topResultResolutionCount === 1 ? '' : 's'} used Qloo's top returned entity without an exact name match.`}</span></div>}
           </div>
-          {result.evidence.selectedAffinityCount < result.plan.length && <div className="evidenceReuseNote" role="note">
-            <b>No synthetic signal</b>
-            <span>Only {result.evidence.selectedAffinityCount} unique {source === 'live' ? 'Qloo' : 'example'} signals were selected for {result.plan.length} activities, so the last real selected signal is reused for the closing step instead of inventing another one.</span>
-          </div>}
-          <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
-        </div>
-      </section>
+          <div className="evidenceHandoff"><span>sent together to</span><strong>Qloo taste analysis</strong><i aria-hidden="true">→</i></div>
+          <div className="evidenceColumn">
+            <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'All retained taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> returned</span></div>
+            <div className="selectionRule"><b>Selection rule</b><span>{source === 'demo' ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.` : result.evidence.evidenceBasis === 'normalized-score' ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.` : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`}</span></div>
+            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
+          </div>
+        </section>
 
-      <section className="decisionTrace" aria-labelledby="decision-trace-title">
-        <div>
-          <h3 id="decision-trace-title">Agent decision trace</h3>
-          <p>The agent exposes the evidence path instead of hiding how the session was assembled.</p>
-        </div>
-        <div className="evidenceMetrics">
-          <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
-          <span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span>
-          <span><b>{result.evidence.topResultResolutionCount}</b>{source === 'live' ? ' top matches confirmed' : ' top matches to review'}</span>
-          <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
-          <span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span>
-          <span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span>
-          <span><b>{result.evidence.sessionDurationMinutes}</b> minutes</span>
-          <span><b>{result.evidence.energy}</b> energy</span>
-          <span><b>{result.evidence.setting}</b> setting</span>
-          <span><b>{source === 'live' ? result.evidence.explainabilityResultCount : '—'}</b>{source === 'live' ? ' Qloo-explained results' : ' live explainability'}</span>
-          <span><b>{result.evidence.meanNormalizedScore === null ? 'Ranked' : `${Math.round(result.evidence.meanNormalizedScore*100)}%`}</b>{result.evidence.evidenceBasis === 'ranked-order' ? ' Qloo result order' : ' mean normalized score'}</span>
-        </div>
-        <p className="fieldHint">
-          <b>{source === 'live' ? 'Selected Qloo signals:' : 'Illustrative selected signals:'}</b>{' '}
-          {(Array.isArray(result.evidence.selectedAffinityLabels) && result.evidence.selectedAffinityLabels.length
-            ? result.evidence.selectedAffinityLabels
-            : result.affinities.slice(0, result.evidence.selectedAffinityCount).map(item => item.label)
-          ).join(' · ')}
-        </p>
-        <ol className="agentTraceList">
-          {result.agentTrace.map(step=><li key={step.stage} className={step.status}>
-            <span>{step.stage}</span>
-            <p>{step.detail}</p>
-          </li>)}
-        </ol>
-      </section>
+        <section className="decisionTrace" aria-labelledby="decision-trace-title">
+          <div><h3 id="decision-trace-title">Agent decision trace</h3><p>The audit trail exposes how the session was assembled.</p></div>
+          <div className="evidenceMetrics">
+            <span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span>
+            <span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span>
+            <span><b>{result.evidence.topResultResolutionCount}</b>{source === 'live' ? ' top matches confirmed' : ' top matches to review'}</span>
+            <span><b>{result.evidence.categoryHintCount}</b> category hints</span>
+            <span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span>
+            <span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span>
+            <span><b>{source === 'live' ? result.evidence.explainabilityResultCount : '—'}</b>{source === 'live' ? ' Qloo-explained results' : ' live explainability'}</span>
+            <span><b>{result.evidence.aggregateExplainabilityAvailable ? 'Yes' : 'No'}</b> aggregate explainability</span>
+          </div>
+          <ol className="agentTraceList">{result.agentTrace.map(step=><li key={step.stage} className={step.status}><span>{step.stage}</span><p>{step.detail}</p></li>)}</ol>
+        </section>
 
-      <section className="qlooImpactSummary" aria-labelledby="qloo-impact-title">
-        <div>
-          <b>{source === 'live' ? 'Qloo contribution' : 'Illustrative Qloo path'}</b>
-          <h3 id="qloo-impact-title">{source === 'live' ? 'How Qloo changed this plan' : 'How Qloo would shape this plan'}</h3>
-          <p>{source === 'live'
-            ? `Qloo expanded ${result.resolvedAnchors.length} resolved favorites into ${result.evidence.selectedAffinityCount} selected cross-category signals. The agent mapped those signals into the ${result.plan.length} activities below instead of starting from a generic profile.`
-            : `This example shows how ${result.resolvedAnchors.length} cultural anchors can become ${result.evidence.selectedAffinityCount} adjacent signals and then ${result.plan.length} tailored activities. These values are illustrative, not live Qloo results.`
-          }</p>
-        </div>
-        <div className="impactFlow" aria-label="Evidence flow summary">
-          <span><strong>{result.resolvedAnchors.length}</strong> favorites</span>
-          <i aria-hidden="true">→</i>
-          <span><strong>{result.evidence.selectedAffinityCount}</strong> {source === 'live' ? 'Qloo signals' : 'example signals'}</span>
-          <i aria-hidden="true">→</i>
-          <span><strong>{result.plan.length}</strong> activities</span>
-        </div>
-      </section>
-
-      <div className="plan">{result.plan.map(x=>{const signalNumber=x.affinityLabel ? selectedAffinityOrder.get(x.affinityLabel) : undefined;return <article key={x.title}><small>{x.duration}</small><h3>{x.title}</h3>{x.affinityLabel && <div className="bridge">{x.anchorName && <div className="bridgeNode"><b>Known favorite</b><span>{x.anchorName}</span></div>}<div className="bridgeNode"><b>{signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'}</b><span>{x.affinityLabel}</span></div></div>}<div className="activityEvidence"><b>Resulting activity</b><p>{x.action}</p></div><div className="rationale"><b>Evidence-backed rationale</b>{x.affinityLabel && <div className="rationalePath">{signalNumber ? `Signal #${signalNumber}: ` : ''}{x.anchorName ? `${x.anchorName} + ${x.affinityLabel} → ${x.title}` : `${x.affinityLabel} → ${x.title}`}</div>}<p>{x.why}</p></div></article>})}</div>
+        <section className="auditRationales" aria-label="Detailed activity rationale">
+          <h3>Activity-to-evidence mapping</h3>
+          {result.plan.map(x=>{const signalNumber=x.affinityLabel ? selectedAffinityOrder.get(x.affinityLabel) : undefined;return <article key={x.title}>
+            <b>{x.title}</b>
+            <code>{signalNumber ? `Signal #${signalNumber}: ` : ''}{x.anchorName ? `${x.anchorName} + ${x.affinityLabel} → ${x.title}` : `${x.affinityLabel} → ${x.title}`}</code>
+            <p>{x.why}</p>
+          </article>})}
+        </section>
+      </details>
     </section>}
 
     <section className="impact"><h2>Personalization without a profile, history, or identity graph.</h2><p>Start from a few real favorites instead of a generic age-based activity list. No personal identifiers are required, and Resonance is not a medical tool.</p></section>
