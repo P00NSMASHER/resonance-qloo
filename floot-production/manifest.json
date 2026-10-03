@@ -79,7 +79,7 @@
     },
     {
       "path": "endpoints/status_GET.schema.ts",
-      "gitBlobSha": "4078bdd50755e8e982c5cf09ec562bb165f5326e",
+      "gitBlobSha": "1cff03c71dd333bf830d522df27fdca25cfcb91e",
       "sourceCharCount": 630
     },
     {
@@ -89,27 +89,27 @@
     },
     {
       "path": "helpers/qlooSessionLogic.tsx",
-      "gitBlobSha": "65c8308c024567d53928a2f361ecb9408923b0e3",
+      "gitBlobSha": "f8b702b5271f518ade72678b07390b05a80dfae1",
       "sourceCharCount": 10865
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "9e8917994b9fb3929646ca8e2bf1e885b6ea3788",
+      "gitBlobSha": "7cb93a513a0fe1c5d2c3a484fdb07c2ebee576ad",
       "sourceCharCount": 30396
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "6b4deaf0f918b138ac7996dc312575e964052537",
+      "gitBlobSha": "0a563ab9608a4fd8350340d6f051d379e40d3f05",
       "sourceCharCount": 14308
     },
     {
       "path": "pages/_index.pageLayout.tsx",
-      "gitBlobSha": "4ad71d6e386ae243fe948064dbe108ba945728c3",
+      "gitBlobSha": "9859f0797256b2e0c9d3e4e994a8303efa853e80",
       "sourceCharCount": 17
     },
     {
       "path": "static/__dev/dependencies.json",
-      "gitBlobSha": "9c63a2e0b343cac461e47ca4f7cd3c347951d4b3",
+      "gitBlobSha": "b84a2276584b7a16c4ab7ca21035d521e46d0082",
       "sourceCharCount": 1348
     }
   ],
@@ -118,6 +118,6 @@
     "flootProjectVersion": "1791023061990",
     "exactFileCount": 21,
     "verificationMethod": "Each of the 21 manifested runtime files was directly re-read from live Floot project version 1791023061990 and compared byte-for-byte after removing only connector-added line-number transport prefixes.",
-    "directComparisonStatus": "21/21 exact after terminal-newline correction"
+    "directComparisonStatus": "21/21 exact"
   }
 }
