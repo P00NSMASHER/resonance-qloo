@@ -18,6 +18,9 @@ if (manifest.flootProjectVersion !== '1791023061990') failures.push('Unexpected 
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
+if (manifest.liveVerification?.flootProjectVersion !== manifest.flootProjectVersion) failures.push('Live Floot verification receipt version differs from the snapshot version.');
+if (manifest.liveVerification?.exactFileCount !== manifest.files.length) failures.push('Live Floot verification receipt file count differs from the manifest file count.');
+if (!String(manifest.liveVerification?.verificationMethod || '').includes('matched all 21 hashes exactly')) failures.push('Live Floot verification receipt is missing the exact-byte verification statement.');
 
 for (const entry of manifest.files ?? []) {
   const body = await readSnapshot(entry.path);
