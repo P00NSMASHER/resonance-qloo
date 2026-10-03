@@ -33,6 +33,8 @@ Expected results:
 
 The Floot production status route is `/_api/status`; the repository checks both `/api/status` and `/_api/status` automatically and unwraps Floot's `{ json: ... }` response envelope.
 
+After the first successful cutover, routine later checks can use `npm run qloo:live:check` without `--refresh` so they do not spend an unnecessary forced Qloo probe.
+
 ## Stop conditions
 
 Do not capture or publish live-Qloo evidence if any of these are true:
