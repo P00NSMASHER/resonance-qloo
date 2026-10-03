@@ -56,62 +56,55 @@ type Result = {
 const demo: Result = {
   requestContext: {
     anchors:[
-      { query:'Ella Fitzgerald', typeUrn:'urn:entity:artist' },
-      { query:"Singin' in the Rain", typeUrn:'urn:entity:movie' },
-      { query:'Italian food' },
+      { query:'Aretha Franklin', typeUrn:'urn:entity:artist' },
+      { query:'The Sound of Music', typeUrn:'urn:entity:movie' },
     ],
     energy:'calm',
     setting:'small-group',
-    durationMinutes:45,
+    durationMinutes:30,
   },
   summary: 'Illustrative preview only — this is not live Qloo data.',
   resolvedAnchors: [
-    { query:'Ella Fitzgerald', name:'Ella Fitzgerald', entityId:'demo:ella', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
-    { query:"Singin' in the Rain", name:"Singin' in the Rain", entityId:'demo:rain', requestedTypeUrn:'urn:entity:movie', resolutionMatch:'exact-name' },
-    { query:'Italian food', name:'Italian cuisine', entityId:'demo:italian', resolutionMatch:'top-result' }
+    { query:'Aretha Franklin', name:'Aretha Franklin', entityId:'demo:aretha', requestedTypeUrn:'urn:entity:artist', resolutionMatch:'exact-name' },
+    { query:'The Sound of Music', name:'The Sound of Music', entityId:'demo:sound-of-music', requestedTypeUrn:'urn:entity:movie', resolutionMatch:'exact-name' },
   ],
   affinities: [
-    { label:'classic jazz vocals', score:null, rank:1 },
-    { label:'Golden Age musicals', score:null, rank:2 },
-    { label:'mid-century elegance', score:null, rank:3 },
-    { label:'Italian-American comfort', score:null, rank:4 }
+    { label:'classic soul', score:null, rank:1 },
+    { label:'musical storytelling', score:null, rank:2 },
+    { label:'rhythm & blues', score:null, rank:3 },
+    { label:'vocal performance', score:null, rank:4 },
   ],
   plan: [
-    { title:'Opening cue', duration:'10 min', action:'Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.', why:'Illustrative rationale for the preview state.', anchorName:'Ella Fitzgerald', affinityLabel:'classic jazz vocals' },
-    { title:'Story bridge', duration:'10 min', action:'Use a classic musical prompt to invite stories about theaters, dancing, or favorite performers.', why:'Illustrative rationale for the preview state.', anchorName:"Singin' in the Rain", affinityLabel:'Golden Age musicals' },
-    { title:'Shared choice', duration:'15 min', action:'Offer adjacent prompts across music, fashion, or travel and let the group choose.', why:'Illustrative rationale for the preview state.', anchorName:'Italian cuisine', affinityLabel:'mid-century elegance' },
-    { title:'Closing ritual', duration:'10 min', action:'Close around an Italian comfort-food prompt and ask what should return next time.', why:'Illustrative rationale for the preview state.', affinityLabel:'Italian-American comfort' }
+    { title:'Opening cue', duration:'5 min', action:'Open with a familiar Aretha Franklin track and invite a low-pressure choice between two songs.', why:'Illustrative rationale showing how a known favorite can anchor the session.', anchorName:'Aretha Franklin', affinityLabel:'classic soul' },
+    { title:'Story bridge', duration:'10 min', action:'Use The Sound of Music as a prompt for favorite songs, performers, theaters, or family viewing memories.', why:'Illustrative rationale showing a film-to-musical-storytelling bridge.', anchorName:'The Sound of Music', affinityLabel:'musical storytelling' },
+    { title:'Shared choice', duration:'10 min', action:'Offer simple music or movement choices connected to rhythm & blues and let the group steer the next activity.', why:'Illustrative rationale preserving participant choice while branching into adjacent culture.', affinityLabel:'rhythm & blues' },
+    { title:'Closing ritual', duration:'5 min', action:'Close with a favorite-vocalist prompt and ask what music or film should return next time.', why:'Illustrative rationale for ending with a familiar performance cue.', affinityLabel:'vocal performance' },
   ],
   agentTrace: [
-    { stage:'resolve', status:'warning', detail:'Illustrative: two anchors are exact-name matches; “Italian food” resolves to the Qloo top result “Italian cuisine,” which should be reviewed.' },
-    { stage:'evaluate', status:'ok', detail:'Illustrative: retain the first four items from an affinity-ranked result without inventing numeric scores.' },
-    { stage:'compose', status:'ok', detail:'Illustrative: adapt the session to the selected energy and setting.' },
-    { stage:'explain', status:'ok', detail:'Illustrative: attach a visible rationale to each activity choice.' }
+    { stage:'resolve', status:'ok', detail:'Illustrative: both example anchors are exact-name matches.' },
+    { stage:'evaluate', status:'ok', detail:'Illustrative: retain the first four example ranked signals without manufacturing percentages.' },
+    { stage:'compose', status:'ok', detail:'Illustrative: adapt four activities to the selected session context.' },
+    { stage:'explain', status:'ok', detail:'Illustrative: attach a visible rationale to every activity.' },
   ],
   evidence: {
     meanNormalizedScore:null,
     evidenceBasis:'ranked-order',
     selectedAffinityCount:4,
     returnedAffinityCount:4,
-    selectedAffinityLabels:[
-      'classic jazz vocals',
-      'Golden Age musicals',
-      'mid-century elegance',
-      'Italian-American comfort',
-    ],
-    resolvedAnchorCount:3,
+    selectedAffinityLabels:['classic soul','musical storytelling','rhythm & blues','vocal performance'],
+    resolvedAnchorCount:2,
     exactResolutionCount:2,
-    topResultResolutionCount:1,
+    topResultResolutionCount:0,
     categoryHintCount:2,
     explainabilityResultCount:0,
     aggregateExplainabilityAvailable:false,
-    sessionDurationMinutes:45,
+    sessionDurationMinutes:30,
     energy:'calm',
-    setting:'small-group'
+    setting:'small-group',
   },
   provenance: {
-    source:'illustrative-demo'
-  }
+    source:'illustrative-demo',
+  },
 };
 
 const anchorExamples = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place', 'Another favorite'];
@@ -119,11 +112,11 @@ const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
 export default function App() {
-  const [anchors, setAnchors] = useState(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
-  const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie','any']);
+  const [anchors, setAnchors] = useState(['Aretha Franklin','The Sound of Music']);
+  const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
-  const [durationMinutes, setDurationMinutes] = useState(45);
+  const [durationMinutes, setDurationMinutes] = useState(30);
   const [qlooState, setQlooState] = useState<QlooUiState>('checking');
   const [qlooApiOrigin, setQlooApiOrigin] = useState('');
   const [statusRefreshKey, setStatusRefreshKey] = useState(0);
@@ -334,11 +327,11 @@ export default function App() {
   function previewDemo() {
     setError('');
     setResolutionReview(null);
-    setAnchors(['Ella Fitzgerald',"Singin' in the Rain",'Italian food']);
-    setAnchorTypes(['artist','movie','any']);
+    setAnchors(['Aretha Franklin','The Sound of Music']);
+    setAnchorTypes(['artist','movie']);
     setEnergy('calm');
     setSetting('small-group');
-    setDurationMinutes(45);
+    setDurationMinutes(30);
     setResult(demo);
     setSource('demo');
   }
