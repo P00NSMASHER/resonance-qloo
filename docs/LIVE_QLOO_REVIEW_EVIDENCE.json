@@ -1,0 +1,192 @@
+{
+  "captured_at": "2026-10-03T10:26:26.583Z",
+  "base_url": "https://resonance-qloo.floot.app",
+  "review_gate": {
+    "first_status": 409,
+    "code": "QLOO_RESOLUTION_REVIEW_REQUIRED",
+    "confirmation_receipt": {
+      "required": true,
+      "reviewTokenUsed": true,
+      "confirmedTopResultCount": 1,
+      "confirmedTopResults": [
+        {
+          "query": "Italian food",
+          "name": "Italian Food Berlin",
+          "entityId": "F24C93F8-506A-4B34-9BE1-C6F5200D36F1",
+          "requestedTypeUrn": null
+        }
+      ]
+    }
+  },
+  "final_response": {
+    "http_status": 200,
+    "requestContext": {
+      "anchors": [
+        {
+          "query": "Ella Fitzgerald",
+          "typeUrn": "urn:entity:artist"
+        },
+        {
+          "query": "Singin' in the Rain",
+          "typeUrn": "urn:entity:movie"
+        },
+        {
+          "query": "Italian food"
+        }
+      ],
+      "energy": "calm",
+      "setting": "small-group",
+      "durationMinutes": 30
+    },
+    "summary": "Built from 3 resolved Qloo entities and 8 cross-category affinity signals.",
+    "resolvedAnchors": [
+      {
+        "query": "Ella Fitzgerald",
+        "name": "Ella Fitzgerald",
+        "entityId": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+        "urn": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+        "requestedTypeUrn": "urn:entity:artist",
+        "resolutionMatch": "exact-name"
+      },
+      {
+        "query": "Singin' in the Rain",
+        "name": "Singin' in the Rain",
+        "entityId": "59775A1E-5968-480C-94B2-47BE50CA3CD2",
+        "urn": "59775A1E-5968-480C-94B2-47BE50CA3CD2",
+        "requestedTypeUrn": "urn:entity:movie",
+        "resolutionMatch": "exact-name"
+      },
+      {
+        "query": "Italian food",
+        "name": "Italian Food Berlin",
+        "entityId": "F24C93F8-506A-4B34-9BE1-C6F5200D36F1",
+        "urn": "F24C93F8-506A-4B34-9BE1-C6F5200D36F1",
+        "resolutionMatch": "top-result"
+      }
+    ],
+    "affinities": [
+      {
+        "label": "Four Star",
+        "score": 1,
+        "rank": 1
+      },
+      {
+        "label": "Christian",
+        "score": 1,
+        "rank": 2
+      },
+      {
+        "label": "Jazz",
+        "score": 0.9997543802194203,
+        "rank": 3
+      },
+      {
+        "label": "Inventive",
+        "score": 0.9986925651750207,
+        "rank": 4
+      },
+      {
+        "label": "swing",
+        "score": 0.9982806615359423,
+        "rank": 5
+      },
+      {
+        "label": "Optimistic",
+        "score": 0.9981431224110842,
+        "rank": 6
+      },
+      {
+        "label": "piano",
+        "score": 0.9977075487145899,
+        "rank": 7
+      },
+      {
+        "label": "Vocal-Jazz",
+        "score": 0.997052562633044,
+        "rank": 8
+      }
+    ],
+    "evidence": {
+      "meanNormalizedScore": 0.9996117363486102,
+      "evidenceBasis": "normalized-score",
+      "selectedAffinityCount": 4,
+      "returnedAffinityCount": 8,
+      "selectedAffinityLabels": [
+        "Four Star",
+        "Christian",
+        "Jazz",
+        "Inventive"
+      ],
+      "resolvedAnchorCount": 3,
+      "exactResolutionCount": 2,
+      "topResultResolutionCount": 1,
+      "categoryHintCount": 2,
+      "explainabilityResultCount": 0,
+      "aggregateExplainabilityAvailable": false,
+      "sessionDurationMinutes": 30,
+      "energy": "calm",
+      "setting": "small-group"
+    },
+    "provenance": {
+      "source": "qloo-live",
+      "apiOrigin": "https://hackathon.api.qloo.com",
+      "contractVersion": "2026-10-02.review-origin-v1",
+      "generatedAt": "2026-10-03T10:26:26.583Z"
+    },
+    "agentTrace": [
+      {
+        "stage": "resolve",
+        "status": "ok",
+        "detail": "Resolved 3 cultural anchors into Qloo entity evidence; 2 exact-name and 1 explicitly confirmed top-result match(es)."
+      },
+      {
+        "stage": "evaluate",
+        "status": "ok",
+        "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+      },
+      {
+        "stage": "compose",
+        "status": "ok",
+        "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+      },
+      {
+        "stage": "explain",
+        "status": "warning",
+        "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+      }
+    ],
+    "plan": [
+      {
+        "title": "Opening cue",
+        "duration": "5 min",
+        "action": "Start with “Ella Fitzgerald” as the familiar cue, then branch toward “Four Star.” keep the pace gentle and low-pressure.",
+        "why": "The session starts from the supplied favorite “Ella Fitzgerald” and uses Qloo-ranked “Four Star” as adjacent cultural evidence.",
+        "anchorName": "Ella Fitzgerald",
+        "affinityLabel": "Four Star"
+      },
+      {
+        "title": "Story bridge",
+        "duration": "10 min",
+        "action": "Bridge from “Singin' in the Rain” into “Christian” with a film scene, photo, lyric, or memory prompt. Keep it for a small group with room for individual responses.",
+        "why": "“Singin' in the Rain” is a supplied favorite; Qloo-ranked “Christian” provides the adjacent cultural bridge instead of a generic nostalgia prompt.",
+        "anchorName": "Singin' in the Rain",
+        "affinityLabel": "Christian"
+      },
+      {
+        "title": "Shared choice",
+        "duration": "10 min",
+        "action": "Offer two or three simple choices that connect “Italian Food Berlin” with “Jazz,” and let participants steer the next activity.",
+        "why": "The known favorite “Italian Food Berlin” stays visible while “Jazz” extends it into a Qloo-ranked adjacent domain.",
+        "anchorName": "Italian Food Berlin",
+        "affinityLabel": "Jazz"
+      },
+      {
+        "title": "Closing ritual",
+        "duration": "5 min",
+        "action": "Close with a snack, sensory cue, or conversation card inspired by “Inventive,” then ask what should return next time.",
+        "why": "“Inventive” keeps the closing step grounded in selected Qloo evidence so the plan ends in the same cultural neighborhood it started in.",
+        "affinityLabel": "Inventive"
+      }
+    ]
+  }
+}
