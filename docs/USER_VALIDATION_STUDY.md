@@ -6,7 +6,7 @@ Public study page: https://resonance-qloo.floot.app/study
 
 Study version: `2026-10-03-v1`
 
-Canonical demo evidence: `docs/LIVE_QLOO_CANONICAL_DEMO.json`
+Canonical demo evidence: `docs/CANONICAL_DEMO_EVIDENCE.json`
 
 ## Purpose
 
@@ -29,7 +29,7 @@ The study accepts these role categories:
 
 Every participant receives the same prompt:
 
-> Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Ella Fitzgerald and Duke Ellington.
+> Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Aretha Franklin and The Sound of Music.
 
 ### Baseline
 
