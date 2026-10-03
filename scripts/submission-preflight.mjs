@@ -684,6 +684,9 @@ try {
   if (!capture.includes('confirmation_receipt')) {
     failures.push('Live evidence capture is missing the explicit Qloo confirmation receipt.');
   }
+  if (!capture.includes('reviewToken,') || !capture.includes('credential or ephemeral review receipt')) {
+    failures.push('Live evidence capture final serialization guard is not protecting the ephemeral review receipt.');
+  }
   if (!capture.includes('RESONANCE_REVIEW_TOKEN') || !capture.includes('reviewTokenUsed')) {
     failures.push('Live evidence capture is not requiring/recording use of the Qloo review receipt.');
   }
