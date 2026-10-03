@@ -27,6 +27,13 @@ const requiredFiles = [
   'floot-production/endpoints/recommend_POST.schema.ts',
   'floot-production/endpoints/status_GET.ts',
   'floot-production/helpers/qlooSessionLogic.tsx',
+  'floot-production/pages/study.tsx',
+  'floot-production/pages/study.module.css',
+  'floot-production/pages/study.pageLayout.tsx',
+  'floot-production/endpoints/study-response_POST.ts',
+  'floot-production/endpoints/study-response_POST.schema.ts',
+  'floot-production/components/Textarea.tsx',
+  'floot-production/components/Textarea.module.css',
   'scripts/check-floot-production-parity.mjs',
   'SECURITY.md',
   'scripts/qloo-mcp-proof.mjs',
@@ -42,6 +49,8 @@ const requiredFiles = [
   'src/lib/clientIdentity.ts',
   'src/lib/qlooDelta.ts',
   'src/lib/qlooDelta.test.ts',
+  'src/lib/studyResponse.ts',
+  'src/lib/studyResponse.test.ts',
   'src/lib/clientIdentity.test.ts',
   'src/lib/resolutionReviewToken.ts',
   'src/lib/resolutionReviewToken.test.ts',
@@ -107,11 +116,11 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791047041893') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791047559850') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
-  if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 21) failures.push('Floot production manifest no longer enumerates the 21-file judge-facing runtime snapshot.');
+  if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
-  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','Production judge UI']) {
+  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','anonymous study contract','Production judge UI']) {
     if (!parity.includes(required)) failures.push(`Floot production parity verifier is missing critical invariant group: ${required}`);
   }
 } catch (error) {
