@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 
 const BASE_URL = (process.env.RESONANCE_BASE_URL || 'https://resonance-qloo.floot.app').replace(/\/$/, '');
 const EXPECTED_QLOO_API_ORIGIN = (process.env.EXPECTED_QLOO_API_ORIGIN || 'https://hackathon.api.qloo.com').replace(/\/$/, '');
-const FORCE_REFRESH = process.env.QLOO_LIVE_REFRESH === '1';
+const FORCE_REFRESH = process.argv.includes('--refresh') || process.env.QLOO_LIVE_REFRESH === '1';
 const EXPECTED_CONTRACT_VERSION = JSON.parse(
   await readFile(new URL('../deployment-contract.json', import.meta.url), 'utf8'),
 ).version;
