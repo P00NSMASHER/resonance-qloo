@@ -33,34 +33,34 @@ const anchorTypes:{ value:AnchorType; label:string }[] = [
   {value:"videogame",label:"Video game"},
 ];
 const initialAnchors:AnchorDraft[] = [
-  { query:"Aretha Franklin", type:"artist" },
-  { query:"The Sound of Music", type:"movie" },
+  { query:"Ella Fitzgerald", type:"artist" },
+  { query:"Duke Ellington", type:"artist" },
 ];
 
 const demoResult:RichResult = {
   requestContext:{
     anchors:[
-      {query:"Aretha Franklin",typeUrn:"urn:entity:artist"},
-      {query:"The Sound of Music",typeUrn:"urn:entity:movie"},
+      {query:"Ella Fitzgerald",typeUrn:"urn:entity:artist"},
+      {query:"Duke Ellington",typeUrn:"urn:entity:artist"},
     ],
     energy:"calm",setting:"small-group",durationMinutes:30,
   },
   summary:"Illustrative preview only — this is not live Qloo data.",
   resolvedAnchors:[
-    {query:"Aretha Franklin",name:"Aretha Franklin",entityId:"demo:aretha",urn:"demo:aretha",requestedTypeUrn:"urn:entity:artist",resolutionMatch:"exact-name"},
-    {query:"The Sound of Music",name:"The Sound of Music",entityId:"demo:sound-of-music",urn:"demo:sound-of-music",requestedTypeUrn:"urn:entity:movie",resolutionMatch:"exact-name"},
+    {query:"Ella Fitzgerald",name:"Ella Fitzgerald",entityId:"demo:ella",urn:"demo:ella",requestedTypeUrn:"urn:entity:artist",resolutionMatch:"exact-name"},
+    {query:"Duke Ellington",name:"Duke Ellington",entityId:"demo:duke",urn:"demo:duke",requestedTypeUrn:"urn:entity:artist",resolutionMatch:"exact-name"},
   ],
   affinities:[
-    {label:"classic soul",score:null,rank:1},
-    {label:"musical storytelling",score:null,rank:2},
-    {label:"rhythm & blues",score:null,rank:3},
-    {label:"vocal performance",score:null,rank:4},
+    {label:"Jazz",score:null,rank:1},
+    {label:"swing",score:null,rank:2},
+    {label:"piano",score:null,rank:3},
+    {label:"Vocal-Jazz",score:null,rank:4},
   ],
   plan:[
-    {title:"Opening cue",duration:"5 min",action:"Open with a familiar Aretha Franklin track and invite a low-pressure choice between two songs.",why:"Illustrative rationale showing how a known favorite can anchor the session.",anchorName:"Aretha Franklin",affinityLabel:"classic soul"},
-    {title:"Story bridge",duration:"10 min",action:"Use The Sound of Music as a prompt for favorite songs, performers, theaters, or family viewing memories.",why:"Illustrative rationale showing a film-to-musical-storytelling bridge.",anchorName:"The Sound of Music",affinityLabel:"musical storytelling"},
-    {title:"Shared choice",duration:"10 min",action:"Offer simple music or movement choices connected to rhythm & blues and let the group steer the next activity.",why:"Illustrative rationale preserving participant choice while branching into adjacent culture.",affinityLabel:"rhythm & blues"},
-    {title:"Closing ritual",duration:"5 min",action:"Close with a favorite-vocalist prompt and ask what music or film should return next time.",why:"Illustrative rationale for ending with a familiar performance cue.",affinityLabel:"vocal performance"},
+    {title:"Opening cue",duration:"5 min",action:"Open with a familiar Ella Fitzgerald track and invite a low-pressure choice between two songs.",why:"Illustrative rationale showing how a known favorite can anchor the session.",anchorName:"Ella Fitzgerald",affinityLabel:"Jazz"},
+    {title:"Story bridge",duration:"10 min",action:"Use Duke Ellington as a bridge into swing-era photos, songs, dancing, or performance memories.",why:"Illustrative rationale showing how a second known favorite can connect to adjacent cultural evidence.",anchorName:"Duke Ellington",affinityLabel:"swing"},
+    {title:"Shared choice",duration:"10 min",action:"Offer simple listening or conversation choices connected to piano and let the group steer the next activity.",why:"Illustrative rationale preserving participant choice while branching into adjacent culture.",affinityLabel:"piano"},
+    {title:"Closing ritual",duration:"5 min",action:"Close with a favorite-vocalist prompt connected to Vocal-Jazz and ask what should return next time.",why:"Illustrative rationale for ending in the same cultural neighborhood.",affinityLabel:"Vocal-Jazz"},
   ],
   agentTrace:[
     {stage:"resolve",status:"ok",detail:"Illustrative: both example anchors are exact-name matches."},
@@ -70,7 +70,7 @@ const demoResult:RichResult = {
   ],
   evidence:{
     meanNormalizedScore:null,evidenceBasis:"ranked-order",selectedAffinityCount:4,returnedAffinityCount:4,
-    selectedAffinityLabels:["classic soul","musical storytelling","rhythm & blues","vocal performance"],
+    selectedAffinityLabels:["Jazz","swing","piano","Vocal-Jazz"],
     resolvedAnchorCount:2,exactResolutionCount:2,topResultResolutionCount:0,categoryHintCount:2,
     explainabilityResultCount:0,aggregateExplainabilityAvailable:false,sessionDurationMinutes:30,
     energy:"calm",setting:"small-group",
