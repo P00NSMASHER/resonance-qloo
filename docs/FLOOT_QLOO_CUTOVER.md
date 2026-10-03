@@ -57,4 +57,4 @@ npm run qloo:proof -- "classic jazz vocals"
 RESONANCE_BASE_URL=https://resonance-qloo.floot.app npm run evidence:capture
 ```
 
-If evidence capture returns a Qloo entity-review requirement, review the displayed match in the app and rerun capture with the server-issued confirmation values. Never bypass that review gate.
+If evidence capture returns a Qloo entity-review requirement, review the displayed match in the app. The capture error provides the non-secret reviewed IDs plus the ephemeral receipt inputs to use on the rerun: `RESONANCE_CONFIRMED_ENTITY_IDS` and `RESONANCE_REVIEW_TOKEN`. The final artifact records that the receipt was used but never emits the receipt value itself. Never bypass that review gate.
