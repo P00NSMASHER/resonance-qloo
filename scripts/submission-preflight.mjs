@@ -321,6 +321,19 @@ try {
 } catch {}
 
 try {
+  const judging = await readFile('docs/JUDGING.md', 'utf8');
+  if (!judging.includes('## Verified live proof')) {
+    failures.push('Judge guide no longer starts from the verified live-Qloo proof.');
+  }
+  if (!judging.includes('LIVE_QLOO_EVIDENCE.json')) {
+    failures.push('Judge guide no longer links the committed live-Qloo artifact.');
+  }
+  if (!judging.includes('Live Qloo verified')) {
+    failures.push('Judge guide no longer tells judges to confirm live Qloo readiness.');
+  }
+} catch {}
+
+try {
   const devpostFields = await readFile('docs/DEVPOST_FIELDS.md', 'utf8');
   if (!devpostFields.includes('event-issued Qloo credential is securely connected')) {
     failures.push('Devpost field notes no longer record the connected Qloo credential state.');
