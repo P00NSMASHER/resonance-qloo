@@ -12,12 +12,11 @@ const checkerPath = fileURLToPath(new URL('./check-live-qloo.mjs', import.meta.u
 
 function runChecker(baseUrl, forceRefresh = false) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [checkerPath], {
+    const child = spawn(process.execPath, [checkerPath, ...(forceRefresh ? ['--refresh'] : [])], {
       env:{
         ...process.env,
         RESONANCE_BASE_URL:baseUrl,
         EXPECTED_QLOO_API_ORIGIN,
-        QLOO_LIVE_REFRESH:forceRefresh ? '1' : '',
       },
       stdio:['ignore','pipe','pipe'],
     });
