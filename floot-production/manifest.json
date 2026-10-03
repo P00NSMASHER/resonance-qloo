@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791023061990",
+  "flootProjectVersion": "1791045863245",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -94,13 +94,13 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "9e8917994b9fb3929646ca8e2bf1e885b6ea3788",
-      "sourceCharCount": 30396
+      "gitBlobSha": "d7d47b2453b3b346293e133202e92e003a5b841f",
+      "sourceCharCount": 35056
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "6b4deaf0f918b138ac7996dc312575e964052537",
-      "sourceCharCount": 14308
+      "gitBlobSha": "9f45493017227657683c37376ee6d83ffc19704c",
+      "sourceCharCount": 20740
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -115,9 +115,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-03",
-    "flootProjectVersion": "1791023061990",
+    "flootProjectVersion": "1791045863245",
     "exactFileCount": 21,
-    "verificationMethod": "Each of the 21 manifested runtime files was directly re-read from live Floot project version 1791023061990 and compared byte-for-byte after removing only connector-added line-number transport prefixes.",
+    "verificationMethod": "The 19 untouched runtime files retain the prior 21/21 direct exact-source receipt. The only two files changed for Phase 2/3—pages/_index.tsx and pages/_index.module.css—were directly re-read from live Floot project version 1791045863245 and refreshed byte-for-byte after removing connector-added line-number transport prefixes.",
     "directComparisonStatus": "21/21 exact",
     "manifestBlobStatus": "21/21 manifest hashes match current exact snapshot blobs"
   }
