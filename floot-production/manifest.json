@@ -117,7 +117,7 @@
     "verifiedDate": "2026-10-03",
     "flootProjectVersion": "1791023061990",
     "exactFileCount": 21,
-    "verificationMethod": "Current Git blob hashes regenerated after terminal-newline normalization. Every manifested file is directly re-compared against the live Floot source before Phase 1 completion.",
-    "directComparisonStatus": "in-progress"
+    "verificationMethod": "Each of the 21 manifested runtime files was directly re-read from live Floot project version 1791023061990 and compared byte-for-byte after removing only connector-added line-number transport prefixes.",
+    "directComparisonStatus": "21/21 exact after terminal-newline correction"
   }
 }
