@@ -55,6 +55,10 @@ This is a review aid, not a confidence score. When a non-exact Qloo top-result m
 
 Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewer than three usable affinity signals. Exactly three usable signals are accepted: the four-step plan reuses the third real selected signal for the closing step, and the UI/export disclose that reuse instead of inventing a synthetic fourth signal.
 
+## External user validation
+
+Phase 5 external target-user validation was intentionally skipped. The study closed with **0 valid real target-user responses**. Resonance does not claim participant-derived time savings, ratings, testimonials, or quotes. The old public study URL now shows a closure notice and its submission endpoint returns HTTP 410.
+
 ## Event quotas and upstream availability
 
 Live Qloo behavior is subject to the event-issued credential, quota, rate limits, and upstream availability. Requests are bounded, rate-limited, cached where safe, and time out rather than retrying indefinitely. The per-client and aggregate application limiters are in-memory and therefore scoped to one running server process; they are not presented as a distributed quota authority across multiple horizontally scaled instances. The upstream Qloo quota remains the ultimate cross-instance limit.
