@@ -50,12 +50,36 @@ if (status.qlooApiOrigin !== EXPECTED_QLOO_API_ORIGIN) {
   process.exit(1);
 }
 
-if (status.mode !== 'live' || status.qlooStatus !== 'ready' || status.qlooConnected !== true || status.qlooConfigured !== true) {
+if (status.mode === 'live' && status.qlooStatus === 'ready' && status.qlooConnected === true && status.qlooConfigured === true) {
+  console.log(`Live Qloo readiness passed via ${result.path}: contract=${status.contractVersion}, qlooApiOrigin=${status.qlooApiOrigin}.`);
+  process.exit(0);
+}
+
+const state = `mode=${status.mode}, qlooStatus=${status.qlooStatus}, qlooConfigured=${status.qlooConfigured}, qlooConnected=${status.qlooConnected}`;
+
+if (status.qlooStatus === 'preview' || status.qlooConfigured !== true) {
   console.error(
-    `NOT READY: public deployment is current but live Qloo is unavailable via ${result.path}. ` +
-    `mode=${status.mode}, qlooStatus=${status.qlooStatus}, qlooConfigured=${status.qlooConfigured}, qlooConnected=${status.qlooConnected}.`,
+    `NOT READY [credential-missing]: public deployment is current, but the event Qloo credential is not active via ${result.path}. ` +
+    `${state}. Connect QLOO_API_KEY in Floot, then rerun this check.`,
   );
   process.exit(2);
 }
 
-console.log(`Live Qloo readiness passed via ${result.path}: contract=${status.contractVersion}, qlooApiOrigin=${status.qlooApiOrigin}.`);
+if (status.qlooStatus === 'rate-limited') {
+  console.error(
+    `NOT READY [rate-limited]: Qloo verification is currently rate-limited via ${result.path}. ` +
+    `${state}. Wait for the Qloo/retry window, then rerun verification.`,
+  );
+  process.exit(4);
+}
+
+if (status.qlooStatus === 'degraded' || status.qlooConnected !== true) {
+  console.error(
+    `NOT READY [verification-failed]: the credential is configured but Qloo verification did not succeed via ${result.path}. ` +
+    `${state}. Verify the hackathon API origin/key and use Retry Qloo verification before rerunning this check.`,
+  );
+  process.exit(3);
+}
+
+console.error(`NOT READY [unexpected-state]: ${state} via ${result.path}.`);
+process.exit(5);
