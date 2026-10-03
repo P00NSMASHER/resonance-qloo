@@ -1,6 +1,6 @@
 # Finalization runbook
 
-Use this only after the event-issued Qloo API credential arrives.
+The event-issued Qloo API credential has arrived. Use this runbook to connect it securely to Floot and complete live verification.
 
 ## 1. Connect the credential
 
@@ -109,7 +109,7 @@ The capture script refuses to run unless the server reports that Qloo is connect
 
 ## 6. Update submission evidence
 
-Replace the credential-pending section in:
+Replace the hosted-live-verification-pending section in:
 
 `docs/SUBMISSION_EVIDENCE.md`
 
