@@ -319,14 +319,17 @@ try {
 
 try {
   const devpostFields = await readFile('docs/DEVPOST_FIELDS.md', 'utf8');
-  if (!devpostFields.includes('received event-issued Qloo credential is securely connected')) {
+  if (!devpostFields.includes('event-issued Qloo credential is securely connected')) {
     failures.push('Devpost field notes no longer record the connected Qloo credential state.');
   }
-  if (!devpostFields.includes('fresh live-Qloo `ready` status have been verified')) {
+  if (!devpostFields.includes('deployment parity plus a fresh live-Qloo `ready` status are verified')) {
     failures.push('Devpost field notes no longer record verified live-Qloo readiness.');
   }
-  if (!devpostFields.includes('upstream Qloo rate limit clears')) {
-    failures.push('Devpost field notes no longer record the current upstream-rate-limit blocker.');
+  if (!devpostFields.includes('public exact-match recommendation completed end-to-end')) {
+    failures.push('Devpost field notes no longer record the verified public live-Qloo recommendation.');
+  }
+  if (!devpostFields.includes('docs/LIVE_QLOO_EVIDENCE.json')) {
+    failures.push('Devpost field notes no longer reference the committed live-Qloo evidence artifact.');
   }
 } catch {}
 
