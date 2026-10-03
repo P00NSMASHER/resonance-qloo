@@ -40,14 +40,20 @@ As of October 2, 2026 at 8:25 AM Eastern Time, Devpost returned:
 
 The submission window remains open until October 30, 2026 at 11:45 PM Eastern Time, so the entry can continue to be improved.
 
-## Final blocker before treating the entry as judge-ready
+## Judge-readiness status
 
-A submitted Devpost record is not yet proof of a finished hackathon entry. Treat Resonance as provisional until:
+The core functional-demo requirements are now verified:
 
-- the received event-issued Qloo credential is securely connected to the Floot production environment — complete;
-- deployment parity plus a fresh live-Qloo `ready` status have been verified — complete;
-- the public live path completes end-to-end after the temporary upstream Qloo rate limit clears;
-- live evidence capture succeeds against the trusted hackathon Qloo origin;
-- the Devpost description/evidence are refreshed after that live proof.
+- the event-issued Qloo credential is securely connected to the Floot production environment;
+- deployment parity plus a fresh live-Qloo `ready` status are verified;
+- a public exact-match recommendation completed end-to-end with HTTP 200 and `qloo-live` provenance;
+- a redaction-safe live evidence artifact is committed at `docs/LIVE_QLOO_EVIDENCE.json`;
+- the public non-exact path reaches the intended HTTP 409 entity-review gate before taste analysis.
 
-The official requirement calls for a functional demo that judges can use end-to-end.
+Remaining submission polish:
+
+- refresh the Devpost description/evidence to reference the verified live artifact;
+- add a clean live-result screenshot if useful for judges;
+- optionally complete one post-review taste-analysis run for a non-exact Qloo match after the upstream rate limit permits it.
+
+The official requirement calls for a functional demo that judges can use end-to-end; the exact-match public path now satisfies that functional proof.
