@@ -164,6 +164,31 @@ try {
 } catch {}
 
 try {
+  const credentialStateDocs = [
+    ['README.md', await readFile('README.md', 'utf8')],
+    ['docs/KNOWN_LIMITATIONS.md', await readFile('docs/KNOWN_LIMITATIONS.md', 'utf8')],
+    ['docs/SUBMISSION_EVIDENCE.md', await readFile('docs/SUBMISSION_EVIDENCE.md', 'utf8')],
+    ['docs/FINALIZATION_RUNBOOK.md', await readFile('docs/FINALIZATION_RUNBOOK.md', 'utf8')],
+  ];
+  const staleCredentialPhrases = [
+    'credential is still pending',
+    'credential has been requested and is still pending',
+    'has not yet arrived',
+    'no key-delivery message has been found yet',
+  ];
+  for (const [path, content] of credentialStateDocs) {
+    for (const phrase of staleCredentialPhrases) {
+      if (content.toLowerCase().includes(phrase.toLowerCase())) {
+        failures.push(`${path} still claims the Qloo credential has not arrived: ${phrase}`);
+      }
+    }
+  }
+  if (!credentialStateDocs[0][1].includes('credential has been received')) {
+    failures.push('README no longer records that the Qloo event credential has been received.');
+  }
+} catch {}
+
+try {
   const readme = await readFile('README.md', 'utf8');
   if (!readme.includes(LIVE_URL)) failures.push('README does not include the public demo URL.');
   if (!readme.includes('https://devpost.com/software/resonance-nud9ek')) {
