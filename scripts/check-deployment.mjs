@@ -8,7 +8,11 @@ const EXPECTED_CONTRACT_VERSION = JSON.parse(
 
 const requiredMarkers = [
   EXPECTED_CONTRACT_VERSION,
-  'How Qloo changed this plan',
+  'How Qloo changed this session',
+  'Without Qloo · anchor-only baseline',
+  'What Qloo discovered',
+  'View evidence & audit trail',
+  'selected discoveries not named in the inputs',
   'Selection rule',
   'Request receipt',
   'Plan signal #',
