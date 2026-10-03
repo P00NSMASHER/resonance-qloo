@@ -94,7 +94,7 @@ The public result contained the normalized request-context receipt, two exact-na
 
 The artifact contains no Qloo API credential and no ephemeral review receipt.
 
-The separate non-exact review-gated path has also been exercised in production: `Italian food` resolved to Qloo's top result `Italian Food Berlin`, returned HTTP 409 before taste analysis, and required the signed review receipt plus exact entity ID. The confirmed follow-up was correctly constructed but most recently received upstream Qloo HTTP 429, so the review-gated taste-analysis completion remains a narrower follow-up proof rather than a blocker to the already verified exact-match live path.
+The separate non-exact review-gated path is also fully verified in production. `Italian food` resolved to Qloo's top result `Italian Food Berlin`, returned HTTP 409 before taste analysis, and required the signed review receipt plus exact entity ID. After the Floot production endpoint gained bounded credential-scoped Qloo search/taste caching, the confirmed follow-up reused the recent resolution and completed with HTTP 200 `qloo-live` provenance. A redaction-safe artifact is committed at [LIVE_QLOO_REVIEW_EVIDENCE.json](./LIVE_QLOO_REVIEW_EVIDENCE.json).
 
 ## 4. Demo and screenshots
 
@@ -102,7 +102,7 @@ Live demo:
 
 https://resonance-qloo.floot.app
 
-The event-issued credential is connected to Floot and the public status endpoint has verified the hackathon origin in `live/ready` state. The first real public recommendation reached the intended HTTP 409 review gate for one non-exact Qloo match. The confirmed follow-up then received Qloo HTTP 429 before taste evidence completed. The illustrative preview remains clearly labeled, and the final live-result screenshot/evidence artifact should be captured after the upstream rate limit clears.
+The event-issued credential is connected to Floot and the public status endpoint has verified the hackathon origin in `live/ready` state. Both a direct exact-match recommendation and the signed non-exact review-gated recommendation have now completed end-to-end in production with committed redaction-safe artifacts. The illustrative preview remains clearly labeled as a fallback only.
 
 ## 5. Clean-environment setup
 
@@ -128,4 +128,4 @@ The official Qloo harness requires Node.js 22.19 or newer.
 
 See [KNOWN_LIMITATIONS.md](./KNOWN_LIMITATIONS.md).
 
-The most important current limitation is no longer credential delivery or hosting. The credential is connected and verified; the remaining blocker to a complete live evidence artifact is the upstream Qloo 429 encountered on the post-review taste-analysis request.
+There is no remaining live-path proof blocker: both the exact-match and signed review-gated public Qloo flows are captured end-to-end. Remaining limitations are operational—event quota/rate limits, upstream availability, optional explainability metadata, and the interpretive limits documented in KNOWN_LIMITATIONS.md.
