@@ -1,6 +1,6 @@
 # Exact Floot production source
 
-This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791051870519`.
+This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791052195858`.
 
 - Floot project ID: `49082a23-f25f-41f4-a147-f908c8dcc860`
 - Published URL: https://resonance-qloo.floot.app
@@ -41,6 +41,6 @@ This removes the need for judges to infer production behavior from a parallel im
 
 ## Live-byte verification receipt
 
-On 2026-10-03, the Floot runtime snapshot was refreshed to project version `1791051870519`. The 28-file runtime snapshot now includes the judge-facing app, anonymous validation-study page/endpoint, shared Qloo logic, imported UI components, and dependency manifest. After the canonical-demo/study alignment, `pages/_index.tsx` and `pages/study.tsx` were directly re-read from Floot and replaced byte-for-byte; the other manifested files retain their prior direct-source receipts.
+On 2026-10-03, the Floot runtime snapshot was refreshed to project version `1791052195858`. The 28-file runtime snapshot now includes the judge-facing app, anonymous validation-study page/endpoint, shared Qloo logic, imported UI components, and dependency manifest. After the canonical-demo/study alignment, `pages/_index.tsx` and `pages/study.tsx` were directly re-read from Floot and replaced byte-for-byte; the other manifested files retain their prior direct-source receipts.
 
 That point-in-time receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not pretend to have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe.
