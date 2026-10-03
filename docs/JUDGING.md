@@ -8,11 +8,15 @@ A redaction-safe HTTP 200 public live artifact is committed at [LIVE_QLOO_EVIDEN
 
 The non-exact path is also fully verified in production: `Italian food` resolves to Qloo's top result `Italian Food Berlin`, returns the signed HTTP 409 review gate before taste analysis, and the confirmed follow-up completes with HTTP 200 `qloo-live` provenance. See [LIVE_QLOO_REVIEW_EVIDENCE.json](LIVE_QLOO_REVIEW_EVIDENCE.json).
 
+## Canonical demo selection
+
+Nine complete live Qloo outputs were evaluated without removing awkward returned signals. **Aretha Franklin + The Sound of Music** scored highest because both anchors resolved exactly and the complete eight-signal set formed the strongest coherent cluster. The full audit remains public in [DEMO_CASE_AUDIT.json](DEMO_CASE_AUDIT.json).
+
 ## 60-second evaluation path
 
 1. Open the live app: https://resonance-qloo.floot.app
 2. Confirm the header reports **Live Qloo verified**.
-3. Enter 2–4 cultural favorites and run the live agent. For the already captured exact-match path, `Ella Fitzgerald` and `Singin' in the Rain` produced the committed live artifact.
+3. Use the canonical example already loaded: `Aretha Franklin` + `The Sound of Music`, 30 minutes, calm, small group. It was selected by a transparent nine-case whole-output audit rather than by hiding individual Qloo signals. See [DEMO_CASE_AUDIT.md](DEMO_CASE_AUDIT.md) and [CANONICAL_DEMO_EVIDENCE.json](CANONICAL_DEMO_EVIDENCE.json).
 4. Use **Preview with example data** only as the explicitly labeled **ILLUSTRATIVE DEMO** fallback.
 5. The default result intentionally shows only three concepts: **Your favorites → What Qloo discovered → Your session**.
 6. Read **How Qloo changed this session**. The left side is a deterministic anchor-only baseline that can use only the submitted favorites/category hints; the right side is grounded in the actual Qloo taste signals. The metrics quantify favorites supplied, signals returned, signals selected, activities influenced, and selected discoveries not literally named in the inputs.
