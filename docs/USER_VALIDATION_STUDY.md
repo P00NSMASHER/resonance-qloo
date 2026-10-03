@@ -108,7 +108,7 @@ The analyzer re-validates each row, deduplicates response IDs, reports invalid r
 
 ## Recruitment
 
-On October 3, 2026, the recruitment ledger was reconciled directly against Gmail. Twenty-six current-study invitations containing the public study URL are visible in Sent: **24 one-time direct invitations** to publicly listed activity/life-enrichment contacts at senior-living organizations and **2 one-time forwarding requests** to activity-professional organizations. Exactly **4 direct study invitations hard-bounced or were blocked**, leaving **22 study messages with no hard bounce observed** at the latest check. Seven direct invitations were added in the latest recruitment expansion; two of those seven were immediately blocked and the other five had no hard bounce observed at the latest check. No unsolicited follow-up will be sent.
+On October 3, 2026, the recruitment ledger was reconciled directly against Gmail. Twenty-eight current-study invitations containing the public study URL are visible in Sent: **26 one-time direct invitations** to publicly listed activity/life-enrichment contacts at senior-living organizations and **2 one-time forwarding requests** to activity-professional organizations. Exactly **4 direct study invitations hard-bounced or were blocked**, leaving **24 study messages with no hard bounce observed** at the latest check. The two most recent direct invitations were sent to fresh publicly listed life-enrichment contacts and had no immediate hard bounce or human reply at the latest check. No unsolicited follow-up will be sent.
 
 The outreach:
 
