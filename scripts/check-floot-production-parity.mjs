@@ -91,10 +91,10 @@ for (const needle of ["source: 'qloo-live'","apiOrigin: QLOO_BASE_URL","contract
   if (!canonicalServer.includes(needle)) failures.push(`Canonical provenance missing: ${needle}`);
 }
 
-for (const needle of ['Live Qloo verified','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence & audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
+for (const needle of ['Live Qloo verified','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence &amp; audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!prodPage.includes(needle)) failures.push(`Production judge UI missing: ${needle}`);
 }
-for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence & audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
+for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence &amp; audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!canonicalApp.includes(needle)) failures.push(`Canonical judge UI missing: ${needle}`);
 }
 requireBoth('Qloo delta comparison', prodPage,
