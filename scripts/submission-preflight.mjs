@@ -224,6 +224,12 @@ try {
   if (packageJson.scripts?.['security:secrets:selftest'] !== 'node scripts/test-secret-leaks.mjs') {
     failures.push('package.json is missing the repository secret scanner self-test command.');
   }
+  if (!String(packageJson.scripts?.['submission:preflight'] || '').startsWith('npm run security:secrets:check && ')) {
+    failures.push('submission:preflight no longer runs the repository secret scan first.');
+  }
+  if (!String(packageJson.scripts?.['submission:preflight:offline'] || '').startsWith('npm run security:secrets:check && ')) {
+    failures.push('submission:preflight:offline no longer runs the repository secret scan first.');
+  }
 } catch {}
 
 try {
