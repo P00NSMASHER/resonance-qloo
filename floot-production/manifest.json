@@ -9,93 +9,115 @@
   "files": [
     {
       "path": "base.css",
-      "gitBlobSha": "ebeca3c6436dd13260267062e44f84e861bc38cd"
+      "gitBlobSha": "ebeca3c6436dd13260267062e44f84e861bc38cd",
+      "sourceCharCount": 5399
     },
     {
       "path": "components/_globalContextProviders.tsx",
-      "gitBlobSha": "bd56d0e9e7e660f42fbfa79a7f470c38551c21b4"
+      "gitBlobSha": "bd56d0e9e7e660f42fbfa79a7f470c38551c21b4",
+      "sourceCharCount": 837
     },
     {
       "path": "components/_globalContextProviders.module.css",
-      "gitBlobSha": "d2284fa5a3f85ed0135c61fbca8817144809f4c1"
+      "gitBlobSha": "d2284fa5a3f85ed0135c61fbca8817144809f4c1",
+      "sourceCharCount": 72
     },
     {
       "path": "components/Button.tsx",
-      "gitBlobSha": "5768177a356c29951b05ca92494bf79745be2cb3"
+      "gitBlobSha": "5768177a356c29951b05ca92494bf79745be2cb3",
+      "sourceCharCount": 1087
     },
     {
       "path": "components/Button.module.css",
-      "gitBlobSha": "faef6a53f39f8e80132b9abe957aa81976868332"
+      "gitBlobSha": "faef6a53f39f8e80132b9abe957aa81976868332",
+      "sourceCharCount": 6483
     },
     {
       "path": "components/Input.tsx",
-      "gitBlobSha": "34448217709cc4e4eb96b8dd2d2445c60b3692f8"
+      "gitBlobSha": "34448217709cc4e4eb96b8dd2d2445c60b3692f8",
+      "sourceCharCount": 438
     },
     {
       "path": "components/Input.module.css",
-      "gitBlobSha": "39dfe807fa9337f9a60748b87c399d699fd2d7d0"
+      "gitBlobSha": "39dfe807fa9337f9a60748b87c399d699fd2d7d0",
+      "sourceCharCount": 2179
     },
     {
       "path": "components/Select.tsx",
-      "gitBlobSha": "44d94770d9f337e9e6877ef21cc1f487d1971abd"
+      "gitBlobSha": "44d94770d9f337e9e6877ef21cc1f487d1971abd",
+      "sourceCharCount": 4416
     },
     {
       "path": "components/Select.module.css",
-      "gitBlobSha": "dfea1883b98f9f18a2c9c2b2db4d33eec45e2f59"
+      "gitBlobSha": "dfea1883b98f9f18a2c9c2b2db4d33eec45e2f59",
+      "sourceCharCount": 3132
     },
     {
       "path": "components/Badge.tsx",
-      "gitBlobSha": "da554c67f31316cb3ca01eba81ea745f349a0534"
+      "gitBlobSha": "da554c67f31316cb3ca01eba81ea745f349a0534",
+      "sourceCharCount": 474
     },
     {
       "path": "components/Badge.module.css",
-      "gitBlobSha": "8f7989ae3a7cf2b25b10524f53a7af6715b40996"
+      "gitBlobSha": "8f7989ae3a7cf2b25b10524f53a7af6715b40996",
+      "sourceCharCount": 1986
     },
     {
       "path": "endpoints/recommend_POST.ts",
-      "gitBlobSha": "4071bfc90fe282ff8345f5eae6626bfed824cda9"
+      "gitBlobSha": "99f9fb812dcb257edbcbaf06cd6609f294ce8315",
+      "sourceCharCount": 13447
     },
     {
       "path": "endpoints/recommend_POST.schema.ts",
-      "gitBlobSha": "6dd2d2429299553494bb07942862b96fbc072cda"
+      "gitBlobSha": "5736b01171d75c8f05652c80ef49b15db507c1d4",
+      "sourceCharCount": 3371
     },
     {
       "path": "endpoints/status_GET.ts",
-      "gitBlobSha": "6a7bd09874ab5ce51df9a81455b998a84af0a89b"
+      "gitBlobSha": "0021f01051822425e31b2286007c07d82008d740",
+      "sourceCharCount": 1733
     },
     {
       "path": "endpoints/status_GET.schema.ts",
-      "gitBlobSha": "1cff03c71dd333bf830d522df27fdca25cfcb91e"
+      "gitBlobSha": "4078bdd50755e8e982c5cf09ec562bb165f5326e",
+      "sourceCharCount": 630
     },
     {
       "path": "helpers/_publicConfigs.tsx",
-      "gitBlobSha": "e4a41e08f71f4e99fad6dc2648e84b61208c54a4"
+      "gitBlobSha": "e4a41e08f71f4e99fad6dc2648e84b61208c54a4",
+      "sourceCharCount": 68
     },
     {
       "path": "helpers/qlooSessionLogic.tsx",
-      "gitBlobSha": "f8b702b5271f518ade72678b07390b05a80dfae1"
+      "gitBlobSha": "65c8308c024567d53928a2f361ecb9408923b0e3",
+      "sourceCharCount": 10865
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "7cb93a513a0fe1c5d2c3a484fdb07c2ebee576ad"
+      "gitBlobSha": "9e8917994b9fb3929646ca8e2bf1e885b6ea3788",
+      "sourceCharCount": 30396
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "0a563ab9608a4fd8350340d6f051d379e40d3f05"
+      "gitBlobSha": "6b4deaf0f918b138ac7996dc312575e964052537",
+      "sourceCharCount": 14308
     },
     {
       "path": "pages/_index.pageLayout.tsx",
-      "gitBlobSha": "9859f0797256b2e0c9d3e4e994a8303efa853e80"
+      "gitBlobSha": "4ad71d6e386ae243fe948064dbe108ba945728c3",
+      "sourceCharCount": 17
     },
     {
       "path": "static/__dev/dependencies.json",
-      "gitBlobSha": "b84a2276584b7a16c4ab7ca21035d521e46d0082"
+      "gitBlobSha": "9c63a2e0b343cac461e47ca4f7cd3c347951d4b3",
+      "sourceCharCount": 1348
     }
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-03",
     "flootProjectVersion": "1791023061990",
     "exactFileCount": 21,
-    "verificationMethod": "Read the current Floot source for every manifested runtime file, stripped only connector-added line-number transport prefixes, recomputed Git blob SHA-1, and matched all 21 hashes exactly."
+    "verificationMethod": "Current Git blob hashes regenerated after terminal-newline normalization. Every manifested file is directly re-compared against the live Floot source before Phase 1 completion.",
+    "directComparisonStatus": "in-progress"
   }
 }
