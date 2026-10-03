@@ -21,6 +21,8 @@ const requiredFiles = [
   'scripts/test-evidence-capture.mjs',
   'scripts/test-ui-state-safety.mjs',
   'scripts/test-deployment-checker.mjs',
+  'scripts/check-secret-leaks.mjs',
+  'scripts/test-secret-leaks.mjs',
   'src/lib/clientIdentity.ts',
   'src/lib/clientIdentity.test.ts',
   'src/lib/resolutionReviewToken.ts',
@@ -42,6 +44,16 @@ for (const path of requiredFiles) {
     failures.push(`Missing required project artifact: ${path}`);
   }
 }
+
+try {
+  const secretScanner = await readFile('scripts/check-secret-leaks.mjs', 'utf8');
+  if (!secretScanner.includes('hack_[A-Za-z0-9]{20,}')) {
+    failures.push('Repository secret scanner is missing the Qloo hackathon credential pattern.');
+  }
+  if (!secretScanner.includes('SECRET LEAK:')) {
+    failures.push('Repository secret scanner no longer emits a clear failure marker.');
+  }
+} catch {}
 
 try {
   const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
@@ -195,6 +207,12 @@ try {
   const packageJson = JSON.parse(await readFile('package.json', 'utf8'));
   if (packageJson.scripts?.['qloo:cutover:verify'] !== 'npm run deployment:check && npm run qloo:live:check -- --refresh') {
     failures.push('package.json qloo:cutover:verify no longer performs deployment parity plus forced Qloo readiness.');
+  }
+  if (packageJson.scripts?.['security:secrets:check'] !== 'node scripts/check-secret-leaks.mjs') {
+    failures.push('package.json is missing the repository Qloo secret scan command.');
+  }
+  if (packageJson.scripts?.['security:secrets:selftest'] !== 'node scripts/test-secret-leaks.mjs') {
+    failures.push('package.json is missing the repository secret scanner self-test command.');
   }
 } catch {}
 
