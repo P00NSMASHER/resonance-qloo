@@ -6,6 +6,8 @@ Public study page: https://resonance-qloo.floot.app/study
 
 Study version: `2026-10-03-v1`
 
+Canonical demo evidence: `docs/LIVE_QLOO_CANONICAL_DEMO.json`
+
 ## Purpose
 
 Test whether Resonance materially improves a real activity-planning workflow for people who plausibly perform or support that work.
@@ -27,7 +29,7 @@ The study accepts these role categories:
 
 Every participant receives the same prompt:
 
-> Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Aretha Franklin and The Sound of Music.
+> Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Ella Fitzgerald and Duke Ellington.
 
 ### Baseline
 
