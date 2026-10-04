@@ -260,6 +260,17 @@ export default function HomePage() {
     }
   }
 
+  function loadJudgeExample() {
+    invalidate();
+    setAnchors([
+      { query:"Louis Armstrong", type:"artist" },
+      { query:"Casablanca", type:"movie" },
+    ]);
+    setEnergy("calm");
+    setSetting("small-group");
+    setDurationMinutes(30);
+  }
+
   function previewDemo() {
     invalidate();
     setAnchors(initialAnchors);
@@ -368,6 +379,7 @@ export default function HomePage() {
           </div>
           <div className={styles.actionRow}>
             <Button className={styles.runButton} disabled={!canRun} onClick={()=>void runLive()}>{loading ? "Grounding with Qloo…" : qlooReady ? <>Build with live Qloo <ArrowRight size={18}/></> : "Live Qloo unavailable"}</Button>
+            <Button variant="outline" className={styles.demoButton} disabled={loading} onClick={loadJudgeExample}>Load judge example</Button>
             <Button variant="outline" className={styles.demoButton} disabled={loading} onClick={previewDemo}>Preview with example data</Button>
           </div>
           <div className={styles.statusHelp}>
