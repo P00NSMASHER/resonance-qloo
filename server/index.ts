@@ -14,6 +14,7 @@ import { rateLimitClientKey } from '../src/lib/clientIdentity';
 import { recommendationRequestContext } from '../src/lib/recommendationContext';
 import { createResolutionReviewToken, resolutionReviewSigningKey, verifyResolutionReviewToken } from '../src/lib/resolutionReviewToken';
 import deploymentContract from '../deployment-contract.json';
+import { validateStudyResponse } from '../src/lib/studyResponse';
 
 const PORT = Number(process.env.PORT || 8787);
 const DIST = resolve('dist');
@@ -26,6 +27,7 @@ const QLOO_BASE_URL = resolveQlooBaseUrl(
   ALLOW_LOCAL_QLOO_MOCK,
 );
 const liveLimiter = createRateLimiter(12, 60_000);
+const studyLimiter = createRateLimiter(5, 60_000);
 const processLiveLimiter = createRateLimiter(60, 60_000);
 const qlooProbeRefreshLimiter = createRateLimiter(2, 60_000);
 const processQlooProbeRefreshLimiter = createRateLimiter(20, 60_000);
@@ -132,10 +134,22 @@ async function handleStatus(
   });
 }
 
-async function handleStudyResponse(_req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
-  return json(res, 410, {
-    error:'Study closed. Phase 5 external validation was intentionally skipped; no further responses are being collected.',
-  });
+async async function handleStudyResponse(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
+  const clientKey = rateLimitClientKey(req.headers);
+  if (!studyLimiter.allow(clientKey)) return json(res, 429, { error:'Too many study submissions. Please try again later.' });
+  let body: unknown;
+  try {
+    body = await readJson(req);
+  } catch {
+    return json(res, 400, { error:'Study response must be valid JSON.' });
+  }
+  try {
+    const input = validateStudyResponse(body);
+    console.info('RESONANCE_STUDY_RESPONSE', JSON.stringify({ ...input, submittedAt:new Date().toISOString() }));
+    return json(res, 200, { accepted:true, studyVersion:input.studyVersion });
+  } catch {
+    return json(res, 400, { error:'Study response did not match the anonymous validation contract.' });
+  }
 }
 
 async function handleRecommend(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
