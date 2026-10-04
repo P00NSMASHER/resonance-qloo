@@ -135,8 +135,8 @@ async function handleStatus(
 }
 
 async function handleStudyResponse(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
-  const clientKey = rateLimitClientKey(req.headers);
-  if (!studyLimiter.allow(clientKey)) return json(res, 429, { error:'Too many study submissions. Please try again later.' });
+  const clientKey = rateLimitClientKey(req.headers['x-forwarded-for'], req.socket.remoteAddress);
+  if (!studyLimiter.check(clientKey).allowed) return json(res, 429, { error:'Too many study submissions. Please try again later.' });
   let body: unknown;
   try {
     body = await readJson(req);
