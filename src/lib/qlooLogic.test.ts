@@ -143,7 +143,7 @@ describe('Qloo parsing', () => {
     expect(plan[2].affinityLabel).toBe('Classic cinema');
     expect(plan[3].affinityLabel).toBe('Classic cinema');
     expect(plan[3].affinityLabel).not.toBe('comforting ritual');
-    expect(plan[3].why).toContain('selected Qloo evidence');
+    expect(plan[3].why).toContain('Qloo-grounded memory/conversation neighborhood');
   });
 
   it('exposes structured favorite-to-Qloo bridge metadata', () => {
@@ -188,7 +188,8 @@ describe('Qloo parsing', () => {
 
     expect(plan[3].action).toContain('Paris');
     expect(plan[3].action).toContain('Italian-American comfort');
-    expect(plan[3].why).toContain('Paris');
+    expect(plan[3].anchorName).toBe('Paris');
+    expect(plan[3].why).toContain('Qloo-grounded memory/conversation neighborhood');
   });
 
   it('keeps supplied favorites visible while branching into Qloo evidence', () => {
