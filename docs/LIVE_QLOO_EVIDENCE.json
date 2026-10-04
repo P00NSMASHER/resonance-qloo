@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-03T03:18:40.252Z",
+  "captured_at": "2026-10-04T23:53:52.535Z",
   "base_url": "https://resonance-qloo.floot.app",
   "http_status": 200,
   "request": {
@@ -9,7 +9,7 @@
         "type": "artist"
       },
       {
-        "query": "Singin' in the Rain",
+        "query": "Roman Holiday",
         "type": "movie"
       }
     ],
@@ -25,7 +25,7 @@
           "typeUrn": "urn:entity:artist"
         },
         {
-          "query": "Singin' in the Rain",
+          "query": "Roman Holiday",
           "typeUrn": "urn:entity:movie"
         }
       ],
@@ -44,23 +44,23 @@
         "resolutionMatch": "exact-name"
       },
       {
-        "query": "Singin' in the Rain",
-        "name": "Singin' in the Rain",
-        "entityId": "59775A1E-5968-480C-94B2-47BE50CA3CD2",
-        "urn": "59775A1E-5968-480C-94B2-47BE50CA3CD2",
+        "query": "Roman Holiday",
+        "name": "Roman Holiday",
+        "entityId": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
+        "urn": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
         "requestedTypeUrn": "urn:entity:movie",
         "resolutionMatch": "exact-name"
       }
     ],
     "affinities": [
       {
-        "label": "Christian",
-        "score": 1,
+        "label": "Jazz",
+        "score": 0.9997543802194203,
         "rank": 1
       },
       {
-        "label": "Jazz",
-        "score": 0.9997543802194203,
+        "label": "Reporter",
+        "score": 0.9989448762159658,
         "rank": 2
       },
       {
@@ -74,34 +74,34 @@
         "rank": 4
       },
       {
-        "label": "Optimistic",
-        "score": 0.9981431224110842,
-        "rank": 5
-      },
-      {
         "label": "piano",
         "score": 0.9977075487145899,
-        "rank": 6
+        "rank": 5
       },
       {
         "label": "Vocal-Jazz",
         "score": 0.997052562633044,
-        "rank": 7
+        "rank": 6
       },
       {
         "label": "oldies",
         "score": 0.9968888161126577,
+        "rank": 7
+      },
+      {
+        "label": "Easy Listening",
+        "score": 0.9965613230718847,
         "rank": 8
       }
     ],
     "evidence": {
-      "meanNormalizedScore": 0.9991819017325958,
+      "meanNormalizedScore": 0.9989181207865873,
       "evidenceBasis": "normalized-score",
       "selectedAffinityCount": 4,
       "returnedAffinityCount": 8,
       "selectedAffinityLabels": [
-        "Christian",
         "Jazz",
+        "Reporter",
         "Inventive",
         "swing"
       ],
@@ -119,7 +119,7 @@
       "source": "qloo-live",
       "apiOrigin": "https://hackathon.api.qloo.com",
       "contractVersion": "2026-10-02.review-origin-v1",
-      "generatedAt": "2026-10-03T03:18:40.241Z"
+      "generatedAt": "2026-10-04T23:53:52.522Z"
     },
     "agentTrace": [
       {
@@ -145,33 +145,33 @@
     ],
     "plan": [
       {
-        "title": "Opening cue",
+        "title": "Familiar opening",
         "duration": "5 min",
-        "action": "Start with “Ella Fitzgerald” as the familiar cue, then branch toward “Christian.” keep the pace gentle and low-pressure.",
-        "why": "The session starts from the supplied favorite “Ella Fitzgerald” and uses Qloo-ranked “Christian” as adjacent cultural evidence.",
+        "action": "Start with “Ella Fitzgerald” as the familiar cue, then branch toward “Jazz.” keep the pace gentle and low-pressure.",
+        "why": "The session starts from “Ella Fitzgerald” and uses Qloo-ranked “Jazz” as adjacent memory/conversation evidence.",
         "anchorName": "Ella Fitzgerald",
-        "affinityLabel": "Christian"
-      },
-      {
-        "title": "Story bridge",
-        "duration": "10 min",
-        "action": "Bridge from “Singin' in the Rain” into “Jazz” with a film scene, photo, lyric, or memory prompt. Keep it for a small group with room for individual responses.",
-        "why": "“Singin' in the Rain” is a supplied favorite; Qloo-ranked “Jazz” provides the adjacent cultural bridge instead of a generic nostalgia prompt.",
-        "anchorName": "Singin' in the Rain",
         "affinityLabel": "Jazz"
       },
       {
-        "title": "Shared choice",
+        "title": "Memory bridge",
         "duration": "10 min",
-        "action": "Offer two or three simple choices connected to “Inventive” and let participants steer the next activity.",
-        "why": "“Inventive” extends the known tastes into a related domain while preserving participant choice.",
+        "action": "Bridge from “Roman Holiday” into “Reporter” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+        "why": "Qloo-ranked “Reporter” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+        "anchorName": "Roman Holiday",
+        "affinityLabel": "Reporter"
+      },
+      {
+        "title": "Conversation choice",
+        "duration": "10 min",
+        "action": "Offer two or three conversation directions connected to “Inventive,” and let participants choose.",
+        "why": "“Inventive” extends the known tastes while preserving participant choice.",
         "affinityLabel": "Inventive"
       },
       {
-        "title": "Closing ritual",
+        "title": "Recall & close",
         "duration": "5 min",
-        "action": "Close with a snack, sensory cue, or conversation card inspired by “swing,” then ask what should return next time.",
-        "why": "“swing” keeps the closing step grounded in selected Qloo evidence so the plan ends in the same cultural neighborhood it started in.",
+        "action": "Use “swing” for one final memory or preference prompt, then ask what should return next time.",
+        "why": "“swing” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
         "affinityLabel": "swing"
       }
     ]
