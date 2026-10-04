@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "methodology": {
-    "evaluatedCandidateCount": 9,
+    "evaluatedCandidateCount": 10,
     "selectionRule": "Score complete live outputs; never hide or remove returned signals to improve a candidate.",
     "dimensions": [
       "exactResolution",
@@ -13,13 +13,232 @@
     ],
     "dimensionScale": "0-5",
     "overallFormula": "unweighted mean of six dimensions × 20",
-    "status": "All nine candidates completed with HTTP 200 live Qloo output and exact-name resolution."
+    "status": "All ten candidates completed with HTTP 200 live Qloo output and exact-name resolution."
   },
   "winner": {
-    "id": "aretha-sound-of-music",
-    "rationale": "Highest whole-output score. All eight returned signals form a coherent music/culture cluster, both anchors resolve exactly, and the selected set is clear enough for a first-time judge without hiding any output."
+    "id": "ella-roman-holiday",
+    "rationale": "Highest whole-output score. Both anchors resolve exactly, all eight returned signals are understandable without filtering, and the selected set visibly bridges music, film/story context, creativity, and swing with minimal semantic weirdness."
   },
   "candidates": [
+    {
+      "id": "ella-roman-holiday",
+      "anchors": [
+        "Ella Fitzgerald",
+        "Roman Holiday"
+      ],
+      "selected": [
+        "Jazz",
+        "Reporter",
+        "Inventive",
+        "swing"
+      ],
+      "affinities": [
+        "Jazz",
+        "Reporter",
+        "Inventive",
+        "swing",
+        "piano",
+        "Vocal-Jazz",
+        "oldies",
+        "Easy Listening"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Ella Fitzgerald",
+          "Jazz"
+        ],
+        [
+          "Story bridge",
+          "Roman Holiday",
+          "Reporter"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Inventive"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "swing"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4.8,
+        "visualClarity": 4.8,
+        "activityUsefulness": 4.5,
+        "lowSemanticWeirdness": 4.8,
+        "meaningfulSurprise": 4.6
+      },
+      "overall": 95,
+      "note": "Best complete output. All eight returned signals are legible; Jazz/swing are coherent with Ella Fitzgerald, Reporter is directly legible from Roman Holiday's storyline, and no payment/rating/category artifact distracts the judge."
+    },
+    {
+      "id": "aretha-sound-of-music",
+      "anchors": [
+        "Aretha Franklin",
+        "The Sound of Music"
+      ],
+      "selected": [
+        "Entertainment",
+        "soul",
+        "funk",
+        "rhythm & blues"
+      ],
+      "affinities": [
+        "Entertainment",
+        "soul",
+        "funk",
+        "rhythm & blues",
+        "Timeless",
+        "Jazz",
+        "blues",
+        "Musically Inclined"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Aretha Franklin",
+          "Entertainment"
+        ],
+        [
+          "Story bridge",
+          "The Sound of Music",
+          "soul"
+        ],
+        [
+          "Shared choice",
+          null,
+          "funk"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "rhythm & blues"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4.5,
+        "visualClarity": 4.5,
+        "activityUsefulness": 4.5,
+        "lowSemanticWeirdness": 4.5,
+        "meaningfulSurprise": 4.5
+      },
+      "overall": 91.7,
+      "note": "Best complete output. Exact resolution and the entire returned set is musically coherent; only 'Entertainment' is broad rather than odd."
+    },
+    {
+      "id": "aretha-blues-brothers",
+      "anchors": [
+        "Aretha Franklin",
+        "The Blues Brothers"
+      ],
+      "selected": [
+        "Games",
+        "soul",
+        "Blues",
+        "funk"
+      ],
+      "affinities": [
+        "Games",
+        "soul",
+        "Blues",
+        "funk",
+        "rhythm & blues",
+        "Timeless",
+        "Orphanage"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "Aretha Franklin",
+          "Games"
+        ],
+        [
+          "Story bridge",
+          "The Blues Brothers",
+          "soul"
+        ],
+        [
+          "Shared choice",
+          null,
+          "Blues"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "funk"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4.5,
+        "visualClarity": 4,
+        "activityUsefulness": 4,
+        "lowSemanticWeirdness": 3.5,
+        "meaningfulSurprise": 4.5
+      },
+      "overall": 85,
+      "note": "Three selected signals are excellent; 'Games' as the top selected signal prevents it from beating the winner."
+    },
+    {
+      "id": "supremes-roman-holiday",
+      "anchors": [
+        "The Supremes",
+        "Roman Holiday"
+      ],
+      "selected": [
+        "Record Label",
+        "Reporter",
+        "60s",
+        "soul"
+      ],
+      "affinities": [
+        "Record Label",
+        "Reporter",
+        "60s",
+        "soul",
+        "oldies",
+        "funk",
+        "rhythm & blues",
+        "Rome"
+      ],
+      "plan": [
+        [
+          "Opening cue",
+          "The Supremes",
+          "Record Label"
+        ],
+        [
+          "Story bridge",
+          "Roman Holiday",
+          "Reporter"
+        ],
+        [
+          "Shared choice",
+          null,
+          "60s"
+        ],
+        [
+          "Closing ritual",
+          null,
+          "soul"
+        ]
+      ],
+      "scores": {
+        "exactResolution": 5,
+        "intuitiveCrossCategory": 4,
+        "visualClarity": 3.5,
+        "activityUsefulness": 3.5,
+        "lowSemanticWeirdness": 3,
+        "meaningfulSurprise": 4.5
+      },
+      "overall": 78.3,
+      "note": "A credible cross-category bridge, but Record Label and Reporter are less immediately persuasive than the stronger music tags."
+    },
     {
       "id": "ella-singin-rain",
       "anchors": [
@@ -76,59 +295,59 @@
       "note": "Strong music coherence after the first tag, but 'Christian' is distracting as the top selected signal."
     },
     {
-      "id": "aretha-sound-of-music",
+      "id": "louis-armstrong-new-orleans",
       "anchors": [
-        "Aretha Franklin",
-        "The Sound of Music"
+        "Louis Armstrong",
+        "New Orleans"
       ],
       "selected": [
-        "Entertainment",
-        "soul",
-        "funk",
-        "rhythm & blues"
+        "Four Star",
+        "Moderately expensive",
+        "Cultural Arts",
+        "Prohibition"
       ],
       "affinities": [
-        "Entertainment",
-        "soul",
-        "funk",
-        "rhythm & blues",
-        "Timeless",
-        "Jazz",
-        "blues",
-        "Musically Inclined"
+        "Four Star",
+        "Moderately expensive",
+        "Cultural Arts",
+        "Prohibition",
+        "Joyous",
+        "Music",
+        "Optimism",
+        "Robin Hood"
       ],
       "plan": [
         [
           "Opening cue",
-          "Aretha Franklin",
-          "Entertainment"
+          "Louis Armstrong",
+          "Four Star"
         ],
         [
           "Story bridge",
-          "The Sound of Music",
-          "soul"
+          "New Orleans",
+          "Moderately expensive"
         ],
         [
           "Shared choice",
           null,
-          "funk"
+          "Cultural Arts"
         ],
         [
           "Closing ritual",
           null,
-          "rhythm & blues"
+          "Prohibition"
         ]
       ],
       "scores": {
         "exactResolution": 5,
-        "intuitiveCrossCategory": 4.5,
-        "visualClarity": 4.5,
-        "activityUsefulness": 4.5,
-        "lowSemanticWeirdness": 4.5,
-        "meaningfulSurprise": 4.5
+        "intuitiveCrossCategory": 3,
+        "visualClarity": 2,
+        "activityUsefulness": 2.5,
+        "lowSemanticWeirdness": 2,
+        "meaningfulSurprise": 4
       },
-      "overall": 91.7,
-      "note": "Best complete output. Exact resolution and the entire returned set is musically coherent; only 'Entertainment' is broad rather than odd."
+      "overall": 61.7,
+      "note": "Cultural Arts and Prohibition are interesting, but pricing/rating tags dominate the first half."
     },
     {
       "id": "johnny-cash-butch-cassidy",
@@ -294,170 +513,6 @@
       },
       "overall": 45,
       "note": "Selected tags are not a persuasive cultural bridge for judges."
-    },
-    {
-      "id": "louis-armstrong-new-orleans",
-      "anchors": [
-        "Louis Armstrong",
-        "New Orleans"
-      ],
-      "selected": [
-        "Four Star",
-        "Moderately expensive",
-        "Cultural Arts",
-        "Prohibition"
-      ],
-      "affinities": [
-        "Four Star",
-        "Moderately expensive",
-        "Cultural Arts",
-        "Prohibition",
-        "Joyous",
-        "Music",
-        "Optimism",
-        "Robin Hood"
-      ],
-      "plan": [
-        [
-          "Opening cue",
-          "Louis Armstrong",
-          "Four Star"
-        ],
-        [
-          "Story bridge",
-          "New Orleans",
-          "Moderately expensive"
-        ],
-        [
-          "Shared choice",
-          null,
-          "Cultural Arts"
-        ],
-        [
-          "Closing ritual",
-          null,
-          "Prohibition"
-        ]
-      ],
-      "scores": {
-        "exactResolution": 5,
-        "intuitiveCrossCategory": 3,
-        "visualClarity": 2,
-        "activityUsefulness": 2.5,
-        "lowSemanticWeirdness": 2,
-        "meaningfulSurprise": 4
-      },
-      "overall": 61.7,
-      "note": "Cultural Arts and Prohibition are interesting, but pricing/rating tags dominate the first half."
-    },
-    {
-      "id": "supremes-roman-holiday",
-      "anchors": [
-        "The Supremes",
-        "Roman Holiday"
-      ],
-      "selected": [
-        "Record Label",
-        "Reporter",
-        "60s",
-        "soul"
-      ],
-      "affinities": [
-        "Record Label",
-        "Reporter",
-        "60s",
-        "soul",
-        "oldies",
-        "funk",
-        "rhythm & blues",
-        "Rome"
-      ],
-      "plan": [
-        [
-          "Opening cue",
-          "The Supremes",
-          "Record Label"
-        ],
-        [
-          "Story bridge",
-          "Roman Holiday",
-          "Reporter"
-        ],
-        [
-          "Shared choice",
-          null,
-          "60s"
-        ],
-        [
-          "Closing ritual",
-          null,
-          "soul"
-        ]
-      ],
-      "scores": {
-        "exactResolution": 5,
-        "intuitiveCrossCategory": 4,
-        "visualClarity": 3.5,
-        "activityUsefulness": 3.5,
-        "lowSemanticWeirdness": 3,
-        "meaningfulSurprise": 4.5
-      },
-      "overall": 78.3,
-      "note": "A credible cross-category bridge, but Record Label and Reporter are less immediately persuasive than the stronger music tags."
-    },
-    {
-      "id": "aretha-blues-brothers",
-      "anchors": [
-        "Aretha Franklin",
-        "The Blues Brothers"
-      ],
-      "selected": [
-        "Games",
-        "soul",
-        "Blues",
-        "funk"
-      ],
-      "affinities": [
-        "Games",
-        "soul",
-        "Blues",
-        "funk",
-        "rhythm & blues",
-        "Timeless",
-        "Orphanage"
-      ],
-      "plan": [
-        [
-          "Opening cue",
-          "Aretha Franklin",
-          "Games"
-        ],
-        [
-          "Story bridge",
-          "The Blues Brothers",
-          "soul"
-        ],
-        [
-          "Shared choice",
-          null,
-          "Blues"
-        ],
-        [
-          "Closing ritual",
-          null,
-          "funk"
-        ]
-      ],
-      "scores": {
-        "exactResolution": 5,
-        "intuitiveCrossCategory": 4.5,
-        "visualClarity": 4,
-        "activityUsefulness": 4,
-        "lowSemanticWeirdness": 3.5,
-        "meaningfulSurprise": 4.5
-      },
-      "overall": 85,
-      "note": "Three selected signals are excellent; 'Games' as the top selected signal prevents it from beating the winner."
     },
     {
       "id": "elvis-jailhouse-rock",
