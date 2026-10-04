@@ -55,4 +55,4 @@ The previous evidence artifacts remain in the repository for transparency. This 
 
 ## Canonical decision
 
-The earlier cross-category audit remains authoritative for judge presentation. **Aretha Franklin + The Sound of Music** remains canonical because it combines exact resolution, a coherent full signal set, and meaningful cross-category expansion. Ella + Duke is cleaner semantically but starts from two artists and therefore demonstrates less of Qloo's cross-category advantage.
+This supplemental audit remains historical evidence. The later consolidated ten-case cross-category audit added **Ella Fitzgerald + Roman Holiday**, which scored **95.0/100** and superseded the earlier Aretha selection as the canonical judge example. Ella + Duke remains a useful same-domain comparison but is not canonical.
