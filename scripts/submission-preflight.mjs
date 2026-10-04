@@ -441,16 +441,16 @@ try {
 try {
   const demoAudit = JSON.parse(await readFile('docs/DEMO_CASE_AUDIT.json', 'utf8'));
   const canonicalDemo = JSON.parse(await readFile('docs/CANONICAL_DEMO_EVIDENCE.json', 'utf8'));
-  if (demoAudit.methodology?.evaluatedCandidateCount !== 9) failures.push('Canonical demo audit no longer contains nine evaluated live cases.');
-  if (demoAudit.winner?.id !== 'aretha-sound-of-music') failures.push('Canonical demo audit winner changed without an explicit audit refresh.');
+  if (demoAudit.methodology?.evaluatedCandidateCount !== 10) failures.push('Canonical demo audit no longer contains ten evaluated live cases.');
+  if (demoAudit.winner?.id !== 'ella-roman-holiday') failures.push('Canonical demo audit winner changed without an explicit audit refresh.');
   if (canonicalDemo.http_status !== 200 || canonicalDemo.response?.provenance?.source !== 'qloo-live') failures.push('Canonical demo evidence is no longer a verified live Qloo HTTP 200 artifact.');
   if (canonicalDemo.response?.evidence?.returnedAffinityCount !== 8 || canonicalDemo.response?.evidence?.selectedAffinityCount !== 4) failures.push('Canonical demo evidence counts changed from the audited winning run.');
   const canonicalAnchors = canonicalDemo.request?.anchors?.map(item => item.query) ?? [];
-  if (canonicalAnchors.join('|') !== 'Aretha Franklin|The Sound of Music') failures.push('Canonical demo evidence no longer uses the audited winning anchors.');
+  if (canonicalAnchors.join('|') !== 'Ella Fitzgerald|Roman Holiday') failures.push('Canonical demo evidence no longer uses the audited winning anchors.');
   const app = await readFile('src/App.tsx', 'utf8');
-  if (!app.includes("useState(['Aretha Franklin','The Sound of Music'])")) failures.push('Canonical app no longer defaults to the audited winning example.');
+  if (!app.includes("useState(['Ella Fitzgerald','Roman Holiday'])")) failures.push('Canonical app no longer defaults to the audited winning example.');
   const flootPage = await readFile('floot-production/pages/_index.tsx', 'utf8');
-  if (!flootPage.includes('{ query:"Aretha Franklin", type:"artist" }') || !flootPage.includes('{ query:"The Sound of Music", type:"movie" }')) failures.push('Floot production snapshot no longer defaults to the audited winning example.');
+  if (!flootPage.includes('{ query:"Ella Fitzgerald", type:"artist" }') || !flootPage.includes('{ query:"Roman Holiday", type:"movie" }')) failures.push('Floot production snapshot no longer defaults to the audited winning example.');
 } catch (error) {
   failures.push(`Canonical demo audit validation failed: ${error instanceof Error ? error.message : String(error)}`);
 }
