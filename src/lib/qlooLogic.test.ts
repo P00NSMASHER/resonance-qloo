@@ -215,9 +215,9 @@ describe('Qloo parsing', () => {
     expect(selectSessionArchetype([{label:'Food'},{label:'Travel'},{label:'Garden'}])).toBe('Sensory & social');
     expect(selectSessionArchetype([{label:'Inventive'},{label:'Cultural Arts'},{label:'Dance'}])).toBe('Creative participation');
 
-    const memory = planFromTags([{label:'Jazz'},{label:'swing'},{label:'Reporter'}], 'calm','small-group',['Ella','Roman Holiday'],30);
-    const sensory = planFromTags([{label:'Food'},{label:'Travel'},{label:'Garden'}], 'calm','small-group',['Favorite meal','Paris'],30);
-    const creative = planFromTags([{label:'Inventive'},{label:'Cultural Arts'},{label:'Dance'}], 'social','small-group',['Favorite artist','Favorite film'],30);
+    const memory = planFromTags([{label:'Jazz',score:1,rank:1},{label:'swing',score:.9,rank:2},{label:'Reporter',score:.8,rank:3}], 'calm','small-group',['Ella','Roman Holiday'],30);
+    const sensory = planFromTags([{label:'Food',score:1,rank:1},{label:'Travel',score:.9,rank:2},{label:'Garden',score:.8,rank:3}], 'calm','small-group',['Favorite meal','Paris'],30);
+    const creative = planFromTags([{label:'Inventive',score:1,rank:1},{label:'Cultural Arts',score:.9,rank:2},{label:'Dance',score:.8,rank:3}], 'social','small-group',['Favorite artist','Favorite film'],30);
     expect(memory.map(x=>x.title)).toEqual(['Familiar opening','Memory bridge','Conversation choice','Recall & close']);
     expect(sensory.map(x=>x.title)).toEqual(['Sensory welcome','Taste & place bridge','Shared sensory choice','Comfort close']);
     expect(creative.map(x=>x.title)).toEqual(['Creative spark','Make a connection','Participant-led creation','Show & choose next']);
