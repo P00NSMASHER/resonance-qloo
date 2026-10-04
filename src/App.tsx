@@ -324,6 +324,16 @@ export default function App() {
     setAnchorTypes(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
   }
 
+  function loadJudgeExample() {
+    invalidateGeneratedState();
+    setError('');
+    setAnchors(['Louis Armstrong','Casablanca']);
+    setAnchorTypes(['artist','movie']);
+    setEnergy('calm');
+    setSetting('small-group');
+    setDurationMinutes(30);
+  }
+
   function previewDemo() {
     setError('');
     setResolutionReview(null);
@@ -431,6 +441,7 @@ export default function App() {
           <button disabled={!canRun} onClick={()=>runLive()}>
             {loading?'Grounding with Qloo…':qlooUi.liveReady?'Build with live Qloo':'Live Qloo unavailable'}
           </button>
+          <button className="secondary" onClick={loadJudgeExample} disabled={loading}>Load judge example</button>
           <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
         </div>
         <small>{qlooUi.helper}</small>
