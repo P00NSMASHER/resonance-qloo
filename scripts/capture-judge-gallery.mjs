@@ -17,13 +17,15 @@ await page.screenshot({path:`${out}/01-input.png`,fullPage:false});
 
 await page.getByRole('button',{name:'Build with live Qloo'}).click();
 await page.getByText('How Qloo changed this session').waitFor({state:'visible',timeout:60_000});
-await page.getByText('How Qloo changed this session').scrollIntoViewIfNeeded();
-await page.waitForTimeout(500);
-await page.screenshot({path:`${out}/02-qloo-transformation.png`,fullPage:false});
+const qlooSection = page.getByText('How Qloo changed this session').locator('xpath=ancestor::section[1]');
+await qlooSection.scrollIntoViewIfNeeded();
+await page.waitForTimeout(300);
+await qlooSection.screenshot({path:`${out}/02-qloo-transformation.png`});
 
-await page.getByText('A facilitator-ready starting point').scrollIntoViewIfNeeded();
-await page.waitForTimeout(500);
-await page.screenshot({path:`${out}/03-finished-session.png`,fullPage:false});
+const sessionSection = page.getByText('A facilitator-ready starting point').locator('xpath=ancestor::section[1]');
+await sessionSection.scrollIntoViewIfNeeded();
+await page.waitForTimeout(300);
+await sessionSection.screenshot({path:`${out}/03-finished-session.png`});
 
 await browser.close();
 console.log('Captured 3 judge-gallery screenshots from',url);
