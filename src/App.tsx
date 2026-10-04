@@ -6,6 +6,7 @@ import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
 import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './lib/recommendationResult';
 import { payloadHasMatchingRequestContext, type RecommendationRequestContext } from './lib/recommendationContext';
 import { buildQlooDelta } from './lib/qlooDelta';
+import { selectSessionArchetype } from './lib/qlooLogic';
 import deploymentContract from '../deployment-contract.json';
 
 type AgentTraceStep = {
@@ -149,6 +150,7 @@ export default function App() {
     result.evidence.selectedAffinityLabels,
     result.plan,
   ) : null;
+  const sessionArchetype = result ? selectSessionArchetype(result.affinities.filter(item => result.evidence.selectedAffinityLabels.includes(item.label))) : null;
 
   useEffect(() => {
     setQlooState('checking');
@@ -550,6 +552,7 @@ export default function App() {
         <div className="sectionHeading">
           <b>03 · Your session</b>
           <h3 id="session-title">A facilitator-ready starting point</h3>
+          {sessionArchetype && <p className="archetypeLine"><strong>{sessionArchetype}</strong> · strategy selected from the Qloo evidence + session context</p>}
         </div>
         <div className="plan">{result.plan.map(x=>{const signalNumber=x.affinityLabel ? selectedAffinityOrder.get(x.affinityLabel) : undefined;return <article key={x.title}>
           <small>{x.duration}</small>
