@@ -1,6 +1,6 @@
 # Exact Floot production source
 
-This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791155901264`.
+This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791156109236`.
 
 - Floot project ID: `49082a23-f25f-41f4-a147-f908c8dcc860`
 - Published URL: https://resonance-qloo.floot.app
@@ -41,6 +41,6 @@ This removes the need for judges to infer production behavior from a parallel im
 
 ## Live-byte verification receipt
 
-On 2026-10-04, the Floot runtime snapshot was refreshed to project version `1791155901264`. Phase 4 changed only `pages/_index.tsx` to make Ella Fitzgerald + Roman Holiday the evidence-backed canonical judge example; that live page was directly re-read and replaced byte-for-byte. The other 27 manifested runtime files retain their prior direct-source receipts.
+On 2026-10-04, the Floot runtime snapshot was refreshed to project version `1791156109236`. Phase 4 changed only `pages/_index.tsx` to make Ella Fitzgerald + Roman Holiday the evidence-backed canonical judge example; that live page was directly re-read and replaced byte-for-byte. The other 27 manifested runtime files retain their prior direct-source receipts.
 
 That point-in-time receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not pretend to have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe.
