@@ -163,6 +163,9 @@ export default function HomePage() {
   const [error,setError] = useState("");
   const [loading,setLoading] = useState(false);
   const [copied,setCopied] = useState(false);
+  const [activityDecisions,setActivityDecisions] = useState<Record<number,"kept"|"modified"|"replaced">>({});
+  const [activityEdits,setActivityEdits] = useState<Record<number,string>>({});
+  const [editingActivity,setEditingActivity] = useState<number|null>(null);
   const resultRef = useRef<HTMLElement|null>(null);
 
   const usableAnchors = useMemo(() => anchors
@@ -195,6 +198,7 @@ export default function HomePage() {
 
   function invalidate() {
     setResult(null); setSource(null); setReview(null); setError(""); setCopied(false);
+    setActivityDecisions({}); setActivityEdits({}); setEditingActivity(null);
   }
   function changeAnchor(index:number,query:string) {
     invalidate(); setAnchors(current => current.map((item,i) => i === index ? {...item,query} : item));
@@ -327,6 +331,10 @@ export default function HomePage() {
   const selectedSet = new Set(selectedSequence);
   const selectedOrder = new Map(selectedSequence.map((label,index) => [label,index+1]));
   const delta = result ? qlooDelta(result) : null;
+  const approvedCount = result ? result.plan.filter((_,index) => Boolean(activityDecisions[index])).length : 0;
+  const keptCount = Object.values(activityDecisions).filter(value => value === "kept").length;
+  const modifiedCount = Object.values(activityDecisions).filter(value => value === "modified").length;
+  const replacedCount = Object.values(activityDecisions).filter(value => value === "replaced").length;
 
   return <>
     <Helmet>
@@ -439,8 +447,9 @@ export default function HomePage() {
         </section>
 
         <section className={styles.sessionSection}>
-          <div className={styles.sectionHeading}><b>03 · Your session</b><h3>A facilitator-ready starting point</h3></div>
-          <div className={styles.planGrid}>{result.plan.map((item,index)=>{const Icon=[Music2,Film,Users,Utensils][index%4];const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;return <article key={item.title} className={styles.planCard}><div className={styles.cardIcon}><Icon size={21}/></div><span className={styles.duration}>{item.duration}</span><h3>{item.title}</h3><p className={styles.sessionAction}>{item.action}</p>{item.affinityLabel && <div className={styles.sessionSignal}>{signal?`Qloo signal #${signal}`:"Qloo signal"} · {item.affinityLabel}{item.anchorName?` · from ${item.anchorName}`:""}</div>}</article>})}</div>
+          <div className={styles.sectionHeading}><b>03 · Your session</b><h3>A facilitator-ready starting point</h3><p className={styles.archetypeLine}><strong>{qlooSessionLogic.selectSessionArchetype(result.affinities.filter(item => result.evidence.selectedAffinityLabels.includes(item.label)))}</strong> · strategy selected from the Qloo evidence + session context</p></div>
+          <div className={styles.planGrid}>{result.plan.map((item,index)=>{const Icon=[Music2,Film,Users,Utensils][index%4];const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;const displayedAction=activityEdits[index]??item.action;const decision=activityDecisions[index];return <article key={item.title} className={styles.planCard}><div className={styles.cardIcon}><Icon size={21}/></div><span className={styles.duration}>{item.duration}</span><h3>{item.title}</h3>{editingActivity===index?<div className={styles.activityEditor}><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:"modified"}));setEditingActivity(null)}}>Save modification</button><button type="button" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div>:<p className={styles.sessionAction}>{displayedAction}</p>}{item.affinityLabel&&<div className={styles.sessionSignal}>{signal?`Qloo signal #${signal}`:"Qloo signal"} · {item.affinityLabel}{item.anchorName?` · from ${item.anchorName}`:""}</div>}<div className={styles.facilitatorControls}><button type="button" onClick={()=>setActivityDecisions(current=>({...current,[index]:"kept"}))}>Keep</button><button type="button" onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??item.action}));setEditingActivity(index)}}>Modify</button><button type="button" onClick={()=>{setActivityEdits(current=>({...current,[index]:`Alternative: invite participants to choose between two simple prompts inspired by “${item.affinityLabel},” then follow the group's preference.`}));setActivityDecisions(current=>({...current,[index]:"replaced"}));setEditingActivity(null)}}>Replace</button></div>{decision&&<div className={styles.decisionBadge}>Facilitator: {decision}</div>}</article>})}</div>
+          <div className={styles.approvalSummary}><strong>Facilitator review</strong><span>{approvedCount}/{result.plan.length} activities reviewed · {keptCount} kept · {modifiedCount} modified · {replacedCount} replaced</span>{approvedCount===result.plan.length&&<b>Session approved by facilitator</b>}</div>
         </section>
 
         <div className={styles.interpretation}><b>Interpretation limit</b><p>Qloo affinities are aggregate cultural relationships, not probabilities or claims about an individual. The facilitator can accept, modify, reorder, or reject any suggestion.</p></div>
@@ -459,13 +468,5 @@ export default function HomePage() {
 
             <section className={styles.decisionTrace}><h3>Agent decision trace</h3><p>The audit trail exposes how the session was assembled.</p><div className={styles.metrics}><span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span><span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span><span><b>{result.evidence.topResultResolutionCount}</b>{source==="live"?" top matches confirmed":" top matches to review"}</span><span><b>{result.evidence.categoryHintCount}</b> category hints</span><span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span><span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span><span><b>{source==="live"?result.evidence.explainabilityResultCount:"—"}</b>{source==="live"?" Qloo-explained results":" live explainability"}</span><span><b>{result.evidence.aggregateExplainabilityAvailable?"Yes":"No"}</b> aggregate explainability</span></div><ol>{result.agentTrace.map(step=><li key={step.stage} className={step.status==="warning"?styles.traceWarning:""}><span>{step.stage}</span><p>{step.detail}</p></li>)}</ol></section>
 
-            <section className={styles.auditRationales}><h3>Activity-to-evidence mapping</h3>{result.plan.map(item=>{const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;return <article key={item.title}><b>{item.title}</b><code>{signal?`Signal #${signal}: `:""}{item.anchorName?`${item.anchorName} + ${item.affinityLabel} → ${item.title}`:`${item.affinityLabel} → ${item.title}`}</code><p>{item.why}</p></article>})}</section>
-          </div>
-        </details>
-      </section>}
-
-      <section className={styles.impact}><span className={styles.step}>WHY THIS MATTERS</span><h2>Personalization without a profile, history, or identity graph.</h2><p>Start from a few real cultural preferences instead of a generic age-based activity list. No personal identifiers are required, and Resonance is not a medical tool.</p><div className={styles.impactStats}><div><strong>2–4</strong><span>taste anchors</span></div><div><strong>0</strong><span>PII required</span></div><div><strong>1</strong><span>auditable session plan</span></div></div></section>
-      <footer><span>Resonance</span><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
-    </main>
-  </>;
-}
+            <section className={styles.auditRationales}><h3>Activity-to-evidence mapping</h3>{result.plan.map(item=>{const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;return <article k
+... (output capped at 40000 chars — re-read with offset/limit)
