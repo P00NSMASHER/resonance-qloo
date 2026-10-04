@@ -42,6 +42,7 @@ const canonicalClient = await readRepo('src/lib/qlooClient.ts');
 const canonicalReview = await readRepo('src/lib/resolutionReviewToken.ts');
 const canonicalServer = await readRepo('server/index.ts');
 const canonicalPlanner = await readRepo('src/lib/agentPlanner.ts');
+const canonicalLogic = await readRepo('src/lib/qlooLogic.ts');
 const canonicalApp = await readRepo('src/App.tsx');
 const canonicalDelta = await readRepo('src/lib/qlooDelta.ts');
 const canonicalStudy = await readRepo('src/lib/studyResponse.ts');
@@ -101,9 +102,9 @@ for (const needle of ['Live Qloo verified','Qloo match review required','Confirm
 for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence &amp; audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!canonicalApp.includes(needle)) failures.push(`Canonical judge UI missing: ${needle}`);
 }
-requireBoth('Qloo session archetypes', prodQlooLogic,
+requireBoth('Qloo session archetypes', prodLogic,
   ['selectSessionArchetype','Memory & conversation','Sensory & social','Creative participation','Familiar opening','Sensory welcome','Creative spark'],
-  canonicalQloo,
+  canonicalLogic,
   ['selectSessionArchetype','Memory & conversation','Sensory & social','Creative participation','Familiar opening','Sensory welcome','Creative spark']);
 requireBoth('facilitator review controls', prodPage,
   ['Keep','Modify','Replace','Session approved by facilitator','activityDecisions'],
