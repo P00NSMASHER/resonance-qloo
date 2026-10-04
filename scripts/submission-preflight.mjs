@@ -151,7 +151,7 @@ try {
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
   if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
-  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','anonymous study route','Production judge UI']) {
+  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo session archetypes','facilitator review controls','Qloo delta comparison','anonymous study route','Production judge UI']) {
     if (!parity.includes(required)) failures.push(`Floot production parity verifier is missing critical invariant group: ${required}`);
   }
 } catch (error) {
