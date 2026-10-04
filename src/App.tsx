@@ -327,7 +327,7 @@ export default function App() {
   function loadJudgeExample() {
     invalidateGeneratedState();
     setError('');
-    setAnchors(['Louis Armstrong','Casablanca']);
+    setAnchors(['Ella Fitzgerald','Roman Holiday']);
     setAnchorTypes(['artist','movie']);
     setEnergy('calm');
     setSetting('small-group');
