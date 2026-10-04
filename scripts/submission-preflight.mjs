@@ -90,34 +90,27 @@ try {
   const productionStudyEndpoint = await readFile('floot-production/endpoints/study-response_POST.ts', 'utf8');
   const productionStudyPage = await readFile('floot-production/pages/study.tsx', 'utf8');
   for (const required of [
-    'Status: **Closed / intentionally skipped**',
-    'valid real target-user responses: **0**',
-    'no synthetic, test, developer-generated, inferred, or proxy response is counted as user evidence',
-    'no impact metric, testimonial, time-savings percentage, or user quote is claimed from this study',
-    'no further recruitment or unsolicited follow-up will be sent',
-    'study submission endpoint is closed and returns HTTP 410',
+    'Status: **Open / awaiting real participants**',
+    'valid real target-user responses counted in submission evidence: **0**',
+    'no synthetic, developer-generated, inferred, proxy, or test response is counted as user evidence',
+    'no testimonial, time-savings percentage, usefulness score, or user quote is claimed until real responses are retrieved and validated',
+    'Do not publish aggregate impact claims with fewer than **3 complete real eligible participants**',
   ]) {
-    if (!studyProtocol.includes(required)) failures.push(`Closed Phase 5 record is missing integrity marker: ${required}`);
+    if (!studyProtocol.includes(required)) failures.push(`Open Phase 5 protocol is missing integrity marker: ${required}`);
   }
   for (const [name, body] of [
     ['canonical server', canonicalServer],
     ['production study endpoint', productionStudyEndpoint],
   ]) {
-    if (!body.includes('Study closed. Phase 5 external validation was intentionally skipped')) {
-      failures.push(`${name} no longer records the closed Phase 5 state.`);
-    }
-    if (body.includes('RESONANCE_STUDY_RESPONSE')) {
-      failures.push(`${name} unexpectedly contains active study-response logging after closure.`);
+    for (const required of ['RESONANCE_STUDY_RESPONSE','Too many study submissions','Study response did not match the anonymous validation contract']) {
+      if (!body.includes(required)) failures.push(`${name} is missing anonymous study marker: ${required}`);
     }
   }
-  if (!canonicalServer.includes('return json(res, 410')) {
-    failures.push('Canonical server no longer returns HTTP 410 for the closed study endpoint.');
-  }
-  for (const required of ['Phase 5 skipped','This study is closed.','zero valid target-user responses','no participant response collection']) {
-    if (!productionStudyPage.includes(required)) failures.push(`Production closed-study page is missing marker: ${required}`);
+  for (const required of ['noindex,nofollow','Anonymous validation study','Plan it without Resonance','Do the same task with Resonance','anonymous aggregate use']) {
+    if (!productionStudyPage.includes(required)) failures.push(`Production study page is missing marker: ${required}`);
   }
 } catch (error) {
-  failures.push(`Closed Phase 5 state could not be validated: ${error instanceof Error ? error.message : String(error)}`);
+  failures.push(`Open Phase 5 state could not be validated: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
@@ -154,11 +147,11 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791156109236') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791157346144') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
   if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
-  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','closed study route','Production judge UI']) {
+  for (const required of ['Qloo search contract','Qloo insights contract','signed review receipt','credential-scoped caching','Qloo delta comparison','anonymous study route','Production judge UI']) {
     if (!parity.includes(required)) failures.push(`Floot production parity verifier is missing critical invariant group: ${required}`);
   }
 } catch (error) {
