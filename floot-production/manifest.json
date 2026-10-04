@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791155901264",
+  "flootProjectVersion": "1791156109236",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -124,8 +124,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "d89b8fcb2c48038486611a947204e35da6d47c3a",
-      "sourceCharCount": 35412
+      "gitBlobSha": "750848e85133bf176bcf777f06c8906f02e5f513",
+      "sourceCharCount": 35502
     },
     {
       "path": "pages/study.module.css",
@@ -150,9 +150,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-04",
-    "flootProjectVersion": "1791155901264",
+    "flootProjectVersion": "1791156109236",
     "exactFileCount": 28,
-    "verificationMethod": "Phase 4 changed only the judge-facing page source after the 28-file judge/study snapshot was established. The live Floot page was directly re-read after publish and refreshed byte-for-byte; the other 27 manifested runtime files were unchanged.",
+    "verificationMethod": "Phase 4 finalized the canonical judge example on the page only. The live Floot page was directly re-read after publish and refreshed byte-for-byte; the other manifested runtime files were unchanged.",
     "directComparisonStatus": "28/28 exact",
     "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }
