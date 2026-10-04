@@ -10,7 +10,7 @@ The non-exact path is also fully verified in production: `Italian food` resolves
 
 ## Canonical demo selection
 
-Ten complete live Qloo outputs were evaluated without removing awkward returned signals. **Ella Fitzgerald + Roman Holiday** scored highest at **95.0/100** because both anchors resolved exactly and the complete eight-signal set stayed legible without filtering: Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening. The full audit remains public in [DEMO_CASE_AUDIT.json](DEMO_CASE_AUDIT.json).
+Ten complete live Qloo outputs were evaluated without removing awkward returned signals. **Ella Fitzgerald + Roman Holiday** scored highest at **96/100** because both anchors resolved exactly and the complete eight-signal set stayed legible without filtering: Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening. The full audit remains public in [DEMO_CASE_AUDIT.json](DEMO_CASE_AUDIT.json).
 
 ## 60-second evaluation path
 
