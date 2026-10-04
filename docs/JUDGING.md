@@ -16,7 +16,7 @@ Nine complete live Qloo outputs were evaluated without removing awkward returned
 
 1. Open the live app: https://resonance-qloo.floot.app
 2. Confirm the header reports **Live Qloo verified**.
-3. Use the canonical example already loaded: `Aretha Franklin` + `The Sound of Music`, 30 minutes, calm, small group. It was selected by a transparent nine-case whole-output audit rather than by hiding individual Qloo signals. See [DEMO_CASE_AUDIT.md](DEMO_CASE_AUDIT.md) and [CANONICAL_DEMO_EVIDENCE.json](CANONICAL_DEMO_EVIDENCE.json).
+3. Use the canonical example already loaded: `Ella Fitzgerald` + `Roman Holiday`, 30 minutes, calm, small group. It was selected by a transparent ten-case whole-output audit rather than by hiding individual Qloo signals. See [DEMO_CASE_AUDIT.md](DEMO_CASE_AUDIT.md) and [CANONICAL_DEMO_EVIDENCE.json](CANONICAL_DEMO_EVIDENCE.json).
 4. Use **Preview with example data** only as the explicitly labeled **ILLUSTRATIVE DEMO** fallback.
 5. The default result intentionally shows only three concepts: **Your favorites → What Qloo discovered → Your session**.
 6. Read **How Qloo changed this session**. The left side is a deterministic anchor-only baseline that can use only the submitted favorites/category hints; the right side is grounded in the actual Qloo taste signals. The metrics quantify favorites supplied, signals returned, signals selected, activities influenced, and selected discoveries not literally named in the inputs.
