@@ -1,6 +1,6 @@
 # Exact Floot production source
 
-This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791156109236`.
+This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791157346144`.
 
 - Floot project ID: `49082a23-f25f-41f4-a147-f908c8dcc860`
 - Published URL: https://resonance-qloo.floot.app
@@ -9,14 +9,14 @@ This directory is a public snapshot of the **actual judge-facing Floot source** 
 
 ## Scope
 
-The snapshot contains every runtime file directly involved in the public Resonance experience plus the closed Phase 5 study notice:
+The snapshot contains every runtime file directly involved in the public Resonance experience plus the anonymous Phase 5 validation surface:
 
 - public page and responsive styling;
 - recommendation and status endpoint handlers plus schemas;
 - shared Qloo parsing/selection/session logic;
 - directly imported Button/Input/Select/Badge components and styles;
 - global provider/config glue and base CSS;
-- closed study notice, historical schema, HTTP-410 response endpoint, and retained supporting UI dependency;
+- anonymous study page, guarded response endpoint/schema, and supporting UI dependency;
 - Floot's deployed dependency manifest.
 
 Floot's many **unused seeded component examples** are intentionally excluded because they do not participate in the Resonance runtime.
@@ -41,6 +41,6 @@ This removes the need for judges to infer production behavior from a parallel im
 
 ## Live-byte verification receipt
 
-On 2026-10-04, the Floot runtime snapshot was refreshed to project version `1791156109236`. Phase 4 changed only `pages/_index.tsx` to make Ella Fitzgerald + Roman Holiday the evidence-backed canonical judge example; that live page was directly re-read and replaced byte-for-byte. The other 27 manifested runtime files retain their prior direct-source receipts.
+On 2026-10-04, the Floot runtime snapshot was refreshed to project version `1791157346144` after Qloo-driven session archetypes, facilitator Keep/Modify/Replace controls, and the anonymous Phase 5 validation surface were reconciled. All changed runtime files were directly re-read from Floot and refreshed in this directory; unchanged files retain their prior direct-source receipts.
 
 That point-in-time receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not pretend to have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe.
