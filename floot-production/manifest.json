@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791156109236",
+  "flootProjectVersion": "1791157346144",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the closed Phase 5 study notice: public pages/styling, status/recommendation/closed-study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
+  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the anonymous Phase 5 validation surface: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
   "files": [
     {
       "path": "base.css",
@@ -99,8 +99,8 @@
     },
     {
       "path": "endpoints/study-response_POST.ts",
-      "gitBlobSha": "2f313c65db6d3f569938d1ed0d8c0070114cec5a",
-      "sourceCharCount": 418
+      "gitBlobSha": "0613fef35a318238e6650de65b8930b72579dcfe",
+      "sourceCharCount": 1371
     },
     {
       "path": "helpers/_publicConfigs.tsx",
@@ -109,13 +109,13 @@
     },
     {
       "path": "helpers/qlooSessionLogic.tsx",
-      "gitBlobSha": "65c8308c024567d53928a2f361ecb9408923b0e3",
-      "sourceCharCount": 10865
+      "gitBlobSha": "e372a49e8da8fef7a22b32dcf62a95d647ecf190",
+      "sourceCharCount": 13837
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "9f45493017227657683c37376ee6d83ffc19704c",
-      "sourceCharCount": 20740
+      "gitBlobSha": "816c2ba71c9abfc6d0917aab333cd6102e70534f",
+      "sourceCharCount": 22086
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -124,8 +124,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "750848e85133bf176bcf777f06c8906f02e5f513",
-      "sourceCharCount": 35502
+      "gitBlobSha": "c21a2e1db6b0d52dd947d71942784f1d46ebf8dc",
+      "sourceCharCount": 38186
     },
     {
       "path": "pages/study.module.css",
@@ -139,8 +139,8 @@
     },
     {
       "path": "pages/study.tsx",
-      "gitBlobSha": "e0e77ce41927b656ad80ee5a0a1bdda04f545621",
-      "sourceCharCount": 1448
+      "gitBlobSha": "8693208d0250e595b9fdbca2016091bd530a421c",
+      "sourceCharCount": 8755
     },
     {
       "path": "static/__dev/dependencies.json",
@@ -150,9 +150,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-04",
-    "flootProjectVersion": "1791156109236",
+    "flootProjectVersion": "1791157346144",
     "exactFileCount": 28,
-    "verificationMethod": "Phase 4 finalized the canonical judge example on the page only. The live Floot page was directly re-read after publish and refreshed byte-for-byte; the other manifested runtime files were unchanged.",
+    "verificationMethod": "Direct live-source refresh after Phases 6–7 and Phase 5 study-surface reconciliation. All changed runtime files were re-read from the published Floot project and refreshed in floot-production; unchanged manifested files retain their prior exact-source receipts.",
     "directComparisonStatus": "28/28 exact",
     "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }
