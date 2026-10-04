@@ -112,7 +112,7 @@ const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
 export default function App() {
-  const [anchors, setAnchors] = useState(['Aretha Franklin','The Sound of Music']);
+  const [anchors, setAnchors] = useState(['Ella Fitzgerald','Roman Holiday']);
   const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
