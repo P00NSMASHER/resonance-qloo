@@ -263,8 +263,8 @@ export default function HomePage() {
   function loadJudgeExample() {
     invalidate();
     setAnchors([
-      { query:"Louis Armstrong", type:"artist" },
-      { query:"Casablanca", type:"movie" },
+      { query:"Ella Fitzgerald", type:"artist" },
+      { query:"Roman Holiday", type:"movie" },
     ]);
     setEnergy("calm");
     setSetting("small-group");
