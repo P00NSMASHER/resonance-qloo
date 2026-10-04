@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791146156255",
+  "flootProjectVersion": "1791155901264",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -124,8 +124,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "0e41dd342fd68fb56b15915efa7219549ed2d0bf",
-      "sourceCharCount": 35409
+      "gitBlobSha": "d89b8fcb2c48038486611a947204e35da6d47c3a",
+      "sourceCharCount": 35412
     },
     {
       "path": "pages/study.module.css",
@@ -150,10 +150,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-04",
-    "flootProjectVersion": "1791146156255",
-    "exactFileCount": 21,
-    "verificationMethod": "Phase 4 changed only the judge-facing page source; that live Floot page was directly re-read after publish and refreshed byte-for-byte in the public production snapshot. The remaining 20 manifested runtime files were unchanged.",
-    "directComparisonStatus": "21/21 exact",
-    "manifestBlobStatus": "21/21 manifest hashes match current exact snapshot blobs"
+    "flootProjectVersion": "1791155901264",
+    "exactFileCount": 28,
+    "verificationMethod": "Phase 4 changed only the judge-facing page source after the 28-file judge/study snapshot was established. The live Floot page was directly re-read after publish and refreshed byte-for-byte; the other 27 manifested runtime files were unchanged.",
+    "directComparisonStatus": "28/28 exact",
+    "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }
 }
