@@ -2,6 +2,10 @@ name: Capture judge gallery
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/capture-judge-gallery.mjs'
+      - '.github/workflows/capture-gallery.yml'
 
 permissions:
   contents: read
