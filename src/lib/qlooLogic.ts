@@ -187,6 +187,19 @@ export function extractExplainabilitySummary(payload: unknown): QlooExplainabili
   return { resultCount, aggregateAvailable };
 }
 
+export type SessionArchetype = 'Memory & conversation' | 'Sensory & social' | 'Creative participation';
+
+export function selectSessionArchetype(tags: Pick<Affinity,'label'>[]): SessionArchetype {
+  const labels = tags.map(item => item.label.toLocaleLowerCase('en-US'));
+  const score = (terms:string[]) => labels.reduce((sum,label) => sum + terms.filter(term => label.includes(term)).length,0);
+  const memory = score(['jazz','swing','oldies','timeless','reporter','history','broadway','vocal','piano','nostalgia','classic']);
+  const sensory = score(['food','culinary','restaurant','taste','travel','place','garden','nature','fashion','design','color','scent']);
+  const creative = score(['inventive','creative','cultural arts','art','music','dance','joyous','optimism','optimistic','craft']);
+  if (sensory > memory && sensory >= creative) return 'Sensory & social';
+  if (creative > memory && creative > sensory) return 'Creative participation';
+  return 'Memory & conversation';
+}
+
 export function planFromTags(
   tags: Affinity[],
   energy: string,
@@ -213,71 +226,31 @@ export function planFromTags(
     setting === 'one-on-one' ? 'for one person and one companion' :
     setting === 'community' ? 'for a room where people can join or step out freely' :
     'for a small group with room for individual responses';
+  const archetype = selectSessionArchetype(tags);
+
+  if (archetype === 'Sensory & social') {
+    return [
+      { title:'Sensory welcome', duration:durations[0], action:firstAnchor ? `Start with “${firstAnchor}” and a concrete sensory cue connected to “${a}”; ${energyLine}.` : `Start with a concrete sensory cue connected to “${a}”; ${energyLine}.`, why:`“${a}” makes the opening tangible rather than purely conversational.`, ...(firstAnchor?{anchorName:firstAnchor}:{}), affinityLabel:a },
+      { title:'Taste & place bridge', duration:durations[1], action:secondAnchor ? `Connect “${secondAnchor}” with “${b}” through imagery, food, place, texture, or a simple choice. Keep it ${settingLine}.` : `Use “${b}” to bridge into imagery, food, place, texture, or a simple choice. Keep it ${settingLine}.`, why:`Qloo-ranked “${b}” broadens the familiar input into a sensory/social direction.`, ...(secondAnchor?{anchorName:secondAnchor}:{}), affinityLabel:b },
+      { title:'Shared sensory choice', duration:durations[2], action:thirdAnchor ? `Offer two or three sensory or social choices connecting “${thirdAnchor}” with “${c},” and let participants choose the direction.` : `Offer two or three sensory or social choices connected to “${c},” and let participants choose the direction.`, why:`“${c}” supplies adjacent evidence while participant choice keeps the activity human-led.`, ...(thirdAnchor?{anchorName:thirdAnchor}:{}), affinityLabel:c },
+      { title:'Comfort close', duration:durations[3], action:fourthAnchor ? `Reconnect “${fourthAnchor}” with “${d}” through a comfortable sensory cue or conversation prompt, then ask what should return next time.` : `Close with a comfortable sensory cue or conversation prompt inspired by “${d},” then ask what should return next time.`, why:`“${d}” keeps the closing step inside the Qloo-grounded sensory neighborhood.`, ...(fourthAnchor?{anchorName:fourthAnchor}:{}), affinityLabel:d },
+    ];
+  }
+
+  if (archetype === 'Creative participation') {
+    return [
+      { title:'Creative spark', duration:durations[0], action:firstAnchor ? `Start from “${firstAnchor}” and use “${a}” as a prompt to notice, choose, hum, sketch, gesture, or respond; ${energyLine}.` : `Use “${a}” as a prompt to notice, choose, hum, sketch, gesture, or respond; ${energyLine}.`, why:`Qloo-ranked “${a}” turns the familiar input into an active creative starting point.`, ...(firstAnchor?{anchorName:firstAnchor}:{}), affinityLabel:a },
+      { title:'Make a connection', duration:durations[1], action:secondAnchor ? `Bridge “${secondAnchor}” into “${b}” with a simple create-or-choose prompt. Keep it ${settingLine}.` : `Use “${b}” for a simple create-or-choose prompt. Keep it ${settingLine}.`, why:`“${b}” provides an adjacent Qloo signal for participation rather than passive recall.`, ...(secondAnchor?{anchorName:secondAnchor}:{}), affinityLabel:b },
+      { title:'Participant-led creation', duration:durations[2], action:thirdAnchor ? `Let participants shape a small shared creation that connects “${thirdAnchor}” with “${c}.”` : `Let participants shape a small shared creation around “${c}.”`, why:`“${c}” extends the taste evidence while participants determine the actual creative output.`, ...(thirdAnchor?{anchorName:thirdAnchor}:{}), affinityLabel:c },
+      { title:'Show & choose next', duration:durations[3], action:fourthAnchor ? `Close by connecting “${fourthAnchor}” with “${d},” sharing what was made or chosen, and deciding what to revisit next time.` : `Close with “${d},” share what was made or chosen, and decide what to revisit next time.`, why:`“${d}” grounds the close in Qloo evidence while returning control to the participants.`, ...(fourthAnchor?{anchorName:fourthAnchor}:{}), affinityLabel:d },
+    ];
+  }
 
   return [
-    firstAnchor
-      ? {
-          title:'Opening cue',
-          duration:durations[0],
-          action:`Start with “${firstAnchor}” as the familiar cue, then branch toward “${a}.” ${energyLine}.`,
-          why:`The session starts from the supplied favorite “${firstAnchor}” and uses Qloo-ranked “${a}” as adjacent cultural evidence.`,
-          anchorName:firstAnchor,
-          affinityLabel:a,
-        }
-      : {
-          title:'Opening cue',
-          duration:durations[0],
-          action:`Start with music, imagery, or a short prompt shaped around “${a}.” ${energyLine}.`,
-          why:`Qloo surfaced “${a}” near the top of the cross-category evidence from the cultural anchors.`,
-          affinityLabel:a,
-        },
-    secondAnchor
-      ? {
-          title:'Story bridge',
-          duration:durations[1],
-          action:`Bridge from “${secondAnchor}” into “${b}” with a film scene, photo, lyric, or memory prompt. Keep it ${settingLine}.`,
-          why:`“${secondAnchor}” is a supplied favorite; Qloo-ranked “${b}” provides the adjacent cultural bridge instead of a generic nostalgia prompt.`,
-          anchorName:secondAnchor,
-          affinityLabel:b,
-        }
-      : {
-          title:'Story bridge',
-          duration:durations[1],
-          action:`Use “${b}” as the bridge into a film scene, photo, lyric, or memory prompt. Keep it ${settingLine}.`,
-          why:`“${b}” gives the agent a Qloo-grounded next step instead of a generic nostalgia prompt.`,
-          affinityLabel:b,
-        },
-    thirdAnchor
-      ? {
-          title:'Shared choice',
-          duration:durations[2],
-          action:`Offer two or three simple choices that connect “${thirdAnchor}” with “${c},” and let participants steer the next activity.`,
-          why:`The known favorite “${thirdAnchor}” stays visible while “${c}” extends it into a Qloo-ranked adjacent domain.`,
-          anchorName:thirdAnchor,
-          affinityLabel:c,
-        }
-      : {
-          title:'Shared choice',
-          duration:durations[2],
-          action:`Offer two or three simple choices connected to “${c}” and let participants steer the next activity.`,
-          why:`“${c}” extends the known tastes into a related domain while preserving participant choice.`,
-          affinityLabel:c,
-        },
-    fourthAnchor
-      ? {
-          title:'Closing ritual',
-          duration:durations[3],
-          action:`Close by reconnecting “${fourthAnchor}” with “${d}” through a snack, sensory cue, or conversation card, then ask what should return next time.`,
-          why:`The supplied favorite “${fourthAnchor}” remains visible in the final step while Qloo-ranked “${d}” provides the adjacent cultural signal.`,
-          anchorName:fourthAnchor,
-          affinityLabel:d,
-        }
-      : {
-          title:'Closing ritual',
-          duration:durations[3],
-          action:`Close with a snack, sensory cue, or conversation card inspired by “${d},” then ask what should return next time.`,
-          why:`“${d}” keeps the closing step grounded in selected Qloo evidence so the plan ends in the same cultural neighborhood it started in.`,
-          affinityLabel:d,
-        }
+    { title:'Familiar opening', duration:durations[0], action:firstAnchor ? `Start with “${firstAnchor}” as the familiar cue, then branch toward “${a}.” ${energyLine}.` : `Start with music, imagery, or a short prompt shaped around “${a}.” ${energyLine}.`, why:firstAnchor ? `The session starts from “${firstAnchor}” and uses Qloo-ranked “${a}” as adjacent memory/conversation evidence.` : `Qloo surfaced “${a}” near the top of the memory/conversation evidence.`, ...(firstAnchor?{anchorName:firstAnchor}:{}), affinityLabel:a },
+    { title:'Memory bridge', duration:durations[1], action:secondAnchor ? `Bridge from “${secondAnchor}” into “${b}” with a scene, photo, lyric, headline, or memory prompt. Keep it ${settingLine}.` : `Use “${b}” as a bridge into a scene, photo, lyric, headline, or memory prompt. Keep it ${settingLine}.`, why:`Qloo-ranked “${b}” provides a specific adjacent bridge instead of a generic nostalgia prompt.`, ...(secondAnchor?{anchorName:secondAnchor}:{}), affinityLabel:b },
+    { title:'Conversation choice', duration:durations[2], action:thirdAnchor ? `Offer two or three conversation directions connecting “${thirdAnchor}” with “${c},” and let participants choose.` : `Offer two or three conversation directions connected to “${c},” and let participants choose.`, why:`“${c}” extends the known tastes while preserving participant choice.`, ...(thirdAnchor?{anchorName:thirdAnchor}:{}), affinityLabel:c },
+    { title:'Recall & close', duration:durations[3], action:fourthAnchor ? `Reconnect “${fourthAnchor}” with “${d},” invite one final memory or preference, then ask what should return next time.` : `Use “${d}” for one final memory or preference prompt, then ask what should return next time.`, why:`“${d}” keeps the close inside the Qloo-grounded memory/conversation neighborhood.`, ...(fourthAnchor?{anchorName:fourthAnchor}:{}), affinityLabel:d },
   ];
 }
+
