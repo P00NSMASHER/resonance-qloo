@@ -33,8 +33,8 @@ const anchorTypes:{ value:AnchorType; label:string }[] = [
   {value:"videogame",label:"Video game"},
 ];
 const initialAnchors:AnchorDraft[] = [
-  { query:"Aretha Franklin", type:"artist" },
-  { query:"The Sound of Music", type:"movie" },
+  { query:"Ella Fitzgerald", type:"artist" },
+  { query:"Roman Holiday", type:"movie" },
 ];
 
 const demoResult:RichResult = {
@@ -273,7 +273,10 @@ export default function HomePage() {
 
   function previewDemo() {
     invalidate();
-    setAnchors(initialAnchors);
+    setAnchors([
+      { query:"Aretha Franklin", type:"artist" },
+      { query:"The Sound of Music", type:"movie" },
+    ]);
     setEnergy("calm"); setSetting("small-group"); setDurationMinutes(45);
     setResult(demoResult); setSource("demo");
   }
