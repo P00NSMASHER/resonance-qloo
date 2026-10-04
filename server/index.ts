@@ -134,7 +134,7 @@ async function handleStatus(
   });
 }
 
-async async function handleStudyResponse(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
+async function handleStudyResponse(req: import('node:http').IncomingMessage, res: import('node:http').ServerResponse) {
   const clientKey = rateLimitClientKey(req.headers);
   if (!studyLimiter.allow(clientKey)) return json(res, 429, { error:'Too many study submissions. Please try again later.' });
   let body: unknown;
