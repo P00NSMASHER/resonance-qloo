@@ -210,4 +210,17 @@ describe('Qloo parsing', () => {
     expect(plan[2].action).toContain('Italian cuisine');
     expect(plan[2].action).toContain('Mid-century elegance');
   });
+  it('selects session strategy from Qloo evidence rather than one fixed template', () => {
+    expect(selectSessionArchetype([{label:'Jazz',score:1,rank:1},{label:'swing',score:.9,rank:2},{label:'Reporter',score:.8,rank:3}])).toBe('Memory & conversation');
+    expect(selectSessionArchetype([{label:'Food',score:1,rank:1},{label:'Travel',score:.9,rank:2},{label:'Garden',score:.8,rank:3}])).toBe('Sensory & social');
+    expect(selectSessionArchetype([{label:'Inventive',score:1,rank:1},{label:'Cultural Arts',score:.9,rank:2},{label:'Dance',score:.8,rank:3}])).toBe('Creative participation');
+
+    const memory = planFromTags([{label:'Jazz',score:1,rank:1},{label:'swing',score:.9,rank:2},{label:'Reporter',score:.8,rank:3}], 'calm','small-group',['Ella','Roman Holiday'],30);
+    const sensory = planFromTags([{label:'Food',score:1,rank:1},{label:'Travel',score:.9,rank:2},{label:'Garden',score:.8,rank:3}], 'calm','small-group',['Favorite meal','Paris'],30);
+    const creative = planFromTags([{label:'Inventive',score:1,rank:1},{label:'Cultural Arts',score:.9,rank:2},{label:'Dance',score:.8,rank:3}], 'social','small-group',['Favorite artist','Favorite film'],30);
+    expect(memory.map(x=>x.title)).toEqual(['Familiar opening','Memory bridge','Conversation choice','Recall & close']);
+    expect(sensory.map(x=>x.title)).toEqual(['Sensory welcome','Taste & place bridge','Shared sensory choice','Comfort close']);
+    expect(creative.map(x=>x.title)).toEqual(['Creative spark','Make a connection','Participant-led creation','Show & choose next']);
+  });
+
 });
