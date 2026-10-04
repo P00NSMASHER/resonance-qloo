@@ -1,30 +1,50 @@
-# Target-user validation study — closed
+# Target-user validation study — open, no results claimed yet
 
-Status: **Closed / intentionally skipped**
+Status: **Open / awaiting real participants**
 
-Phase 5 external user validation was intentionally skipped by product decision on October 3, 2026. Resonance does **not** use outside-user study results, testimonials, time-savings claims, or inferred user-research metrics in the hackathon submission.
+Resonance has a public anonymous validation workflow at:
 
-## Evidence status
+`https://resonance-qloo.floot.app/study`
 
-- valid real target-user responses: **0**
-- no synthetic, test, developer-generated, inferred, or proxy response is counted as user evidence
-- no impact metric, testimonial, time-savings percentage, or user quote is claimed from this study
-- no further recruitment or unsolicited follow-up will be sent
-- the public study page is retained only as a closed notice for previously distributed links
-- the study submission endpoint is closed and returns HTTP 410
+The study is intended for 3–5 real adults in target or adjacent roles: activity/life-enrichment directors or assistants, recreation/engagement staff, assisted-living staff involved in activities, and family caregivers.
 
-## Historical protocol
+## Current evidence status
 
-Before the study was closed, the proposed controlled task was:
+- valid real target-user responses counted in submission evidence: **0**
+- no synthetic, developer-generated, inferred, proxy, or test response is counted as user evidence
+- no testimonial, time-savings percentage, usefulness score, or user quote is claimed until real responses are retrieved and validated
+- test fixtures exist only to prove the analysis code works and must never be mixed with participant data
 
-> Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Aretha Franklin and The Sound of Music.
+## Controlled task
 
-The proposed measures were baseline planning time, Resonance planning time, perceived relevance, novelty, usefulness, reuse intent, and one short improvement comment. The protocol intentionally excluded resident/client names, health information, contact details, and other personal data.
+Every participant receives the same scenario:
 
-No valid response was collected before the study was closed, so none of those measures are used as evidence.
+> Create a usable 30-minute calm small-group engagement session when the only known cultural favorites are Ella Fitzgerald and Roman Holiday.
 
-## Historical recruitment note
+The study measures:
 
-A one-time outreach batch had already been sent before the decision to skip Phase 5. No unsolicited follow-up will be sent. Recipient addresses are not committed to this repository.
+1. baseline planning time without Resonance or another AI tool;
+2. planning/review time with the live Resonance app;
+3. relevance (1–5);
+4. novelty/useful new ideas (1–5);
+5. confidence/usefulness as a starting point (1–5);
+6. whether the participant would use something like Resonance in real planning;
+7. one short improvement comment.
 
-This file is retained solely for transparency about work that was started and then intentionally stopped.
+## Privacy / integrity
+
+The study requests only a role category, elapsed times, ratings, reuse intent, a short comment, and explicit consent. It instructs participants not to provide names, contact information, resident/client information, or health information. The schema rejects likely email addresses and phone numbers.
+
+The participant-facing page is `noindex,nofollow`. Responses are rate-limited. No participant response is considered evidence until it is reviewed as a real eligible response.
+
+## Publication threshold
+
+Do not publish aggregate impact claims with fewer than **3 complete real eligible participants**.
+
+The deterministic aggregation script must remain fail-closed below that threshold. With 3–5 valid responses, report only observed aggregates and explicitly permitted role-only quotes.
+
+## Recruitment
+
+No automated or unsolicited recruitment is authorized by this protocol. The study link can be shared directly with willing eligible participants. Any external outreach should be deliberate and user-approved.
+
+This file is the source of truth for Phase 5 status. Until real responses exist, Phase 5 remains **data-collection ready but not evidence-complete**.
