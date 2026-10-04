@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractAffinities, extractExplainabilitySummary, extractResolved, planFromTags } from './qlooLogic';
+import { extractAffinities, extractExplainabilitySummary, extractResolved, planFromTags, selectSessionArchetype } from './qlooLogic';
 
 describe('Qloo parsing', () => {
   it('resolves the UUID entity IDs documented for Qloo signals', () => {
