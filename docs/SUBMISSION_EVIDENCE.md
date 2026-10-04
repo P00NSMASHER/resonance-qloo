@@ -61,7 +61,7 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 
 ### Canonical judge demo
 
-The default judge example is now **Aretha Franklin + The Sound of Music**.
+The default judge example is now **Ella Fitzgerald + Roman Holiday**, selected from a ten-case whole-output audit at **95.0/100**.
 
 It was selected from nine complete live Qloo outputs using a published whole-result audit; no returned signal was removed before scoring. The audit is committed at [DEMO_CASE_AUDIT.md](./DEMO_CASE_AUDIT.md) / [DEMO_CASE_AUDIT.json](./DEMO_CASE_AUDIT.json).
 
