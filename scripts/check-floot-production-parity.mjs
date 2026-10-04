@@ -119,16 +119,14 @@ for (const needle of ['@media(max-width:1000px)','@media(max-width:650px)','.evi
 
 
 requireBoth('anonymous study route', prodStudyEndpoint,
-  ['Study closed. Phase 5 external validation was intentionally skipped','},410'],
+  ['RESONANCE_STUDY_RESPONSE','studyVersion:STUDY_VERSION','Too many study submissions'],
   canonicalServer,
-  ['Study closed. Phase 5 external validation was intentionally skipped','return json(res, 410']);
+  ['RESONANCE_STUDY_RESPONSE','studyVersion:input.studyVersion','Too many study submissions']);
 
-for (const needle of ['noindex,nofollow','Phase 5 skipped','This study is closed.','zero valid target-user responses','no participant response collection']) {
-  if (!prodStudyPage.includes(needle)) failures.push(`Production closed-study page missing transparency marker: ${needle}`);
+for (const needle of ['noindex,nofollow','Anonymous validation study','Plan it without Resonance','Do the same task with Resonance','anonymous aggregate use']) {
+  if (!prodStudyPage.includes(needle)) failures.push(`Production active-study page missing integrity marker: ${needle}`);
 }
-if (!canonicalServer.includes("url.pathname === '/api/study-response'")) failures.push('Canonical server is missing the closed study-response route.');
-if (prodStudyEndpoint.includes('RESONANCE_STUDY_RESPONSE')) failures.push('Production study endpoint unexpectedly logs participant responses after Phase 5 closure.');
-if (canonicalServer.includes('RESONANCE_STUDY_RESPONSE')) failures.push('Canonical server unexpectedly logs participant responses after Phase 5 closure.');
+if (!canonicalServer.includes("url.pathname === '/api/study-response'")) failures.push('Canonical server is missing the active study-response route.');
 
 if (failures.length) {
   failures.forEach(failure => console.error('FAIL:', failure));
