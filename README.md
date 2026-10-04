@@ -71,7 +71,7 @@ See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
 
 ## Canonical judge example
 
-Nine complete live candidate outputs were scored as whole results without filtering awkward signals. **Aretha Franklin + The Sound of Music** is the default judge example because it produced the strongest complete output. The complete audit and winning live response are committed under `docs/DEMO_CASE_AUDIT.*` and `docs/CANONICAL_DEMO_EVIDENCE.json`.
+Ten complete live candidate outputs were scored as whole results without filtering awkward signals. **Ella Fitzgerald + Roman Holiday** is the default judge example because it produced the strongest complete output (95.0/100). The complete audit and winning live response are committed under `docs/DEMO_CASE_AUDIT.*` and `docs/CANONICAL_DEMO_EVIDENCE.json`.
 
 ## Why Qloo changes the result
 
