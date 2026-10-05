@@ -147,7 +147,7 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791163332024') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791168430799') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
   if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
@@ -437,13 +437,13 @@ try {
   if (demoAudit.methodology?.evaluatedCandidateCount !== 10) failures.push('Canonical demo audit no longer contains ten evaluated live cases.');
   if (demoAudit.winner?.id !== 'ella-roman-holiday') failures.push('Canonical demo audit winner changed without an explicit audit refresh.');
   if (canonicalDemo.http_status !== 200 || canonicalDemo.response?.provenance?.source !== 'qloo-live') failures.push('Canonical demo evidence is no longer a verified live Qloo HTTP 200 artifact.');
-  if (canonicalDemo.response?.evidence?.returnedAffinityCount !== 8 || canonicalDemo.response?.evidence?.selectedAffinityCount !== 4) failures.push('Canonical demo evidence counts changed from the audited winning run.');
+  if (canonicalDemo.response?.evidence?.returnedAffinityCount !== 8 || canonicalDemo.response?.evidence?.selectedAffinityCount !== 4) failures.push('Canonical demo evidence counts changed from the retained canonical run.');
   const canonicalAnchors = canonicalDemo.request?.anchors?.map(item => item.query) ?? [];
-  if (canonicalAnchors.join('|') !== 'Ella Fitzgerald|Roman Holiday') failures.push('Canonical demo evidence no longer uses the audited winning anchors.');
+  if (canonicalAnchors.join('|') !== 'Ella Fitzgerald|Roman Holiday') failures.push('Canonical demo evidence no longer uses the retained canonical anchors.');
   const app = await readFile('src/App.tsx', 'utf8');
-  if (!app.includes("useState(['Ella Fitzgerald','Roman Holiday'])")) failures.push('Canonical app no longer defaults to the audited winning example.');
+  if (!app.includes("useState(['Ella Fitzgerald','Roman Holiday'])")) failures.push('Canonical app no longer defaults to the retained canonical example.');
   const flootPage = await readFile('floot-production/pages/_index.tsx', 'utf8');
-  if (!flootPage.includes('{ query:"Ella Fitzgerald", type:"artist" }') || !flootPage.includes('{ query:"Roman Holiday", type:"movie" }')) failures.push('Floot production snapshot no longer defaults to the audited winning example.');
+  if (!flootPage.includes('{ query:"Ella Fitzgerald", type:"artist" }') || !flootPage.includes('{ query:"Roman Holiday", type:"movie" }')) failures.push('Floot production snapshot no longer defaults to the retained canonical example.');
 } catch (error) {
   failures.push(`Canonical demo audit validation failed: ${error instanceof Error ? error.message : String(error)}`);
 }

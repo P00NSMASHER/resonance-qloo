@@ -1,0 +1,2145 @@
+{
+  "schemaVersion": 1,
+  "evidenceClass": "live technical candidate evidence; reviewer judgments are synthetic agent evaluation—not real-user evidence",
+  "capturedAt": "2026-10-05T01:56:09.924Z",
+  "baseUrl": "https://resonance-qloo.floot.app",
+  "qlooStatus": {
+    "status": "ready",
+    "apiOrigin": "https://hackathon.api.qloo.com",
+    "contractVersion": "2026-10-02.review-origin-v1"
+  },
+  "fixedCandidateCount": 12,
+  "results": [
+    {
+      "id": "C01",
+      "request": {
+        "anchors": [
+          {
+            "query": "Ella Fitzgerald",
+            "type": "artist"
+          },
+          {
+            "query": "Breakfast at Tiffany's",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Ella Fitzgerald",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "Breakfast at Tiffany's",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Ella Fitzgerald",
+            "name": "Ella Fitzgerald",
+            "entityId": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+            "urn": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "Breakfast at Tiffany's",
+            "name": "Breakfast at Tiffany's",
+            "entityId": "9DCA500E-ADFD-4146-B75D-93F359E1E141",
+            "urn": "9DCA500E-ADFD-4146-B75D-93F359E1E141",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Mistaken Identity",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Jazz",
+            "score": 0.9997543802194203,
+            "rank": 2
+          },
+          {
+            "label": "Socialite",
+            "score": 0.9995552480727417,
+            "rank": 3
+          },
+          {
+            "label": "Inventive",
+            "score": 0.9986925651750207,
+            "rank": 4
+          },
+          {
+            "label": "swing",
+            "score": 0.9982806615359423,
+            "rank": 5
+          },
+          {
+            "label": "piano",
+            "score": 0.9977075487145899,
+            "rank": 6
+          },
+          {
+            "label": "Writer",
+            "score": 0.9971996103805747,
+            "rank": 7
+          },
+          {
+            "label": "Vocal-Jazz",
+            "score": 0.997052562633044,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Ella Fitzgerald” as the familiar cue, then branch toward “Mistaken Identity.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Ella Fitzgerald” and uses Qloo-ranked “Mistaken Identity” as adjacent memory/conversation evidence.",
+            "anchorName": "Ella Fitzgerald",
+            "affinityLabel": "Mistaken Identity"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “Breakfast at Tiffany's” into “Jazz” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Jazz” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "Breakfast at Tiffany's",
+            "affinityLabel": "Jazz"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Socialite,” and let participants choose.",
+            "why": "“Socialite” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Socialite"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “Inventive” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“Inventive” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "Inventive"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9995005483667956,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Mistaken Identity",
+            "Jazz",
+            "Socialite",
+            "Inventive"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:27.801Z"
+        }
+      }
+    },
+    {
+      "id": "C02",
+      "request": {
+        "anchors": [
+          {
+            "query": "Louis Armstrong",
+            "type": "artist"
+          },
+          {
+            "query": "Roman Holiday",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Louis Armstrong",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "Roman Holiday",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 7 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Louis Armstrong",
+            "name": "Louis Armstrong",
+            "entityId": "78991296-9E4A-4559-996A-5C5B5DCB8374",
+            "urn": "78991296-9E4A-4559-996A-5C5B5DCB8374",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "Roman Holiday",
+            "name": "Roman Holiday",
+            "entityId": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
+            "urn": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Cultural Arts",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Joyous",
+            "score": 0.9995431949482736,
+            "rank": 2
+          },
+          {
+            "label": "Optimism",
+            "score": 0.9992338979680752,
+            "rank": 3
+          },
+          {
+            "label": "Robin Hood",
+            "score": 0.9991582491582491,
+            "rank": 4
+          },
+          {
+            "label": "Reporter",
+            "score": 0.9989448762159658,
+            "rank": 5
+          },
+          {
+            "label": "Jazz",
+            "score": 0.9989377349240072,
+            "rank": 6
+          },
+          {
+            "label": "swing",
+            "score": 0.9982840333387808,
+            "rank": 7
+          }
+        ],
+        "plan": [
+          {
+            "title": "Creative spark",
+            "duration": "5 min",
+            "action": "Start from “Louis Armstrong” and use “Cultural Arts” as a prompt to notice, choose, hum, sketch, gesture, or respond; keep the pace gentle and low-pressure.",
+            "why": "Qloo-ranked “Cultural Arts” turns the familiar input into an active creative starting point.",
+            "anchorName": "Louis Armstrong",
+            "affinityLabel": "Cultural Arts"
+          },
+          {
+            "title": "Make a connection",
+            "duration": "10 min",
+            "action": "Bridge “Roman Holiday” into “Joyous” with a simple create-or-choose prompt. Keep it for a small group with room for individual responses.",
+            "why": "“Joyous” provides an adjacent Qloo signal for participation rather than passive recall.",
+            "anchorName": "Roman Holiday",
+            "affinityLabel": "Joyous"
+          },
+          {
+            "title": "Participant-led creation",
+            "duration": "10 min",
+            "action": "Let participants shape a small shared creation around “Optimism.”",
+            "why": "“Optimism” extends the taste evidence while participants determine the actual creative output.",
+            "affinityLabel": "Optimism"
+          },
+          {
+            "title": "Show & choose next",
+            "duration": "5 min",
+            "action": "Close with “Robin Hood,” share what was made or chosen, and decide what to revisit next time.",
+            "why": "“Robin Hood” grounds the close in Qloo evidence while returning control to the participants.",
+            "affinityLabel": "Robin Hood"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 7 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9994838355186495,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 7,
+          "selectedAffinityLabels": [
+            "Cultural Arts",
+            "Joyous",
+            "Optimism",
+            "Robin Hood"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:30.092Z"
+        }
+      }
+    },
+    {
+      "id": "C03",
+      "request": {
+        "anchors": [
+          {
+            "query": "Duke Ellington",
+            "type": "artist"
+          },
+          {
+            "query": "The Philadelphia Story",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Duke Ellington",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "The Philadelphia Story",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Duke Ellington",
+            "name": "Duke Ellington",
+            "entityId": "6BE594D5-018B-41C7-B84A-0435FC4B5BA1",
+            "urn": "6BE594D5-018B-41C7-B84A-0435FC4B5BA1",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "The Philadelphia Story",
+            "name": "The Philadelphia Story",
+            "entityId": "4C969CCA-0B60-458C-8D3D-6C33039DD8FE",
+            "urn": "4C969CCA-0B60-458C-8D3D-6C33039DD8FE",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Sophisticated",
+            "score": 0.9992222705126153,
+            "rank": 1
+          },
+          {
+            "label": "Jazz",
+            "score": 0.999177902005919,
+            "rank": 2
+          },
+          {
+            "label": "Elegant",
+            "score": 0.998956277246844,
+            "rank": 3
+          },
+          {
+            "label": "swing",
+            "score": 0.9986846432094705,
+            "rank": 4
+          },
+          {
+            "label": "Romantic Entanglements",
+            "score": 0.9984504913076342,
+            "rank": 5
+          },
+          {
+            "label": "piano",
+            "score": 0.9971226570207169,
+            "rank": 6
+          },
+          {
+            "label": "saxophone",
+            "score": 0.9967116080236764,
+            "rank": 7
+          },
+          {
+            "label": "High Society",
+            "score": 0.9965140787980328,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Duke Ellington” as the familiar cue, then branch toward “Sophisticated.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Duke Ellington” and uses Qloo-ranked “Sophisticated” as adjacent memory/conversation evidence.",
+            "anchorName": "Duke Ellington",
+            "affinityLabel": "Sophisticated"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “The Philadelphia Story” into “Jazz” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Jazz” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "The Philadelphia Story",
+            "affinityLabel": "Jazz"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Elegant,” and let participants choose.",
+            "why": "“Elegant” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Elegant"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “swing” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“swing” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "swing"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9990102732437122,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Sophisticated",
+            "Jazz",
+            "Elegant",
+            "swing"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:32.913Z"
+        }
+      }
+    },
+    {
+      "id": "C04",
+      "request": {
+        "anchors": [
+          {
+            "query": "Nat King Cole",
+            "type": "artist"
+          },
+          {
+            "query": "An Affair to Remember",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Nat King Cole",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "An Affair to Remember",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Nat King Cole",
+            "name": "Nat King Cole",
+            "entityId": "E0CD9B0B-75BB-4DAE-BCB7-79AB5DE42A0D",
+            "urn": "E0CD9B0B-75BB-4DAE-BCB7-79AB5DE42A0D",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "An Affair to Remember",
+            "name": "An Affair to Remember",
+            "entityId": "D2AC98CA-6E0C-45D5-AA58-7BAFAE2EE12B",
+            "urn": "D2AC98CA-6E0C-45D5-AA58-7BAFAE2EE12B",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Record Label",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "MasterCard",
+            "score": 1,
+            "rank": 2
+          },
+          {
+            "label": "Expensive",
+            "score": 1,
+            "rank": 3
+          },
+          {
+            "label": "Voyeur",
+            "score": 1,
+            "rank": 4
+          },
+          {
+            "label": "Creole",
+            "score": 1,
+            "rank": 5
+          },
+          {
+            "label": "Timeless",
+            "score": 0.9995636847606701,
+            "rank": 6
+          },
+          {
+            "label": "Ocean Liner",
+            "score": 0.9995223828752551,
+            "rank": 7
+          },
+          {
+            "label": "Florida",
+            "score": 0.9991562198649951,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Nat King Cole” as the familiar cue, then branch toward “Record Label.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Nat King Cole” and uses Qloo-ranked “Record Label” as adjacent memory/conversation evidence.",
+            "anchorName": "Nat King Cole",
+            "affinityLabel": "Record Label"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “An Affair to Remember” into “MasterCard” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “MasterCard” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "An Affair to Remember",
+            "affinityLabel": "MasterCard"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Expensive,” and let participants choose.",
+            "why": "“Expensive” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Expensive"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “Voyeur” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“Voyeur” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "Voyeur"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 1,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Record Label",
+            "MasterCard",
+            "Expensive",
+            "Voyeur"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:36.089Z"
+        }
+      }
+    },
+    {
+      "id": "C05",
+      "request": {
+        "anchors": [
+          {
+            "query": "Doris Day",
+            "type": "artist"
+          },
+          {
+            "query": "The Sound of Music",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Doris Day",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "The Sound of Music",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Doris Day",
+            "name": "Doris Day",
+            "entityId": "C0A5886B-EDC4-4930-A175-5CB60C112025",
+            "urn": "C0A5886B-EDC4-4930-A175-5CB60C112025",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "The Sound of Music",
+            "name": "The Sound of Music",
+            "entityId": "5D54CE58-DC3E-4294-A359-581A9C072952",
+            "urn": "5D54CE58-DC3E-4294-A359-581A9C072952",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Entertainment",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Classics",
+            "score": 1,
+            "rank": 2
+          },
+          {
+            "label": "Crime",
+            "score": 1,
+            "rank": 3
+          },
+          {
+            "label": "Nuns",
+            "score": 0.9995249406175772,
+            "rank": 4
+          },
+          {
+            "label": "Romantic Musical",
+            "score": 0.999508019285644,
+            "rank": 5
+          },
+          {
+            "label": "Governess",
+            "score": 0.9994389901823282,
+            "rank": 6
+          },
+          {
+            "label": "Nazis",
+            "score": 0.9992225395913262,
+            "rank": 7
+          },
+          {
+            "label": "Musically Rich",
+            "score": 0.9989116843421479,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Doris Day” as the familiar cue, then branch toward “Entertainment.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Doris Day” and uses Qloo-ranked “Entertainment” as adjacent memory/conversation evidence.",
+            "anchorName": "Doris Day",
+            "affinityLabel": "Entertainment"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “The Sound of Music” into “Classics” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Classics” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "The Sound of Music",
+            "affinityLabel": "Classics"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Crime,” and let participants choose.",
+            "why": "“Crime” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Crime"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “Nuns” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“Nuns” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "Nuns"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9998812351543943,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Entertainment",
+            "Classics",
+            "Crime",
+            "Nuns"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:38.310Z"
+        }
+      }
+    },
+    {
+      "id": "C06",
+      "request": {
+        "anchors": [
+          {
+            "query": "Frank Sinatra",
+            "type": "artist"
+          },
+          {
+            "query": "Rear Window",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Frank Sinatra",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "Rear Window",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Frank Sinatra",
+            "name": "Frank Sinatra",
+            "entityId": "FC0F8D26-BA80-4D83-8BBF-FC011DC8D241",
+            "urn": "FC0F8D26-BA80-4D83-8BBF-FC011DC8D241",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "Rear Window",
+            "name": "Rear Window",
+            "entityId": "2BF54D29-A6F2-431B-8048-36B318404ED8",
+            "urn": "2BF54D29-A6F2-431B-8048-36B318404ED8",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Philadelphia",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Five Star",
+            "score": 1,
+            "rank": 2
+          },
+          {
+            "label": "Discover",
+            "score": 1,
+            "rank": 3
+          },
+          {
+            "label": "LGBTQ+ friendly",
+            "score": 1,
+            "rank": 4
+          },
+          {
+            "label": "Very expensive",
+            "score": 1,
+            "rank": 5
+          },
+          {
+            "label": "Record Label",
+            "score": 1,
+            "rank": 6
+          },
+          {
+            "label": "History museum",
+            "score": 1,
+            "rank": 7
+          },
+          {
+            "label": "Robin Hood",
+            "score": 0.9993686868686869,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Frank Sinatra” as the familiar cue, then branch toward “Philadelphia.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Frank Sinatra” and uses Qloo-ranked “Philadelphia” as adjacent memory/conversation evidence.",
+            "anchorName": "Frank Sinatra",
+            "affinityLabel": "Philadelphia"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “Rear Window” into “Five Star” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Five Star” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "Rear Window",
+            "affinityLabel": "Five Star"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Discover,” and let participants choose.",
+            "why": "“Discover” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Discover"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “LGBTQ+ friendly” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“LGBTQ+ friendly” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "LGBTQ+ friendly"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 1,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Philadelphia",
+            "Five Star",
+            "Discover",
+            "LGBTQ+ friendly"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:42.065Z"
+        }
+      }
+    },
+    {
+      "id": "C07",
+      "request": {
+        "anchors": [
+          {
+            "query": "The Supremes",
+            "type": "artist"
+          },
+          {
+            "query": "Breakfast at Tiffany's",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "The Supremes",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "Breakfast at Tiffany's",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "The Supremes",
+            "name": "The Supremes",
+            "entityId": "689CFC2A-A743-4CCB-998F-808A68880612",
+            "urn": "689CFC2A-A743-4CCB-998F-808A68880612",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "Breakfast at Tiffany's",
+            "name": "Breakfast at Tiffany's",
+            "entityId": "9DCA500E-ADFD-4146-B75D-93F359E1E141",
+            "urn": "9DCA500E-ADFD-4146-B75D-93F359E1E141",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Mistaken Identity",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Record Label",
+            "score": 1,
+            "rank": 2
+          },
+          {
+            "label": "Socialite",
+            "score": 0.9995552480727417,
+            "rank": 3
+          },
+          {
+            "label": "60s",
+            "score": 0.9989234845975488,
+            "rank": 4
+          },
+          {
+            "label": "soul",
+            "score": 0.9984266313348791,
+            "rank": 5
+          },
+          {
+            "label": "oldies",
+            "score": 0.9983438224577674,
+            "rank": 6
+          },
+          {
+            "label": "funk",
+            "score": 0.998012586949321,
+            "rank": 7
+          },
+          {
+            "label": "rhythm & blues",
+            "score": 0.9976813514408744,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “The Supremes” as the familiar cue, then branch toward “Mistaken Identity.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “The Supremes” and uses Qloo-ranked “Mistaken Identity” as adjacent memory/conversation evidence.",
+            "anchorName": "The Supremes",
+            "affinityLabel": "Mistaken Identity"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “Breakfast at Tiffany's” into “Record Label” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Record Label” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "Breakfast at Tiffany's",
+            "affinityLabel": "Record Label"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Socialite,” and let participants choose.",
+            "why": "“Socialite” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Socialite"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “60s” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“60s” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "60s"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9996196831675727,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Mistaken Identity",
+            "Record Label",
+            "Socialite",
+            "60s"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:44.232Z"
+        }
+      }
+    },
+    {
+      "id": "C08",
+      "request": {
+        "anchors": [
+          {
+            "query": "Benny Goodman",
+            "type": "artist"
+          },
+          {
+            "query": "Casablanca",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Benny Goodman",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "Casablanca",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Benny Goodman",
+            "name": "Benny Goodman",
+            "entityId": "29E20425-1C3C-47CD-AD25-D296B1258038",
+            "urn": "29E20425-1C3C-47CD-AD25-D296B1258038",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "Casablanca",
+            "name": "Casablanca",
+            "entityId": "11FB3D67-EE2C-4681-9521-363B588B6184",
+            "urn": "11FB3D67-EE2C-4681-9521-363B588B6184",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Expatriate",
+            "score": 0.9991828087167071,
+            "rank": 1
+          },
+          {
+            "label": "swing",
+            "score": 0.9978494623655914,
+            "rank": 2
+          },
+          {
+            "label": "Clarinet",
+            "score": 0.9977613370128975,
+            "rank": 3
+          },
+          {
+            "label": "Nightclub",
+            "score": 0.9973522016776806,
+            "rank": 4
+          },
+          {
+            "label": "Twist Ending",
+            "score": 0.9965289829920166,
+            "rank": 5
+          },
+          {
+            "label": "Skillful",
+            "score": 0.9964116964669236,
+            "rank": 6
+          },
+          {
+            "label": "Jazz",
+            "score": 0.996029776674938,
+            "rank": 7
+          },
+          {
+            "label": "Swinging",
+            "score": 0.9958722289421298,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Benny Goodman” as the familiar cue, then branch toward “Expatriate.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Benny Goodman” and uses Qloo-ranked “Expatriate” as adjacent memory/conversation evidence.",
+            "anchorName": "Benny Goodman",
+            "affinityLabel": "Expatriate"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “Casablanca” into “swing” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “swing” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "Casablanca",
+            "affinityLabel": "swing"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Clarinet,” and let participants choose.",
+            "why": "“Clarinet” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Clarinet"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “Nightclub” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“Nightclub” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "Nightclub"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9980364524432191,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Expatriate",
+            "swing",
+            "Clarinet",
+            "Nightclub"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:46.483Z"
+        }
+      }
+    },
+    {
+      "id": "C09",
+      "request": {
+        "anchors": [
+          {
+            "query": "Billie Holiday",
+            "type": "artist"
+          },
+          {
+            "query": "Roman Holiday",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Billie Holiday",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "Roman Holiday",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Billie Holiday",
+            "name": "Billie Holiday",
+            "entityId": "A5F2D98E-639A-498C-A4B5-8CDF4B017F23",
+            "urn": "A5F2D98E-639A-498C-A4B5-8CDF4B017F23",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "Roman Holiday",
+            "name": "Roman Holiday",
+            "entityId": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
+            "urn": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Record Label",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Jazz",
+            "score": 0.9998359041680341,
+            "rank": 2
+          },
+          {
+            "label": "Tragic",
+            "score": 0.9997680569402903,
+            "rank": 3
+          },
+          {
+            "label": "Robin Hood",
+            "score": 0.9995791245791246,
+            "rank": 4
+          },
+          {
+            "label": "Reporter",
+            "score": 0.9989448762159658,
+            "rank": 5
+          },
+          {
+            "label": "Charity",
+            "score": 0.9987048429622092,
+            "rank": 6
+          },
+          {
+            "label": "swing",
+            "score": 0.9980308500164096,
+            "rank": 7
+          },
+          {
+            "label": "piano",
+            "score": 0.9976206104364949,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Billie Holiday” as the familiar cue, then branch toward “Record Label.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Billie Holiday” and uses Qloo-ranked “Record Label” as adjacent memory/conversation evidence.",
+            "anchorName": "Billie Holiday",
+            "affinityLabel": "Record Label"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “Roman Holiday” into “Jazz” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Jazz” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "Roman Holiday",
+            "affinityLabel": "Jazz"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Tragic,” and let participants choose.",
+            "why": "“Tragic” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Tragic"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “Robin Hood” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“Robin Hood” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "Robin Hood"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9997957714218623,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Record Label",
+            "Jazz",
+            "Tragic",
+            "Robin Hood"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:48.997Z"
+        }
+      }
+    },
+    {
+      "id": "C10",
+      "request": {
+        "anchors": [
+          {
+            "query": "Judy Garland",
+            "type": "artist"
+          },
+          {
+            "query": "The African Queen",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Judy Garland",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "The African Queen",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Judy Garland",
+            "name": "Judy Garland",
+            "entityId": "AC4A639A-B372-4A06-AC0C-83848ED324C3",
+            "urn": "AC4A639A-B372-4A06-AC0C-83848ED324C3",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "The African Queen",
+            "name": "The African Queen",
+            "entityId": "98C452D8-B066-4CD9-8BAF-26A698E75D6F",
+            "urn": "98C452D8-B066-4CD9-8BAF-26A698E75D6F",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Tragic",
+            "score": 0.9998442173479561,
+            "rank": 1
+          },
+          {
+            "label": "Timeless",
+            "score": 0.9996641314344726,
+            "rank": 2
+          },
+          {
+            "label": "Classic Cinema Enthusiasts",
+            "score": 0.9985793532674875,
+            "rank": 3
+          },
+          {
+            "label": "swing",
+            "score": 0.997595741026962,
+            "rank": 4
+          },
+          {
+            "label": "Africa",
+            "score": 0.9975025799793602,
+            "rank": 5
+          },
+          {
+            "label": "Broadway",
+            "score": 0.997166409067491,
+            "rank": 6
+          },
+          {
+            "label": "oldies",
+            "score": 0.9969088098918084,
+            "rank": 7
+          },
+          {
+            "label": "Easy Listening",
+            "score": 0.9965653443242315,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Judy Garland” as the familiar cue, then branch toward “Tragic.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Judy Garland” and uses Qloo-ranked “Tragic” as adjacent memory/conversation evidence.",
+            "anchorName": "Judy Garland",
+            "affinityLabel": "Tragic"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “The African Queen” into “Timeless” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Timeless” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "The African Queen",
+            "affinityLabel": "Timeless"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Classic Cinema Enthusiasts,” and let participants choose.",
+            "why": "“Classic Cinema Enthusiasts” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Classic Cinema Enthusiasts"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “swing” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“swing” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "swing"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 0.9989208607692196,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Tragic",
+            "Timeless",
+            "Classic Cinema Enthusiasts",
+            "swing"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:52.094Z"
+        }
+      }
+    },
+    {
+      "id": "C11",
+      "request": {
+        "anchors": [
+          {
+            "query": "Sam Cooke",
+            "type": "artist"
+          },
+          {
+            "query": "To Kill a Mockingbird",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Sam Cooke",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "To Kill a Mockingbird",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Sam Cooke",
+            "name": "Sam Cooke",
+            "entityId": "C0101BF7-74FC-4B57-A7FD-6A04D4D80430",
+            "urn": "C0101BF7-74FC-4B57-A7FD-6A04D4D80430",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "To Kill a Mockingbird",
+            "name": "To Kill a Mockingbird",
+            "entityId": "C3904C8E-2D6B-4888-9EE5-29211F00B187",
+            "urn": "C3904C8E-2D6B-4888-9EE5-29211F00B187",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Record store",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "VISA",
+            "score": 1,
+            "rank": 2
+          },
+          {
+            "label": "Inexpensive",
+            "score": 1,
+            "rank": 3
+          },
+          {
+            "label": "Record Label",
+            "score": 1,
+            "rank": 4
+          },
+          {
+            "label": "LGBTQ+ friendly",
+            "score": 1,
+            "rank": 5
+          },
+          {
+            "label": "Southern Gothic",
+            "score": 0.9996557185154582,
+            "rank": 6
+          },
+          {
+            "label": "Gospel Infused",
+            "score": 0.9995369796727555,
+            "rank": 7
+          },
+          {
+            "label": "Change",
+            "score": 0.9993082191254352,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Sam Cooke” as the familiar cue, then branch toward “Record store.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Sam Cooke” and uses Qloo-ranked “Record store” as adjacent memory/conversation evidence.",
+            "anchorName": "Sam Cooke",
+            "affinityLabel": "Record store"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “To Kill a Mockingbird” into “VISA” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “VISA” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "To Kill a Mockingbird",
+            "affinityLabel": "VISA"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “Inexpensive,” and let participants choose.",
+            "why": "“Inexpensive” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "Inexpensive"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “Record Label” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“Record Label” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "Record Label"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 1,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Record store",
+            "VISA",
+            "Inexpensive",
+            "Record Label"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:55.410Z"
+        }
+      }
+    },
+    {
+      "id": "C12",
+      "request": {
+        "anchors": [
+          {
+            "query": "Nina Simone",
+            "type": "artist"
+          },
+          {
+            "query": "The Apartment",
+            "type": "movie"
+          }
+        ],
+        "energy": "calm",
+        "setting": "small-group",
+        "durationMinutes": 30
+      },
+      "httpStatus": 200,
+      "response": {
+        "requestContext": {
+          "anchors": [
+            {
+              "query": "Nina Simone",
+              "typeUrn": "urn:entity:artist"
+            },
+            {
+              "query": "The Apartment",
+              "typeUrn": "urn:entity:movie"
+            }
+          ],
+          "energy": "calm",
+          "setting": "small-group",
+          "durationMinutes": 30
+        },
+        "summary": "Built from 2 resolved Qloo entities and 8 cross-category affinity signals.",
+        "resolvedAnchors": [
+          {
+            "query": "Nina Simone",
+            "name": "Nina Simone",
+            "entityId": "AEB7DA4D-D5A8-43F1-9881-74DA17D8D521",
+            "urn": "AEB7DA4D-D5A8-43F1-9881-74DA17D8D521",
+            "requestedTypeUrn": "urn:entity:artist",
+            "resolutionMatch": "exact-name"
+          },
+          {
+            "query": "The Apartment",
+            "name": "The Apartment",
+            "entityId": "32ABDA4A-132B-443A-99EE-97E3C3F4B597",
+            "urn": "32ABDA4A-132B-443A-99EE-97E3C3F4B597",
+            "requestedTypeUrn": "urn:entity:movie",
+            "resolutionMatch": "exact-name"
+          }
+        ],
+        "affinities": [
+          {
+            "label": "Four Star",
+            "score": 1,
+            "rank": 1
+          },
+          {
+            "label": "Very expensive",
+            "score": 1,
+            "rank": 2
+          },
+          {
+            "label": "JCB",
+            "score": 1,
+            "rank": 3
+          },
+          {
+            "label": "LGBTQ+ friendly",
+            "score": 1,
+            "rank": 4
+          },
+          {
+            "label": "Cultural landmark",
+            "score": 1,
+            "rank": 5
+          },
+          {
+            "label": "Record Label",
+            "score": 1,
+            "rank": 6
+          },
+          {
+            "label": "Methodist",
+            "score": 0.999918787222523,
+            "rank": 7
+          },
+          {
+            "label": "Civil Rights",
+            "score": 0.999899362840987,
+            "rank": 8
+          }
+        ],
+        "plan": [
+          {
+            "title": "Familiar opening",
+            "duration": "5 min",
+            "action": "Start with “Nina Simone” as the familiar cue, then branch toward “Four Star.” keep the pace gentle and low-pressure.",
+            "why": "The session starts from “Nina Simone” and uses Qloo-ranked “Four Star” as adjacent memory/conversation evidence.",
+            "anchorName": "Nina Simone",
+            "affinityLabel": "Four Star"
+          },
+          {
+            "title": "Memory bridge",
+            "duration": "10 min",
+            "action": "Bridge from “The Apartment” into “Very expensive” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses.",
+            "why": "Qloo-ranked “Very expensive” provides a specific adjacent bridge instead of a generic nostalgia prompt.",
+            "anchorName": "The Apartment",
+            "affinityLabel": "Very expensive"
+          },
+          {
+            "title": "Conversation choice",
+            "duration": "10 min",
+            "action": "Offer two or three conversation directions connected to “JCB,” and let participants choose.",
+            "why": "“JCB” extends the known tastes while preserving participant choice.",
+            "affinityLabel": "JCB"
+          },
+          {
+            "title": "Recall & close",
+            "duration": "5 min",
+            "action": "Use “LGBTQ+ friendly” for one final memory or preference prompt, then ask what should return next time.",
+            "why": "“LGBTQ+ friendly” keeps the close inside the Qloo-grounded memory/conversation neighborhood.",
+            "affinityLabel": "LGBTQ+ friendly"
+          }
+        ],
+        "agentTrace": [
+          {
+            "stage": "resolve",
+            "status": "ok",
+            "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+          },
+          {
+            "stage": "evaluate",
+            "status": "ok",
+            "detail": "Selected 4 highest numeric Qloo affinities from 8 returned signals."
+          },
+          {
+            "stage": "compose",
+            "status": "ok",
+            "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+          },
+          {
+            "stage": "explain",
+            "status": "warning",
+            "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+          }
+        ],
+        "evidence": {
+          "meanNormalizedScore": 1,
+          "evidenceBasis": "normalized-score",
+          "selectedAffinityCount": 4,
+          "returnedAffinityCount": 8,
+          "selectedAffinityLabels": [
+            "Four Star",
+            "Very expensive",
+            "JCB",
+            "LGBTQ+ friendly"
+          ],
+          "resolvedAnchorCount": 2,
+          "exactResolutionCount": 2,
+          "topResultResolutionCount": 0,
+          "categoryHintCount": 2,
+          "explainabilityResultCount": 0,
+          "aggregateExplainabilityAvailable": false,
+          "sessionDurationMinutes": 30,
+          "energy": "calm",
+          "setting": "small-group"
+        },
+        "provenance": {
+          "source": "qloo-live",
+          "apiOrigin": "https://hackathon.api.qloo.com",
+          "contractVersion": "2026-10-02.review-origin-v1",
+          "generatedAt": "2026-10-05T01:55:58.710Z"
+        }
+      }
+    }
+  ]
+}

@@ -10,9 +10,16 @@ function json(body:unknown,status=200) {
   });
 }
 
-function allow(request:Request) {
+async function clientDigest(request:Request) {
+  const raw=(request.headers.get("x-forwarded-for")||request.headers.get("cf-connecting-ip")||"unknown").split(",")[0].trim();
+  const bytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
+  return Array.from(new Uint8Array(bytes),byte=>byte.toString(16).padStart(2,"0")).join("");
+}
+
+async function allow(request:Request) {
   const now=Date.now();
-  const key=(request.headers.get("x-forwarded-for")||request.headers.get("cf-connecting-ip")||"unknown").split(",")[0].trim();
+  for (const [stored,bucket] of buckets) if (bucket.resetAt <= now) buckets.delete(stored);
+  const key=await clientDigest(request);
   const current=buckets.get(key);
   if (!current || current.resetAt <= now) {
     buckets.set(key,{count:1,resetAt:now+60_000});
@@ -30,10 +37,13 @@ export async function handle(request:Request) {
   } catch {
     return json({error:"Study response did not match the anonymous validation contract."},400);
   }
-  if (!allow(request)) return json({error:"Too many study submissions. Please try again later."},429);
+  if (!await allow(request)) return json({error:"Too many study submissions. Please try again later."},429);
 
+  const {feedback,...metrics}=input;
   console.info("RESONANCE_STUDY_RESPONSE", JSON.stringify({
-    ...input,
+    ...metrics,
+    feedbackWithheldFromLogs:true,
+    feedbackLength:feedback.length,
     submittedAt:new Date().toISOString(),
   }));
 

@@ -209,7 +209,7 @@ export const qlooSessionLogic = {
   },
 
   planFromTags(
-    tags: { label:string; score:number|null; rank:number }[],
+    tags: { label:string; score:number|null; rank?:number }[],
     energy: string,
     setting: string,
     anchorNames: string[] = [],
@@ -237,7 +237,7 @@ export const qlooSessionLogic = {
       item("Show & choose next",durations[3],fourthAnchor?`Close by connecting “${fourthAnchor}” with “${d},” sharing what was made or chosen, and deciding what to revisit next time.`:`Close with “${d},” share what was made or chosen, and decide what to revisit next time.`,`“${d}” grounds the close in Qloo evidence while returning control to the participants.`,fourthAnchor,d),
     ];
     return [
-      item("Familiar opening",durations[0],firstAnchor?`Start with “${firstAnchor}” as the familiar cue, then branch toward “${a}.” ${energyLine}.`:`Start with music, imagery, or a short prompt shaped around “${a}.” ${energyLine}.`,firstAnchor?`The session starts from “${firstAnchor}” and uses Qloo-ranked “${a}” as adjacent memory/conversation evidence.`:`Qloo surfaced “${a}” near the top of the memory/conversation evidence.`,firstAnchor,a),
+      item("Familiar opening",durations[0],firstAnchor?`Start with “${firstAnchor}” as the familiar cue, then branch toward “${a}”; ${energyLine}.`:`Start with music, imagery, or a short prompt shaped around “${a}”; ${energyLine}.`,firstAnchor?`The session starts from “${firstAnchor}” and uses Qloo-ranked “${a}” as adjacent memory/conversation evidence.`:`Qloo surfaced “${a}” near the top of the memory/conversation evidence.`,firstAnchor,a),
       item("Memory bridge",durations[1],secondAnchor?`Bridge from “${secondAnchor}” into “${b}” with a scene, photo, lyric, headline, or memory prompt. Keep it ${settingLine}.`:`Use “${b}” as a bridge into a scene, photo, lyric, headline, or memory prompt. Keep it ${settingLine}.`,`Qloo-ranked “${b}” provides a specific adjacent bridge instead of a generic nostalgia prompt.`,secondAnchor,b),
       item("Conversation choice",durations[2],thirdAnchor?`Offer two or three conversation directions connecting “${thirdAnchor}” with “${cc},” and let participants choose.`:`Offer two or three conversation directions connected to “${cc},” and let participants choose.`,`“${cc}” extends the known tastes while preserving participant choice.`,thirdAnchor,cc),
       item("Recall & close",durations[3],fourthAnchor?`Reconnect “${fourthAnchor}” with “${d},” invite one final memory or preference, then ask what should return next time.`:`Use “${d}” for one final memory or preference prompt, then ask what should return next time.`,`“${d}” keeps the close inside the Qloo-grounded memory/conversation neighborhood.`,fourthAnchor,d),

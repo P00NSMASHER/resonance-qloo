@@ -145,7 +145,8 @@ async function handleStudyResponse(req: import('node:http').IncomingMessage, res
   }
   try {
     const input = validateStudyResponse(body);
-    console.info('RESONANCE_STUDY_RESPONSE', JSON.stringify({ ...input, submittedAt:new Date().toISOString() }));
+    const { feedback, ...metrics } = input;
+    console.info('RESONANCE_STUDY_RESPONSE', JSON.stringify({ ...metrics, feedbackWithheldFromLogs:true, feedbackLength:feedback.length, submittedAt:new Date().toISOString() }));
     return json(res, 200, { accepted:true, studyVersion:input.studyVersion });
   } catch {
     return json(res, 400, { error:'Study response did not match the anonymous validation contract.' });

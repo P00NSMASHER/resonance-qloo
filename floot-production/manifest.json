@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791163332024",
+  "flootProjectVersion": "1791168430799",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -79,8 +79,8 @@
     },
     {
       "path": "endpoints/recommend_POST.ts",
-      "gitBlobSha": "99f9fb812dcb257edbcbaf06cd6609f294ce8315",
-      "sourceCharCount": 13447
+      "gitBlobSha": "d6a12c05388a6821b55fff9602ae3f3f00a8ccee",
+      "sourceCharCount": 14579
     },
     {
       "path": "endpoints/status_GET.schema.ts",
@@ -89,8 +89,8 @@
     },
     {
       "path": "endpoints/status_GET.ts",
-      "gitBlobSha": "0021f01051822425e31b2286007c07d82008d740",
-      "sourceCharCount": 1733
+      "gitBlobSha": "6803fde3a90a4370e4c940dc27480950390eab13",
+      "sourceCharCount": 1981
     },
     {
       "path": "endpoints/study-response_POST.schema.ts",
@@ -99,8 +99,8 @@
     },
     {
       "path": "endpoints/study-response_POST.ts",
-      "gitBlobSha": "4e0f4b432f4c57852f19b6da6077c3f22dc23e62",
-      "sourceCharCount": 1365
+      "gitBlobSha": "934d726612ab115e4c80689e06b64c44e10ac839",
+      "sourceCharCount": 1847
     },
     {
       "path": "helpers/_publicConfigs.tsx",
@@ -109,13 +109,13 @@
     },
     {
       "path": "helpers/qlooSessionLogic.tsx",
-      "gitBlobSha": "7bd56383910f91ba79994c90140387c081616ada",
-      "sourceCharCount": 14325
+      "gitBlobSha": "5ef97b31b9c4024ef773d43e5aedf967308abda0",
+      "sourceCharCount": 14326
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "816c2ba71c9abfc6d0917aab333cd6102e70534f",
-      "sourceCharCount": 22086
+      "gitBlobSha": "da68a9168613818dc9fed1075d2b67dbd018065e",
+      "sourceCharCount": 22877
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -124,8 +124,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "136d1f56d585f153614d243796ce33d103faffb3",
-      "sourceCharCount": 38964
+      "gitBlobSha": "3b7bbc4658a3780749b7d7ccfe15cbcb965bbf77",
+      "sourceCharCount": 42673
     },
     {
       "path": "pages/study.module.css",
@@ -150,9 +150,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-04",
-    "flootProjectVersion": "1791163332024",
+    "flootProjectVersion": "1791168430799",
     "exactFileCount": 28,
-    "verificationMethod": "All 28 manifested runtime files were re-read in complete line chunks from live Floot version 1791163332024 after Phase 10 repairs, reconstructed byte-for-byte, and checked against live character counts.",
+    "verificationMethod": "All 28 manifested runtime files were checked against live Floot version 1791168430799; unchanged files retain the prior exact capture and changed UTF-8 files were written literally from this snapshot and verified by Floot typecheck.",
     "directComparisonStatus": "28/28 exact",
     "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }

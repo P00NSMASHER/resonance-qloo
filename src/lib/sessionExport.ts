@@ -120,7 +120,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       const role = signalNumber
         ? source === 'live' ? `selected Qloo signal #${signalNumber}` : `example plan signal #${signalNumber}`
         : source === 'live' ? 'additional Qloo evidence' : 'additional example evidence';
-      return `- [${role}] ${item.label}: ${item.score === null ? `Rank #${item.rank}` : `${Math.round(item.score * 100)}%`}`;
+      return `- [${role}] ${item.label}: ${item.score === null ? `Rank #${item.rank}` : `${(item.score * 100).toFixed(2)}%`}`;
     }),
     ...(session.agentTrace?.length ? [
       '',

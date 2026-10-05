@@ -1,5 +1,7 @@
 # Judge guide
 
+> Current proxy result: the preregistered five-agent blinded comparison preferred the anchor-only plan 4/5, with one tie and zero Qloo-plan wins. The complete unfavorable synthetic result is retained in `docs/agent-evaluation/BLINDED_AB_RESULT.md`. It shows that Qloo added novelty without proving whole-plan superiority; it is not real-user evidence.
+
 ## Verified live proof
 
 The public demo is live at https://resonance-qloo.floot.app and the server currently reports verified Qloo readiness against `https://hackathon.api.qloo.com`.

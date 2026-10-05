@@ -7,6 +7,23 @@ const searchCache = new Map<string,{ expiresAt:number; value:unknown }>();
 const tasteCache = new Map<string,{ expiresAt:number; value:unknown }>();
 const SEARCH_TTL_MS = 10 * 60_000;
 const TASTE_TTL_MS = 5 * 60_000;
+const MAX_CACHE_ENTRIES = 250;
+const clientWindows = new Map<string,{ count:number; resetAt:number }>();
+let globalWindow = { count:0, resetAt:0 };
+
+function allowUpstream(request:Request) {
+  const now=Date.now();
+  if (globalWindow.resetAt <= now) globalWindow={count:0,resetAt:now+60_000};
+  if (globalWindow.count >= 60) return false;
+  const raw=(request.headers.get("x-forwarded-for")||request.headers.get("cf-connecting-ip")||"unknown").split(",")[0].trim();
+  const key=createHash("sha256").update(raw).digest("hex");
+  for (const [stored,window] of clientWindows) if (window.resetAt <= now) clientWindows.delete(stored);
+  const window=clientWindows.get(key);
+  if (!window || window.resetAt <= now) clientWindows.set(key,{count:1,resetAt:now+60_000});
+  else { if (window.count >= 10) return false; window.count += 1; }
+  globalWindow.count += 1;
+  return true;
+}
 
 function credentialFingerprint(apiKey:string) {
   return createHash("sha256")
@@ -28,6 +45,7 @@ async function cachedQloo(
   if (hit && hit.expiresAt > now) return hit.value;
   if (hit) cache.delete(key);
   const value = await loader();
+  while (cache.size >= MAX_CACHE_ENTRIES) cache.delete(cache.keys().next().value as string);
   cache.set(key,{ expiresAt:now + ttlMs, value });
   return value;
 }
@@ -91,7 +109,7 @@ function createReviewToken(secret:Uint8Array, context:RequestContext, entityIds:
 function verifyReviewToken(secret:Uint8Array, context:RequestContext, entityIds:string[], token?:string) {
   if (!token) return false;
   const [expiresRaw,actualMac,...extra] = token.split(".");
-  if (!expiresRaw || !actualMac || extra.length) return false;
+  if (!expiresRaw || !actualMac || extra.length || !/^[A-Za-z0-9_-]{43}$/.test(actualMac)) return false;
   const expiresAt = Number.parseInt(expiresRaw,36);
   if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) return false;
   const expectedMac = reviewMac(secret,context,entityIds,expiresAt);
@@ -133,6 +151,7 @@ function normalizedAnchors(input:ReturnType<typeof schema.parse>) {
 }
 
 export async function handle(request:Request) {
+  if (!allowUpstream(request)) return json({error:"Recommendation rate limit reached. Please retry in one minute."},429);
   let input:ReturnType<typeof schema.parse>;
   try {
     input = schema.parse(superjson.parse(await request.text()));

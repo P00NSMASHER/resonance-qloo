@@ -1,4 +1,4 @@
-import { chromium } from 'playwright-core';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright-core');
 import { mkdir } from 'node:fs/promises';
 
 const out = process.env.GALLERY_OUT || 'judge-gallery';
@@ -36,7 +36,7 @@ await sessionSection.getByRole('button',{name:'Modify'}).nth(1).click();
 await sessionSection.getByRole('button',{name:'Save modification'}).click();
 await sessionSection.getByRole('button',{name:'Replace'}).nth(2).click();
 await sessionSection.getByRole('button',{name:'Keep'}).nth(3).click();
-await page.getByText('Session approved by facilitator').waitFor({state:'visible'});
+await page.getByText('All activity decisions complete').waitFor({state:'visible'});
 await page.waitForTimeout(300);
 await sessionSection.screenshot({path:`${out}/03-finished-session.png`});
 

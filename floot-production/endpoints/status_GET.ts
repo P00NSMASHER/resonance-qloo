@@ -1,6 +1,7 @@
 import superjson from "superjson";
 import type { OutputType } from "./status_GET.schema";
 import { qlooSessionLogic } from "../helpers/qlooSessionLogic";
+let cached:{ expiresAt:number; output:OutputType }|null=null;
 
 function response(output: OutputType) {
   return new Response(superjson.stringify(output), {
@@ -11,7 +12,13 @@ function response(output: OutputType) {
   });
 }
 
+function finish(output:OutputType) {
+  cached={expiresAt:Date.now()+30_000,output};
+  return response(output);
+}
+
 export async function handle() {
+  if (cached && cached.expiresAt > Date.now()) return response(cached.output);
   const raw = Reflect.get(process.env, "QLOO_API_KEY");
   const apiKey = typeof raw === "string" ? raw.trim() : "";
   const base: Omit<OutputType, "qlooConfigured" | "qlooConnected" | "qlooStatus" | "mode"> = {
@@ -21,7 +28,7 @@ export async function handle() {
   };
 
   if (!apiKey) {
-    return response({
+    return finish({
       ...base,
       qlooConfigured:false,
       qlooConnected:false,
@@ -40,7 +47,7 @@ export async function handle() {
     });
 
     if (probe.ok) {
-      return response({
+      return finish({
         ...base,
         qlooConfigured:true,
         qlooConnected:true,
@@ -49,7 +56,7 @@ export async function handle() {
       });
     }
     if (probe.status === 429) {
-      return response({
+      return finish({
         ...base,
         qlooConfigured:true,
         qlooConnected:false,
@@ -59,7 +66,7 @@ export async function handle() {
     }
   } catch {}
 
-  return response({
+  return finish({
     ...base,
     qlooConfigured:true,
     qlooConnected:false,

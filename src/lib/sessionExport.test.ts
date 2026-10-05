@@ -73,7 +73,7 @@ describe('session export', () => {
     expect(text).toContain('Illustrative demo — not live Qloo data');
     expect(text).not.toContain('Generated:');
     expect(text).toContain('Jazz: Rank #1');
-    expect(text).toContain('Musicals: 82%');
+    expect(text).toContain('Musicals: 82.00%');
   });
 
   it('keeps category hints visible in copied/printed session text', () => {
@@ -187,7 +187,7 @@ describe('session export', () => {
   it('distinguishes selected and additional taste evidence in exports', () => {
     const live = formatSessionText(session, 'live');
     expect(live).toContain('[selected Qloo signal #1] Jazz: Rank #1');
-    expect(live).toContain('[selected Qloo signal #2] Musicals: 82%');
+    expect(live).toContain('[selected Qloo signal #2] Musicals: 82.00%');
     expect(live).toContain('[additional Qloo evidence] Classic cinema: Rank #3');
 
     const demo = formatSessionText(session, 'demo');

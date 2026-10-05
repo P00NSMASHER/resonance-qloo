@@ -6,7 +6,7 @@ import { hasVerifiedLiveProvenance } from './lib/liveProvenance';
 import { hasConsistentRecommendationResult, matchesRecommendationRequestContext } from './lib/recommendationResult';
 import { payloadHasMatchingRequestContext, type RecommendationRequestContext } from './lib/recommendationContext';
 import { buildQlooDelta } from './lib/qlooDelta';
-import { selectSessionArchetype } from './lib/qlooLogic';
+import { planFromTags, selectSessionArchetype } from './lib/qlooLogic';
 import deploymentContract from '../deployment-contract.json';
 
 type AgentTraceStep = {
@@ -109,6 +109,40 @@ const demo: Result = {
 };
 
 const anchorExamples = ['Favorite artist', 'Favorite film', 'Favorite food, brand, book, or place', 'Another favorite'];
+function demoForContext(energy:string, setting:string, durationMinutes:number): Result {
+  return {
+    ...demo,
+    requestContext:{...demo.requestContext,energy,setting,durationMinutes},
+    plan:planFromTags(demo.affinities,energy,setting,['Aretha Franklin','The Sound of Music'],durationMinutes),
+    evidence:{...demo.evidence,sessionDurationMinutes:durationMinutes,energy,setting},
+  };
+}
+
+function activitySupport(index:number) {
+  const support = [
+    {materials:'Two cue options: one image or object and one short audio excerpt.',participation:'Invite listening, pointing, choosing, speaking, or passing.'},
+    {materials:'Three printed scene, lyric, headline, or image cards.',participation:'Offer a spoken choice, a point-to-choice option, and quiet observation.'},
+    {materials:'Paper, thick markers, and two prepared visual or rhythm choices.',participation:'Participants may choose, place, tap, gesture, contribute words, or observe.'},
+    {materials:'Two large-print closing prompts or voting cards.',participation:'Accept a word, gesture, point, or pass; never require recall.'},
+  ];
+  return support[index] ?? support[2];
+}
+
+function replacementActivity(index:number, item:Result['plan'][number]) {
+  const signal = item.affinityLabel;
+  const anchor = item.anchorName ?? 'the familiar favorite';
+  return [
+    `Place an image cue and a short audio cue connected to “${signal}” side by side. Let participants choose one by pointing, listening, speaking, or passing.`,
+    `Lay out three scene, image, or lyric cards connecting “${anchor}” with “${signal}.” Invite the group to sort, match, or simply select one card to discuss.`,
+    `Create a one-page group collage or rhythm pattern inspired by “${signal}.” Each person may choose, place, tap, gesture, contribute a word, or observe.`,
+    `Close with a two-card vote connected to “${signal}”: revisit it next time or choose a different direction. Accept a word, point, gesture, or pass.`,
+  ][index] ?? `Offer a visual matching activity connected to “${signal},” with speaking, pointing, observing, and passing all treated as valid participation.`;
+}
+
+function formatAffinityScore(score:number) {
+  return `${(score * 100).toFixed(2)}%`;
+}
+
 const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
@@ -348,17 +382,20 @@ export default function App() {
     setResolutionReview(null);
     setAnchors(['Aretha Franklin','The Sound of Music']);
     setAnchorTypes(['artist','movie']);
-    setEnergy('calm');
-    setSetting('small-group');
-    setDurationMinutes(30);
-    setResult(demo);
+    setResult(demoForContext(energy,setting,durationMinutes));
     setSource('demo');
   }
 
   async function copySession() {
     if (!result || !source) return;
     try {
-      await navigator.clipboard.writeText(formatSessionText(result, source));
+      const reviewedResult = {...result, plan:result.plan.map((item,index)=>({...item,action:activityEdits[index]??item.action}))};
+      const reviewLines = result.plan.flatMap((item,index)=>[
+        `- ${item.title}: ${activityDecisions[index]??'not reviewed'}`,
+        `  Materials: ${activitySupport(index).materials}`,
+        `  Participation options: ${activitySupport(index).participation}`,
+      ]);
+      await navigator.clipboard.writeText(`${formatSessionText(reviewedResult, source)}\n\nSafety preflight: Check facility policy and any relevant food, swallowing, allergy, mobility, fall, or sensory requirements without entering health data in Resonance. Use seated, non-food, or quiet alternatives when needed.\n\nFacilitator decisions:\n${reviewLines.join('\n')}`);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -453,7 +490,7 @@ export default function App() {
           <button disabled={!canRun} onClick={()=>runLive()}>
             {loading?'Grounding with Qloo…':qlooUi.liveReady?'Build with live Qloo':'Live Qloo unavailable'}
           </button>
-          <button className="secondary" onClick={loadJudgeExample} disabled={loading}>Load judge example</button>
+          <button className="secondary" onClick={loadJudgeExample} disabled={loading}>Fill judge example</button>
           <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
         </div>
         <small>{qlooUi.helper}</small>
@@ -568,20 +605,22 @@ export default function App() {
           <small>{x.duration}</small>
           <h3>{x.title}</h3>
           {editingActivity === index ? <div className="activityEditor"><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:'modified'}));setEditingActivity(null)}}>Save modification</button><button type="button" className="secondary" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div> : <p className="sessionAction">{displayedAction}</p>}
-          {x.affinityLabel && <div className="sessionSignal">{signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · paired with ${x.anchorName}` : ''}</div>}
+          <div className="activitySupport"><span><b>Why this fits</b>{x.why}</span><span><b>Materials</b>{activitySupport(index).materials}</span><span><b>Participation options</b>{activitySupport(index).participation}</span></div>
+          {x.affinityLabel && <div className="sessionSignal">{decision==='modified'?'Original evidence reference':signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · paired with ${x.anchorName}` : ''}{decision==='modified'&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==='replaced'&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}
           <div className="facilitatorControls" aria-label={`Facilitator controls for ${x.title}`}>
             <button type="button" aria-pressed={decision==='kept'} className={decision==='kept'?'active':''} onClick={()=>setActivityDecisions(current=>({...current,[index]:'kept'}))}>Keep</button>
             <button type="button" aria-pressed={decision==='modified'} className={decision==='modified'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??x.action}));setEditingActivity(index)}}>Modify</button>
-            <button type="button" aria-pressed={decision==='replaced'} className={decision==='replaced'?'active':''} onClick={()=>{const replacements=[`Alternative opening: use a brief audio, image, or object cue connected to “${x.affinityLabel},” then invite one low-pressure response.`,`Alternative bridge: connect “${x.anchorName??'the familiar favorite'}” to “${x.affinityLabel}” with one photo, scene, or either/or prompt.`,`Alternative shared activity: offer two concrete choices inspired by “${x.affinityLabel}” and let participants choose how to take part.`,`Alternative close: revisit “${x.affinityLabel},” name one favorite moment, and choose what should return next time.`];setActivityEdits(current=>({...current,[index]:replacements[index]??replacements[2]}));setActivityDecisions(current=>({...current,[index]:'replaced'}));setEditingActivity(null)}}>Replace</button>
+            <button type="button" aria-pressed={decision==='replaced'} className={decision==='replaced'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:replacementActivity(index,x)}));setActivityDecisions(current=>({...current,[index]:'replaced'}));setEditingActivity(null)}}>Replace</button>
           </div>
           {decision && <div className="decisionBadge">Facilitator: {decision}</div>}
         </article>})}</div>
-        <div className="approvalSummary" role="status" aria-live="polite"><strong>Facilitator review</strong><span>{approvedCount}/{result.plan.length} activities reviewed · {keptCount} kept · {modifiedCount} modified · {replacedCount} replaced</span>{approvedCount===result.plan.length && <b>Session approved by facilitator</b>}</div>
+        <div className="approvalSummary" role="status" aria-live="polite"><strong>Facilitator review</strong><span>{approvedCount}/{result.plan.length} activities have a decision · {keptCount} kept · {modifiedCount} modified · {replacedCount} replaced</span>{approvedCount===result.plan.length && <b>All activity decisions complete</b>}</div>
       </section>
 
       <div className="interpretationLimit" role="note">
         <b>Interpretation limit</b>
-        <span>Qloo affinities describe aggregate cultural relationships, not a probability or claim about this individual. The facilitator can accept, modify, reorder, or reject any suggestion.</span>
+        <span>Qloo affinities describe aggregate cultural relationships, not a probability or claim about this individual. The facilitator can keep, modify, or replace every suggestion before use.</span>
+        <span><b>Safety preflight:</b> Check facility policy and relevant food, swallowing, allergy, mobility, fall, or sensory requirements. Use seated, non-food, or quiet alternatives when needed; do not enter health data here.</span>
       </div>
 
       <details className="auditTrail">
@@ -610,7 +649,7 @@ export default function App() {
             <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'All retained taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> returned</span></div>
             <div className="selectionRule"><b>Selection rule</b><span>{source === 'demo' ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.` : result.evidence.evidenceBasis === 'normalized-score' ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.` : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`}</span></div>
             {result.evidence.selectedAffinityCount < result.plan.length && <div className="evidenceReuseNote" role="note"><b>No synthetic signal</b><span>Only {result.evidence.selectedAffinityCount} real selected signals support {result.plan.length} activities, so the last real signal is reused for the closing step instead of inventing another one.</span></div>}
-            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : `${Math.round(x.score*100)}%`}</b></div>})}</div>
+            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : formatAffinityScore(x.score)}</b></div>})}</div>
           </div>
         </section>
 
