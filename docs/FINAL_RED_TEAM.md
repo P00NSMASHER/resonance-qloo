@@ -1,4 +1,9 @@
-# Final three-judge red-team — current state
+# Pre-repair three-judge red-team (historical)
+
+Status: **Superseded by [`FINAL_THREE_JUDGE_AUDIT.md`](./FINAL_THREE_JUDGE_AUDIT.md).**
+This snapshot is retained to show the issues found before the durable screenshot
+set, documentation reconciliation, and final independent audits. Its gallery
+blocker and scores are not the current state.
 
 Date: 2026-10-04
 

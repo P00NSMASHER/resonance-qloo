@@ -7,6 +7,21 @@
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
+## Judge gallery
+
+Exactly three screenshots from the published product document the complete
+judge path:
+
+1. [Input and live agent trace](docs/judge-gallery/01-input.png)
+2. [Same-input Qloo transformation](docs/judge-gallery/02-qloo-transformation.png)
+3. [Finished session and facilitator controls](docs/judge-gallery/03-finished-session.png)
+
+![Input screen with canonical favorites](docs/judge-gallery/01-input.png)
+
+![Without-Qloo versus live-Qloo transformation](docs/judge-gallery/02-qloo-transformation.png)
+
+![Finished session with human controls](docs/judge-gallery/03-finished-session.png)
+
 Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent 30-, 45-, or 60-minute engagement plan for senior-living activity teams and families.
 
 ## Why Qloo is essential
@@ -108,7 +123,7 @@ The real event key must never be committed or pasted into a public artifact.
 - OpenAPI 3.1 contract, submission evidence, known limitations, and finalization runbook are public.
 - The event-issued Qloo credential is connected to the Floot production environment and has passed a forced public readiness probe: `mode=live`, `qlooStatus=ready`, `qlooConfigured=true`, `qlooConnected=true`.
 - Public live-Qloo execution is verified end-to-end for both the exact-match path and the non-exact review-gated path. The exact-match artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The review-gated artifact records HTTP 409 before taste analysis, one signed confirmed top-result match, then a successful HTTP 200 `qloo-live` plan with 3 resolved entities.
-- The exact judge-facing Floot runtime source is now committed under `floot-production/` with project version `1791047559850`, content-addressed file identities, and `npm run floot:production:parity` to verify Qloo/review/cache/provenance/UI invariants against the canonical implementation.
+- The exact judge-facing Floot runtime source is now committed under `floot-production/` with project version `1791157346144`, content-addressed file identities, and `npm run floot:production:parity` to verify Qloo/review/cache/provenance/UI/study invariants against the canonical implementation.
 - Formal submission is complete, and the current judge-readiness checks are verified: live Qloo evidence covers both exact-match and signed review-gated flows, and public Floot deployment parity passes. The anonymous target-user validation study is open and data-collection ready, but currently has 0 valid responses; no participant-derived outcomes are claimed.
 
 ## Evidence and reproducibility

@@ -1,6 +1,7 @@
-# Devpost gallery capture plan
+# Judge screenshot set
 
-Status: **capture-ready; browser screenshot provider currently blocked by wallet balance**
+Status: **Complete — exactly three real published-product screenshots captured
+and committed under `docs/judge-gallery/`.**
 
 Use only real screenshots from the public app. Do not generate mockups or reconstruct the UI.
 
@@ -48,6 +49,14 @@ Caption: **A Qloo-grounded session remains facilitator-controlled: keep, modify,
 - Do not include secrets or ephemeral review receipts.
 - Re-capture if the public UI materially changes.
 
-## Current blocker
+## Capture record
 
-TinyFish screenshot automation did not start because its wallet balance was negative. Local Chromium could not reach the public app from the sandbox. Floot screenshot capture requires an open Floot editor/preview window. Any of those routes can complete the capture once available.
+The three PNGs were captured from `https://resonance-qloo.floot.app` by the
+dedicated GitHub Actions gallery workflow after loading the canonical live
+example. The successful workflow artifact was visually inspected before the
+files were committed. The images contain no credential, review receipt, user
+response, or personal/health data.
+
+The connected Devpost API does not expose gallery-photo uploads, so the same
+three public repository assets are embedded directly in the live Devpost story.
+No mockup or generated substitute is used.

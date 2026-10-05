@@ -8,10 +8,17 @@ const failures = [];
 
 const readSnapshot = path => readFile(new URL(path, snapshotRoot), 'utf8');
 const readRepo = path => readFile(new URL('../' + path, import.meta.url), 'utf8');
-const gitBlobSha = body => createHash('sha1')
-  .update(`blob ${Buffer.byteLength(body, 'utf8')}\0`)
-  .update(body, 'utf8')
+// Git stores these text snapshots with LF endings even when a Windows checkout
+// presents them as CRLF. Hash the canonical Git text so exact-source parity is
+// stable across developer platforms without accepting any content change.
+const canonicalGitText = body => body.replace(/\r\n/g, '\n');
+const gitBlobSha = body => {
+  const canonicalBody = canonicalGitText(body);
+  return createHash('sha1')
+  .update(`blob ${Buffer.byteLength(canonicalBody, 'utf8')}\0`)
+  .update(canonicalBody, 'utf8')
   .digest('hex');
+};
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
 if (manifest.flootProjectVersion !== '1791157346144') failures.push('Unexpected Floot project version.');

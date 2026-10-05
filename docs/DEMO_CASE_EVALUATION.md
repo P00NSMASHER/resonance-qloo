@@ -1,4 +1,9 @@
-# Canonical judge-demo case evaluation
+# First bounded judge-demo sweep (historical)
+
+Status: **Superseded by the consolidated ten-case audit in
+[`DEMO_CASE_AUDIT.md`](./DEMO_CASE_AUDIT.md).** This file preserves the first
+eight completed live runs exactly as they were evaluated; it is not the current
+canonical-demo decision.
 
 Date: 2026-10-04
 
@@ -28,9 +33,12 @@ Scores are editorial evaluation of the live outputs, not Qloo confidence scores.
 | Frank Sinatra + Casablanca | Five Star; Record Label; Discover; LGBTQ+ friendly | History museum; Very expensive; Robin Hood; Luxurious | 3 | 3 | 3 | 2 | 5 | 5 | **21** |
 | Nat King Cole + Singin' in the Rain | Creole; Sprawling; Record Label; MasterCard | Expensive; Christian; Timeless; Florida | 3 | 3 | 2 | 1 | 5 | 5 | **19** |
 
-## Canonical example
+## Interim canonical example
 
-**Louis Armstrong + Casablanca** is the canonical judge example.
+At this point in the bounded evaluation, **Louis Armstrong + Casablanca** was
+the leading candidate and became the interim judge example. The later
+consolidated ten-case audit added stronger complete outputs and selected **Ella
+Fitzgerald + Roman Holiday** at **95.0/100** as the current canonical example.
 
 Why:
 

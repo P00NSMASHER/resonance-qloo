@@ -57,7 +57,13 @@ Resonance fails closed if fewer than two anchors resolve or if Qloo returns fewe
 
 ## External user validation
 
-Phase 5 external target-user validation was intentionally skipped. The study closed with **0 valid real target-user responses**. Resonance does not claim participant-derived time savings, ratings, testimonials, or quotes. The old public study URL now shows a closure notice and its submission endpoint returns HTTP 410.
+The Phase 5 validation workflow is **open and awaiting real participants** at
+`https://resonance-qloo.floot.app/study`. It has collection, validation,
+privacy, aggregation, and fail-closed publication safeguards, but currently
+contains **0 valid real target-user responses**. Resonance therefore does not
+claim participant-derived time savings, ratings, testimonials, or quotes.
+Publishable aggregates remain blocked until at least three complete eligible
+responses have been reviewed as real submissions.
 
 ## Event quotas and upstream availability
 

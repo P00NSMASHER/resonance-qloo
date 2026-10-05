@@ -121,6 +121,18 @@ Live demo:
 
 https://resonance-qloo.floot.app
 
+Exactly three judge-facing screenshots captured from that published product are
+committed under [`docs/judge-gallery/`](./judge-gallery/):
+
+1. `01-input.png` — canonical inputs, live-ready state, and agent trace;
+2. `02-qloo-transformation.png` — the honest same-input anchor-only versus live
+   Qloo comparison and measured delta;
+3. `03-finished-session.png` — Qloo-selected session archetype, four activities,
+   Keep/Modify/Replace controls, and facilitator review summary.
+
+No generated UI, credential, signed review receipt, participant response, or
+personal/health data appears in the screenshot set.
+
 The event-issued credential is connected to Floot and the public status endpoint has verified the hackathon origin in `live/ready` state. Both a direct exact-match recommendation and the signed non-exact review-gated recommendation have now completed end-to-end in production with committed redaction-safe artifacts. The illustrative preview remains clearly labeled as a fallback only.
 
 ## 5. Clean-environment setup

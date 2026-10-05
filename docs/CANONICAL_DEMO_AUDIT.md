@@ -1,4 +1,11 @@
-# Canonical judge example audit
+# Intermediate canonical judge example audit (historical)
+
+Status: **Superseded by the consolidated ten-case whole-output audit in
+[`DEMO_CASE_AUDIT.md`](./DEMO_CASE_AUDIT.md) and
+[`DEMO_CASE_AUDIT.json`](./DEMO_CASE_AUDIT.json).** This record is retained so
+judges can see the earlier candidates and decisions rather than a cleaned-up
+history. The current canonical example is **Ella Fitzgerald + Roman Holiday**
+at **95.0/100**.
 
 Phase 4 evaluated complete live Qloo outputs rather than cherry-picking individual signals. Every candidate was run against the public Resonance production path with a calm, 30-minute, small-group request. Candidates were scored for exact resolution, intuitive cross-category relationships, visual clarity, activity usefulness, semantic coherence, and meaningful surprise.
 
