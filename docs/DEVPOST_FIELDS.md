@@ -42,6 +42,13 @@ The submission window remains open until October 30, 2026 at 11:45 PM Eastern Ti
 
 On October 2, 2026 at 11:25 PM Eastern Time, the live Devpost project description was refreshed after public Qloo verification. On October 3, 2026 it was refreshed again after the review-gated flow completed end-to-end. Devpost project version 18 now records the connected/ready credential state, the verified exact-match HTTP 200 `qloo-live` artifact, and the verified HTTP 409 → signed confirmation → HTTP 200 review-gated artifact. The project remained published/submitted after the edit.
 
+On October 4, 2026, live Devpost project **version 21** replaced the long
+engineering-first story with the final judge-first structure: a four-sentence
+problem, exactly five product bullets, a visible same-input Qloo comparison,
+both live proof paths, the honest zero-participant impact status, exactly three
+published-product screenshots, and technical depth last. The public page was
+re-read after the update; all five bullets and all three screenshot URLs render.
+
 ## Judge-readiness status
 
 The core functional-demo requirements are now verified:
@@ -52,9 +59,8 @@ The core functional-demo requirements are now verified:
 - a redaction-safe live evidence artifact is committed at `docs/LIVE_QLOO_EVIDENCE.json`;
 - the public non-exact path reaches the intended HTTP 409 entity-review gate before taste analysis.
 
-Remaining submission polish:
-
-- refresh the Devpost description to reference both verified live artifacts;
-- add a clean live-result screenshot if useful for judges.
+Remaining impact work is non-fabricable: collect 3–5 real eligible study
+responses before publishing any participant-derived outcome. The submission
+copy and three-screen judge path are otherwise current.
 
 The official requirement calls for a functional demo that judges can use end-to-end; the exact-match public path now satisfies that functional proof.

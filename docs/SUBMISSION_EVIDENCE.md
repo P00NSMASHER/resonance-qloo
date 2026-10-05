@@ -63,14 +63,14 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 
 The default judge example is now **Ella Fitzgerald + Roman Holiday**, selected from a ten-case whole-output audit at **95.0/100**.
 
-It was selected from nine complete live Qloo outputs using a published whole-result audit; no returned signal was removed before scoring. The audit is committed at [DEMO_CASE_AUDIT.md](./DEMO_CASE_AUDIT.md) / [DEMO_CASE_AUDIT.json](./DEMO_CASE_AUDIT.json).
+It was selected from ten complete live Qloo outputs using a published whole-result audit; no returned signal was removed before scoring. The audit is committed at [DEMO_CASE_AUDIT.md](./DEMO_CASE_AUDIT.md) / [DEMO_CASE_AUDIT.json](./DEMO_CASE_AUDIT.json).
 
 The winning case:
 
 - resolves both anchors exactly;
 - returns 8 retained Qloo signals;
-- selects 4 numeric signals: `Entertainment`, `soul`, `funk`, and `rhythm & blues`;
-- preserves the full returned set, including `Timeless`, `Jazz`, `blues`, and `Musically Inclined`;
+- selects 4 Qloo-ranked signals: `Jazz`, `Reporter`, `Inventive`, and `swing`;
+- preserves the full returned set, including `piano`, `Vocal-Jazz`, `oldies`, and `Easy Listening`;
 - produces a four-step 30-minute calm small-group session;
 - is captured in full at [CANONICAL_DEMO_EVIDENCE.json](./CANONICAL_DEMO_EVIDENCE.json).
 

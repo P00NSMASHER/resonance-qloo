@@ -84,4 +84,3 @@ export default function StudyPage() {
     </main>
   </>;
 }
-   87

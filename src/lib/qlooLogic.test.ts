@@ -215,6 +215,8 @@ describe('Qloo parsing', () => {
     expect(selectSessionArchetype([{label:'Jazz'},{label:'swing'},{label:'Reporter'}])).toBe('Memory & conversation');
     expect(selectSessionArchetype([{label:'Food'},{label:'Travel'},{label:'Garden'}])).toBe('Sensory & social');
     expect(selectSessionArchetype([{label:'Inventive'},{label:'Cultural Arts'},{label:'Dance'}])).toBe('Creative participation');
+    expect(selectSessionArchetype([{label:'Martial discipline'}], 'active', 'small-group')).toBe('Creative participation');
+    expect(selectSessionArchetype([{label:'Unclassified signal'}], 'calm', 'community')).toBe('Sensory & social');
 
     const memory = planFromTags([{label:'Jazz',score:1,rank:1},{label:'swing',score:.9,rank:2},{label:'Reporter',score:.8,rank:3}], 'calm','small-group',['Ella','Roman Holiday'],30);
     const sensory = planFromTags([{label:'Food',score:1,rank:1},{label:'Travel',score:.9,rank:2},{label:'Garden',score:.8,rank:3}], 'calm','small-group',['Favorite meal','Paris'],30);

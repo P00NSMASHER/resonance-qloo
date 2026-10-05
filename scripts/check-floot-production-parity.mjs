@@ -21,7 +21,7 @@ const gitBlobSha = body => {
 };
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791157346144') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791163332024') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
@@ -31,6 +31,9 @@ if (manifest.liveVerification?.directComparisonStatus !== '28/28 exact') failure
 
 for (const entry of manifest.files ?? []) {
   const body = await readSnapshot(entry.path);
+  const canonicalBody = canonicalGitText(body);
+  if (canonicalBody.length !== entry.sourceCharCount) failures.push(`Exact Floot snapshot character-count mismatch: ${entry.path}`);
+  if (/output capped at/i.test(canonicalBody) || /^\s+\d+\s*$/m.test(canonicalBody)) failures.push(`Capture artifact found in exact Floot snapshot: ${entry.path}`);
   if (gitBlobSha(body) !== entry.gitBlobSha) failures.push(`Exact Floot snapshot hash mismatch: ${entry.path}`);
 }
 

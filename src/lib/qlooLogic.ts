@@ -189,14 +189,26 @@ export function extractExplainabilitySummary(payload: unknown): QlooExplainabili
 
 export type SessionArchetype = 'Memory & conversation' | 'Sensory & social' | 'Creative participation';
 
-export function selectSessionArchetype(tags: Pick<Affinity,'label'>[]): SessionArchetype {
-  const labels = tags.map(item => item.label.toLocaleLowerCase('en-US'));
-  const score = (terms:string[]) => labels.reduce((sum,label) => sum + terms.filter(term => label.includes(term)).length,0);
+export function selectSessionArchetype(
+  tags: Pick<Affinity,'label'>[],
+  energy = 'calm',
+  setting = 'small-group',
+): SessionArchetype {
+  const labels = tags.map(item => item.label.toLocaleLowerCase('en-US').split(/[^a-z0-9]+/).filter(Boolean));
+  const score = (terms:string[]) => labels.reduce((sum,tokens) => sum + terms.filter(term => {
+    const termTokens = term.split(' ');
+    return termTokens.length === 1
+      ? tokens.includes(termTokens[0])
+      : tokens.join(' ').includes(termTokens.join(' '));
+  }).length,0);
   const memory = score(['jazz','swing','oldies','timeless','reporter','history','broadway','vocal','piano','nostalgia','classic']);
   const sensory = score(['food','culinary','restaurant','taste','travel','place','garden','nature','fashion','design','color','scent']);
   const creative = score(['inventive','creative','cultural arts','art','music','dance','joyous','optimism','optimistic','craft']);
   if (sensory > memory && sensory >= creative) return 'Sensory & social';
   if (creative > memory && creative > sensory) return 'Creative participation';
+  if (memory > sensory && memory > creative) return 'Memory & conversation';
+  if (energy === 'active') return 'Creative participation';
+  if (setting === 'community') return 'Sensory & social';
   return 'Memory & conversation';
 }
 
@@ -226,7 +238,7 @@ export function planFromTags(
     setting === 'one-on-one' ? 'for one person and one companion' :
     setting === 'community' ? 'for a room where people can join or step out freely' :
     'for a small group with room for individual responses';
-  const archetype = selectSessionArchetype(tags);
+  const archetype = selectSessionArchetype(tags, energy, setting);
 
   if (archetype === 'Sensory & social') {
     return [

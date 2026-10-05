@@ -43,4 +43,3 @@ export const postStudyResponse = async (body:InputType):Promise<OutputType> => {
   if (!result.ok) throw new Error(typeof parsed?.error === "string" ? parsed.error : "Could not submit study response.");
   return parsed as OutputType;
 };
-   46

@@ -40,4 +40,3 @@ export async function handle(request:Request) {
   const output:OutputType={accepted:true,studyVersion:STUDY_VERSION};
   return json(output);
 }
-   43

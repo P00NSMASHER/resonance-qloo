@@ -189,14 +189,22 @@ export const qlooSessionLogic = {
     };
   },
 
-  selectSessionArchetype(tags: { label:string }[]) {
-    const labels = tags.map(item => item.label.toLocaleLowerCase("en-US"));
-    const score = (terms:string[]) => labels.reduce((sum,label) => sum + terms.filter(term => label.includes(term)).length,0);
+  selectSessionArchetype(tags: { label:string }[], energy = "calm", setting = "small-group") {
+    const labels = tags.map(item => item.label.toLocaleLowerCase("en-US").split(/[^a-z0-9]+/).filter(Boolean));
+    const score = (terms:string[]) => labels.reduce((sum,tokens) => sum + terms.filter(term => {
+      const termTokens = term.split(" ");
+      return termTokens.length === 1
+        ? tokens.includes(termTokens[0])
+        : tokens.join(" ").includes(termTokens.join(" "));
+    }).length,0);
     const memory = score(["jazz","swing","oldies","timeless","reporter","history","broadway","vocal","piano","nostalgia","classic"]);
     const sensory = score(["food","culinary","restaurant","taste","travel","place","garden","nature","fashion","design","color","scent"]);
     const creative = score(["inventive","creative","cultural arts","art","music","dance","joyous","optimism","optimistic","craft"]);
     if (sensory > memory && sensory >= creative) return "Sensory & social" as const;
     if (creative > memory && creative > sensory) return "Creative participation" as const;
+    if (memory > sensory && memory > creative) return "Memory & conversation" as const;
+    if (energy === "active") return "Creative participation" as const;
+    if (setting === "community") return "Sensory & social" as const;
     return "Memory & conversation" as const;
   },
 
@@ -213,7 +221,7 @@ export const qlooSessionLogic = {
     const durations=durationMinutes===30?["5 min","10 min","10 min","5 min"]:durationMinutes===60?["10 min","20 min","20 min","10 min"]:["10 min","10 min","15 min","10 min"];
     const energyLine=energy==="active"?"invite movement, clapping, or choosing between options":energy==="social"?"invite easy back-and-forth conversation":"keep the pace gentle and low-pressure";
     const settingLine=setting==="one-on-one"?"for one person and one companion":setting==="community"?"for a room where people can join or step out freely":"for a small group with room for individual responses";
-    const archetype=qlooSessionLogic.selectSessionArchetype(tags);
+    const archetype=qlooSessionLogic.selectSessionArchetype(tags,energy,setting);
     const item=(title:string,duration:string,action:string,why:string,anchorName:string|undefined,affinityLabel:string)=>({title,duration,action,why,...(anchorName?{anchorName}:{}),affinityLabel});
 
     if(archetype==="Sensory & social") return [
@@ -236,4 +244,3 @@ export const qlooSessionLogic = {
     ];
   },
 };
-  239

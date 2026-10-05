@@ -153,7 +153,7 @@ export default function App() {
     result.evidence.selectedAffinityLabels,
     result.plan,
   ) : null;
-  const sessionArchetype = result ? selectSessionArchetype(result.affinities.filter(item => result.evidence.selectedAffinityLabels.includes(item.label))) : null;
+  const sessionArchetype = result ? selectSessionArchetype(result.affinities.filter(item => result.evidence.selectedAffinityLabels.includes(item.label)), result.evidence.energy, result.evidence.setting) : null;
   const approvedCount = result ? result.plan.filter((_,index) => Boolean(activityDecisions[index])).length : 0;
   const keptCount = Object.values(activityDecisions).filter(value => value === 'kept').length;
   const modifiedCount = Object.values(activityDecisions).filter(value => value === 'modified').length;
@@ -562,17 +562,17 @@ export default function App() {
         <div className="sectionHeading">
           <b>03 · Your session</b>
           <h3 id="session-title">A facilitator-ready starting point</h3>
-          {sessionArchetype && <p className="archetypeLine"><strong>{sessionArchetype}</strong> · strategy selected from the Qloo evidence + session context</p>}
+          {sessionArchetype && <p className="archetypeLine"><strong>{sessionArchetype}</strong> · strategy selected from Qloo evidence; session context breaks ties</p>}
         </div>
         <div className="plan">{result.plan.map((x,index)=>{const signalNumber=x.affinityLabel ? selectedAffinityOrder.get(x.affinityLabel) : undefined;const displayedAction=activityEdits[index] ?? x.action;const decision=activityDecisions[index];return <article key={x.title} className={decision ? `facilitator-${decision}` : ''}>
           <small>{x.duration}</small>
           <h3>{x.title}</h3>
           {editingActivity === index ? <div className="activityEditor"><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:'modified'}));setEditingActivity(null)}}>Save modification</button><button type="button" className="secondary" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div> : <p className="sessionAction">{displayedAction}</p>}
-          {x.affinityLabel && <div className="sessionSignal">{signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · from ${x.anchorName}` : ''}</div>}
+          {x.affinityLabel && <div className="sessionSignal">{signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · paired with ${x.anchorName}` : ''}</div>}
           <div className="facilitatorControls" aria-label={`Facilitator controls for ${x.title}`}>
-            <button type="button" className={decision==='kept'?'active':''} onClick={()=>setActivityDecisions(current=>({...current,[index]:'kept'}))}>Keep</button>
-            <button type="button" className={decision==='modified'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??x.action}));setEditingActivity(index)}}>Modify</button>
-            <button type="button" className={decision==='replaced'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:`Alternative: invite participants to choose between two simple prompts inspired by “${x.affinityLabel},” then follow the group's preference.`}));setActivityDecisions(current=>({...current,[index]:'replaced'}));setEditingActivity(null)}}>Replace</button>
+            <button type="button" aria-pressed={decision==='kept'} className={decision==='kept'?'active':''} onClick={()=>setActivityDecisions(current=>({...current,[index]:'kept'}))}>Keep</button>
+            <button type="button" aria-pressed={decision==='modified'} className={decision==='modified'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??x.action}));setEditingActivity(index)}}>Modify</button>
+            <button type="button" aria-pressed={decision==='replaced'} className={decision==='replaced'?'active':''} onClick={()=>{const replacements=[`Alternative opening: use a brief audio, image, or object cue connected to “${x.affinityLabel},” then invite one low-pressure response.`,`Alternative bridge: connect “${x.anchorName??'the familiar favorite'}” to “${x.affinityLabel}” with one photo, scene, or either/or prompt.`,`Alternative shared activity: offer two concrete choices inspired by “${x.affinityLabel}” and let participants choose how to take part.`,`Alternative close: revisit “${x.affinityLabel},” name one favorite moment, and choose what should return next time.`];setActivityEdits(current=>({...current,[index]:replacements[index]??replacements[2]}));setActivityDecisions(current=>({...current,[index]:'replaced'}));setEditingActivity(null)}}>Replace</button>
           </div>
           {decision && <div className="decisionBadge">Facilitator: {decision}</div>}
         </article>})}</div>
