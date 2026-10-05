@@ -30,6 +30,8 @@ jobs:
         run: npm run security:secrets:check
       - name: Exact Floot production source parity
         run: npm run floot:production:parity
+      - name: Public build receipt
+        run: npm run build:receipt:check
       - name: Typecheck
         run: npm run typecheck
       - name: Unit tests
@@ -56,15 +58,13 @@ jobs:
         run: npm run evidence:capture:selftest
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
-      - name: Public deployment parity (advisory)
+      - name: Public deployment parity
         id: deployment_parity
-        continue-on-error: true
         run: npm run deployment:check
       - name: Live Qloo readiness self-test
         run: npm run qloo:live:selftest
-      - name: Live Qloo readiness (advisory)
+      - name: Live Qloo readiness
         id: qloo_live_readiness
-        continue-on-error: true
         run: npm run qloo:live:check
       - name: Summarize public deployment parity
         if: always()

@@ -28,6 +28,7 @@
     "security:secrets:check": "node scripts/check-secret-leaks.mjs",
     "security:secrets:selftest": "node scripts/test-secret-leaks.mjs",
     "floot:production:parity": "node scripts/check-floot-production-parity.mjs",
+    "build:receipt:check": "node scripts/check-build-receipt.mjs",
     "study:analyze": "tsx scripts/analyze-study-responses.ts",
     "impact:study": "node scripts/summarize-impact-study.mjs",
     "impact:study:selftest": "node scripts/test-impact-study.mjs"
