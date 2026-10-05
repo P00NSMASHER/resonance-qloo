@@ -1,56 +1,37 @@
-# Final three-judge red-team audit
+# Final independent three-judge red-team audit
 
 Date: 2026-10-04
+Audited repository state: `37e4a9253d819bffb3d7f2f5779998d5a34db9b6` plus the published Floot app and workflow-generated gallery from that SHA.
 
-This audit is intentionally adversarial. Scores are 0–100 translations of the official Qloo criteria. It distinguishes product/source quality from evidence that cannot be fabricated.
+Three independent agents reviewed the technical implementation, product/design experience, and Qloo sponsor fit. Scores are honest 0-100 assessments of the four hackathon criteria. The target was at least 95 overall, but no score was raised to meet that target.
 
-## Judge A — skeptical technical judge
+| Independent perspective | Technology | Design | Impact | Idea | Overall |
+|---|---:|---:|---:|---:|---:|
+| Skeptical technical judge | 97 | 94 | 80 | 97 | **92.0** |
+| Product/design judge | 97 | 94 | 72 | 96 | **89.75** |
+| Qloo sponsor judge | 98 | 96 | 70 | 98 | **90.5** |
 
-| Area | Score | Red-team conclusion |
-|---|---:|---|
-| Technological Implementation | 100 | Exact Floot production source is public and content-addressed; live exact-match and signed review-gated paths are captured; Qloo is causal to the plan; secret scanning, provenance, review receipts, caching, fail-closed behavior, parity, and CI are inspectable. |
-| Design | 97 | Judge-first hierarchy and progressive audit disclosure are strong. Remaining deduction is mostly the unavoidable density of the optional audit layer. |
-| Potential Impact | 86 | Audience/workflow are specific and the product demonstrates human control plus a ready validation protocol. No real participant outcomes exist yet, so impact cannot receive full credit. |
-| Quality of the Idea | 99 | Qloo cultural affinity is used as evidence inside a human-facilitated engagement agent rather than as a conventional recommendation list. |
-| **Overall** | **95.5** | No severe technical blocker. Real-user evidence is the largest remaining point gap. |
+## Shared conclusions
 
-## Judge B — product/design judge
+- The product is technically judge-ready. No severe implementation or Qloo-integration defect remains.
+- Qloo is causal rather than decorative: entity resolution and signed review gating precede taste analysis; selected evidence changes the strategy and activities; the UI exposes an anchor-only baseline, Qloo expansion, provenance, and interpretation limits.
+- Facilitators retain control through Keep, Modify, Replace, and an explicit 4/4 approval summary.
+- The three-image gallery tells a coherent live-product story and contains input, Qloo transformation, and the approved finished session.
+- The product does **not** have real-user impact evidence yet. With 0 valid participants, no measured time saving, usefulness, adoption intent, or target-user fit may be claimed. This is why none of the independent overall scores reaches 95.
 
-| Area | Score | Red-team conclusion |
-|---|---:|---|
-| Technological Implementation | 98 | Technical depth is unusually strong and no longer overwhelms the default UI. |
-| Design | 98 | The primary journey is now Your favorites → What Qloo discovered → Your session; the Qloo delta is immediately legible; session strategy and facilitator controls are visible. |
-| Potential Impact | 88 | The workflow is credible and usable, but external target-user validation remains unproven. |
-| Quality of the Idea | 98 | The experience is coherent, non-obvious, and human-led. |
-| **Overall** | **95.5** | Product is judge-ready; external validation is the principal remaining evidence gap. |
+## Findings repaired after the audit
 
-## Judge C — Qloo/sponsor judge
+- Replaced the earlier self-scored 95.5 report with these actual independent scores.
+- Committed the new Qloo-transformation and 4/4-approved finished-session screenshots.
+- Removed the stale claim that Devpost gallery transport was blocked; all three stable image URLs render in the published description.
+- Rebuilt all 28 production snapshot files from live Floot version `1791163332024`, removed capture artifacts, verified live character counts, and added parity checks that reject those artifacts.
 
-| Area | Score | Red-team conclusion |
-|---|---:|---|
-| Technological Implementation | 100 | Qloo entity resolution, insights evidence, score/rank truthfulness, signed review gate, exact production proof, and visible without-Qloo comparison make the integration indispensable and auditable. |
-| Design | 97 | The live Qloo contribution is now visible without opening the technical audit trail. |
-| Potential Impact | 85 | Specific audience and workflow are credible, but no participant-derived impact result can be claimed yet. |
-| Quality of the Idea | 100 | The same-input anchor-only versus live-Qloo comparison demonstrates that Qloo materially changes both evidence and session strategy. |
-| **Overall** | **95.5** | Sponsor objection “Qloo is superficial” is closed. Impact evidence remains the only material scoring gap. |
+## Accepted, truthfully disclosed limitations
 
-## Red-team findings closed
+1. **Impact evidence awaits real submissions.** The study workflow is live at <https://resonance-qloo.floot.app/study>. Infrastructure is complete; results remain unpublished until 3-5 target users submit.
+2. **Some canonical signals are surprising.** `Reporter` and `Inventive` are real outputs in the complete Ella Fitzgerald + Roman Holiday result. They are retained rather than cherry-picked away, with rank/provenance and an anchor-only comparison visible.
+3. **Independent live-source reproduction requires Floot access.** The repository verifies the exact content-addressed snapshot and recorded version; a third party needs access to the Floot project to independently repeat the source fetch.
 
-- Parallel GitHub/Floot ambiguity: closed with exact production snapshot + parity.
-- “Would it work the same without Qloo?” ambiguity: closed with honest same-input anchor-only baseline and quantified delta.
-- Judge information overload: closed with progressive disclosure.
-- Weak canonical example: closed with bounded ten-case whole-output audit; Ella Fitzgerald + Roman Holiday selected.
-- Template-only session structure: closed with deterministic Qloo-driven session archetypes.
-- Human-control claim only in prose: closed with Keep / Modify / Replace and facilitator approval summary.
-- Devpost too engineering-heavy: closed with shorter judge-first version 20 description.
-- Screenshot evidence: three actual published-product captures generated by GitHub Actions.
-- Stale Phase 6 unit expectations: closed; CI #989 green.
+## Decision
 
-## Remaining non-fabricable / delivery dependencies
-
-1. **Real target-user impact evidence.** The anonymous study is live and data-collection ready at `https://resonance-qloo.floot.app/study`, but production logs currently contain 0 valid submissions. Do not claim time savings, ratings, testimonials, or participant outcomes until at least 3 complete real responses exist.
-2. **Devpost gallery transport.** Three actual published-product PNGs were captured successfully. The connected Devpost gallery API requires an out-of-band upload from a network-capable shell; the current local shell cannot resolve devpost.com. The image assets themselves are complete.
-
-## Freeze decision
-
-Do **not** freeze. The product passes the 95+ three-judge red-team threshold, but the requested plan explicitly says not to freeze and the impact study can still improve Potential Impact once real responses arrive.
+Do not freeze. Phases 4-10 are delivery-complete, while Phase 5 impact evidence remains explicitly awaiting real participants. Future real submissions may improve the impact assessment; until then, the scores above are the final honest audit record.
