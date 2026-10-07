@@ -102,11 +102,11 @@ try {
     ['canonical server', canonicalServer],
     ['production study endpoint', productionStudyEndpoint],
   ]) {
-    for (const required of ['RESONANCE_STUDY_RESPONSE','Too many study submissions','Study response did not match the anonymous validation contract']) {
+    for (const required of ['RESONANCE_STUDY_RESPONSE','Too many study submissions','Study response did not match the anonymous validation contract','feedbackWithheldFromLogs:true','receipt:input']) {
       if (!body.includes(required)) failures.push(`${name} is missing anonymous study marker: ${required}`);
     }
   }
-  for (const required of ['noindex,nofollow','Anonymous validation study','Plan it without Resonance','Do the same task with Resonance','anonymous aggregate use']) {
+  for (const required of ['noindex,nofollow','Anonymous validation study','Plan it without Resonance','Do the same task with Resonance','anonymous aggregate use','Download anonymous study receipt','withheld from server logs']) {
     if (!productionStudyPage.includes(required)) failures.push(`Production study page is missing marker: ${required}`);
   }
 } catch (error) {
@@ -147,7 +147,7 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791168430799') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791353713460') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
   if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');

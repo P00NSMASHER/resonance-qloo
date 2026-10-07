@@ -47,6 +47,6 @@ export async function handle(request:Request) {
     submittedAt:new Date().toISOString(),
   }));
 
-  const output:OutputType={accepted:true,studyVersion:STUDY_VERSION};
+  const output:OutputType={accepted:true,studyVersion:STUDY_VERSION,receipt:input};
   return json(output);
 }

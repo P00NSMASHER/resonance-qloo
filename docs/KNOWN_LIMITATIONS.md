@@ -65,6 +65,8 @@ claim participant-derived time savings, ratings, testimonials, or quotes.
 Publishable aggregates remain blocked until at least three complete eligible
 responses have been reviewed as real submissions.
 
+The public study intentionally withholds open comments from server logs. Participants receive a downloadable anonymous receipt after submission and must give it directly to the facilitator. This improves privacy but means an unattended web completion is not, by itself, a complete collected response.
+
 ## Event quotas and upstream availability
 
 Live Qloo behavior is subject to the event-issued credential, quota, rate limits, and upstream availability. Requests are bounded, rate-limited, cached where safe, and time out rather than retrying indefinitely. The per-client and aggregate application limiters are in-memory and therefore scoped to one running server process; they are not presented as a distributed quota authority across multiple horizontally scaled instances. The upstream Qloo quota remains the ultimate cross-instance limit.

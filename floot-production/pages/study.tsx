@@ -32,6 +32,7 @@ export default function StudyPage() {
   const [consent,setConsent] = useState(false);
   const [submitting,setSubmitting] = useState(false);
   const [submitted,setSubmitted] = useState(false);
+  const [receipt,setReceipt] = useState<InputType|null>(null);
   const [error,setError] = useState("");
 
   const ready = useMemo(() =>
@@ -48,10 +49,11 @@ export default function StudyPage() {
     if (!ready || !role || baselineSeconds === null || resonanceSeconds === null || wouldUse === null) return;
     setSubmitting(true); setError("");
     try {
-      await postStudyResponse({
+      const output=await postStudyResponse({
         studyVersion:STUDY_VERSION,responseId,role,baselineSeconds,resonanceSeconds,relevance,novelty,usefulness,wouldUse,
         feedback:feedback.trim(),consent:true,
       });
+      setReceipt(output.receipt);
       setSubmitted(true);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Could not submit the study response.");
@@ -60,9 +62,18 @@ export default function StudyPage() {
     }
   }
 
+  function downloadReceipt() {
+    if (!receipt) return;
+    const blob=new Blob([`${JSON.stringify(receipt)}\n`],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+    link.href=url; link.download=`resonance-study-${receipt.responseId}.json`;
+    link.click(); URL.revokeObjectURL(url);
+  }
+
   if (submitted) return <>
     <Helmet><title>Resonance validation study — thank you</title><meta name="robots" content="noindex,nofollow"/></Helmet>
-    <main className={styles.page}><section className={styles.thanks}><span>Response received</span><h1>Thank you.</h1><p>Your anonymous response was recorded for aggregate product-validation evidence. No name, email, resident/client information, or health data was requested.</p></section></main>
+    <main className={styles.page}><section className={styles.thanks}><span>Anonymous receipt ready</span><h1>Thank you.</h1><p>Your timing and rating metrics were accepted. To keep your open comment out of server logs, download this anonymous receipt and give it directly to the study facilitator. It contains only the fields you reviewed below—no name, email, network address, resident/client information, or health data.</p><Button onClick={downloadReceipt} disabled={!receipt}>Download anonymous study receipt</Button><p><small>Your response is not counted as real-user evidence until the facilitator receives and validates this receipt.</small></p></section></main>
   </>;
 
   return <>
@@ -79,7 +90,7 @@ export default function StudyPage() {
 
       <section className={styles.card}><span className={styles.step}>04 · Rate the result</span><h2>How useful was the Resonance plan?</h2><div className={styles.ratingGrid}>{[["Relevance",relevance,setRelevance],["Novelty",novelty,setNovelty],["Confidence / usefulness",usefulness,setUsefulness]].map(([label,value,setter])=><label key={label as string}><span>{label as string}</span><Select value={value ? String(value) : undefined} onValueChange={v=>(setter as (n:number)=>void)(Number(v))}><SelectTrigger><SelectValue placeholder="1–5"/></SelectTrigger><SelectContent>{[1,2,3,4,5].map(n=><SelectItem key={n} value={String(n)}>{n} — {ratingLabels[n]}</SelectItem>)}</SelectContent></Select></label>)}</div><div className={styles.useRow}><span>Would you use something like this in real planning?</span><Button variant={wouldUse===true?"primary":"outline"} onClick={()=>setWouldUse(true)}>Yes</Button><Button variant={wouldUse===false?"primary":"outline"} onClick={()=>setWouldUse(false)}>No</Button></div><label className={styles.feedback}><span>What would make this genuinely useful to you?</span><Textarea rows={5} maxLength={500} value={feedback} onChange={e=>setFeedback(e.target.value)} placeholder="Please do not include names, emails, phone numbers, resident/client details, or health information."/></label></section>
 
-      <section className={styles.card}><span className={styles.step}>05 · Anonymous aggregate use</span><h2>Consent</h2><p>Only your role category, two elapsed times, ratings, yes/no reuse intent, and the comment above will be stored in server logs for aggregate hackathon evidence. No name, email, IP address, resident/client information, or health data is intentionally recorded in the study record.</p><Button variant={consent?"primary":"outline"} aria-pressed={consent} onClick={()=>setConsent(v=>!v)}>{consent?"✓ I consent to anonymous aggregate use":"I consent to anonymous aggregate use"}</Button>{error && <div className={styles.error} role="alert">{error}</div>}<Button className={styles.submit} disabled={!ready||submitting} onClick={()=>void submit()}>{submitting?"Submitting…":"Submit anonymous study response"}</Button></section>
+      <section className={styles.card}><span className={styles.step}>05 · Anonymous aggregate use</span><h2>Consent</h2><p>Your role category, two elapsed times, ratings, and yes/no reuse intent are recorded without a raw network address. Your open comment is withheld from server logs and returned only in a downloadable anonymous receipt for you to give directly to the study facilitator. No name, email, resident/client information, or health data is requested.</p><Button variant={consent?"primary":"outline"} aria-pressed={consent} onClick={()=>setConsent(v=>!v)}>{consent?"✓ I consent to anonymous aggregate use":"I consent to anonymous aggregate use"}</Button>{error && <div className={styles.error} role="alert">{error}</div>}<Button className={styles.submit} disabled={!ready||submitting} onClick={()=>void submit()}>{submitting?"Submitting…":"Create anonymous study receipt"}</Button></section>
       <footer>Study version {STUDY_VERSION} · Cultural-engagement workflow research only · no medical advice.</footer>
     </main>
   </>;

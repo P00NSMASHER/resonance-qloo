@@ -1,7 +1,7 @@
 import { z } from "zod";
 import superjson from "superjson";
 
-export const STUDY_VERSION = "2026-10-03-v1" as const;
+export const STUDY_VERSION = "2026-10-07-v2" as const;
 export const STUDY_ROLES = [
   "activity-director",
   "activity-assistant",
@@ -30,7 +30,7 @@ export const schema = z.object({
 }).strict();
 
 export type InputType = z.infer<typeof schema>;
-export type OutputType = { accepted:true; studyVersion:typeof STUDY_VERSION };
+export type OutputType = { accepted:true; studyVersion:typeof STUDY_VERSION; receipt:InputType };
 
 export const postStudyResponse = async (body:InputType):Promise<OutputType> => {
   const validated = schema.parse(body);

@@ -55,6 +55,8 @@ Use `docs/impact-study-responses.csv`. Participant IDs should be anonymous label
 
 Never fabricate, infer, or backfill missing responses. Never convert a blank response into a positive response.
 
+For the public `/study` workflow, download the anonymous JSON receipt on the final screen and give it directly to the facilitator. Open feedback is never written to production logs. The facilitator must receive and validate the complete receipt before counting the response. One receipt can be analyzed directly; multiple receipts can be combined as a JSON array or JSONL without changing their contents.
+
 ## Analysis
 
 Run:

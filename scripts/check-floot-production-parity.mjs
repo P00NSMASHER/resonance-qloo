@@ -21,7 +21,7 @@ const gitBlobSha = body => {
 };
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791168430799') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791353713460') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
@@ -130,11 +130,11 @@ for (const needle of ['@media(max-width:1000px)','@media(max-width:650px)','.evi
 
 
 requireBoth('anonymous study route', prodStudyEndpoint,
-  ['RESONANCE_STUDY_RESPONSE','studyVersion:STUDY_VERSION','Too many study submissions'],
+  ['RESONANCE_STUDY_RESPONSE','studyVersion:STUDY_VERSION','Too many study submissions','feedbackWithheldFromLogs:true','receipt:input'],
   canonicalServer,
-  ['RESONANCE_STUDY_RESPONSE','studyVersion:input.studyVersion','Too many study submissions']);
+  ['RESONANCE_STUDY_RESPONSE','studyVersion:input.studyVersion','Too many study submissions','feedbackWithheldFromLogs:true','receipt:input']);
 
-for (const needle of ['noindex,nofollow','Anonymous validation study','Plan it without Resonance','Do the same task with Resonance','anonymous aggregate use']) {
+for (const needle of ['noindex,nofollow','Anonymous validation study','Plan it without Resonance','Do the same task with Resonance','anonymous aggregate use','Download anonymous study receipt','withheld from server logs']) {
   if (!prodStudyPage.includes(needle)) failures.push(`Production active-study page missing integrity marker: ${needle}`);
 }
 if (!canonicalServer.includes("url.pathname === '/api/study-response'")) failures.push('Canonical server is missing the active study-response route.');

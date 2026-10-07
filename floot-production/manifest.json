@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791168430799",
+  "flootProjectVersion": "1791353713460",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -94,13 +94,13 @@
     },
     {
       "path": "endpoints/study-response_POST.schema.ts",
-      "gitBlobSha": "3a1d138b27ac3e93f00d9add21a4e28744055d02",
-      "sourceCharCount": 1619
+      "gitBlobSha": "1ebd48e935caad856ef8795d7afb3501b0b40fcd",
+      "sourceCharCount": 1638
     },
     {
       "path": "endpoints/study-response_POST.ts",
-      "gitBlobSha": "934d726612ab115e4c80689e06b64c44e10ac839",
-      "sourceCharCount": 1847
+      "gitBlobSha": "41db9d37911d999c267b17a217e78bf5a0a92cac",
+      "sourceCharCount": 1861
     },
     {
       "path": "helpers/_publicConfigs.tsx",
@@ -139,8 +139,8 @@
     },
     {
       "path": "pages/study.tsx",
-      "gitBlobSha": "e6cfb4b4f93635f67d2d64e679d2992d4122f455",
-      "sourceCharCount": 8749
+      "gitBlobSha": "f85ea9ae599f9e5a5f82212f20fe02f35cc1fa53",
+      "sourceCharCount": 9650
     },
     {
       "path": "static/__dev/dependencies.json",
@@ -149,10 +149,10 @@
     }
   ],
   "liveVerification": {
-    "verifiedDate": "2026-10-04",
-    "flootProjectVersion": "1791168430799",
+    "verifiedDate": "2026-10-07",
+    "flootProjectVersion": "1791353713460",
     "exactFileCount": 28,
-    "verificationMethod": "All 28 manifested runtime files were checked against live Floot version 1791168430799; unchanged files retain the prior exact capture and changed UTF-8 files were written literally from this snapshot and verified by Floot typecheck.",
+    "verificationMethod": "All 28 manifested runtime files were checked against live Floot version 1791353713460; unchanged files retain the prior exact capture and the three changed study files were written literally from this snapshot and verified by Floot typecheck.",
     "directComparisonStatus": "28/28 exact",
     "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
   }

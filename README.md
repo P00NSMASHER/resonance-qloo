@@ -125,6 +125,7 @@ The real event key must never be committed or pasted into a public artifact.
 - Public live-Qloo execution is verified end-to-end for both the exact-match path and the non-exact review-gated path. The exact-match artifact records 2 resolved Qloo entities, 8 returned affinities, 4 selected signals, and a 4-step `qloo-live` plan. The review-gated artifact records HTTP 409 before taste analysis, one signed confirmed top-result match, then a successful HTTP 200 `qloo-live` plan with 3 resolved entities.
 - The exact judge-facing Floot runtime source is committed under `floot-production/` with project version `1791168430799`, content-addressed file identities, and `npm run floot:production:parity` to verify Qloo/review/cache/provenance/UI/study invariants against the canonical implementation.
 - Formal submission is complete, and the current judge-readiness checks are verified: live Qloo evidence covers both exact-match and signed review-gated flows, and public Floot deployment parity passes. The anonymous target-user validation study is open and data-collection ready, but currently has 0 valid responses; no participant-derived outcomes are claimed.
+- The study’s open comment is never written to production logs. Each participant receives a complete anonymous JSON receipt to hand directly to the facilitator; only received and validated receipts can enter the analysis workflow.
 
 ## Evidence and reproducibility
 

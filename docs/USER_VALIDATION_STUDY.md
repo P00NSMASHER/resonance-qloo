@@ -33,7 +33,9 @@ The study measures:
 
 ## Privacy / integrity
 
-The study requests only a role category, elapsed times, ratings, reuse intent, a short comment, and explicit consent. It instructs participants not to provide names, contact information, resident/client information, or health information. The schema rejects likely email addresses and phone numbers.
+The study requests only a role category, elapsed times, ratings, reuse intent, a short comment, and explicit consent. It instructs participants not to provide names, contact information, resident/client information, or health information. The schema rejects likely email addresses and phone numbers. Timing/rating metrics are logged without a raw network address; the open comment is withheld from server logs and returned to the participant in a downloadable anonymous JSON receipt.
+
+For a response to count, the participant gives that receipt directly to the study facilitator. The facilitator stores it privately, reviews eligibility and content, and passes the receipt file to `npm run study:analyze -- <receipt-or-jsonl-file>`. A successful web request without delivery and review of the receipt is not counted as evidence.
 
 The participant-facing page is `noindex,nofollow`. Responses are rate-limited. No participant response is considered evidence until it is reviewed as a real eligible response.
 
@@ -45,6 +47,6 @@ The deterministic aggregation script must remain fail-closed below that threshol
 
 ## Recruitment
 
-No automated or unsolicited recruitment is authorized by this protocol. The study link can be shared directly with willing eligible participants. Any external outreach should be deliberate and user-approved.
+No automated or unsolicited recruitment is authorized by this protocol. The study link can be shared directly with willing eligible participants. Because the privacy-preserving open comment is participant-controlled, sessions should be supervised or followed by a deliberate receipt handoff. Any external outreach should be deliberate and user-approved.
 
 This file is the source of truth for Phase 5 status. Until real responses exist, Phase 5 remains **data-collection ready but not evidence-complete**.

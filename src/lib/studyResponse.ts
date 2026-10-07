@@ -1,4 +1,4 @@
-export const STUDY_VERSION = '2026-10-03-v1';
+export const STUDY_VERSION = '2026-10-07-v2';
 
 export const STUDY_ROLES = [
   'activity-director',

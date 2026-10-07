@@ -28,6 +28,8 @@ jobs:
         run: npm run security:secrets:selftest
       - name: Qloo secret leak scan
         run: npm run security:secrets:check
+      - name: Production dependency audit
+        run: npm run security:dependencies:check
       - name: Exact Floot production source parity
         run: npm run floot:production:parity
       - name: Public build receipt

@@ -12,13 +12,13 @@ The non-exact path is also fully verified in production: `Italian food` resolves
 
 ## Canonical demo selection
 
-Ten complete live Qloo outputs were evaluated without removing awkward returned signals. **Ella Fitzgerald + Roman Holiday** scored highest at **95.0/100** because both anchors resolved exactly and the complete eight-signal set stayed legible without filtering: Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening. The full audit remains public in [DEMO_CASE_AUDIT.json](DEMO_CASE_AUDIT.json).
+The initial ten-case audit ranked **Ella Fitzgerald + Roman Holiday** highest at **95.0/100**. A later preregistered 12-candidate sweep used three isolated reviewers and a stricter 98/100 replacement gate; no challenger cleared it, so the existing example was retained rather than declared a new winner. Every completed output and the unfavorable blinded comparison remain public in [agent-evaluation](agent-evaluation/). The canonical run still exposes all eight signals without filtering: Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening.
 
 ## 60-second evaluation path
 
 1. Open the live app: https://resonance-qloo.floot.app
 2. Confirm the header reports **Live Qloo verified**.
-3. Use the canonical example already loaded: `Ella Fitzgerald` + `Roman Holiday`, 30 minutes, calm, small group. It was selected by a transparent ten-case whole-output audit rather than by hiding individual Qloo signals. See [DEMO_CASE_AUDIT.md](DEMO_CASE_AUDIT.md) and [CANONICAL_DEMO_EVIDENCE.json](CANONICAL_DEMO_EVIDENCE.json).
+3. Use the canonical example already loaded: `Ella Fitzgerald` + `Roman Holiday`, 30 minutes, calm, small group. It was retained after a transparent initial ten-case audit and stricter preregistered 12-candidate sweep, without hiding individual Qloo signals. See [CANONICAL_SWEEP_RESULT.md](agent-evaluation/CANONICAL_SWEEP_RESULT.md) and [CANONICAL_DEMO_EVIDENCE.json](CANONICAL_DEMO_EVIDENCE.json).
 4. Use **Preview with example data** only as the explicitly labeled **ILLUSTRATIVE DEMO** fallback.
 5. The default result intentionally shows only three concepts: **Your favorites → What Qloo discovered → Your session**.
 6. Read **How Qloo changed this session**. The left side is a deterministic anchor-only baseline that can use only the submitted favorites/category hints; the right side is grounded in the actual Qloo taste signals. The metrics quantify favorites supplied, signals returned, signals selected, activities influenced, and selected discoveries not literally named in the inputs.
