@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "2edbcfe5448f575029e02c81b301acb2be926b63",
+  "sourceCommit": "64b28dc86800cb4b16bc5eeb58b7b0db440584e6",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791168430799",
-  "productionManifestSha256": "abb9cdb23f539e7ebcdc0a5d626fe8d5f68c87bd8ccef415cf60b6b2eb426324",
+  "flootProjectVersion": "1791353713460",
+  "productionManifestSha256": "29d8713fcbe454f42acf3c7403d9618e753376ad2645efd4a48cf750641ae8a3",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-05T02:52:56.3165028Z",
+  "builtAt": "2026-10-07T06:19:19.2895304Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "The source commit contains the implementation and three current screenshots. This receipt is intentionally added in a following commit so it can bind an immutable source SHA and completed gallery workflow run."
+  "note": "The source commit contains the live study-receipt implementation and preserves the same three current judge screenshots. The successful gallery run remains applicable because the judge flow and gallery files did not change; this following commit binds the immutable source SHA and refreshed exact Floot manifest."
 }
