@@ -94,6 +94,27 @@ function anchorTypeUrn(type?: string) {
   return type && type !== "any" ? map[type] : undefined;
 }
 
+// Deterministic facilitation instructions based on a REAL selected Qloo tag.
+// These are preparation suggestions, never claims about an individual's tastes.
+function activityCue(tag: string) {
+  const label=tag.trim().toLocaleLowerCase("en-US");
+  let instruction:string;
+  if (/\b(jazz|swing|blues|oldies|rock|piano|instrumental|soundtrack|music|musical|broadway|vocal|folk|pop)\b/.test(label)) {
+    instruction="Offer a short, appropriately licensed music excerpt, or describe the rhythm if audio is unavailable. Ask: “Would you like another sound like this, or something different?”";
+  } else if (/\b(60s|1960s|70s|1970s|80s|1980s|century|history)\b/.test(label)) {
+    instruction="Show two clear pictures of objects or styles from that era, or briefly describe them. Ask: “Which detail catches your eye?” Do not assume personal memories of the period.";
+  } else if (/\b(art|design|painting|fashion|color|visual)\b/.test(label)) {
+    instruction="Show two high-contrast pictures or simple sketches. Ask: “Which color, shape, or detail would you choose?” Offer describing the images aloud.";
+  } else if (/\b(biograph|memoir|autobiograph|nonfiction|literature|poetry|book)\b/.test(label)) {
+    instruction="Share a two-sentence, fact-checked introduction to a relevant artist or story. Ask: “Would you rather hear a little more or look at a picture?”";
+  } else if (/\b(romance|romantic)\b/.test(label)) {
+    instruction="Describe a gentle moment of connection in a film or story. Ask: “What makes that scene feel welcoming?” Avoid pressing anyone for personal memories.";
+  } else {
+    instruction="Offer a clear visual or a two-sentence example related to “"+tag+".” Ask: “Which of these two details would you like to explore?”";
+  }
+  return "Facilitator cue: "+instruction+" Invite spoken or nonverbal answers, and allow anyone to pass.";
+}
+
 export const qlooSessionLogic = {
   contractVersion:"2026-10-02.review-origin-v1",
   apiOrigin:"https://hackathon.api.qloo.com",
@@ -242,7 +263,7 @@ export const qlooSessionLogic = {
     const energyLine=energy==="active"?"invite movement, clapping, or choosing between options":energy==="social"?"invite easy back-and-forth conversation":"keep the pace gentle and low-pressure";
     const settingLine=setting==="one-on-one"?"for one person and one companion":setting==="community"?"for a room where people can join or step out freely":"for a small group with room for individual responses";
     const archetype=qlooSessionLogic.selectSessionArchetype(tags,energy,setting);
-    const item=(title:string,duration:string,action:string,why:string,anchorName:string|undefined,affinityLabel:string)=>({title,duration,action,why,...(anchorName?{anchorName}:{}),affinityLabel});
+    const item=(title:string,duration:string,action:string,why:string,anchorName:string|undefined,affinityLabel:string)=>({title,duration,action:action+" "+activityCue(affinityLabel),why,...(anchorName?{anchorName}:{}),affinityLabel});
 
     if(archetype==="Sensory & social") return [
       item("Sensory welcome",durations[0],firstAnchor?`Start with “${firstAnchor}” and a concrete sensory cue connected to “${a}”; ${energyLine}.`:`Start with a concrete sensory cue connected to “${a}”; ${energyLine}.`,`“${a}” makes the opening tangible rather than purely conversational.`,firstAnchor,a),

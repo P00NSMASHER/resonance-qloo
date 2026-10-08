@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "89ebb199cf5d00c978914761d769881acb0f5d89",
+  "sourceCommit": "a86f1eee24829a76489a9c9bb6750b04358369e1",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791476036099",
-  "productionManifestSha256": "4b1057e0a6c981f6b3a56470789dcf07cdb7dd0c5b7fd8c5a9ec14e6ff944aa2",
+  "flootProjectVersion": "1791478899656",
+  "productionManifestSha256": "5458ec6da4f0582bdc9d651bf6550732d9ab468f43f74ff3873d03f3ee5fda68",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-08T16:54:54.885Z",
+  "builtAt": "2026-10-08T17:06:21.430Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "After candidate CI #1015 succeeded, the genre-filtered Floot app was published and independently verified HTTP 200 with qloo-live provenance. The public gallery workflow was re-run successfully on October 8 against the new deployment; refreshed images are retained as a GitHub Actions artifact. Existing checked-in PNGs are historical. This sourceCommit captures the candidate code and updated historical-evidence disclosures immediately before this receipt commit."
+  "note": "Mission 12 activity prompts: exact Floot runtime version 1791478899656, 28-file auditable source snapshot, public HTTP 200 qloo-live evidence, and successful refreshed judge gallery job 113437345951 (artifact 11565474037). Historical checked-in gallery PNGs have not been replaced. sourceCommit is the reviewed feature/docs head immediately before this receipt update. Real-user study outcomes remain unverified."
 }

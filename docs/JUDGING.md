@@ -14,6 +14,10 @@ The non-exact path is also fully verified in production: `Italian food` resolves
 
 The initial ten-case audit ranked **Ella Fitzgerald + Roman Holiday** highest at **95.0/100**. A later preregistered 12-candidate sweep used three isolated reviewers and a stricter 98/100 replacement gate; no challenger cleared it, so the existing example was retained rather than declared a new winner. Every completed output and the unfavorable blinded comparison remain public in [agent-evaluation](agent-evaluation/). That eight-signal response (Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening) belongs to the **historical unfiltered audit**. The current live implementation separately requests Qloo's music and media genre families, interleaves their returned ranked evidence, and deliberately does not calculate a combined confidence average across independently ranked tag families. A current live response will therefore differ from the historical audit artifact.
 
+## What's new in the latest activity plan
+
+The live four-step plan includes a **Facilitator cue** within each activity. It names a simple stimulus or preparation option, supplies a literal question, and gives an opt-out or nonverbal-response path. The Qloo tag label, ranking, session duration, and provenance remain unchanged. The cue is author-written session guidance, not a Qloo score or individualized prediction. This change was verified against a live Beatles/Frank Sinatra Qloo response and regression-tested in both application implementations, but has not yet demonstrated superior performance in a real-user study.
+
 ## 60-second evaluation path
 
 1. Open the live app: https://resonance-qloo.floot.app

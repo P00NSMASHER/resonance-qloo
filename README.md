@@ -29,6 +29,12 @@ The archived judge path:
 
 Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent 30-, 45-, or 60-minute engagement plan for senior-living activity teams and families.
 
+## Facilitator-ready activity instructions
+
+The current live Qloo agent turns each selected cultural signal into a concrete optional facilitator cue: a practical material or audio alternative, an exact question to ask, and permission to answer verbally, nonverbally, or not at all. For example, soundtrack suggests a short properly licensed audio excerpt; Art suggests two high-contrast pictures; a 60s signal suggests period imagery without assuming that the person lived through that decade.
+
+These deterministic activity suggestions are **not** Qloo assertions about a participant or evidence that the suggested activities improve outcomes. Staff must choose appropriate materials and retain final control. Historical benchmark findings and zero validated human study responses are not rewritten.
+
 ## Why Qloo is essential
 
 A generic LLM can generate plausible activities, but it cannot reliably ground those ideas in structured cross-category cultural affinities. Resonance uses Qloo evidence as the core signal, then runs an explicit agent loop:
