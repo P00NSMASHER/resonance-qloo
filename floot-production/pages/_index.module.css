@@ -67,3 +67,36 @@
 @media(max-width:650px){.page{padding:0 16px 50px}.nav{min-height:80px;padding:12px 0;align-items:flex-start;gap:10px}.brand{gap:8px}.brandMark{width:39px;height:39px;flex-basis:39px;border-radius:12px}.brandName{font-size:20px}.brandName small{font-size:7px;letter-spacing:.085em}.navRight{gap:7px;max-width:49%;align-items:flex-end}.navRight>span{font-size:10px}.hero{padding:42px 0 30px;gap:24px}.eyebrow{font-size:10px;letter-spacing:.09em}.hero h1{font-size:clamp(45px,12vw,62px);margin:16px 0 17px;line-height:1.045}.heroCopy{font-size:15px;line-height:1.65}.heroActions{margin-top:22px;gap:12px}.heroCTA{width:100%;min-height:52px}.heroAside{max-width:none;text-align:center;width:100%}.proofRow{margin-top:20px;gap:8px 14px;font-size:10px}.heroVisual{min-height:235px;aspect-ratio:1.24;border-radius:19px}.heroCaption{bottom:10px;left:10px;right:10px;padding:10px 12px;border-radius:10px}.heroCaption strong{font-size:15px}.heroCaption span{font-size:8px}.formPanel{padding:20px 16px}.formPanel h2{font-size:29px}.workspace{gap:14px}.tracePanel ol{grid-template-columns:1fr 1fr;gap:15px}.tracePanel h3{font-size:26px}.selectGrid{grid-template-columns:1fr}.actionRow{grid-template-columns:1fr}.runButton{width:100%}.proofRow span{max-width:100%}}
 @media(prefers-reduced-motion:reduce){.heroCTA,.formPanel button,.results button{transition:none!important;transform:none!important}}
 @media print{.heroVisual,.heroActions,.heroAside{display:none!important}.hero{padding:0!important}.nav{height:auto!important}.page{background:white!important;color:#000!important}}
+/* Cultural Atlas finishing pass: extend identity below the first fold. */
+.journeyQloo .journeyNumber{background:#137c78;color:#fff}
+.journeyQloo small{color:#4d6371!important}
+.journeyQloo .journeyChips span{background:#176a6b;border-color:#176a6b;color:#fff}
+.journeyChips span{color:#1a4e5f}
+.withQlooCard{background:#14243b!important;border-color:#14243b!important;color:#fff!important}
+.withQlooCard>span{color:#a8e7dc!important}
+.withQlooCard p{color:#ebf5f3!important}
+.deltaSignals span{background:#1c555f;border-color:#528b8c;color:#fff}
+.deltaMetrics strong{color:#14243b}
+.qlooDelta{background:#f8f4ed;border-color:#e9dfd3}
+.qlooDelta>header>b,.sectionHeading>b{color:#ab634c}
+.sessionSection .planCard{border-color:#dce6e3;box-shadow:0 8px 24px rgba(20,36,59,.05)}
+.sessionSection .planCard h3{color:#14243b}
+.sessionSignal{background:#e7f2ef!important;color:#156d69!important;border-color:#c7e5df!important}
+.archetypeLine strong{color:#14243b}
+.activitySupport{background:#f3f7f5;border-color:#deebe7}
+.activitySupport b,.facilitatorControls button:hover,.decisionBadge{color:#126963}
+.facilitatorControls button:hover{background:#e7f2ef;border-color:#137c78}
+.activityEditor button{background:#14243b}
+.approvalSummary{background:#e7f2ef;border-color:#beded5;color:#34545e}
+.approvalSummary strong{color:#14243b}
+.approvalSummary b{color:#126963}
+.impactFlow span{background:#173e4b;border-color:#3d747d}
+.impactFlow strong{color:#fff}
+.affinitySelected,.signalCount{background:#eaf5f2;border-color:#c7e5df}
+.affinitySelected small{color:#156b69}
+.metrics b{color:#14243b}
+.auditTrail>summary{background:#eff5f3;color:#14243b}
+@media print{.withQlooCard{background:#fff!important;color:#000!important;border:1px solid #777!important}.withQlooCard p{color:#000!important}.withQlooCard>span{color:#000!important}}
+
+
+
