@@ -12,3 +12,46 @@
 .activitySupport{display:grid;gap:7px;margin:11px 0;font-size:12px;line-height:1.45;color:#526159}.activitySupport span{display:grid;gap:2px}.activitySupport b{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#7a5a42}.sessionSignal small{display:block;margin-top:5px;font-size:11px;line-height:1.4;font-weight:500;color:#4f6558}
 @media(max-width:600px){.activityEditor button{min-height:44px}.activitySupport b{font-size:11px}.resultActions{grid-template-columns:1fr}}
 @media print{.facilitatorControls,.activityEditor,.decisionBadge{display:none!important}}
+
+
+/* Resonance 2026 Cultural Atlas brand · portable version */
+body{background:#faf7f1;color:#14243b}
+.page{max-width:1670px;padding:0 clamp(18px,4.6vw,84px) 75px;background:radial-gradient(circle at 92% 0%,rgba(19,124,120,.10),transparent 34%),#faf7f1}
+.page>header{min-height:92px;height:auto;padding:16px 0;border-color:rgba(20,36,59,.14)}
+.brand{display:inline-flex;gap:12px;color:#14243b;align-items:center;text-decoration:none;font-size:23px;letter-spacing:-.04em}
+.brand:hover{color:#137c78}
+.brandLogo{display:block;width:48px;height:48px;border-radius:15px;overflow:hidden;background:#14243b;box-shadow:0 6px 20px rgba(20,36,59,.16)}
+.brand .brandLogo{width:48px;height:48px;background:#14243b;border-radius:15px;display:block}
+.brandLogo img{display:block;width:48px;height:48px;object-fit:cover}
+.brand .brandName{width:auto;height:auto;border-radius:0;background:none;color:inherit;font-family:Inter,ui-sans-serif,system-ui,sans-serif;display:grid;place-items:initial;gap:4px;font-size:23px;font-weight:800}
+.brandName small{font-size:8px;color:#53736e;letter-spacing:.14em;text-transform:uppercase;font-weight:740}
+.hero{padding:clamp(40px,6vw,86px) 0 clamp(36px,5vw,68px);max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.03fr);align-items:center;gap:clamp(25px,5vw,90px)}
+.heroContent{min-width:0}
+.hero .eyebrow{font-size:11px;color:#137c78;letter-spacing:.13em}
+.hero h1{font-size:clamp(50px,5.8vw,86px);font-weight:500;letter-spacing:-.06em;line-height:1.02;margin:18px 0 23px;text-wrap:balance}
+.hero h1 em{font-style:italic;color:#137c78}
+.hero p{font-size:clamp(15px,1.24vw,18px);color:#536477;max-width:595px;line-height:1.75;margin:0}
+.heroActions{margin-top:26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.heroCta{min-height:52px;padding:14px 20px;background:#14243b;color:#fff!important;display:inline-flex;align-items:center;gap:12px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:760;box-shadow:0 12px 24px rgba(20,36,59,.17)}
+.heroCta:hover{background:#126864;color:#fff}
+.heroAside{font-size:11px;line-height:1.45;color:#637681;max-width:195px}
+.heroProof{display:flex;flex-wrap:wrap;gap:9px 18px;margin-top:30px;color:#51636f;font-size:11px;font-weight:650}
+.heroProof span:before{content:"";display:inline-block;width:7px;height:7px;background:#137c78;border-radius:50%;margin-right:7px}
+.heroVisual{position:relative;min-height:350px;aspect-ratio:1.12;overflow:hidden;border-radius:29px;background:#e7ded0;box-shadow:0 22px 64px rgba(20,36,59,.12)}
+.heroVisual>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% center}
+.heroCaption{position:absolute;left:20px;right:20px;bottom:20px;padding:15px 18px;border-radius:14px;background:rgba(20,36,59,.9);color:white;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.heroCaption span{font-size:9px;font-weight:800;letter-spacing:.15em;color:#a4e6dc}
+.heroCaption strong{font:500 17px Georgia,serif}
+.workspace{scroll-margin-top:20px;gap:20px}
+.card,.results,.impact{background:#fffefa;border-color:#e0e6e3;box-shadow:0 12px 45px rgba(20,36,59,.06)}
+.trace{background:linear-gradient(155deg,#14243b,#173e4b 75%,#16635e)}
+.trace li{color:#d1e4e3}
+button:not(.secondary){background:#137c78}
+button:not(.secondary):hover:not(:disabled){background:#0b625f}
+button:focus-visible,.heroCta:focus-visible,.brand:focus-visible{outline:3px solid #137c78;outline-offset:3px}
+.inputs input:focus-visible,select:focus-visible{outline-color:#137c78}
+.sessionSignal,.approvalSummary{background:#e8f5f1;border-color:#b9ded5}
+@media(max-width:1050px){.hero{grid-template-columns:1fr;gap:25px}.heroVisual{aspect-ratio:16/9;min-height:280px}.hero h1{max-width:720px}}
+@media(max-width:600px){.page{padding:0 16px 50px}.page>header{min-height:78px;padding:12px 0}.brand .brandName{font-size:19px}.brandLogo,.brand .brandLogo,.brandLogo img{width:40px;height:40px}.brandName small{font-size:7px;letter-spacing:.075em}.status{font-size:10px;max-width:40%}.hero{padding:38px 0 30px;gap:22px}.hero h1{font-size:clamp(45px,12vw,61px)}.hero p{font-size:15px;line-height:1.65}.heroCta{width:100%;justify-content:center}.heroAside{text-align:center;max-width:none;width:100%}.heroVisual{min-height:225px;aspect-ratio:1.24;border-radius:19px}.heroCaption{left:10px;right:10px;bottom:10px;padding:10px 12px}.heroCaption strong{font-size:15px}.workspace{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.heroCta{transition:none!important}}
+@media print{.heroVisual,.heroActions,.heroAside{display:none!important}.hero{padding:0!important}.page{background:#fff!important}}
