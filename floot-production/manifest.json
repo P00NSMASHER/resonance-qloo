@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791476036099",
+  "flootProjectVersion": "1791478899656",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -109,8 +109,8 @@
     },
     {
       "path": "helpers/qlooSessionLogic.tsx",
-      "gitBlobSha": "6255208a12277725890d824e8422dfda862947f4",
-      "sourceCharCount": 15236
+      "gitBlobSha": "646cda5a6c67bf48c3f11c63c75b34fcaab06125",
+      "sourceCharCount": 17132
     },
     {
       "path": "pages/_index.module.css",
@@ -150,10 +150,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-08",
-    "flootProjectVersion": "1791476036099",
+    "flootProjectVersion": "1791478899656",
     "exactFileCount": 28,
-    "verificationMethod": "All 28 runtime files reviewed against current Floot development snapshot: 26 unchanged content-addressed runtime files, 2 byte-copied modified recommendation files. Long index page checked in five 100-line chunks; line-output artifacts normalized without weakening Git blob checks. Exact snapshots are independently hash-checked in CI.",
+    "verificationMethod": "One modified shared Qloo runtime file read completely from Floot version 1791478899656 and copied byte-for-byte. The other 27 unchanged manifested files retain their previously verified content-addressed snapshots, including the complete main-page chunk inspection from the prior release; hashes are checked independently in CI.",
     "directComparisonStatus": "28/28 exact",
-    "manifestBlobStatus": "28/28 manifest hashes match current recorded runtime snapshots; CI to validate independently"
+    "manifestBlobStatus": "28/28 manifest hashes bound to snapshot blobs; CI verifies independently"
   }
 }
