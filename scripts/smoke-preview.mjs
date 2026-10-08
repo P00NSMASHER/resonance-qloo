@@ -90,6 +90,7 @@ async function startMockQloo(tls) {
   let probeCalls = 0;
   let searchCalls = 0;
   let insightCalls = 0;
+  const insightTagTypes = [];
   const server = createHttpsServer({ key:tls.key, cert:tls.cert }, (req, res) => {
     const url = new URL(req.url || '/', 'https://localhost');
     const send = (status, body) => {
@@ -127,6 +128,7 @@ async function startMockQloo(tls) {
 
     if (url.pathname === '/v2/insights') {
       insightCalls += 1;
+      insightTagTypes.push(url.searchParams.get('filter.tag.types'));
       send(200, {
         results:{
           tags:[
@@ -157,6 +159,7 @@ async function startMockQloo(tls) {
     probeCalls:() => probeCalls,
     searchCalls:() => searchCalls,
     insightCalls:() => insightCalls,
+    insightTagTypes:() => insightTagTypes.slice(),
   };
 }
 
@@ -407,8 +410,10 @@ try {
     if (mockQloo.searchCalls() !== 2) {
       throw new Error(`Confirmation should reuse cached Qloo resolutions; got ${mockQloo.searchCalls()} total search calls.`);
     }
-    if (mockQloo.insightCalls() !== 1) {
-      throw new Error(`Expected exactly one taste-analysis call after confirmation, got ${mockQloo.insightCalls()}.`);
+    if (mockQloo.insightCalls() !== 2 ||
+        mockQloo.insightTagTypes().sort().join('|') !==
+        ['urn:tag:genre:media','urn:tag:genre:music'].join('|')) {
+      throw new Error(`Expected exactly two distinct filtered genre requests only after signed confirmation; got ${JSON.stringify(mockQloo.insightTagTypes())}.`);
     }
     if (
       confirmedBody.provenance?.source !== 'qloo-live' ||

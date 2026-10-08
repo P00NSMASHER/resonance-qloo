@@ -35,6 +35,7 @@ export function orchestrateSession(
   setting: string,
   qlooExplainability: QlooExplainabilitySummary = { resultCount:0, aggregateAvailable:false },
   durationMinutes = 45,
+  rankedGenreFamilies = false,
 ): AgentSession {
   if (resolvedAnchors.length < 2 || affinities.length < 3) {
     throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
@@ -44,7 +45,7 @@ export function orchestrateSession(
     .filter((x): x is Affinity & { score:number } => x.score !== null && Number.isFinite(x.score))
     .sort((a, b) => b.score - a.score);
 
-  const usingScores = scored.length >= 3;
+  const usingScores = !rankedGenreFamilies && scored.length >= 3;
   const selected = (usingScores ? scored : [...affinities].sort((a,b) => a.rank - b.rank)).slice(0, 4);
   const meanNormalizedScore = usingScores
     ? scored.slice(0, 4).reduce((sum, x) => sum + x.score, 0) / scored.slice(0, 4).length
@@ -95,9 +96,11 @@ export function orchestrateSession(
       {
         stage: 'evaluate',
         status: 'ok',
-        detail: usingScores
-          ? `Selected ${selected.length} highest-scoring affinities from ${affinities.length} returned signals; mean normalized score ${Math.round((meanNormalizedScore ?? 0) * 100)}%.`
-          : `Selected the first ${selected.length} of ${affinities.length} tags from Qloo's affinity-ranked result order. No numeric score was invented because this response did not provide one.`,
+        detail: rankedGenreFamilies
+          ? `Selected ${selected.length} Qloo-ranked genre signals across activity-relevant families. Category rankings are interleaved without comparing their independent numeric scores globally.`
+          : usingScores
+            ? `Selected ${selected.length} highest-scoring affinities from ${affinities.length} returned signals; mean normalized score ${Math.round((meanNormalizedScore ?? 0) * 100)}%.`
+            : `Selected the first ${selected.length} of ${affinities.length} tags from Qloo's affinity-ranked result order. No numeric score was invented because this response did not provide one.`,
       },
       {
         stage: 'compose',

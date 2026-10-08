@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "64b28dc86800cb4b16bc5eeb58b7b0db440584e6",
+  "sourceCommit": "89ebb199cf5d00c978914761d769881acb0f5d89",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791353713460",
-  "productionManifestSha256": "29d8713fcbe454f42acf3c7403d9618e753376ad2645efd4a48cf750641ae8a3",
+  "flootProjectVersion": "1791476036099",
+  "productionManifestSha256": "4b1057e0a6c981f6b3a56470789dcf07cdb7dd0c5b7fd8c5a9ec14e6ff944aa2",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-07T06:19:19.2895304Z",
+  "builtAt": "2026-10-08T16:54:54.885Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "The source commit contains the live study-receipt implementation and preserves the same three current judge screenshots. The successful gallery run remains applicable because the judge flow and gallery files did not change; this following commit binds the immutable source SHA and refreshed exact Floot manifest."
+  "note": "After candidate CI #1015 succeeded, the genre-filtered Floot app was published and independently verified HTTP 200 with qloo-live provenance. The public gallery workflow was re-run successfully on October 8 against the new deployment; refreshed images are retained as a GitHub Actions artifact. Existing checked-in PNGs are historical. This sourceCommit captures the candidate code and updated historical-evidence disclosures immediately before this receipt commit."
 }

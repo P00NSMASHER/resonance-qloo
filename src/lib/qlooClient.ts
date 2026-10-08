@@ -80,21 +80,40 @@ export class QlooClient {
     return this.request('search', url);
   }
 
-  async tasteAnalysis(entityIds: string[]) {
-    const buildUrl = (includeExplainability: boolean) => {
-      const url = new URL('/v2/insights', this.baseUrl);
-      url.searchParams.set('filter.type', 'urn:tag');
-      url.searchParams.set('signal.interests.entities', entityIds.join(','));
-      url.searchParams.set('take', '8');
-      if (includeExplainability) url.searchParams.set('feature.explainability', 'true');
-      return url;
+  async tasteAnalysis(entityIds: string[], activityGenres = false) {
+    const requestFamily = async (tagType?: string) => {
+      const buildUrl = (includeExplainability: boolean) => {
+        const url = new URL('/v2/insights', this.baseUrl);
+        url.searchParams.set('filter.type', 'urn:tag');
+        if (tagType) url.searchParams.set('filter.tag.types', tagType);
+        url.searchParams.set('signal.interests.entities', entityIds.join(','));
+        url.searchParams.set('take', '8');
+        if (includeExplainability) url.searchParams.set('feature.explainability', 'true');
+        return url;
+      };
+      try {
+        return await this.request('insights', buildUrl(true));
+      } catch (error) {
+        if (!(error instanceof QlooHttpError) || !error.explainabilityUnsupported) throw error;
+        return this.request('insights', buildUrl(false));
+      }
     };
 
-    try {
-      return await this.request('insights', buildUrl(true));
-    } catch (error) {
-      if (!(error instanceof QlooHttpError) || !error.explainabilityUnsupported) throw error;
-      return this.request('insights', buildUrl(false));
+    // Preserve the unfiltered contract for legacy callers and offline fixture
+    // tests. Real cultural sessions explicitly request Qloo's validated
+    // activity-relevant genre families instead of generic star/price tags.
+    if (!activityGenres) return requestFamily();
+    const genres = ['urn:tag:genre:music', 'urn:tag:genre:media'];
+    const settled = await Promise.allSettled(genres.map(requestFamily));
+    const genreResults = settled.flatMap(result =>
+      result.status === 'fulfilled' ? [result.value] : []
+    );
+    if (!genreResults.length) {
+      const failed = settled.find(
+        (result): result is PromiseRejectedResult => result.status === 'rejected'
+      );
+      throw failed?.reason ?? new Error('QLOO_EVIDENCE_TOO_SPARSE');
     }
+    return { genreResults };
   }
 }

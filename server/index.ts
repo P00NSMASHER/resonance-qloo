@@ -225,7 +225,7 @@ async function handleRecommend(req: import('node:http').IncomingMessage, res: im
       },
       tasteAnalysis: (entityIds: string[]) => {
         const tasteKey = qlooTasteCacheKey(credentialFingerprint, entityIds);
-        return tasteCache.getOrLoad(tasteKey, () => qloo.tasteAnalysis(entityIds));
+        return tasteCache.getOrLoad(tasteKey + '|genre-v1', () => qloo.tasteAnalysis(entityIds, true));
       },
     };
 
