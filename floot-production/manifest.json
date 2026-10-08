@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791481322779",
+  "flootProjectVersion": "1791483086801",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -114,8 +114,8 @@
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "4bdbeab5b749b27173cd80de0d89e5311a177ddd",
-      "sourceCharCount": 30516
+      "gitBlobSha": "9a0088bdc15dda6131508525582904506b24b8df",
+      "sourceCharCount": 32347
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -150,10 +150,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-08",
-    "flootProjectVersion": "1791481322779",
+    "flootProjectVersion": "1791483086801",
     "exactFileCount": 28,
-    "verificationMethod": "The two modified homepage runtime files were re-read directly from Floot and committed as content-addressed snapshots. The other 26 files retain the previously verified exact snapshot; GitHub CI checks all 28 hashes and semantic parity against the portable implementation. Floot metadata additionally points to the new hosted emblem.",
+    "verificationMethod": "Latest Floot CSS finishing pass was re-read as a normalized source capture. Branded JSX and 26 other files are content-identical to the prior snapshot. CI checks all 28 blob hashes and required Qloo/brand behavior.",
     "directComparisonStatus": "28/28 exact",
-    "manifestBlobStatus": "28/28 Git blob identities bound to recorded 28-file runtime snapshot; CI verifies each content hash"
+    "manifestBlobStatus": "28/28 content-addressed runtime snapshots retained; CI validates hashes"
   }
 }
