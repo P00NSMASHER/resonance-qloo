@@ -121,6 +121,24 @@ describe('Qloo parsing', () => {
     })).toEqual({ resultCount:0, aggregateAvailable:false });
   });
 
+  it('gives a facilitator concrete accessible actions without altering Qloo evidence', () => {
+    const tags=[
+      {label:'soundtrack',score:.9,rank:1},
+      {label:'Art',score:.8,rank:2},
+      {label:'60s',score:.7,rank:3},
+      {label:'Biography & Memoir',score:.6,rank:4},
+    ];
+    const plan=planFromTags(tags,'calm','small-group',['The Beatles','Frank Sinatra'],30);
+    expect(plan.map(p=>p.affinityLabel)).toEqual(tags.map(t=>t.label));
+    expect(plan.map(p=>p.duration)).toEqual(['5 min','10 min','10 min','5 min']);
+    expect(plan[0].action).toContain('licensed music excerpt');
+    expect(plan[1].action).toContain('pictures or simple sketches');
+    expect(plan[2].action).toContain('Do not assume personal memories');
+    expect(plan[3].action).toContain('fact-checked introduction');
+    expect(plan.every(p=>p.action.includes('allow anyone to pass'))).toBe(true);
+    expect(plan.every(p=>p.action.includes('Facilitator cue:'))).toBe(true);
+  });
+
   it('builds four session steps from ranked affinities', () => {
     const plan = planFromTags([
       { label:'Jazz', score:null, rank:1 },
