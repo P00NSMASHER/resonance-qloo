@@ -1,6 +1,6 @@
 # Resonance: final Qloo Agentic Hackathon submission copy
 
-> **Status:** Copy-ready proposed update. The public Devpost entry already exists, but this document does **not** claim that its authenticated content has been edited. The user or an explicitly authorized authenticated browser session must apply the update.
+> **Status:** Copy-ready proposed update, **not yet applied** to the authenticated Devpost entry. The public project already exists, but this document does **not** claim its live content has been edited. The user or an explicitly authorized authenticated browser session must apply the update.
 >
 > **Official contest:** [Qloo Agentic Hackathon](https://qloo.devpost.com/), deadline **October 30, 2026, 11:45 PM EDT**. The official rules require a working externally hosted app, a public code repository with source/assets/instructions and discoverable open-source license, and a description. **No demo video required.**
 >
@@ -62,7 +62,7 @@ Resonance's original Cultural Atlas visual identity uses midnight ink, peacock t
 
 ### Challenges, decisions, and what we learned
 
-Qloo can return real cultural affinities that are not useful activity directions on their own. Early unfiltered results included generic star/price tags; the live agent now selects Qloo-derived music/media genre families and attaches specific optional facilitation cues. A historical **synthetic blinded five-evaluator comparison preferred the anchor-only plan in four cases, with one tie and zero Qloo-plan wins**. That unfavorable proxy result remains public and has **not** been rewritten or claimed to represent real users.
+Qloo can return real cultural affinities that are not useful activity directions on their own. Early unfiltered results included generic star/price tags; the live agent now selects Qloo-derived music/media genre families and attaches specific optional facilitation cues. A historical **synthetic blinded five-evaluator comparison preferred the anchor-only plan in **4/5** cases, with one tie and zero Qloo-plan wins**. That unfavorable proxy result remains public and has **not** been rewritten or claimed to represent real users.
 
 The lesson is that adding novel cultural signals is not the same as making a whole plan more useful. Making evidence legible and allowing the facilitator to accept, change, or reject the output is central to the product.
 
