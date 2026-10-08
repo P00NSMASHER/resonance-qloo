@@ -16,6 +16,7 @@ const requiredFiles = [
   'docs/USER_VALIDATION_STUDY.md',
   'docs/DEVPOST_FIELDS.md',
   'docs/DEVPOST_SUBMISSION_2026.md',
+  'docs/HACKATHON_SUBMISSION_GATE.md',
   'docs/judge-gallery/README.md',
   'docs/judge-gallery/manifest.json',
   'docs/brand/resonance-symbol.svg',
