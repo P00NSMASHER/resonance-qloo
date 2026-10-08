@@ -15,25 +15,24 @@
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
-## Judge gallery
+## Current judge gallery (permanent)
 
-The three checked-in judge-gallery screenshots document the earlier published UI.
-The genre-filtered release was recaptured successfully on October 8, 2026 in
-[the refreshed GitHub Actions gallery artifact](https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109).
-The checked-in PNGs remain historical captures until their image files are updated;
-they should not be mistaken for the current live Qloo taste selections.
+The published product has been recaptured in desktop and iPhone browser sessions, with the actual live Qloo comparison and facilitator controls. All seven images are now **committed directly to this public repository**; they do not depend on GitHub Actions' seven-day artifact retention.
 
-The archived judge path:
+- [Full screenshot gallery, capture metadata and SHA-256 hashes](docs/judge-gallery/README.md)
+- [Desktop Cultural Atlas identity](docs/judge-gallery/00-brand-desktop.png)
+- [iPhone-sized responsive homepage](docs/judge-gallery/00-brand-iphone.png)
+- [Live-input screen](docs/judge-gallery/01-input.png)
+- [Actual Qloo versus anchor-only comparison](docs/judge-gallery/02-qloo-transformation.png)
+- [Four activities with completed facilitator review](docs/judge-gallery/03-finished-session.png)
+- [Voluntary research study, desktop](docs/judge-gallery/04-study-desktop.png)
+- [Voluntary research study, iPhone](docs/judge-gallery/04-study-iphone.png)
 
-1. [Input and live agent trace](docs/judge-gallery/01-input.png)
-2. [Same-input Qloo transformation](docs/judge-gallery/02-qloo-transformation.png)
-3. [Finished session and facilitator controls](docs/judge-gallery/03-finished-session.png)
+![Current published Resonance desktop experience](docs/judge-gallery/00-brand-desktop.png)
 
-![Input screen with canonical favorites](docs/judge-gallery/01-input.png)
+![Real same-input Qloo comparison in the published product](docs/judge-gallery/02-qloo-transformation.png)
 
-![Without-Qloo versus live-Qloo transformation](docs/judge-gallery/02-qloo-transformation.png)
-
-![Finished session with human controls](docs/judge-gallery/03-finished-session.png)
+![Actual completed human-control review interface](docs/judge-gallery/03-finished-session.png)
 
 Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent 30-, 45-, or 60-minute engagement plan for senior-living activity teams and families.
 
