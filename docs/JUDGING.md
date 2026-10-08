@@ -12,7 +12,7 @@ The non-exact path is also fully verified in production: `Italian food` resolves
 
 ## Canonical demo selection
 
-The initial ten-case audit ranked **Ella Fitzgerald + Roman Holiday** highest at **95.0/100**. A later preregistered 12-candidate sweep used three isolated reviewers and a stricter 98/100 replacement gate; no challenger cleared it, so the existing example was retained rather than declared a new winner. Every completed output and the unfavorable blinded comparison remain public in [agent-evaluation](agent-evaluation/). The canonical run still exposes all eight signals without filtering: Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening.
+The initial ten-case audit ranked **Ella Fitzgerald + Roman Holiday** highest at **95.0/100**. A later preregistered 12-candidate sweep used three isolated reviewers and a stricter 98/100 replacement gate; no challenger cleared it, so the existing example was retained rather than declared a new winner. Every completed output and the unfavorable blinded comparison remain public in [agent-evaluation](agent-evaluation/). That eight-signal response (Jazz, Reporter, Inventive, swing, piano, Vocal-Jazz, oldies, Easy Listening) belongs to the **historical unfiltered audit**. The current live implementation separately requests Qloo's music and media genre families, interleaves their returned ranked evidence, and deliberately does not calculate a combined confidence average across independently ranked tag families. A current live response will therefore differ from the historical audit artifact.
 
 ## 60-second evaluation path
 
@@ -44,11 +44,11 @@ The implementation now matches current Qloo public documentation more defensibly
 - Those IDs are passed to `signal.interests.entities` for taste analysis.
 - Live status and recommendation provenance expose the non-secret Qloo API origin, allowing judges to verify that event traffic is using the hackathon gateway without exposing the credential.
 - Tag results are read from `results.tags`.
-- Numeric affinity values are used only if Qloo actually returns them.
+- Numeric affinity values are reported only when Qloo supplies them. The filtered multi-family live plan uses ranked-order evidence and a null cross-family mean, because these families' scores cannot be treated as a single global confidence estimate.
 - Taste analysis requests Qloo's documented `feature.explainability=true`. Resonance reports how many returned taste results actually contain non-empty `query.explainability` metadata and whether aggregate explainability is present; it does not invent attribution when Qloo omits it.
 - If Qloo explicitly rejects that optional explainability feature with a 400/422 response whose detail identifies explainability, Resonance retries once without the flag. Other 400/422 validation failures remain errors rather than being masked by the fallback.
 - If a tag result is rank-ordered but unscored, Resonance preserves that Qloo order and displays **Rank #N** instead of manufacturing a percentage.
-- The service retains up to eight returned affinity signals for inspection while the agent selects at most four for the four-step plan.
+- The current live service retains up to eight returned signals from each of two Qloo genre families (up to 16 before deduplication), preserves the source scores, then interleaves distinct family-ranked signals to select at most four for the four-step plan. This is not a cross-family score leaderboard.
 - The selected-signal sequence is explicit and stable: the UI labels chosen evidence with stable **Plan signal #N** numbering (up to four selected signals), repeats those numbers on the corresponding activity cards, and preserves the same mapping in copied session evidence.
 - Returned-but-unselected signals remain visible as **Additional evidence** instead of disappearing from the audit path.
 - Fewer than three usable affinity signals fail closed. If exactly three selected signals support the four-step plan, the closing step reuses the last real selected signal and the UI/export explicitly says no synthetic fourth signal was created.
