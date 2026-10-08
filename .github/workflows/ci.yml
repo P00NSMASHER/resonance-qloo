@@ -36,6 +36,8 @@ jobs:
         run: npm run build:receipt:check
       - name: Typecheck
         run: npm run typecheck
+      - name: Reviewed study evidence fail-closed self-test
+        run: npm run study:evidence:selftest
       - name: Unit tests
         run: npm test
       - name: Production build
