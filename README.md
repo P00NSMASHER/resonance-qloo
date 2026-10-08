@@ -150,6 +150,10 @@ The real event key must never be committed or pasted into a public artifact.
 - Formal submission is complete, and the current judge-readiness checks are verified: live Qloo evidence covers both exact-match and signed review-gated flows, and public Floot deployment parity passes. The anonymous target-user validation study is open and data-collection ready, but currently has 0 valid responses; no participant-derived outcomes are claimed.
 - The study’s open comment is never written to production logs. Each participant receives a complete anonymous JSON receipt to hand directly to the facilitator; only received and validated receipts can enter the analysis workflow.
 
+## First real-user pilot
+
+The [voluntary facilitator kit](docs/FIRST_PILOT_FACILITATOR_KIT.md) documents participant instructions, receipt handoff and private eligibility review. Neither the anonymous receipt analyzer nor the older impact CSV script publishes aggregate statistics without 3–5 reconciled facilitator-reviewed real participant records. These safeguards are operational review requirements, not cryptographic proof of participant identity. No real-user impact claim is made yet.
+
 ## Evidence and reproducibility
 
 - [Submission evidence](docs/SUBMISSION_EVIDENCE.md)
