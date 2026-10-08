@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791483086801",
+  "flootProjectVersion": "1791485788167",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the anonymous Phase 5 validation surface: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest.",
+  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the anonymous Phase 5 validation surface: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest. Additional study runtime assets include the actual study stylesheet and exact stopwatch helper.",
   "files": [
     {
       "path": "base.css",
@@ -113,6 +113,11 @@
       "sourceCharCount": 17132
     },
     {
+      "path": "helpers/studyTiming.tsx",
+      "gitBlobSha": "73f1d2bbf36f819ced027eac784dc7ccdbb76d27",
+      "sourceCharCount": 824
+    },
+    {
       "path": "pages/_index.module.css",
       "gitBlobSha": "9a0088bdc15dda6131508525582904506b24b8df",
       "sourceCharCount": 32347
@@ -129,8 +134,8 @@
     },
     {
       "path": "pages/study.module.css",
-      "gitBlobSha": "69397cdf1d9a5169fb18d54dec0c56835427c35e",
-      "sourceCharCount": 2441
+      "gitBlobSha": "6224b3408c6d8335b36e13b3947ae4dfa41fd39c",
+      "sourceCharCount": 4372
     },
     {
       "path": "pages/study.pageLayout.tsx",
@@ -139,8 +144,8 @@
     },
     {
       "path": "pages/study.tsx",
-      "gitBlobSha": "f85ea9ae599f9e5a5f82212f20fe02f35cc1fa53",
-      "sourceCharCount": 9650
+      "gitBlobSha": "4e9a8383ece24b5b1725b2787a5159dda8bed7cb",
+      "sourceCharCount": 11304
     },
     {
       "path": "static/__dev/dependencies.json",
@@ -150,10 +155,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-08",
-    "flootProjectVersion": "1791483086801",
-    "exactFileCount": 28,
-    "verificationMethod": "Latest Floot CSS finishing pass was re-read as a normalized source capture. Branded JSX and 26 other files are content-identical to the prior snapshot. CI checks all 28 blob hashes and required Qloo/brand behavior.",
-    "directComparisonStatus": "28/28 exact",
-    "manifestBlobStatus": "28/28 content-addressed runtime snapshots retained; CI validates hashes"
+    "flootProjectVersion": "1791485788167",
+    "exactFileCount": 30,
+    "verificationMethod": "The modified /study page, /study stylesheet and new stopwatch helper were read completely from the Floot project at version 1791485788167 and captured exactly. The other 27 unchanged runtime files retain content-addressed snapshots. GitHub CI independently verifies all 30 file blobs.",
+    "directComparisonStatus": "30/30 exact",
+    "manifestBlobStatus": "30 runtime snapshots bound to canonical Git blobs; verifier recomputes all hashes"
   }
 }
