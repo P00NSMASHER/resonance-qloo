@@ -5,7 +5,7 @@
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the anonymous Phase 5 validation surface: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest. Additional study runtime assets include the actual study stylesheet and exact stopwatch helper.",
+  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the anonymous Phase 5 validation surface: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest. The new study stopwatch helper is now included in the manifest; the study stylesheet was already included.",
   "files": [
     {
       "path": "base.css",
@@ -156,9 +156,9 @@
   "liveVerification": {
     "verifiedDate": "2026-10-08",
     "flootProjectVersion": "1791485788167",
-    "exactFileCount": 30,
-    "verificationMethod": "The modified /study page, /study stylesheet and new stopwatch helper were read completely from the Floot project at version 1791485788167 and captured exactly. The other 27 unchanged runtime files retain content-addressed snapshots. GitHub CI independently verifies all 30 file blobs.",
-    "directComparisonStatus": "30/30 exact",
-    "manifestBlobStatus": "30 runtime snapshots bound to canonical Git blobs; verifier recomputes all hashes"
+    "exactFileCount": 29,
+    "verificationMethod": "Updated /study page, stylesheet and new stopwatch helper read directly from Floot version 1791485788167 and source-captured. The other 26 unchanged runtime files retain exact snapshots. CI checks all 29 file hashes.",
+    "directComparisonStatus": "29/29 exact",
+    "manifestBlobStatus": "29 runtime snapshots bound to canonical Git blobs; verifier recomputes all hashes"
   }
 }
