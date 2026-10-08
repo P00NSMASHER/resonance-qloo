@@ -189,6 +189,26 @@ export const qlooSessionLogic = {
     };
   },
 
+  // The Insights API ranks each tag family independently. Interleave real
+  // results from distinct activity-relevant families instead of comparing
+  // their scores as if they were one calibrated global leaderboard.
+  balanceGenreAffinities(groups: { label:string; score:number|null; rank:number }[][]) {
+    const output:{ label:string; score:number|null; rank:number }[] = [];
+    const seen=new Set<string>();
+    const maxLength=Math.max(0,...groups.map(group=>group.length));
+    for(let index=0;index<maxLength;index++) {
+      for(const group of groups) {
+        const item=group[index];
+        if(!item) continue;
+        const normalized=qlooSessionLogic.normalizeQuery(item.label);
+        if(!normalized || seen.has(normalized)) continue;
+        seen.add(normalized);
+        output.push({label:item.label.trim(),score:item.score,rank:output.length+1});
+      }
+    }
+    return output;
+  },
+
   selectSessionArchetype(tags: { label:string }[], energy = "calm", setting = "small-group") {
     const labels = tags.map(item => item.label.toLocaleLowerCase("en-US").split(/[^a-z0-9]+/).filter(Boolean));
     const score = (terms:string[]) => labels.reduce((sum,tokens) => sum + terms.filter(term => {
