@@ -165,6 +165,27 @@ export function extractAffinities(payload: unknown): Affinity[] {
   return items;
 }
 
+// Interleave genuinely returned Qloo signals from independently ranked tag
+// families. Deduplicate normalized labels and retain original numeric scores,
+// but do not treat scores from different families as one global leaderboard.
+export function balanceGenreAffinities(groups: Affinity[][]): Affinity[] {
+  const result: Affinity[] = [];
+  const seen = new Set<string>();
+  const maxLength = Math.max(0, ...groups.map(group => group.length));
+  for (let index = 0; index < maxLength; index++) {
+    for (const group of groups) {
+      const item = group[index];
+      if (!item) continue;
+      const label = item.label.trim();
+      const identity = label.normalize('NFKC').trim().replace(/\\s+/g, ' ').toLocaleLowerCase('en-US');
+      if (!identity || seen.has(identity)) continue;
+      seen.add(identity);
+      result.push({ label, score:item.score, rank:result.length + 1 });
+    }
+  }
+  return result;
+}
+
 export function extractExplainabilitySummary(payload: unknown): QlooExplainabilitySummary {
   const rows = qlooTagRows(payload);
   let resultCount = 0;
