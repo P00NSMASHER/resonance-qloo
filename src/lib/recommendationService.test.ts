@@ -114,6 +114,36 @@ describe('recommendation service', () => {
     ]);
   });
 
+  it('interleaves two real genre families and never invents cross-family confidence', async () => {
+    const gateway = gatewayWithTags([]);
+    (gateway.tasteAnalysis as ReturnType<typeof vi.fn>).mockResolvedValue({
+      genreResults:[
+        {results:{tags:[
+          {name:'soundtrack',query:{affinity:.99}},
+          {name:'Oldies',query:{affinity:.97}},
+          {name:'Jazz',query:{affinity:.96}},
+        ]}},
+        {results:{tags:[
+          {name:'Art',query:{affinity:.98}},
+          {name:'Jazz',query:{affinity:.92}},
+          {name:'Biography',query:{affinity:.91}},
+        ]}},
+      ],
+    });
+    const result=await buildRecommendation(gateway,{
+      anchors:[{query:'The Beatles'},{query:'Frank Sinatra'}],
+      energy:'calm',setting:'small-group',
+    });
+    expect(result.affinities.map(x=>x.label)).toEqual([
+      'soundtrack','Art','Oldies','Jazz','Biography',
+    ]);
+    expect(result.evidence.selectedAffinityLabels).toEqual(['soundtrack','Art','Oldies','Jazz']);
+    expect(result.evidence.evidenceBasis).toBe('ranked-order');
+    expect(result.evidence.meanNormalizedScore).toBeNull();
+    expect(result.plan).toHaveLength(4);
+    expect(result.agentTrace[1].detail).toContain('interleaved');
+  });
+
   it('requires confirmation when a resolved Qloo entity has no returned name', async () => {
     const gateway: RecommendationGateway = {
       search: vi.fn(async (query: string) => ({
