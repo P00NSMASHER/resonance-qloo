@@ -42,6 +42,31 @@ await verifyBrand(phone,'iphone-390');
 await phone.screenshot({path:`${out}/00-brand-iphone.png`,fullPage:false});
 await phone.close();
 
+// Read-only study-path visual acceptance. Never submit synthetic responses to
+// the public study endpoint or count screenshot automation as a participant.
+for (const {width,height,name} of [
+  {width:1440,height:1000,name:'desktop'},
+  {width:390,height:844,name:'iphone'},
+]) {
+  const studyPage=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+  await studyPage.goto(url+'/study',{waitUntil:'networkidle',timeout:60_000});
+  await studyPage.getByRole('heading',{name:/Could cultural intelligence make activity planning easier/i}).waitFor({state:'visible',timeout:15_000});
+  const measure=await studyPage.evaluate(()=>({
+    viewport:document.documentElement.clientWidth,
+    scroll:document.documentElement.scrollWidth,
+    logoLoaded:Array.from(document.querySelectorAll('img')).some(x=>x.src.includes('10b9d53a')&&x.complete&&x.naturalWidth>0),
+    hasBaseline:document.body.textContent?.includes('Plan it without Resonance.'),
+    hasLiveTask:document.body.textContent?.includes('Do the same task with Resonance.'),
+    hasConsent:document.body.textContent?.includes('I consent to anonymous aggregate use'),
+    hasReceipt:document.body.textContent?.includes('Create anonymous study receipt'),
+  }));
+  if(measure.scroll>measure.viewport+2||!measure.logoLoaded||!measure.hasBaseline||!measure.hasLiveTask||!measure.hasConsent||!measure.hasReceipt)
+    throw new Error('Study '+name+' acceptance failed: '+JSON.stringify(measure));
+  console.log('Resonance study QA '+name+': '+JSON.stringify(measure));
+  await studyPage.screenshot({path:`${out}/04-study-${name}.png`,fullPage:false});
+  await studyPage.close();
+}
+
 await page.getByRole('button',{name:'Build with live Qloo'}).click();
 await page.getByText('How Qloo changed this session').waitFor({state:'visible',timeout:60_000});
 const qlooSection = page.getByText('How Qloo changed this session').locator('xpath=ancestor::section[1]');
