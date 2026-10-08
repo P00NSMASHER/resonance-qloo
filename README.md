@@ -9,8 +9,13 @@ Devpost: https://devpost.com/software/resonance-nud9ek
 
 ## Judge gallery
 
-Exactly three screenshots from the published product document the complete
-judge path:
+The three checked-in judge-gallery screenshots document the earlier published UI.
+The genre-filtered release was recaptured successfully on October 8, 2026 in
+[the refreshed GitHub Actions gallery artifact](https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109).
+The checked-in PNGs remain historical captures until their image files are updated;
+they should not be mistaken for the current live Qloo taste selections.
+
+The archived judge path:
 
 1. [Input and live agent trace](docs/judge-gallery/01-input.png)
 2. [Same-input Qloo transformation](docs/judge-gallery/02-qloo-transformation.png)
