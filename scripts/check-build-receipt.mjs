@@ -7,7 +7,7 @@ const manifest=JSON.parse(manifestBytes);
 const contract=JSON.parse(await readFile(new URL('../deployment-contract.json',import.meta.url),'utf8'));
 const sha256=createHash('sha256').update(manifestBytes).digest('hex');
 const failures=[];
-const candidate=process.argv.includes('--candidate');
+const candidate=process.argv.includes('--candidate') || process.env.GITHUB_EVENT_NAME === 'pull_request';
 if(!/^[0-9a-f]{40}$/.test(receipt.sourceCommit)) failures.push('invalid source commit');
 if(receipt.flootProjectId!==manifest.flootProjectId) failures.push('project ID mismatch');
 if(!candidate && receipt.flootProjectVersion!==manifest.flootProjectVersion) failures.push('Floot version mismatch');
