@@ -1,4 +1,4 @@
-import { extractAffinities, extractExplainabilitySummary, extractResolved, type ResolvedAnchor } from './qlooLogic';
+import { balanceGenreAffinities, extractAffinities, extractExplainabilitySummary, extractResolved, type ResolvedAnchor } from './qlooLogic';
 import { orchestrateSession } from './agentPlanner';
 import { qlooEntityIdentity } from './qlooEntityIdentity';
 import { recommendationRequestContext, type RecommendationRequestContext } from './recommendationContext';
@@ -73,8 +73,20 @@ export async function buildRecommendation(
   }
 
   const tastePayload = await gateway.tasteAnalysis(resolved.map(x => x.entityId));
-  const affinities = extractAffinities(tastePayload);
-  const qlooExplainability = extractExplainabilitySummary(tastePayload);
+  const genreResults = tastePayload && typeof tastePayload === 'object'
+    && 'genreResults' in tastePayload
+    && Array.isArray(tastePayload.genreResults)
+      ? tastePayload.genreResults as unknown[]
+      : null;
+  const affinities = genreResults
+    ? balanceGenreAffinities(genreResults.map(extractAffinities))
+    : extractAffinities(tastePayload);
+  const qlooExplainability = genreResults
+    ? genreResults.map(extractExplainabilitySummary).reduce((acc, summary) => ({
+      resultCount:acc.resultCount + summary.resultCount,
+      aggregateAvailable:acc.aggregateAvailable || summary.aggregateAvailable,
+    }), { resultCount:0, aggregateAvailable:false })
+    : extractExplainabilitySummary(tastePayload);
   const session = orchestrateSession(
     resolved,
     affinities,
@@ -82,6 +94,7 @@ export async function buildRecommendation(
     input.setting,
     qlooExplainability,
     input.durationMinutes ?? 45,
+    genreResults !== null,
   );
 
   const topResultCount = session.evidence.topResultResolutionCount;
