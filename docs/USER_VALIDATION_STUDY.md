@@ -31,6 +31,18 @@ The study measures:
 6. whether the participant would use something like Resonance in real planning;
 7. one short improvement comment.
 
+## Timing integrity and participant instructions (October 8 update)
+
+The study version remains `2026-10-07-v2` and its anonymous response schema remains unchanged. The UI now takes unaltered whole elapsed seconds from the timer, rather than silently rounding short attempts up to the minimum or clamping long attempts to the maximum. An attempt under 15 seconds in the baseline or 5 seconds in Resonance must continue before it can be recorded; a baseline over 60 minutes or Resonance trial over 30 minutes must be restarted. This rejection prevents a forbidden duration from becoming seemingly valid research data.
+
+A participant should start the baseline clock only when genuinely ready to create a four-part plan. The second trial opens the live Resonance product in a new tab, then the participant returns to the original study tab to stop the clock after reviewing and adapting the plan. If the browser blocks the tab, that attempt must not start. The study provides a direct link and a visible recovery instruction. Device and tab switching delays may still affect measured time, so all timing differences are descriptive and *not* estimates of clinical outcomes or causal efficacy.
+
+The participant's thank-you receipt is not a central anonymous survey database. The participant must download the JSON receipt and deliberately hand it to the facilitator. A server-side accepted metric record alone is not sufficient to count as a complete and eligible response. The service logs no free-text comment, while the downloaded receipt does contain the comment and should be handled privately.
+
+**Participant review checklist:** be in an eligible adult role, use the same fixed scenario for both trials, create a genuinely usable baseline before ending that timer, use real Qloo (not the illustrative demo), complete all ratings honestly including unfavorable ratings, avoid personal/client details in the comment, explicitly consent, and deliver the anonymous receipt.
+
+**Study limitations:** The single fixed scenario and non-randomized ordering can bias results. With only 3–5 willing volunteers, any comparisons are exploratory descriptions rather than controlled evidence of superiority. No unsolicited invitations or automated recruitment have been initiated.
+
 ## Privacy / integrity
 
 The study requests only a role category, elapsed times, ratings, reuse intent, a short comment, and explicit consent. It instructs participants not to provide names, contact information, resident/client information, or health information. The schema rejects likely email addresses and phone numbers. Timing/rating metrics are logged without a raw network address; the open comment is withheld from server logs and returned to the participant in a downloadable anonymous JSON receipt.
