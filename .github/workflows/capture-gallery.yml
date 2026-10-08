@@ -1,35 +1,40 @@
-name: Capture judge gallery
+name: Temporary brand artwork source archival
 
 on:
-  workflow_dispatch:
   push:
     paths:
-      - 'scripts/capture-judge-gallery.mjs'
       - '.github/workflows/capture-gallery.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  capture:
+  archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Install screenshot runtime
-        run: npm install --no-save --ignore-scripts playwright-core@1.55.0
-      - name: Capture published product
-        env:
-          CHROME_PATH: /usr/bin/google-chrome
-          RESONANCE_BASE_URL: https://resonance-qloo.floot.app
-        run: node scripts/capture-judge-gallery.mjs
-      - name: Upload gallery artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: resonance-judge-gallery
-          path: judge-gallery/*.png
-          if-no-files-found: error
-          retention-days: 7
+      - name: Archive original public Resonance artwork
+        run: |
+          mkdir -p public/brand
+          curl --fail --location --silent --show-error --retry 3 --max-time 40 "https://resonance-qloo.floot.app/_cdn/static/559ce4f0-ef12-4f04-ace1-f855c328ffa1.png" -o public/brand/resonance-cultural-atlas.png
+          curl --fail --location --silent --show-error --retry 3 --max-time 40 "https://resonance-qloo.floot.app/_cdn/static/10b9d53a-6d7b-43b2-85c4-27117e62d390.png" -o public/brand/resonance-connection-emblem.png
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          for name in ['resonance-cultural-atlas.png','resonance-connection-emblem.png']:
+              p=Path('public/brand')/name
+              b=p.read_bytes()
+              if b[:8]!=b'\x89PNG\r\n\x1a\n' or len(b)<10000:
+                  raise SystemExit('Invalid image download: '+name)
+              w,h=struct.unpack('>II',b[16:24])
+              if w<500 or h<500: raise SystemExit('Image resolution inadequate: '+name)
+              print('Verified original public brand PNG:',name,w,h,len(b))
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/brand/resonance-cultural-atlas.png public/brand/resonance-connection-emblem.png
+          if ! git diff --cached --quiet; then
+            git commit -m "assets(brand): preserve original artwork inside public repository"
+            git push origin HEAD:submission/2026-judge-pack
+          fi
