@@ -32,8 +32,12 @@ jobs:
         run: npm run security:dependencies:check
       - name: Exact Floot production source parity
         run: npm run floot:production:parity
-      - name: Public build receipt
+      - name: Published build receipt (strict: merged production)
+        if: github.event_name != 'pull_request'
         run: npm run build:receipt:check
+      - name: Existing published receipt (candidate validation only)
+        if: github.event_name == 'pull_request'
+        run: node scripts/check-build-receipt.mjs --candidate
       - name: Typecheck
         run: npm run typecheck
       - name: Unit tests
