@@ -49,8 +49,8 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Taste analysis first requests `feature.explainability=true`; Resonance records only the presence/count of non-empty Qloo `query.explainability` metadata and does not reinterpret undocumented attribution fields. If Qloo rejects that optional feature parameter with HTTP 400/422, the client makes one bounded compatibility retry without the flag so core taste evidence can still be returned; auth, quota, redirect, and server failures are not retried by this fallback.
 - Missing numeric affinity scores remain `null`; Resonance does not fabricate a percentage.
 - When Qloo supplies ordered-but-unscored tags, the agent records `ranked-order` as its evidence basis.
-- The service retains up to eight returned taste signals for inspection while selecting at most four to drive the four-step session.
-- The selection rule is exposed in the UI: use the highest real numeric Qloo affinities when enough scores exist; otherwise preserve Qloo's returned rank order.
+- The **current live** agent reads up to eight Qloo signals from each independently ranked music/media genre family, deduplicates them, retains returned evidence for inspection and selects up to four for the four-step session.
+- The **current filtered live path** interleaves real Qloo genre-family rank order and records `ranked-order` rather than calculating a misleading mean from scores belonging to different categories. Historical unfiltered evidence retains its original numeric score fields for reproducibility.
 - The UI shows the selected-versus-returned count and marks chosen evidence with stable **Plan signal #N** numbering (up to four selected signals) while leaving unselected results visible as **Additional evidence**.
 - The default result now reduces the judge-facing story to **Your favorites → What Qloo discovered → Your session**; technical provenance is retained under **View evidence & audit trail** rather than removed.
 - A tested anchor-only baseline uses only literal submitted favorites/category hints, while the Qloo side uses real returned signals. The comparison reports favorites supplied, signals returned, signals selected, activities influenced, and selected Qloo discoveries not literally named in the inputs.
@@ -59,13 +59,13 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Demo data is explicitly labeled illustrative and is not represented as Qloo output.
 - The public repo contains a redaction-safe MCP proof script.
 
-### Canonical judge demo
+### Current judge input and historical unfiltered demonstration
 
-The default judge example is now **Ella Fitzgerald + Roman Holiday**, selected from a ten-case whole-output audit at **95.0/100**.
+The current default judge input is **Ella Fitzgerald + Roman Holiday**. It was selected from a **historical, unfiltered** ten-case whole-output audit at **95.0/100**. That score assessed the historical output with proxy criteria; it is neither a verified human usefulness score nor a score for the current genre-filtered implementation.
 
 It was selected from ten complete live Qloo outputs using a published whole-result audit; no returned signal was removed before scoring. The audit is committed at [DEMO_CASE_AUDIT.md](./DEMO_CASE_AUDIT.md) / [DEMO_CASE_AUDIT.json](./DEMO_CASE_AUDIT.json).
 
-The winning case:
+The historically highest-scoring unfiltered case:
 
 - resolves both anchors exactly;
 - returns 8 retained Qloo signals;
@@ -74,11 +74,11 @@ The winning case:
 - produces a four-step 30-minute calm small-group session;
 - is captured in full at [CANONICAL_DEMO_EVIDENCE.json](./CANONICAL_DEMO_EVIDENCE.json).
 
-The earlier exact-match and review-gated evidence artifacts remain unchanged for historical transparency.
+Those original `Jazz` / `Reporter` / `Inventive` tags describe the **older, unfiltered** Qloo result. Today's published version requests Qloo music and media genres and adds facilitator-ready prompts; it can produce different tags and never promises those historical labels. The earlier exact-match and review-gated evidence artifacts remain unchanged for historical transparency.
 
 ### Verified public live-Qloo evidence
 
-A redaction-safe live artifact is committed at [LIVE_QLOO_EVIDENCE.json](./LIVE_QLOO_EVIDENCE.json).
+A redaction-safe **historical October 3 live artifact** is committed at [LIVE_QLOO_EVIDENCE.json](./LIVE_QLOO_EVIDENCE.json). It verifies the Qloo connection at that time but uses the older unfiltered selection behavior, not the current genre-family ranking. Current published screenshots and the live URL provide evidence of the updated experience.
 
 Verified public run:
 
@@ -121,17 +121,17 @@ Live demo:
 
 https://resonance-qloo.floot.app
 
-Exactly three judge-facing screenshots captured from that published product are
-committed under [`docs/judge-gallery/`](./judge-gallery/):
+Seven durable, browser-rendered screenshots of the **current published application** are stored in [the judge gallery](./judge-gallery/README.md), with dated SHA-256 checksums in [the image manifest](./judge-gallery/manifest.json). These are ordinary public GitHub images, not expiring CI artifacts:
 
-1. `01-input.png` — canonical inputs, live-ready state, and agent trace;
-2. `02-qloo-transformation.png` — the honest same-input anchor-only versus live
-   Qloo comparison and measured delta;
-3. `03-finished-session.png` — Qloo-selected session archetype, four activities,
-   Keep/Modify/Replace controls, and facilitator review summary.
+1. `00-brand-desktop.png`: the live Cultural Atlas hero and navigation.
+2. `00-brand-iphone.png`: the same responsive first screen at iPhone width.
+3. `01-input.png`: current public default inputs and Qloo readiness.
+4. `02-qloo-transformation.png`: the same-input anchor-only versus actual Qloo cultural-evidence comparison, with **signal counts rather than measured human outcomes**.
+5. `03-finished-session.png`: four facilitator activities and Keep/Modify/Replace decisions.
+6. `04-study-desktop.png`: the voluntary study interface at desktop size.
+7. `04-study-iphone.png`: the voluntary study interface at iPhone size.
 
-No generated UI, credential, signed review receipt, participant response, or
-personal/health data appears in the screenshot set.
+No screenshot contains fabricated research outcomes, a credential, a review token, or real participant data. The source-owned branded PNGs and editable SVG also appear under `public/brand/` and `docs/brand/`.
 
 The event-issued credential is connected to Floot and the public status endpoint has verified the hackathon origin in `live/ready` state. Both a direct exact-match recommendation and the signed non-exact review-gated recommendation have now completed end-to-end in production with committed redaction-safe artifacts. The illustrative preview remains clearly labeled as a fallback only.
 

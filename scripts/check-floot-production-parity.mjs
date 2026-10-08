@@ -143,7 +143,8 @@ requireBoth('Resonance branded first screen', prodPage,
 if (!prodCss.includes('Cultural Atlas brand system') ||
     !prodCss.includes('prefers-reduced-motion') ||
     !prodCss.includes('heroVisual') ||
-    !canonicalApp.includes('resonance-qloo.floot.app/_cdn/static/')) {
+    !canonicalApp.includes('/brand/resonance-cultural-atlas.png') ||
+    !canonicalApp.includes('/brand/resonance-connection-emblem.png')) {
   failures.push('Resonance premium responsive brand and asset reference parity incomplete.');
 }
 requireBoth('Qloo session archetypes', prodLogic,

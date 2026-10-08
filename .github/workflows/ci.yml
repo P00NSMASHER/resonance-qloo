@@ -62,6 +62,8 @@ jobs:
         run: npm run evidence:capture:selftest
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
+      - name: Durable judge captures and original brand assets
+        run: npm run submission:assets:check
       - name: Public deployment parity
         id: deployment_parity
         run: npm run deployment:check

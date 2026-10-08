@@ -1,0 +1,44 @@
+{
+  "captureType": "actual-published-browser-screenshots",
+  "captureDateUtc": "2026-10-08T23:01:37.803798+00:00",
+  "source": "https://resonance-qloo.floot.app",
+  "sourceCommit": "b04373ecd11bffd48c8c7aec88dba4cc1043a965",
+  "note": "Browser-rendered screenshots; not mockups, not human-study outcomes. Captures may show genuinely returned Qloo labels that can vary over time.",
+  "files": [
+    {
+      "name": "00-brand-desktop.png",
+      "sha256": "3ab62fdc69636e887b47bcf70802c1f182073ae74a3ce58c7b0e31ee24c97e62",
+      "bytes": 860037
+    },
+    {
+      "name": "00-brand-iphone.png",
+      "sha256": "88056e94ec7c183a5eda2468d8d1bf2054a215e7c1895e14a5cf849c6576baa7",
+      "bytes": 267865
+    },
+    {
+      "name": "01-input.png",
+      "sha256": "3ab62fdc69636e887b47bcf70802c1f182073ae74a3ce58c7b0e31ee24c97e62",
+      "bytes": 860037
+    },
+    {
+      "name": "02-qloo-transformation.png",
+      "sha256": "28081406c3d5f512eb918d58222d40c264db097620b63f6740cf4eabb8830122",
+      "bytes": 106782
+    },
+    {
+      "name": "03-finished-session.png",
+      "sha256": "362c3ba6818b9229dc223f401c58b212656a9770d05bc3f9607d1e62baccfb10",
+      "bytes": 245951
+    },
+    {
+      "name": "04-study-desktop.png",
+      "sha256": "5dfa613156ab3e595e127d9b9e7e98605d632dcdb0d4494dc4eb44ff67d0bab0",
+      "bytes": 386327
+    },
+    {
+      "name": "04-study-iphone.png",
+      "sha256": "32db23b0ce3f3b2291803c426f21a517fba00f85812de91f7467683b09db60ca",
+      "bytes": 215694
+    }
+  ]
+}

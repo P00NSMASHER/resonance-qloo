@@ -22,8 +22,12 @@ Typography: editorial serif (Georgia / Iowan Old Style fallbacks) for headline s
 
 ## Source assets
 
-- Hosted editorial artwork: `/_cdn/static/559ce4f0-ef12-4f04-ace1-f855c328ffa1.png` (1024 × 576). Subject: vinyl, film, literature, travel map linked through peacock-teal ribbons. The hero includes written alt text.
-- Hosted standalone wave emblem: `/_cdn/static/10b9d53a-6d7b-43b2-85c4-27117e62d390.png` (1024 × 1024). Floot project icon and small header emblem. Decorative instances have empty alt attributes because an adjacent brand wordmark labels the link.
+- Hosted editorial artwork: `/_cdn/static/559ce4f0-ef12-4f04-ace1-f855c328ffa1.png` (1024 × 576).
+  - **Permanent repository copy:** `public/brand/resonance-cultural-atlas.png`.
+  - The portable Vite application now loads the repository asset at `/brand/resonance-cultural-atlas.png`, while the live Floot app uses its own original CDN path. Subject: vinyl, film, literature, travel map linked through peacock-teal ribbons. The hero includes written alt text.
+- Hosted standalone wave emblem: `/_cdn/static/10b9d53a-6d7b-43b2-85c4-27117e62d390.png` (1024 × 1024).
+  - **Permanent repository copy:** `public/brand/resonance-connection-emblem.png`.
+  - Editable vector interpretation: `docs/brand/resonance-symbol.svg` (also available at `public/brand/resonance-symbol.svg`). Floot project icon and small header emblem. Decorative instances have empty alt attributes because an adjacent brand wordmark labels the link.
 - Canva editable identity board: https://www.canva.com/d/qpfmNH8wxTS5pH_
 - Canva view: https://www.canva.com/d/z4tEgoDKRFSNkQI
 
