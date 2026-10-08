@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791475659459",
+  "flootProjectVersion": "1791476036099",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -150,10 +150,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-08",
-    "flootProjectVersion": "1791475659459",
+    "flootProjectVersion": "1791476036099",
     "exactFileCount": 28,
-    "verificationMethod": "Two changed recommendation runtime files re-read directly from Floot and copied byte-for-byte; 26 other manifested runtime files carried forward from previous snapshot pending independent parity.",
-    "directComparisonStatus": "Updated 2/2 exact, other 26 previously captured",
-    "manifestBlobStatus": "Updated hashes returned from GitHub contents API; full CI parity pending"
+    "verificationMethod": "All 28 runtime files reviewed against current Floot development snapshot: 26 unchanged content-addressed runtime files, 2 byte-copied modified recommendation files. Long index page checked in five 100-line chunks; line-output artifacts normalized without weakening Git blob checks. Exact snapshots are independently hash-checked in CI.",
+    "directComparisonStatus": "28/28 exact",
+    "manifestBlobStatus": "28/28 manifest hashes match current recorded runtime snapshots; CI to validate independently"
   }
 }
