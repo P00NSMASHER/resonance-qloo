@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "b1a1f2b26382aa7d4f2da93b7c16e334c22065f8",
+  "sourceCommit": "f0c60849d004f0c0afbb5d3df2831db280530f65",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791483086801",
-  "productionManifestSha256": "6349bd9c7a0ac11151040115b53ed46395b0cbd35c0876c816de8ae7914495f2",
+  "flootProjectVersion": "1791485788167",
+  "productionManifestSha256": "6a5f83d7f6deab4de097b69547862fe271046271f3ce6da86bbe35017d090b5b",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-08T18:14:39.501Z",
+  "builtAt": "2026-10-08T19:02:27.544Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "Mission 14 visual branding release. Actual Floot homepage and CSS have been captured under 28 source manifest entries; public favicon, brand emblem, and editorial artwork respond HTTP 200, and a real Qloo recommendation passes. The published desktop gallery rerun on Oct 8 succeeded with artifact 11569134681. Original checked-in judge PNGs remain historical. iPhone browser acceptance is pending on the new merged gallery capture workflow; never infer it from desktop results. Current brand visuals do not imply any target-user outcome."
+  "note": "Mission 15 release: stopwatch integrity and anonymous study UX were checked by four passing Floot spec suites and main-ready candidate CI #1036 (29/29). Published /study returns HTTP 200, public Qloo remains ready, and deliberately malformed no-consent POST rejects HTTP 400 without creating a participant record. New published study page has source version 1791485788167; manifest lists 29 exact runtime files. Gallery receipt refers to the last successful judge imagery until fresh study-specific browser QA completes. Zero real study responses are claimed."
 }

@@ -21,13 +21,13 @@ const gitBlobSha = body => {
 };
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791483086801') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791485788167') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
 if (manifest.liveVerification?.flootProjectVersion !== manifest.flootProjectVersion) failures.push('Live Floot verification receipt version differs from the snapshot version.');
 if (manifest.liveVerification?.exactFileCount !== manifest.files.length) failures.push('Live Floot verification receipt file count differs from the manifest file count.');
-if (manifest.liveVerification?.directComparisonStatus !== '28/28 exact') failures.push('Live Floot verification receipt is missing the 28/28 exact direct-comparison status.');
+if (manifest.liveVerification?.directComparisonStatus !== '29/29 exact') failures.push('Live Floot verification receipt is missing the 29/29 exact direct-comparison status.');
 
 for (const entry of manifest.files ?? []) {
   const body = await readSnapshot(entry.path);
@@ -56,6 +56,17 @@ const canonicalLogic = await readRepo('src/lib/qlooLogic.ts');
 const canonicalApp = await readRepo('src/App.tsx');
 const canonicalDelta = await readRepo('src/lib/qlooDelta.ts');
 const canonicalStudy = await readRepo('src/lib/studyResponse.ts');
+const prodStudyTiming = await readSnapshot('helpers/studyTiming.tsx');
+const prodStudyCss = await readSnapshot('pages/study.module.css');
+const portableTiming = await readRepo('src/lib/studyTiming.ts');
+if (prodStudyTiming !== portableTiming) failures.push('Portable and Floot timing helpers diverged.');
+for(const needle of ['studyTiming.finish','outcome.reset','setTimerError','window.open','tab.opener=null','Your browser blocked','role="alert"']){
+  if(!prodStudyPage.includes(needle)) failures.push('Study participant measurement or blocked-tab handling missing: '+needle);
+}
+for(const needle of ['Cultural Atlas','timerError','openHelp','.brand img','prefers-reduced-motion']){
+  if(!prodStudyCss.includes(needle)) failures.push('Branded study page CSS missing: '+needle);
+}
+
 
 const requireBoth = (name, prodText, prodNeedles, canonicalText, canonicalNeedles) => {
   for (const needle of prodNeedles) if (!prodText.includes(needle)) failures.push(`Production missing ${name}: ${needle}`);

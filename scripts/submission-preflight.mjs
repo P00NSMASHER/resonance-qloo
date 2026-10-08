@@ -147,9 +147,9 @@ try {
 try {
   const flootManifest = JSON.parse(await readFile('floot-production/manifest.json', 'utf8'));
   if (flootManifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Floot production manifest project ID changed.');
-  if (flootManifest.flootProjectVersion !== '1791483086801') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
+  if (flootManifest.flootProjectVersion !== '1791485788167') failures.push('Floot production manifest version changed without refreshing the audited snapshot.');
   if (flootManifest.deploymentContractVersion !== EXPECTED_CONTRACT_VERSION) failures.push('Floot production manifest contract version differs from deployment-contract.json.');
-  if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 28) failures.push('Floot production manifest no longer enumerates the 28-file judge/study runtime snapshot.');
+  if (!Array.isArray(flootManifest.files) || flootManifest.files.length !== 29) failures.push('Floot production manifest no longer enumerates the 29-file judge/study runtime snapshot.');
   const parity = await readFile('scripts/check-floot-production-parity.mjs', 'utf8');
   for (const required of ['Qloo search contract','Qloo insights contract','Qloo activity-relevant genre filtering','Qloo family evidence integrity','ranked genre family provenance','signed review receipt','credential-scoped caching','Qloo session archetypes','facilitator review controls','Qloo delta comparison','anonymous study route','Production judge UI']) {
     if (!parity.includes(required)) failures.push(`Floot production parity verifier is missing critical invariant group: ${required}`);
