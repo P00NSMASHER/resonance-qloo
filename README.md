@@ -30,7 +30,7 @@ A generic LLM can generate plausible activities, but it cannot reliably ground t
 
 1. resolve cultural anchors;
 2. evaluate evidence strength;
-3. select the strongest affinities;
+3. select verified, activity-relevant genre affinities with transparent category-rank interleaving;
 4. adapt the session to the chosen energy and setting;
 5. expose the decision trace and explain every recommendation.
 
@@ -43,6 +43,10 @@ Each anchor can optionally include a Qloo entity category such as Artist, Film, 
 Independent anchor lookups run concurrently, reducing live latency without increasing the number of Qloo calls.
 
 Resolved entities are also classified as either an **exact normalized-name match** or a **Qloo top-result match to review**. The UI does not turn that into a made-up confidence score. If a top result is non-exact, Resonance stops **before taste analysis**, shows the input → Qloo entity mapping, and returns a five-minute server-issued review receipt. The follow-up must include both the exact reviewed Qloo entity IDs and that receipt; IDs alone are insufficient. The receipt is HMAC-bound to the normalized anchors/category hints, energy, setting, duration, and reviewed IDs; its signing key is also derived from the Qloo credential, Qloo API origin, and shared deployment-contract version. An edited request, expired receipt, changed Qloo match, credential/origin rotation, or deployment-contract change therefore requires review again.
+
+### Activity-relevant genre evidence
+
+The new live session engine requests Qloo's `urn:tag:genre:music` and `urn:tag:genre:media` tag families. The agent preserves real returned values and interleaves the two separately ranked families; it cannot treat their individual numeric affinity scores as one global confidence scale. This removes generic price/star tags from the activity-planning flow without manufacturing replacement signals. The older unfiltered test artifacts are retained as historical reproducibility evidence.
 
 ### Qloo-native explainability
 
@@ -86,7 +90,7 @@ See [docs/JUDGING.md](docs/JUDGING.md) for a criterion-by-criterion walkthrough.
 
 ## Canonical judge example
 
-Ten complete live candidate outputs were scored as whole results without filtering awkward signals. **Ella Fitzgerald + Roman Holiday** is the default judge example because it produced the strongest complete output (95.0/100). The complete audit and winning live response are committed under `docs/DEMO_CASE_AUDIT.*` and `docs/CANONICAL_DEMO_EVIDENCE.json`.
+Ten historical live candidate outputs were scored as whole results without filtering awkward signals. **Ella Fitzgerald + Roman Holiday** remains the default judge input because it produced the highest historical score (95.0/100). These historical unfiltered artifacts remain intact under `docs/DEMO_CASE_AUDIT.*` and `docs/CANONICAL_DEMO_EVIDENCE.json`; they are not claimed to be identical to the newer genre-filtered Qloo response.
 
 ## Why Qloo changes the result
 
