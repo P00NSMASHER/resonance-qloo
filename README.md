@@ -15,7 +15,7 @@
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
-[Final hackathon submission checklist](docs/HACKATHON_SUBMISSION_GATE.md) · [Copy-ready Devpost text](docs/DEVPOST_SUBMISSION_2026.md) · [Permanent current screenshots](docs/judge-gallery/README.md)
+[Final hackathon submission checklist](docs/HACKATHON_SUBMISSION_GATE.md) · [Devpost edit packet](docs/DEVPOST_EDIT_PACKET.md) · [Copy-ready Devpost text](docs/DEVPOST_SUBMISSION_2026.md) · [Permanent current screenshots](docs/judge-gallery/README.md)
 
 ## Current judge gallery (permanent)
 
