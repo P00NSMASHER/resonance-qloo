@@ -59,8 +59,16 @@ The core functional-demo requirements are now verified:
 - a redaction-safe live evidence artifact is committed at `docs/LIVE_QLOO_EVIDENCE.json`;
 - the public non-exact path reaches the intended HTTP 409 entity-review gate before taste analysis.
 
-Remaining impact work is non-fabricable: collect 3–5 real eligible study
-responses before publishing any participant-derived outcome. The submission
-copy and three-screen judge path are otherwise current.
+## October 8, 2026: new proposed submission update (not yet applied to Devpost)
+
+The existing public Devpost project at https://devpost.com/software/resonance-nud9ek is accessible over HTTP 200. Its previously published judge-first narrative was drafted before the later genre-filtering, facilitator-cue, branding, and protected study-evidence improvements. **The authenticated live Devpost content has not been updated or reverified in this mission.**
+
+- [Final copy-ready Devpost description and judging path](DEVPOST_SUBMISSION_2026.md)
+- [Permanent new desktop/iPhone/Qloo screenshots](judge-gallery/README.md)
+- GitHub repository publicly reports **MIT** license metadata through the GitHub API.
+- The official current contest requires working externally hosted software, public repo containing source/assets/instructions, text description and open-source license; video is **not** mandatory.
+- Existing 2026-10-02 record of `Submitted` status is historical; a public project page is not a substitute for checking the authenticated current state.
+
+Remaining human-dependent work: apply updated copy and permanent screenshots to the existing Devpost entry, confirm submitted state and eligibility fields under the entrant account, and (separately) collect 3–5 genuinely consented eligible study responses before claiming participant-derived outcomes.
 
 The official requirement calls for a functional demo that judges can use end-to-end; the exact-match public path now satisfies that functional proof.
