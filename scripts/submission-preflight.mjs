@@ -45,6 +45,10 @@ const requiredFiles = [
   'scripts/test-evidence-capture.mjs',
   'scripts/test-ui-state-safety.mjs',
   'scripts/analyze-study-responses.ts',
+  'scripts/test-study-evidence-gate.mjs',
+  'src/lib/studyEvidenceGate.ts',
+  'src/lib/studyEvidenceGate.test.ts',
+  'docs/FIRST_PILOT_FACILITATOR_KIT.md',
   'scripts/test-deployment-checker.mjs',
   'scripts/check-secret-leaks.mjs',
   'scripts/test-secret-leaks.mjs',
@@ -86,6 +90,20 @@ try {
 
 try {
   const studyProtocol = await readFile('docs/USER_VALIDATION_STUDY.md', 'utf8');
+  const studyAnalyzer = await readFile('scripts/analyze-study-responses.ts', 'utf8');
+  const impactAnalyzer = await readFile('scripts/summarize-impact-study.mjs', 'utf8');
+  const studyReview = await readFile('src/lib/studyEvidenceGate.ts', 'utf8');
+  const pilotKit = await readFile('docs/FIRST_PILOT_FACILITATOR_KIT.md', 'utf8');
+  if (![studyAnalyzer,impactAnalyzer].every(value=>value.includes('reviewedStudyIds'))) {
+    failures.push('Study analyzers must use reviewed real-participant receipt gate.');
+  }
+  if (!studyAnalyzer.includes('feedbackWithheldFromOutput:true') ||
+      !impactAnalyzer.includes('quotesWithheldPendingSeparateExplicitPublicationReview:true') ||
+      !studyReview.includes('facilitatorAttestation') ||
+      !pilotKit.includes('private-study/reviewed.json')) {
+    failures.push('Anonymous study privacy and explicit facilitator-review publication checks are missing.');
+  }
+
   const canonicalServer = await readFile('server/index.ts', 'utf8');
   const productionStudyEndpoint = await readFile('floot-production/endpoints/study-response_POST.ts', 'utf8');
   const productionStudyPage = await readFile('floot-production/pages/study.tsx', 'utf8');
