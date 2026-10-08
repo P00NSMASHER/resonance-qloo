@@ -51,3 +51,29 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 @media(max-width:600px){.page{padding:0 16px 54px}.siteHeader{min-height:78px;padding:12px 0;align-items:center}.brandIcon{width:39px;height:39px;border-radius:12px}.brand .brandType{font-size:20px}.brand .brandType small{font-size:7px;letter-spacing:.085em}.siteHeader .status{font-size:10px;max-width:42%;line-height:1.4}.brandedHero{padding:40px 0 30px;gap:22px}.brandedHero h1{font-size:clamp(45px,12vw,62px);line-height:1.045;margin:15px 0 18px}.brandedHero p{font-size:15px;line-height:1.65}.heroActions{margin-top:22px}.heroCTA{width:100%}.heroActions small{text-align:center;max-width:none;width:100%}.heroProof{margin-top:20px;gap:8px 14px}.heroVisual{aspect-ratio:1.24;min-height:235px;border-radius:19px}.heroCaption{left:10px;right:10px;bottom:10px;padding:10px 12px;border-radius:10px}.heroCaption strong{font-size:15px}.heroCaption span{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.heroCTA{transition:none}.heroCTA:hover{transform:none}}
 @media print{.heroVisual,.heroActions,.heroProof{display:none!important}.brandedHero{padding:0!important}.page{background:white!important;color:black!important}}
+
+
+/* Cultural Atlas: consistent evidence, session and review states. */
+.journeyQloo .journeyNumber{background:#137c78;color:#fff}
+.journeyQloo small{color:#4d6371}
+.journeyQloo .journeyChips span{background:#176a6b;border-color:#176a6b;color:#fff}
+.withQlooCard{background:#14243b!important;border-color:#14243b!important;color:#fff!important}
+.withQlooCard>span{color:#a8e7dc!important}
+.withQlooCard p{color:#ebf5f3!important}
+.deltaSignals span{background:#1c555f;border-color:#528b8c;color:#fff}
+.deltaMetrics strong,.metrics b,.archetypeLine strong{color:#14243b}
+.qlooDelta{background:#f8f4ed;border-color:#e9dfd3}
+.qlooDelta>header>b,.sectionHeading>b{color:#ab634c}
+.sessionSection .planCard{border-color:#dce6e3;box-shadow:0 8px 24px #14243b0d}
+.sessionSection .planCard h3{color:#14243b}
+.sessionSignal{background:#e7f2ef!important;color:#156d69!important;border-color:#c7e5df!important}
+.activitySupport{background:#f3f7f5;border-color:#deebe7}
+.facilitatorControls button:hover,.decisionBadge{color:#126963;border-color:#137c78}
+.activityEditor button{background:#14243b}
+.approvalSummary{background:#e7f2ef;border-color:#beded5;color:#34545e}
+.approvalSummary strong{color:#14243b}
+.approvalSummary b{color:#126963}
+.impactFlow span{background:#173e4b;border-color:#3d747d}
+.affinitySelected,.signalCount{background:#eaf5f2;border-color:#c7e5df}
+.auditTrail>summary{background:#eff5f3;color:#14243b}
+@media print{.withQlooCard{background:#fff!important;color:#000!important;border:1px solid #777!important}.withQlooCard p,.withQlooCard>span{color:#000!important}}
