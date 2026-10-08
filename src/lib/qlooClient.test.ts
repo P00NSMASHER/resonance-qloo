@@ -172,6 +172,34 @@ describe('QlooClient', () => {
     expect(calls).toHaveLength(1);
   });
 
+  it('uses two Qloo genre families for actual cultural sessions, not generic prices', async () => {
+    const seen: string[] = [];
+    const mockFetch: typeof fetch = async (input) => {
+      const url = new URL(String(input));
+      const family = url.searchParams.get('filter.tag.types');
+      seen.push(family ?? 'unfiltered');
+      if (family === 'urn:tag:genre:music') {
+        return ok({ results:{ tags:[{name:'Jazz',affinity:.96},{name:'Oldies',affinity:.9}] } });
+      }
+      if (family === 'urn:tag:genre:media') {
+        return ok({ results:{ tags:[{name:'Biography',affinity:.93}] } });
+      }
+      return ok({ results:{ tags:[{name:'Very expensive',affinity:1}] } });
+    };
+    const client = new QlooClient('event-key', mockFetch);
+    const result = await client.tasteAnalysis(['FCE8B172-4795-43E4-B222-3B550DC05FD9'], true);
+    expect(seen).toEqual(['urn:tag:genre:music','urn:tag:genre:media']);
+    expect(result).toHaveProperty('genreResults');
+    expect(JSON.stringify(result)).not.toContain('Very expensive');
+  });
+
+  it('fails closed when both filtered Qloo families reject requests', async () => {
+    const mockFetch: typeof fetch = async () => new Response('{}',{status:429});
+    const client = new QlooClient('event-key', mockFetch);
+    await expect(client.tasteAnalysis(['FCE8B172-4795-43E4-B222-3B550DC05FD9'], true))
+      .rejects.toMatchObject({status:429,endpoint:'insights'});
+  });
+
   it('rejects redirects instead of forwarding the Qloo credential', async () => {
     const mockFetch: typeof fetch = async (_input, init) => {
       expect(init?.redirect).toBe('error');
