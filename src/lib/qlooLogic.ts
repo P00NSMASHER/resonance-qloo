@@ -177,7 +177,7 @@ export function balanceGenreAffinities(groups: Affinity[][]): Affinity[] {
       const item = group[index];
       if (!item) continue;
       const label = item.label.trim();
-      const identity = label.normalize('NFKC').trim().replace(/\\s+/g, ' ').toLocaleLowerCase('en-US');
+      const identity = label.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('en-US');
       if (!identity || seen.has(identity)) continue;
       seen.add(identity);
       result.push({ label, score:item.score, rank:result.length + 1 });
