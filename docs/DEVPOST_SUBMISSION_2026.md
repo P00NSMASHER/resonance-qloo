@@ -7,7 +7,7 @@
 > **Public entry:** https://devpost.com/software/resonance-nud9ek  
 > **Live demo:** https://resonance-qloo.floot.app  
 > **GitHub repository:** https://github.com/P00NSMASHER/resonance-qloo  
-> **Current judge screenshots:** [Current published-product gallery](../judge-gallery/README.md) (with captured PNGs and a SHA-256 manifest)
+> **Current judge screenshots:** [Current published-product gallery](judge-gallery/README.md) (with captured PNGs and a SHA-256 manifest)
 
 ## Name
 
