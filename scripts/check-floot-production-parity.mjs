@@ -21,7 +21,7 @@ const gitBlobSha = body => {
 };
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791353713460') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791476036099') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
@@ -71,6 +71,19 @@ requireBoth('Qloo insights contract', prodRecommend,
   ['new URL("/v2/insights",qlooSessionLogic.apiOrigin)','url.searchParams.set("filter.type","urn:tag")','url.searchParams.set("signal.interests.entities"','url.searchParams.set("take","8")','url.searchParams.set("feature.explainability","true")'],
   canonicalClient,
   ["new URL('/v2/insights', this.baseUrl)","url.searchParams.set('filter.type', 'urn:tag')","url.searchParams.set('signal.interests.entities'","url.searchParams.set('take', '8')","url.searchParams.set('feature.explainability', 'true')"]);
+
+requireBoth('Qloo activity-relevant genre filtering', prodRecommend,
+  ['url.searchParams.set("filter.tag.types",tagType)','urn:tag:genre:music','urn:tag:genre:media','balanceGenreAffinities'],
+  canonicalClient,
+  ["url.searchParams.set('filter.tag.types', tagType)","urn:tag:genre:music","urn:tag:genre:media"]);
+requireBoth('Qloo family evidence integrity', prodLogic,
+  ['balanceGenreAffinities','score:item.score','rank:output.length+1'],
+  canonicalLogic,
+  ['balanceGenreAffinities','score:item.score','rank:result.length + 1']);
+requireBoth('ranked genre family provenance', prodRecommend,
+  ['evidenceBasis:"ranked-order" as const','meanNormalizedScore:null'],
+  canonicalPlanner,
+  ['rankedGenreFamilies','!rankedGenreFamilies && scored.length >= 3']);
 
 requireBoth('signed review receipt', prodRecommend,
   ['createReviewToken','verifyReviewToken','5 * 60_000','QLOO_RESOLUTION_REVIEW_REQUIRED'],
