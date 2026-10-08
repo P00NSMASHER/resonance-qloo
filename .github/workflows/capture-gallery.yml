@@ -8,7 +8,7 @@ on:
       - '.github/workflows/capture-gallery.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   capture:
@@ -33,3 +33,33 @@ jobs:
           path: judge-gallery/*.png
           if-no-files-found: error
           retention-days: 7
+
+      - name: Archive published screenshots on submission branch
+        if: github.ref == 'refs/heads/submission/2026-judge-pack'
+        run: |
+          mkdir -p docs/judge-gallery
+          cp -f judge-gallery/*.png docs/judge-gallery/
+          python3 - <<'PY'
+          import hashlib,json,pathlib,datetime,os
+          root=pathlib.Path('docs/judge-gallery')
+          captures=[]
+          for file in sorted(root.glob('*.png')):
+              contents=file.read_bytes()
+              captures.append({'name':file.name,'sha256':hashlib.sha256(contents).hexdigest(),'bytes':len(contents)})
+          report={
+              'captureType':'actual-published-browser-screenshots',
+              'captureDateUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'source':'https://resonance-qloo.floot.app',
+              'sourceCommit':os.environ.get('GITHUB_SHA'),
+              'note':'Browser-rendered screenshots; not mockups, not human-study outcomes. Captures may show genuinely returned Qloo labels that can vary over time.',
+              'files':captures
+          }
+          (root/'manifest.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/judge-gallery/
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(judging): archive durable published product screenshots"
+            git push origin HEAD:submission/2026-judge-pack
+          fi
