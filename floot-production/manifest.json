@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791353713460",
+  "flootProjectVersion": "1791475659459",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -79,8 +79,8 @@
     },
     {
       "path": "endpoints/recommend_POST.ts",
-      "gitBlobSha": "d6a12c05388a6821b55fff9602ae3f3f00a8ccee",
-      "sourceCharCount": 14579
+      "gitBlobSha": "011f6afa68915b3ca8a9cd81b40a177f07897674",
+      "sourceCharCount": 15605
     },
     {
       "path": "endpoints/status_GET.schema.ts",
@@ -109,8 +109,8 @@
     },
     {
       "path": "helpers/qlooSessionLogic.tsx",
-      "gitBlobSha": "5ef97b31b9c4024ef773d43e5aedf967308abda0",
-      "sourceCharCount": 14326
+      "gitBlobSha": "6255208a12277725890d824e8422dfda862947f4",
+      "sourceCharCount": 15236
     },
     {
       "path": "pages/_index.module.css",
@@ -149,11 +149,11 @@
     }
   ],
   "liveVerification": {
-    "verifiedDate": "2026-10-07",
-    "flootProjectVersion": "1791353713460",
+    "verifiedDate": "2026-10-08",
+    "flootProjectVersion": "1791475659459",
     "exactFileCount": 28,
-    "verificationMethod": "All 28 manifested runtime files were checked against live Floot version 1791353713460; unchanged files retain the prior exact capture and the three changed study files were written literally from this snapshot and verified by Floot typecheck.",
-    "directComparisonStatus": "28/28 exact",
-    "manifestBlobStatus": "28/28 manifest hashes match current exact snapshot blobs"
+    "verificationMethod": "Two changed recommendation runtime files re-read directly from Floot and copied byte-for-byte; 26 other manifested runtime files carried forward from previous snapshot pending independent parity.",
+    "directComparisonStatus": "Updated 2/2 exact, other 26 previously captured",
+    "manifestBlobStatus": "Updated hashes returned from GitHub contents API; full CI parity pending"
   }
 }
