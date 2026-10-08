@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791478899656",
+  "flootProjectVersion": "1791483086801",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -114,8 +114,8 @@
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "da68a9168613818dc9fed1075d2b67dbd018065e",
-      "sourceCharCount": 22877
+      "gitBlobSha": "9a0088bdc15dda6131508525582904506b24b8df",
+      "sourceCharCount": 32347
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -124,8 +124,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "3b7bbc4658a3780749b7d7ccfe15cbcb965bbf77",
-      "sourceCharCount": 42673
+      "gitBlobSha": "a8550dced6e0faf89c38ab6bbfbe728c452005d6",
+      "sourceCharCount": 43694
     },
     {
       "path": "pages/study.module.css",
@@ -150,10 +150,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-08",
-    "flootProjectVersion": "1791478899656",
+    "flootProjectVersion": "1791483086801",
     "exactFileCount": 28,
-    "verificationMethod": "One modified shared Qloo runtime file read completely from Floot version 1791478899656 and copied byte-for-byte. The other 27 unchanged manifested files retain their previously verified content-addressed snapshots, including the complete main-page chunk inspection from the prior release; hashes are checked independently in CI.",
+    "verificationMethod": "Latest Floot CSS finishing pass was re-read as a normalized source capture. Branded JSX and 26 other files are content-identical to the prior snapshot. CI checks all 28 blob hashes and required Qloo/brand behavior.",
     "directComparisonStatus": "28/28 exact",
-    "manifestBlobStatus": "28/28 manifest hashes bound to snapshot blobs; CI verifies independently"
+    "manifestBlobStatus": "28/28 content-addressed runtime snapshots retained; CI validates hashes"
   }
 }

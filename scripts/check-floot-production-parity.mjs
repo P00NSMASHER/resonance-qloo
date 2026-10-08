@@ -21,7 +21,7 @@ const gitBlobSha = body => {
 };
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1791478899656') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1791483086801') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
@@ -124,6 +124,16 @@ for (const needle of ['Live Qloo verified','Qloo match review required','Confirm
 }
 for (const needle of ['qlooUi.liveReady','Build with live Qloo','Qloo match review required','Confirm matches & build','Your favorites','What Qloo discovered','Your session','How Qloo changed this session','Without Qloo · anchor-only baseline','With Qloo · live taste graph','View evidence &amp; audit trail','selected discoveries not named in the inputs','Plan signal #','Additional evidence','Interpretation limit']) {
   if (!canonicalApp.includes(needle)) failures.push(`Canonical judge UI missing: ${needle}`);
+}
+requireBoth('Resonance branded first screen', prodPage,
+  ['Culture becomes <em>connection.</em>','heroVisual','heroArtwork','brandMark','build-session'],
+  canonicalApp,
+  ['Culture becomes <em>connection.</em>','heroVisual','brandIcon','build-session']);
+if (!prodCss.includes('Cultural Atlas brand system') ||
+    !prodCss.includes('prefers-reduced-motion') ||
+    !prodCss.includes('heroVisual') ||
+    !canonicalApp.includes('resonance-qloo.floot.app/_cdn/static/')) {
+  failures.push('Resonance premium responsive brand and asset reference parity incomplete.');
 }
 requireBoth('Qloo session archetypes', prodLogic,
   ['selectSessionArchetype','Memory & conversation','Sensory & social','Creative participation','Familiar opening','Sensory welcome','Creative spark','activityCue(affinityLabel)','Facilitator cue:'],

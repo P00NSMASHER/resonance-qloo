@@ -416,20 +416,25 @@ export default function App() {
   }
 
   return <main className="page" data-deployment-contract={deploymentContract.version}>
-    <header>
-      <div className="brand"><span aria-hidden="true">R</span>Resonance</div>
+    <header className="siteHeader">
+      <a href="/" className="brand brandLink" aria-label="Resonance home"><img className="brandIcon" src="https://resonance-qloo.floot.app/_cdn/static/10b9d53a-6d7b-43b2-85c4-27117e62d390.png" alt="" width="48" height="48"/><span className="brandType">Resonance<small>Culture becomes connection</small></span></a>
       <div className={`status ${qlooState === 'ready' ? 'live' : qlooState === 'degraded' ? 'degraded' : 'pending'}`} role="status" aria-live="polite">
         {qlooUi.label}
       </div>
     </header>
 
-    <section className="hero" aria-labelledby="hero-title">
-      <div className="eyebrow">Cultural intelligence for human connection</div>
-      <h1 id="hero-title">Turn what someone loves into a moment that feels <em>like them.</em></h1>
-      <p>Resonance helps senior-living activity teams and families turn a few known favorites into a culturally coherent engagement session. Qloo provides the cross-category taste signal; the agent evaluates the evidence, adapts the plan, and explains each choice.</p>
+    <section className="hero brandedHero" aria-labelledby="hero-title">
+      <div className="heroContent">
+        <div className="eyebrow">THE ART OF MEANINGFUL CONNECTION</div>
+        <h1 id="hero-title">Culture becomes <em>connection.</em></h1>
+        <p>A favorite song. A beloved film. A place worth remembering. Resonance discovers the cultural threads between them and turns those discoveries into thoughtful moments to share.</p>
+        <div className="heroActions"><a className="heroCTA" href="#build-session">Create a cultural session <span aria-hidden="true">→</span></a><small>Powered by live Qloo cultural intelligence. Guided by people.</small></div>
+        <div className="heroProof"><span>Transparent evidence</span><span>Human-led choices</span><span>No clinical claims</span></div>
+      </div>
+      <div className="heroVisual"><img src="https://resonance-qloo.floot.app/_cdn/static/559ce4f0-ef12-4f04-ace1-f855c328ffa1.png" alt="Vinyl record, film frames, open book and travel map connected by teal ribbons." width="1024" height="576"/><div className="heroCaption"><span>01 / DISCOVER</span><strong>Every favorite starts a story.</strong></div></div>
     </section>
 
-    <section className="workspace" aria-label="Resonance session builder">
+    <section id="build-session" className="workspace" aria-label="Resonance session builder">
       <div className="card">
         <h2>Give the agent a few cultural anchors</h2>
         <p className="fieldHint">Use cultural preferences only. Do not enter a resident/person name, email, account ID, health information, location history, or another personal identifier.</p>

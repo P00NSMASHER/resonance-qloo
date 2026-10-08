@@ -387,7 +387,7 @@ export default function HomePage() {
     </Helmet>
     <main className={styles.page} data-deployment-contract={qlooSessionLogic.contractVersion}>
       <header className={styles.nav}>
-        <div className={styles.brand}><span className={styles.brandMark}>R</span><span>Resonance</span></div>
+        <a className={styles.brand} href="/" aria-label="Resonance home"><span className={styles.brandMark}><img src="/_cdn/static/10b9d53a-6d7b-43b2-85c4-27117e62d390.png" alt="" width="48" height="48"/></span><span className={styles.brandName}>Resonance<small>Culture becomes connection</small></span></a>
         <div className={styles.navRight}>
           <Badge>Qloo Agent Hackathon</Badge>
           <span role="status" aria-live="polite" className={qlooReady ? styles.liveDot : styles.pendingDot}><i />{statusLabel}</span>
@@ -395,17 +395,27 @@ export default function HomePage() {
       </header>
 
       <section className={styles.hero}>
-        <div className={styles.eyebrow}><Sparkles size={15}/> Cultural intelligence for human connection</div>
-        <h1>Turn what someone loves into a moment that feels <em>like them.</em></h1>
-        <p className={styles.heroCopy}>Resonance turns a few known cultural favorites into an explainable engagement session. Qloo supplies the cross-category evidence; the agent selects, composes, and exposes the path instead of hiding it.</p>
-        <div className={styles.proofRow}>
-          <span><ShieldCheck size={17}/> No medical advice</span>
-          <span><BrainCircuit size={17}/> Evidence path visible</span>
-          <span><HeartHandshake size={17}/> Facilitator stays in control</span>
+        <div className={styles.heroContent}>
+          <div className={styles.eyebrow}><span className={styles.eyebrowIcon}><Sparkles size={14}/></span> The art of meaningful connection</div>
+          <h1>Culture becomes <em>connection.</em></h1>
+          <p className={styles.heroCopy}>A favorite song. A beloved film. A place worth remembering. Resonance discovers the cultural threads between them and turns those discoveries into thoughtful moments to share.</p>
+          <div className={styles.heroActions}>
+            <a href="#build-session" className={styles.heroCTA}>Create a cultural session <ArrowRight size={17}/></a>
+            <span className={styles.heroAside}>Powered by live Qloo cultural intelligence. Guided by people.</span>
+          </div>
+          <div className={styles.proofRow}>
+            <span><ShieldCheck size={17}/> Transparent evidence</span>
+            <span><HeartHandshake size={17}/> Human-led choices</span>
+            <span><BrainCircuit size={17}/> No clinical claims</span>
+          </div>
+        </div>
+        <div className={styles.heroVisual}>
+          <img className={styles.heroArtwork} src="/_cdn/static/559ce4f0-ef12-4f04-ace1-f855c328ffa1.png" alt="Editorial arrangement of a vinyl record, film frames, an open book and a travel map connected by flowing teal ribbons." width="1024" height="576" fetchPriority="high"/>
+          <div className={styles.heroCaption}><span>01 / DISCOVER</span><strong>Every favorite starts a story.</strong></div>
         </div>
       </section>
 
-      <section className={styles.workspace}>
+      <section id="build-session" className={styles.workspace}>
         <div className={styles.formPanel}>
           <div className={styles.panelTop}>
             <div><span className={styles.step}>01</span><h2>Give the agent a few cultural anchors</h2></div>

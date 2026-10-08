@@ -6,3 +6,97 @@
 .activitySupport{display:grid;gap:7px;margin:10px 0;padding:10px;border-radius:11px;background:#f7f8f5;border:1px solid #e3e6e1}.activitySupport span{font-size:11px;line-height:1.45;color:#536159}.activitySupport b{display:block;margin-bottom:2px;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:#173f2e}.sessionSignal small{display:block;margin-top:5px;font-weight:500;color:#526b5e}
 @media(max-width:650px){.facilitatorControls button,.activityEditor button,.compactButton,.removeButton{min-height:44px!important}.activitySupport b{font-size:11px}.resultActions{grid-template-columns:1fr}.resultActions button{width:100%}}
 @media print{.facilitatorControls,.activityEditor,.decisionBadge{display:none!important}.approvalSummary{border:1px solid #d3e2d7;box-shadow:none}}
+
+/* Resonance / Cultural Atlas brand system, 2026-10-08 */
+.page{--res-ink:#14243b;--res-teal:#137c78;--res-ivory:#faf7f1;--res-coral:#edaa88;--res-mist:#e7f2ef;color:var(--res-ink);background:radial-gradient(circle at 91% 0%,rgba(19,124,120,.10),transparent 30%),linear-gradient(180deg,#fcfaf5 0%,#f8f5ef 54%,#f7f6f2 100%);padding:0 clamp(18px,4.6vw,84px) 80px}
+.nav{min-height:92px;height:auto;padding:16px 0;border-bottom:1px solid rgba(20,36,59,.13)}
+.brand{display:inline-flex;align-items:center;gap:12px;color:var(--res-ink);font-weight:760;text-decoration:none;letter-spacing:-.04em}
+.brand:hover{color:var(--res-teal)}
+.brand:focus-visible,.heroCTA:focus-visible{outline:3px solid var(--res-teal);outline-offset:4px}
+.brandMark{width:48px;height:48px;flex:0 0 48px;background:#101b31;border-radius:15px;overflow:hidden;display:block;box-shadow:0 6px 20px rgba(20,36,59,.18)}
+.brandMark img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.5)}
+.brandName{display:grid;font-size:23px;line-height:1.06;letter-spacing:-.045em}
+.brandName small{display:block;margin-top:5px;font-size:8px;line-height:1.3;font-weight:750;letter-spacing:.15em;text-transform:uppercase;color:#52716e}
+.navRight{flex-wrap:wrap;justify-content:flex-end;gap:14px}
+.liveDot,.pendingDot{color:#4a5c64;font-size:12px;font-weight:650}
+.hero{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.03fr);gap:clamp(30px,5vw,96px);align-items:center;padding:clamp(42px,6vw,88px) 0 clamp(44px,5vw,75px)}
+.heroContent{min-width:0}
+.eyebrow{gap:10px;color:#137c78;letter-spacing:.135em;font-size:11px;line-height:1.4}
+.eyebrowIcon{width:26px;height:26px;display:inline-grid;place-items:center;color:#fff;background:var(--res-teal);border-radius:9px}
+.hero h1{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;max-width:780px;font-size:clamp(50px,5.6vw,88px);line-height:1.025;letter-spacing:-.06em;font-weight:500;margin:20px 0 22px;text-wrap:balance}
+.hero h1 em{color:var(--res-teal);font-weight:500;font-style:italic}
+.heroCopy{font-size:clamp(15px,1.24vw,18px);max-width:585px;color:#536477;line-height:1.75;margin:0}
+.heroActions{display:flex;align-items:center;flex-wrap:wrap;gap:17px;margin-top:27px}
+.heroCTA{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:52px;padding:14px 21px;background:var(--res-ink);color:#fff;text-decoration:none;border-radius:15px;font-size:14px;font-weight:760;box-shadow:0 13px 22px rgba(20,36,59,.18);transition:transform .2s,background .2s,box-shadow .2s}
+.heroCTA:hover{color:#fff;background:#126864;transform:translateY(-2px);box-shadow:0 16px 27px rgba(20,36,59,.2)}
+.heroAside{display:block;max-width:215px;color:#667985;font-size:11px;line-height:1.5}
+.proofRow{gap:12px 19px;margin-top:30px;font-size:11px;font-weight:650;color:#536875}
+.proofRow span{gap:7px}
+.proofRow svg{color:var(--res-teal)}
+.heroVisual{position:relative;isolation:isolate;overflow:hidden;border-radius:30px;background:#e5dfd2;min-height:355px;aspect-ratio:1.12;box-shadow:0 24px 65px rgba(20,36,59,.12);border:1px solid rgba(20,36,59,.06)}
+.heroArtwork{width:100%;height:100%;display:block;position:absolute;inset:0;object-fit:cover;object-position:55% center}
+.heroCaption{position:absolute;bottom:20px;left:20px;right:20px;display:flex;gap:8px 16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:rgba(20,36,59,.89);color:white;padding:14px 18px;border-radius:14px;box-shadow:0 12px 24px rgba(20,36,59,.17)}
+.heroCaption span{font-size:9px;font-weight:800;letter-spacing:.15em;color:#9ee0d8}
+.heroCaption strong{font-family:Georgia,serif;font-size:17px;font-weight:500;letter-spacing:-.015em}
+.workspace{scroll-margin-top:20px;grid-template-columns:minmax(0,1.5fr) minmax(280px,.72fr);gap:20px}
+.formPanel,.results,.impact{border:1px solid rgba(20,36,59,.095);box-shadow:0 12px 44px rgba(20,36,59,.055);background:#fffefa;border-radius:25px}
+.formPanel{padding:clamp(20px,2.7vw,35px)}
+.formPanel h2,.results h2,.impact h2,.sectionHeading h3{color:var(--res-ink)}
+.step{color:#ba6c55}
+.anchorCard{background:#f8faf8;border-color:#e1e9e7}
+.anchorCard:focus-within{border-color:#137c78;box-shadow:0 0 0 3px rgba(19,124,120,.11)}
+.anchorLabel,.selectGrid label>span{color:#536971}
+.runButton{background:var(--res-teal)!important;color:#fff!important;border-color:var(--res-teal)!important;min-height:52px!important;border-radius:13px!important}
+.runButton:hover:not(:disabled){background:#0b625f!important}
+.tracePanel{border:none;background:linear-gradient(155deg,#14243b,#173e4b 75%,#16635e);color:#f5fbf8;border-radius:25px;box-shadow:0 20px 50px rgba(20,36,59,.12)}
+.tracePanel .step{color:#f2b899}
+.tracePanel h3{font-size:30px;line-height:1.14}
+.tracePanel small{color:#c5d9d9}
+.tracePanel li>span{border-color:rgba(198,234,229,.45);color:#b0eee2}
+.sessionSignal,.approvalSummary,.affinitySelected{background:#eaf5f2;border-color:#c5e3dc;color:#176660!important}
+.sessionAction{color:#263d4d!important}
+.auditTrail>summary,.auditTrail>summary:after{color:var(--res-ink)}
+.journeyQloo,.withQlooCard{border-color:#a7cfc9!important}
+.qlooDelta{border-color:#dce8e5}
+.evidenceHandoff{background:var(--res-ink)}
+.error{background:#fff1ed}
+.formPanel button,.results button,.tracePanel button{transition:border-color .2s,box-shadow .2s,background-color .2s}
+.formPanel button:focus-visible,.results button:focus-visible{outline:3px solid rgba(19,124,120,.55);outline-offset:2px}
+@media(max-width:1100px){.hero{grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:28px}.hero h1{font-size:clamp(48px,5.9vw,70px)}.heroVisual{min-height:300px}.heroAside{max-width:180px}}
+@media(max-width:850px){.hero{grid-template-columns:1fr;gap:24px;padding:44px 0}.hero h1{max-width:680px;font-size:clamp(52px,8vw,72px)}.heroVisual{aspect-ratio:16/9;min-height:280px}.heroArtwork{object-position:center 51%}.heroContent{max-width:730px}.workspace{grid-template-columns:1fr}.tracePanel{padding:24px}.tracePanel ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+@media(max-width:650px){.page{padding:0 16px 50px}.nav{min-height:80px;padding:12px 0;align-items:flex-start;gap:10px}.brand{gap:8px}.brandMark{width:39px;height:39px;flex-basis:39px;border-radius:12px}.brandName{font-size:20px}.brandName small{font-size:7px;letter-spacing:.085em}.navRight{gap:7px;max-width:49%;align-items:flex-end}.navRight>span{font-size:10px}.hero{padding:42px 0 30px;gap:24px}.eyebrow{font-size:10px;letter-spacing:.09em}.hero h1{font-size:clamp(45px,12vw,62px);margin:16px 0 17px;line-height:1.045}.heroCopy{font-size:15px;line-height:1.65}.heroActions{margin-top:22px;gap:12px}.heroCTA{width:100%;min-height:52px}.heroAside{max-width:none;text-align:center;width:100%}.proofRow{margin-top:20px;gap:8px 14px;font-size:10px}.heroVisual{min-height:235px;aspect-ratio:1.24;border-radius:19px}.heroCaption{bottom:10px;left:10px;right:10px;padding:10px 12px;border-radius:10px}.heroCaption strong{font-size:15px}.heroCaption span{font-size:8px}.formPanel{padding:20px 16px}.formPanel h2{font-size:29px}.workspace{gap:14px}.tracePanel ol{grid-template-columns:1fr 1fr;gap:15px}.tracePanel h3{font-size:26px}.selectGrid{grid-template-columns:1fr}.actionRow{grid-template-columns:1fr}.runButton{width:100%}.proofRow span{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.heroCTA,.formPanel button,.results button{transition:none!important;transform:none!important}}
+@media print{.heroVisual,.heroActions,.heroAside{display:none!important}.hero{padding:0!important}.nav{height:auto!important}.page{background:white!important;color:#000!important}}
+/* Cultural Atlas finishing pass: extend identity below the first fold. */
+.journeyQloo .journeyNumber{background:#137c78;color:#fff}
+.journeyQloo small{color:#4d6371!important}
+.journeyQloo .journeyChips span{background:#176a6b;border-color:#176a6b;color:#fff}
+.journeyChips span{color:#1a4e5f}
+.withQlooCard{background:#14243b!important;border-color:#14243b!important;color:#fff!important}
+.withQlooCard>span{color:#a8e7dc!important}
+.withQlooCard p{color:#ebf5f3!important}
+.deltaSignals span{background:#1c555f;border-color:#528b8c;color:#fff}
+.deltaMetrics strong{color:#14243b}
+.qlooDelta{background:#f8f4ed;border-color:#e9dfd3}
+.qlooDelta>header>b,.sectionHeading>b{color:#ab634c}
+.sessionSection .planCard{border-color:#dce6e3;box-shadow:0 8px 24px rgba(20,36,59,.05)}
+.sessionSection .planCard h3{color:#14243b}
+.sessionSignal{background:#e7f2ef!important;color:#156d69!important;border-color:#c7e5df!important}
+.archetypeLine strong{color:#14243b}
+.activitySupport{background:#f3f7f5;border-color:#deebe7}
+.activitySupport b,.facilitatorControls button:hover,.decisionBadge{color:#126963}
+.facilitatorControls button:hover{background:#e7f2ef;border-color:#137c78}
+.activityEditor button{background:#14243b}
+.approvalSummary{background:#e7f2ef;border-color:#beded5;color:#34545e}
+.approvalSummary strong{color:#14243b}
+.approvalSummary b{color:#126963}
+.impactFlow span{background:#173e4b;border-color:#3d747d}
+.impactFlow strong{color:#fff}
+.affinitySelected,.signalCount{background:#eaf5f2;border-color:#c7e5df}
+.affinitySelected small{color:#156b69}
+.metrics b{color:#14243b}
+.auditTrail>summary{background:#eff5f3;color:#14243b}
+@media print{.withQlooCard{background:#fff!important;color:#000!important;border:1px solid #777!important}.withQlooCard p{color:#000!important}.withQlooCard>span{color:#000!important}}
+
+
+

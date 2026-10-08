@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "a86f1eee24829a76489a9c9bb6750b04358369e1",
+  "sourceCommit": "b1a1f2b26382aa7d4f2da93b7c16e334c22065f8",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791478899656",
-  "productionManifestSha256": "5458ec6da4f0582bdc9d651bf6550732d9ab468f43f74ff3873d03f3ee5fda68",
+  "flootProjectVersion": "1791483086801",
+  "productionManifestSha256": "6349bd9c7a0ac11151040115b53ed46395b0cbd35c0876c816de8ae7914495f2",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-08T17:06:21.430Z",
+  "builtAt": "2026-10-08T18:14:39.501Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "Mission 12 activity prompts: exact Floot runtime version 1791478899656, 28-file auditable source snapshot, public HTTP 200 qloo-live evidence, and successful refreshed judge gallery job 113437345951 (artifact 11565474037). Historical checked-in gallery PNGs have not been replaced. sourceCommit is the reviewed feature/docs head immediately before this receipt update. Real-user study outcomes remain unverified."
+  "note": "Mission 14 visual branding release. Actual Floot homepage and CSS have been captured under 28 source manifest entries; public favicon, brand emblem, and editorial artwork respond HTTP 200, and a real Qloo recommendation passes. The published desktop gallery rerun on Oct 8 succeeded with artifact 11569134681. Original checked-in judge PNGs remain historical. iPhone browser acceptance is pending on the new merged gallery capture workflow; never infer it from desktop results. Current brand visuals do not imply any target-user outcome."
 }
