@@ -4,6 +4,14 @@
 
 **Qloo-powered cultural intelligence for more personal human connection.**
 
+### Resonance Cultural Atlas identity
+
+**Culture becomes connection.** The public web app now uses an original wave-connection emblem, editorial cultural artwork, a midnight-ink and peacock-teal design system, and a responsive hero leading directly to the functional Qloo session builder.
+
+- [Editable Resonance identity board in Canva](https://www.canva.com/d/qpfmNH8wxTS5pH_)
+- [Visual identity specification and asset provenance](docs/BRAND_IDENTITY.md)
+- The work is a visual/design improvement, not a claim of improved resident outcomes or a replacement for real-user study results.
+
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
