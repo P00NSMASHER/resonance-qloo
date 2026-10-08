@@ -19,7 +19,7 @@ Resonance still does **not** call the integration “live” merely because an e
 
 Qloo taste-analysis responses can contain ordered tags without a numeric affinity value on each tag. Resonance does not convert rank into a fake percentage.
 
-- If Qloo returns enough numeric scores, the agent may use their mean normalized score as one evidence signal.
+- The current live genre-filtered path interleaves music/media family rankings without calculating a cross-family numeric mean. The historical unfiltered response logic may retain reported numeric scores, but it must not be represented as the current live evidence basis.
 - If Qloo returns ordered-but-unscored tags, the agent records `ranked-order`, displays **Rank #N**, and uses that ordering.
 - A missing Qloo score is represented as `null`.
 
