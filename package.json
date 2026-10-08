@@ -34,7 +34,9 @@
     "impact:study": "node --import tsx scripts/summarize-impact-study.mjs",
     "impact:study:selftest": "node scripts/test-impact-study.mjs",
     "study:evidence:selftest": "node scripts/test-study-evidence-gate.mjs && node scripts/test-impact-study.mjs",
-    "submission:assets:check": "node scripts/check-submission-assets.mjs"
+    "submission:assets:check": "node scripts/check-submission-assets.mjs",
+    "submission:devpost:check": "node scripts/check-devpost-public.mjs",
+    "submission:devpost:selftest": "node scripts/check-devpost-public.mjs --selftest"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
