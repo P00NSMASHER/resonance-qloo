@@ -16,6 +16,8 @@ const requiredFiles = [
   'docs/USER_VALIDATION_STUDY.md',
   'docs/DEVPOST_FIELDS.md',
   'docs/DEVPOST_SUBMISSION_2026.md',
+  'docs/DEVPOST_EDIT_PACKET.md',
+  'scripts/check-devpost-public.mjs',
   'docs/HACKATHON_SUBMISSION_GATE.md',
   'docs/judge-gallery/README.md',
   'docs/judge-gallery/manifest.json',

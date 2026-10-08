@@ -64,6 +64,8 @@ jobs:
         run: npm run submission:preflight:offline
       - name: Durable judge captures and original brand assets
         run: npm run submission:assets:check
+      - name: Devpost public-story drift detector self-test (offline)
+        run: npm run submission:devpost:selftest
       - name: Public deployment parity
         id: deployment_parity
         run: npm run deployment:check

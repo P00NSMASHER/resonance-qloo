@@ -16,6 +16,15 @@ Verified against the public [challenge requirements](https://qloo.devpost.com/) 
 | Current story and screenshot links reflected on Devpost | Updated text/captures prepared in this repository; no authenticated mutation was performed | **Entrant action required** |
 | Demo video | The 2026 hackathon explicitly says video is **not required** | Not a blocker |
 
+## October 8 public Devpost synchronization audit
+
+The public Devpost entry still describes **older unfiltered Qloo tags** (including Reporter/Inventive), a previous source-snapshot size, and older branding. The latest public GitHub release has moved to filtered music/media genre signals, concrete facilitator cues, and the Cultural Atlas identity.
+
+- **Ready-to-paste Devpost fields, Story and durable image links:** [DEVPOST_EDIT_PACKET.md](DEVPOST_EDIT_PACKET.md).
+- **Read-only public story drift check:** `npm run submission:devpost:check`. Returns nonzero when the public story has not been refreshed, without modifying Devpost. The offline parser self-test `npm run submission:devpost:selftest` is part of CI.
+- **Account blocker:** The available connected browser could not establish owner/editor access, and no connected saved browser profile advertises a Devpost login. No Devpost account mutation or authenticated status verification occurred.
+- A public project page, an old green Submitted record, and this documentation do not replace visiting the contest's **My projects → Edit project** entry in the actual owner's account.
+
 ## Required entrant-side completion
 
 1. Log into the existing [Resonance Devpost entry](https://devpost.com/software/resonance-nud9ek) using the owner's authorized account.
