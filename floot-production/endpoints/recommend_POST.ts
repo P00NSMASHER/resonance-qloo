@@ -228,58 +228,72 @@ export async function handle(request:Request) {
       }
     }
 
-    const buildInsights = (includeExplainability:boolean) => {
+    const buildInsights = (tagType:string, includeExplainability:boolean) => {
       const url = new URL("/v2/insights",qlooSessionLogic.apiOrigin);
       url.searchParams.set("filter.type","urn:tag");
+      url.searchParams.set("filter.tag.types",tagType);
       url.searchParams.set("signal.interests.entities",resolved.map(item => item.entityId).join(","));
       url.searchParams.set("take","8");
       if (includeExplainability) url.searchParams.set("feature.explainability","true");
       return url;
     };
 
-    let tastePayload:unknown;
-    try {
-      const tasteKey = [
-        credentialId,
-        ...resolved.map(item => qlooSessionLogic.entityIdentity(item.entityId)).sort(),
-        "explainability",
-      ].join("|");
-      tastePayload = await cachedQloo(
+    const loadGenre = async (tagType:string) => {
+      const identifiers=[credentialId,...resolved.map(item=>qlooSessionLogic.entityIdentity(item.entityId)).sort(),tagType];
+      const getCached=(explainability:boolean)=>cachedQloo(
         tasteCache,
-        tasteKey,
+        [...identifiers,explainability?"explainability":"plain"].join("|"),
         TASTE_TTL_MS,
-        () => qlooJson(buildInsights(true),apiKey,"insights"),
+        ()=>qlooJson(buildInsights(tagType,explainability),apiKey,"insights"),
       );
-    } catch (error) {
-      const detail = error instanceof QlooRequestError ? error.detail.toLocaleLowerCase("en-US") : "";
-      if (
-        error instanceof QlooRequestError &&
-        [400,422].includes(error.status) &&
-        detail.includes("explainability")
-      ) {
-        const fallbackTasteKey = [
-          credentialId,
-          ...resolved.map(item => qlooSessionLogic.entityIdentity(item.entityId)).sort(),
-          "plain",
-        ].join("|");
-        tastePayload = await cachedQloo(
-          tasteCache,
-          fallbackTasteKey,
-          TASTE_TTL_MS,
-          () => qlooJson(buildInsights(false),apiKey,"insights"),
-        );
+      try { return await getCached(true); }
+      catch(error) {
+        const detail=error instanceof QlooRequestError?error.detail.toLocaleLowerCase("en-US"):"";
+        if(error instanceof QlooRequestError && [400,422].includes(error.status) && detail.includes("explainability")) {
+          return getCached(false);
+        }
+        throw error;
       }
-      else throw error;
-    }
+    };
 
-    const affinities = qlooSessionLogic.extractAffinities(tastePayload);
+    // An unfiltered urn:tag ranking can prioritize hotel prices and star
+    // ratings above music for a music-led session. Qloo's verified tag-family
+    // filter keeps the activity evidence meaningful while preserving the
+    // actual ranked upstream items.
+    const genreTypes=["urn:tag:genre:music","urn:tag:genre:media"];
+    const genreResults=await Promise.allSettled(genreTypes.map(loadGenre));
+    const successful=genreResults.filter(
+      (item):item is PromiseFulfilledResult<unknown>=>item.status==="fulfilled"
+    );
+    if(!successful.length) {
+      const failed=genreResults.find(
+        (item):item is PromiseRejectedResult=>item.status==="rejected"
+      );
+      throw failed?.reason ?? new Error("No Qloo genre signals available");
+    }
+    const affinities=qlooSessionLogic.balanceGenreAffinities(
+      successful.map(item=>qlooSessionLogic.extractAffinities(item.value)),
+    );
     if (affinities.length < 3) return json({ error:"Qloo returned too little reliable affinity evidence. Try a different set of anchors." },422);
-    const selection = qlooSessionLogic.selectAffinities(affinities);
+    const selected=affinities.slice(0,4);
+    // The raw scores remain attached to individual Qloo results, but a
+    // mean across two different tag families would imply false precision.
+    const selection={
+      selected,
+      evidenceBasis:"ranked-order" as const,
+      meanNormalizedScore:null,
+    };
     if (selection.meanNormalizedScore !== null && selection.meanNormalizedScore < .2) {
       return json({ error:"Qloo returned evidence that was too weak for a useful session. Try more specific anchors." },422);
     }
 
-    const explainability = qlooSessionLogic.extractExplainabilitySummary(tastePayload);
+    const explainability = successful.reduce((totals,item)=>{
+      const next=qlooSessionLogic.extractExplainabilitySummary(item.value);
+      return {
+        resultCount:totals.resultCount+next.resultCount,
+        aggregateAvailable:totals.aggregateAvailable||next.aggregateAvailable,
+      };
+    },{resultCount:0,aggregateAvailable:false});
     const plan = qlooSessionLogic.planFromTags(
       selection.selected,
       input.energy,
@@ -313,9 +327,7 @@ export async function handle(request:Request) {
       },
       {
         stage:"evaluate", status:"ok",
-        detail:selection.evidenceBasis === "normalized-score"
-          ? `Selected ${selection.selected.length} highest numeric Qloo affinities from ${affinities.length} returned signals.`
-          : `Selected the first ${selection.selected.length} of ${affinities.length} Qloo-ranked signals without inventing numeric scores.`,
+        detail:`Selected ${selection.selected.length} Qloo-ranked genre signals across ${successful.length} activity-relevant family/families; interleaved categories without treating their scores as a shared global ranking.`,
       },
       {
         stage:"compose", status:"ok",
