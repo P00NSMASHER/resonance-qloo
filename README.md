@@ -15,6 +15,8 @@
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
+[Final hackathon submission checklist](docs/HACKATHON_SUBMISSION_GATE.md) · [Copy-ready Devpost text](docs/DEVPOST_SUBMISSION_2026.md) · [Permanent current screenshots](docs/judge-gallery/README.md)
+
 ## Current judge gallery (permanent)
 
 The published product has been recaptured in desktop and iPhone browser sessions, with the actual live Qloo comparison and facilitator controls. All seven images are now **committed directly to this public repository**; they do not depend on GitHub Actions' seven-day artifact retention.
