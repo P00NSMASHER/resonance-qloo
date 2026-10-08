@@ -12,3 +12,42 @@
 .activitySupport{display:grid;gap:7px;margin:11px 0;font-size:12px;line-height:1.45;color:#526159}.activitySupport span{display:grid;gap:2px}.activitySupport b{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#7a5a42}.sessionSignal small{display:block;margin-top:5px;font-size:11px;line-height:1.4;font-weight:500;color:#4f6558}
 @media(max-width:600px){.activityEditor button{min-height:44px}.activitySupport b{font-size:11px}.resultActions{grid-template-columns:1fr}}
 @media print{.facilitatorControls,.activityEditor,.decisionBadge{display:none!important}}
+
+
+/* Resonance Cultural Atlas: portable Vite UI mirrors Floot's published brand. */
+body{background:#faf7f1;color:#14243b}
+.page{max-width:1600px;padding:0 clamp(18px,4.6vw,84px) 70px;background:radial-gradient(circle at 90% 5%,#dcece84d,transparent 31%)}
+.siteHeader{height:auto;min-height:90px;padding:16px 0;border-bottom:1px solid #14243b20;gap:16px}
+.brandLink{display:inline-flex;gap:12px;color:#14243b;text-decoration:none;align-items:center;letter-spacing:-.04em}
+.brandLink:hover{color:#137c78}
+.brand .brandType{width:auto;height:auto;border-radius:0;background:transparent;color:inherit;display:grid;font-family:Inter,system-ui,sans-serif;font-size:23px;letter-spacing:-.04em;font-weight:780;line-height:1}
+.brand .brandType small{display:block;margin-top:5px;font-family:Inter,system-ui,sans-serif;font-size:8px;color:#52716e;font-weight:750;letter-spacing:.15em;text-transform:uppercase;line-height:1.4}
+.brandIcon{display:block;width:48px;height:48px;flex:none;object-fit:cover;border-radius:14px;background:#14243b;box-shadow:0 6px 20px #14243b30}
+.siteHeader .status{font-size:12px;color:#4b6070}
+.brandLink:focus-visible,.heroCTA:focus-visible{outline:3px solid #137c78;outline-offset:4px}
+.brandedHero{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.03fr);align-items:center;gap:clamp(30px,5vw,96px);padding:clamp(44px,6vw,88px) 0 clamp(44px,5vw,75px)}
+.brandedHero .eyebrow{font-size:11px;color:#137c78;letter-spacing:.145em;line-height:1.4}
+.brandedHero h1{font-family:Georgia,"Iowan Old Style",serif;max-width:800px;font-size:clamp(50px,5.6vw,88px);line-height:1.025;letter-spacing:-.06em;margin:20px 0 22px;font-weight:500;text-wrap:balance}
+.brandedHero h1 em{color:#137c78;font-style:italic}
+.brandedHero p{font-size:clamp(15px,1.24vw,18px);max-width:585px;color:#536477;line-height:1.75;margin:0}
+.heroActions{display:flex;align-items:center;flex-wrap:wrap;gap:15px;margin-top:27px}
+.heroActions small{font-size:11px;max-width:220px;color:#637988;line-height:1.5}
+.heroCTA{min-height:52px;display:inline-flex;align-items:center;justify-content:center;gap:16px;border-radius:15px;background:#14243b;padding:14px 22px;color:#fff;text-decoration:none;font-size:14px;font-weight:750;box-shadow:0 13px 22px #14243b25;transition:transform .2s,background .2s}
+.heroCTA:hover{background:#126864;color:#fff;transform:translateY(-2px)}
+.heroProof{display:flex;gap:12px 20px;flex-wrap:wrap;margin-top:28px;color:#536875;font-size:11px;font-weight:660}
+.heroProof span:before{content:"•";color:#137c78;margin-right:7px}
+.heroVisual{position:relative;overflow:hidden;border-radius:30px;background:#e5dfd2;aspect-ratio:1.12;min-height:350px;box-shadow:0 24px 65px #14243b21;isolation:isolate}
+.heroVisual>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:55% center;display:block}
+.heroCaption{position:absolute;bottom:20px;left:20px;right:20px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:9px 15px;flex-wrap:wrap;background:#14243be6;color:#fff;border-radius:14px}
+.heroCaption span{font-size:9px;font-weight:800;letter-spacing:.15em;color:#a8e7dc}
+.heroCaption strong{font-family:Georgia,serif;font-size:17px;font-weight:500}
+.workspace{scroll-margin-top:20px}
+.card,.results,.impact{border-color:#14243b18;background:#fffefa;box-shadow:0 12px 44px #14243b0e}
+.trace{background:linear-gradient(155deg,#14243b,#173e4b 75%,#16635e);border:none;color:#f5fbf8}
+.trace h3,.trace li,.trace ol{color:inherit}
+.card h2,.results h2,.impact h2{color:#14243b}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #137c7877;outline-offset:3px}
+@media(max-width:950px){.brandedHero{grid-template-columns:1fr;gap:25px}.brandedHero h1{max-width:680px;font-size:clamp(48px,8vw,72px)}.heroVisual{aspect-ratio:16/9;min-height:280px}}
+@media(max-width:600px){.page{padding:0 16px 54px}.siteHeader{min-height:78px;padding:12px 0;align-items:center}.brandIcon{width:39px;height:39px;border-radius:12px}.brand .brandType{font-size:20px}.brand .brandType small{font-size:7px;letter-spacing:.085em}.siteHeader .status{font-size:10px;max-width:42%;line-height:1.4}.brandedHero{padding:40px 0 30px;gap:22px}.brandedHero h1{font-size:clamp(45px,12vw,62px);line-height:1.045;margin:15px 0 18px}.brandedHero p{font-size:15px;line-height:1.65}.heroActions{margin-top:22px}.heroCTA{width:100%}.heroActions small{text-align:center;max-width:none;width:100%}.heroProof{margin-top:20px;gap:8px 14px}.heroVisual{aspect-ratio:1.24;min-height:235px;border-radius:19px}.heroCaption{left:10px;right:10px;bottom:10px;padding:10px 12px;border-radius:10px}.heroCaption strong{font-size:15px}.heroCaption span{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.heroCTA{transition:none}.heroCTA:hover{transform:none}}
+@media print{.heroVisual,.heroActions,.heroProof{display:none!important}.brandedHero{padding:0!important}.page{background:white!important;color:black!important}}
