@@ -141,3 +141,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Private research receipts, review manifests and feedback (never commit)
+private-study/
+private-study-*/
