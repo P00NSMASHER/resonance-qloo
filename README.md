@@ -44,6 +44,12 @@ The current live Qloo agent turns each selected cultural signal into a concrete 
 
 These deterministic activity suggestions are **not** Qloo assertions about a participant or evidence that the suggested activities improve outcomes. Staff must choose appropriate materials and retain final control. Historical benchmark findings and zero validated human study responses are not rewritten.
 
+## Current verified public Qloo evidence (October 8 release)
+
+The latest live production capture is frozen at [CURRENT QLOO EVIDENCE](docs/LIVE_QLOO_CURRENT_EVIDENCE.json). It is **separate from and newer than** the older unfiltered proof artifacts. The capture resolved Ella Fitzgerald and *Roman Holiday* exactly, returned 16 independent music/media signals and selected **Jazz, Romance, swing, Musical** for a 30-minute facilitator-ready session. Qloo's cross-family rank order is retained; no combined confidence mean is invented.
+
+The repeatable scripts `npm run evidence:current:capture`, `npm run evidence:current:check`, and `npm run evidence:current:selftest` capture a fresh public response and validate an archived one. The assertion suite rejects altered tags, false Qloo attribution, fabricated duration and missing facilitator cues. A new capture should be reviewed before replacing the frozen artifact, because upstream Qloo signals can legitimately change. Current evidence does **not** represent a measured benefit for real people.
+
 ## Why Qloo is essential
 
 A generic LLM can generate plausible activities, but it cannot reliably ground those ideas in structured cross-category cultural affinities. Resonance uses Qloo evidence as the core signal, then runs an explicit agent loop:
