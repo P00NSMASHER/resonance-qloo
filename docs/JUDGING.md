@@ -2,6 +2,12 @@
 
 > Current proxy result: the preregistered five-agent blinded comparison preferred the anchor-only plan 4/5, with one tie and zero Qloo-plan wins. The complete unfavorable synthetic result is retained in `docs/agent-evaluation/BLINDED_AB_RESULT.md`. It shows that Qloo added novelty without proving whole-plan superiority; it is not real-user evidence.
 
+## Current live agent proof (October 8)
+
+The [new frozen production evidence](LIVE_QLOO_CURRENT_EVIDENCE.json) was captured from the real public `/_api/recommend` endpoint using the canonical **Ella Fitzgerald + Roman Holiday** input, live status `ready`, and event Qloo API origin. It records **16 distinct music/media signals**, ranked-order evidence, a **null cross-family mean** and selected **Jazz, Romance, swing, Musical**. The four linked facilitator activities total 30 minutes. These labels are specific to that verified run, not predictions of a future Qloo query.
+
+The historical artifacts below document previous **unfiltered** system behavior and remain unmodified. This fresh artifact does not erase the unfavorable blinded synthetic comparison or establish any real-user impact.
+
 ## Verified live proof
 
 The public demo is live at https://resonance-qloo.floot.app and the server currently reports verified Qloo readiness against `https://hackathon.api.qloo.com`.
