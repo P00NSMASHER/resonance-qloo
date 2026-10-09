@@ -31,6 +31,12 @@ The application code uses the Qloo Agentic Hackathon event gateway required by t
 - Input entity signal: `signal.interests.entities=<Qloo entity UUID>`
 - Tag output: `results.tags`
 
+## Latest current-production proof (October 8, 2026)
+
+Use [LIVE_QLOO_CURRENT_EVIDENCE.json](LIVE_QLOO_CURRENT_EVIDENCE.json) to substantiate **the current music/media genre-filtered agent**, rather than reading the October 3–4 unfiltered proof artifacts as the present implementation. The newly frozen public run verifies exact entity resolution for Ella Fitzgerald and *Roman Holiday*, 16 returned cultural signals, four selected ranked genres (Jazz, Romance, swing, Musical), four facilitator-ready steps totaling 30 minutes and `qloo-live` provenance. `meanNormalizedScore` is `null` because separate category rankings must not be blended into a fake global confidence value.
+
+The source-controlled scripts `evidence:current:capture` and `evidence:current:check` provide a repeatable source, and CI's adversarial mutation self-test rejects fabricated evidence. The old source-dated records and unfavorable synthetic evaluation remain in their original form. This verifies software behavior, **not** real-world usefulness.
+
 ## 3. Redacted request-to-result explanation
 
 ### Verified now

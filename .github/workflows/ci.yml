@@ -60,6 +60,8 @@ jobs:
         run: node --check scripts/capture-live-evidence.mjs
       - name: Live evidence capture self-test
         run: npm run evidence:capture:selftest
+      - name: Current live Qloo frozen evidence contract and mutation self-test
+        run: npm run evidence:current:selftest
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
       - name: Durable judge captures and original brand assets

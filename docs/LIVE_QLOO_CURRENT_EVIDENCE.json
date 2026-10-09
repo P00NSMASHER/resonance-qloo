@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "captureType": "actual-public-qloo-production-response",
+  "capturedAtUtc": "2026-10-09T02:32:20.523Z",
+  "endpoint": "https://resonance-qloo.floot.app/_api/recommend",
+  "httpStatus": 200,
+  "request": {
+    "anchors": [
+      {
+        "query": "Ella Fitzgerald",
+        "type": "artist"
+      },
+      {
+        "query": "Roman Holiday",
+        "type": "movie"
+      }
+    ],
+    "energy": "calm",
+    "setting": "small-group",
+    "durationMinutes": 30
+  },
+  "publicStatus": {
+    "httpStatus": 200,
+    "service": "resonance",
+    "qlooStatus": "ready",
+    "qlooConnected": true,
+    "qlooApiOrigin": "https://hackathon.api.qloo.com",
+    "contractVersion": "2026-10-02.review-origin-v1"
+  },
+  "responseSummary": {
+    "requestContext": {
+      "anchors": [
+        {
+          "query": "Ella Fitzgerald",
+          "typeUrn": "urn:entity:artist"
+        },
+        {
+          "query": "Roman Holiday",
+          "typeUrn": "urn:entity:movie"
+        }
+      ],
+      "energy": "calm",
+      "setting": "small-group",
+      "durationMinutes": 30
+    },
+    "summary": "Built from 2 resolved Qloo entities and 16 cross-category affinity signals.",
+    "resolvedAnchors": [
+      {
+        "query": "Ella Fitzgerald",
+        "name": "Ella Fitzgerald",
+        "entityId": "C9A0AD41-7EDF-4C3E-A816-D1E73A17605E",
+        "requestedTypeUrn": "urn:entity:artist",
+        "resolutionMatch": "exact-name"
+      },
+      {
+        "query": "Roman Holiday",
+        "name": "Roman Holiday",
+        "entityId": "D6E8D940-2FBA-424A-ABFA-E1341F22E3B4",
+        "requestedTypeUrn": "urn:entity:movie",
+        "resolutionMatch": "exact-name"
+      }
+    ],
+    "affinities": [
+      {
+        "label": "Jazz",
+        "score": 0.9997543802194203,
+        "rank": 1
+      },
+      {
+        "label": "Romance",
+        "score": 0.8833333333333333,
+        "rank": 2
+      },
+      {
+        "label": "swing",
+        "score": 0.9982806615359423,
+        "rank": 3
+      },
+      {
+        "label": "Musical",
+        "score": 0.7999999999999999,
+        "rank": 4
+      },
+      {
+        "label": "piano",
+        "score": 0.9977075487145899,
+        "rank": 5
+      },
+      {
+        "label": "Drama",
+        "score": 0.7999999999999999,
+        "rank": 6
+      },
+      {
+        "label": "Vocal-Jazz",
+        "score": 0.997052562633044,
+        "rank": 7
+      },
+      {
+        "label": "War",
+        "score": 0.7666666666666667,
+        "rank": 8
+      },
+      {
+        "label": "oldies",
+        "score": 0.9968888161126577,
+        "rank": 9
+      },
+      {
+        "label": "Comedy",
+        "score": 0.7166666666666667,
+        "rank": 10
+      },
+      {
+        "label": "Easy Listening",
+        "score": 0.9965613230718847,
+        "rank": 11
+      },
+      {
+        "label": "Biography",
+        "score": 0.6833333333333333,
+        "rank": 12
+      },
+      {
+        "label": "blues",
+        "score": 0.9963975765514983,
+        "rank": 13
+      },
+      {
+        "label": "Crime",
+        "score": 0.65,
+        "rank": 14
+      },
+      {
+        "label": "christmas",
+        "score": 0.9960700835107255,
+        "rank": 15
+      },
+      {
+        "label": "Family",
+        "score": 0.6000000000000001,
+        "rank": 16
+      }
+    ],
+    "evidence": {
+      "meanNormalizedScore": null,
+      "evidenceBasis": "ranked-order",
+      "selectedAffinityCount": 4,
+      "returnedAffinityCount": 16,
+      "selectedAffinityLabels": [
+        "Jazz",
+        "Romance",
+        "swing",
+        "Musical"
+      ],
+      "resolvedAnchorCount": 2,
+      "exactResolutionCount": 2,
+      "topResultResolutionCount": 0,
+      "categoryHintCount": 2,
+      "explainabilityResultCount": 0,
+      "aggregateExplainabilityAvailable": false,
+      "sessionDurationMinutes": 30,
+      "energy": "calm",
+      "setting": "small-group"
+    },
+    "provenance": {
+      "source": "qloo-live",
+      "apiOrigin": "https://hackathon.api.qloo.com",
+      "contractVersion": "2026-10-02.review-origin-v1",
+      "generatedAt": "2026-10-09T02:32:20.514Z"
+    },
+    "plan": [
+      {
+        "title": "Familiar opening",
+        "duration": "5 min",
+        "affinityLabel": "Jazz",
+        "action": "Start with “Ella Fitzgerald” as the familiar cue, then branch toward “Jazz”; keep the pace gentle and low-pressure. Facilitator cue: Offer a short, appropriately licensed music excerpt, or describe the rhythm if audio is unavailable. Ask: “Would you like another sound like this, or something different?” Invite spoken or nonverbal answers, and allow anyone to pass.",
+        "why": "The session starts from “Ella Fitzgerald” and uses Qloo-ranked “Jazz” as adjacent memory/conversation evidence."
+      },
+      {
+        "title": "Memory bridge",
+        "duration": "10 min",
+        "affinityLabel": "Romance",
+        "action": "Bridge from “Roman Holiday” into “Romance” with a scene, photo, lyric, headline, or memory prompt. Keep it for a small group with room for individual responses. Facilitator cue: Describe a gentle moment of connection in a film or story. Ask: “What makes that scene feel welcoming?” Avoid pressing anyone for personal memories. Invite spoken or nonverbal answers, and allow anyone to pass.",
+        "why": "Qloo-ranked “Romance” provides a specific adjacent bridge instead of a generic nostalgia prompt."
+      },
+      {
+        "title": "Conversation choice",
+        "duration": "10 min",
+        "affinityLabel": "swing",
+        "action": "Offer two or three conversation directions connected to “swing,” and let participants choose. Facilitator cue: Offer a short, appropriately licensed music excerpt, or describe the rhythm if audio is unavailable. Ask: “Would you like another sound like this, or something different?” Invite spoken or nonverbal answers, and allow anyone to pass.",
+        "why": "“swing” extends the known tastes while preserving participant choice."
+      },
+      {
+        "title": "Recall & close",
+        "duration": "5 min",
+        "affinityLabel": "Musical",
+        "action": "Use “Musical” for one final memory or preference prompt, then ask what should return next time. Facilitator cue: Offer a short, appropriately licensed music excerpt, or describe the rhythm if audio is unavailable. Ask: “Would you like another sound like this, or something different?” Invite spoken or nonverbal answers, and allow anyone to pass.",
+        "why": "“Musical” keeps the close inside the Qloo-grounded memory/conversation neighborhood."
+      }
+    ],
+    "agentTrace": [
+      {
+        "stage": "resolve",
+        "status": "ok",
+        "detail": "Resolved 2 cultural anchors into Qloo entity evidence; 2 exact-name and 0 explicitly confirmed top-result match(es)."
+      },
+      {
+        "stage": "evaluate",
+        "status": "ok",
+        "detail": "Selected 4 Qloo-ranked genre signals across 2 activity-relevant family/families; interleaved categories without treating their scores as a shared global ranking."
+      },
+      {
+        "stage": "compose",
+        "status": "ok",
+        "detail": "Mapped the selected signals into a 30-minute calm session for a small-group setting."
+      },
+      {
+        "stage": "explain",
+        "status": "warning",
+        "detail": "Attached visible rationales. Qloo explainability was requested, but this response did not include attribution metadata."
+      }
+    ]
+  },
+  "humanStudyClaim": "no validated human outcome collected",
+  "historicalEvaluationNotOverwritten": true,
+  "limitations": [
+    "Qloo cultural affinities are aggregate signals, not personal preferences or a clinical determination.",
+    "This captures a public live response at one timestamp; tags and results may change on later runs.",
+    "Numeric scores from separate genre families are not converted into a shared confidence mean.",
+    "Facilitator cues are authored deterministic guidance, not claims that Qloo wrote the activity.",
+    "The previous unfavorable synthetic evaluation and zero validated real-user responses remain disclosed."
+  ]
+}
