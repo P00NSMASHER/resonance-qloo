@@ -2,10 +2,15 @@ name: Capture judge gallery
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/qa-facilitator-studio.mjs'
+      - '.github/workflows/capture-gallery.yml'
   push:
     branches: [main]
     paths:
       - 'scripts/capture-judge-gallery.mjs'
+      - 'scripts/qa-facilitator-studio.mjs'
       - '.github/workflows/capture-gallery.yml'
       - 'floot-production/pages/_index.tsx'
       - 'src/App.tsx'
@@ -30,6 +35,11 @@ jobs:
           CHROME_PATH: /usr/bin/google-chrome
           RESONANCE_BASE_URL: https://resonance-qloo.floot.app
         run: node scripts/capture-judge-gallery.mjs
+      - name: Exercise Facilitator Studio in illustrative preview
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          RESONANCE_BASE_URL: https://resonance-qloo.floot.app
+        run: node scripts/qa-facilitator-studio.mjs
       - name: Upload gallery artifact
         uses: actions/upload-artifact@v4
         with:
