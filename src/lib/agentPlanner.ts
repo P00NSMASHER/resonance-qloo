@@ -61,6 +61,7 @@ export function orchestrateSession(
     setting,
     resolvedAnchors.map(anchor => anchor.name),
     durationMinutes,
+    resolvedAnchors.map(anchor => anchor.requestedTypeUrn ?? ''),
   );
   const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
   const exactResolutionCount = resolvedAnchors.filter(anchor => anchor.resolutionMatch === 'exact-name').length;

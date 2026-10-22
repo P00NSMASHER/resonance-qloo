@@ -1,3 +1,4 @@
+import { safePlan } from "./safePlan";
 type AnyObject = Record<string, unknown>;
 
 function findArray(obj: unknown, keys: string[]): unknown[] {
@@ -254,7 +255,7 @@ function activityCue(tag: string): string {
   return 'Facilitator cue: '+instruction+' Invite spoken or nonverbal answers, and allow anyone to pass.';
 }
 
-export function planFromTags(
+function planFromTagsOriginal(
   tags: Affinity[],
   energy: string,
   setting: string,
@@ -309,3 +310,7 @@ export function planFromTags(
   ]);
 }
 
+
+export function planFromTags(tags:Affinity[],energy:string,setting:string,anchors:string[]=[],durationMinutes=45,anchorTypes:string[]=[]):PlanItem[] {
+  return safePlan(planFromTagsOriginal(tags,energy,setting,anchors,durationMinutes),anchors,anchorTypes,energy,setting);
+}

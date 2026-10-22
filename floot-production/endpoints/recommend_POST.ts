@@ -300,6 +300,7 @@ export async function handle(request:Request) {
       input.setting,
       resolved.map(item => item.name),
       durationMinutes,
+      resolved.map(item => item.requestedTypeUrn ?? ""),
     );
     const exactResolutionCount = resolved.filter(item => item.resolutionMatch === "exact-name").length;
     const topResultResolutionCount = resolved.length - exactResolutionCount;
