@@ -21,8 +21,12 @@ These changes address the October 22 red-team findings. This document does NOT c
 - A later four-case concurrency sweep was inconclusive: three upstream Qloo-rate-limit responses (429), one legitimate 422 insufficient-evidence rejection. No result was called successful. No further quota-intensive retries were scheduled.
 - The script `npm run quality:benchmark` compares a literal anchor-only baseline with the four-step deterministic plan across 20 synthetic scenario fixtures. It tests structural safety, specificity, evidence labeling and 30-minute timing. It does **not** evaluate plan superiority or real people.
 
+## Production release verified
+
+Floot published the restored candidate at **2026-10-22 05:53 UTC**. Public version 1792638043317 passed direct canonical Qloo and signed ambiguous-name Qloo verification on the published URL, not only on the preview. Details are in `BUILD_RECEIPT.json`; the prior gallery run remains historically labeled. The next release gates are GitHub merging, browser-based copy/download/mobile acceptance and Devpost gallery freshness. These are distinct from real-user evaluation.
+
 ## Still genuinely pending
 
 - Obtain 3–5 voluntary consenting eligible activity professionals/family caregivers, collect their private receipts via the existing `/study` path, and analyze without altering negative responses or inventing participants. Current validated real-user count: **0**.
 - Obtain independent qualitative judgments against a baseline and report both losses and wins. Do not claim efficacy without them.
-- Merge exact-source parity gates, publish Floot candidate, run public keyboard/mobile, copy/download and Qloo tests, and refresh the Devpost main screenshot after deployment. These are release acceptance tasks, not satisfied merely by local green tests.
+- Merge exact-source parity gates, complete public keyboard/mobile and copy/download acceptance, and refresh the Devpost gallery. Production canonical and signed-review Qloo tests passed; the other acceptance steps must be verified individually.
