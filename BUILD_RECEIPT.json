@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "934b38d9660a77f8fc48a6541fc904aa39a8f3f3",
+  "sourceCommit": "2f25e4c98a2ac5ed9c5bd09a99cd98aed9b23bd1",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1792634790861",
-  "productionManifestSha256": "852d1256b351adf5e8f1ff28875fbea88e01d1e7fa4d69c90e2137b9893bac58",
+  "flootProjectVersion": "1792638043317",
+  "productionManifestSha256": "30b59b861bc2b6425d2c2881ab57475f084c442e2cb1beb8fca775931e4e85aa",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-22T02:11Z",
+  "builtAt": "2026-10-22T05:53Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "October 22 photographic editorial refresh. Floot publication history reports 2026-10-22 02:11 UTC with minute precision; builtAt preserves that precision. The public app was browser-verified at 2026-10-22 02:12:15 UTC: all eight images loaded, desktop had no horizontal overflow, and the session-builder CTA worked. An actual live Qloo run returned 16 signals, selected four, and produced four activities; Keep/Modify/Replace review completed 4/4 with two kept, one modified, and one replaced. Clipboard copying was not verified. Source commit 934b38d9660a77f8fc48a6541fc904aa39a8f3f3 passed all 33 verify-job steps in workflow run 39709870384. The current public desktop screenshot is docs/design-refresh-2026-10-22.jpg. galleryWorkflowRun and galleryWorkflowConclusion retain the successful October 8 historical gallery capture; they do not claim a fresh gallery run for this redesign. The next gallery workflow is expected after the main merge. No real-participant outcomes are claimed.",
-  "verifiedAt": "2026-10-22T02:12:15Z",
-  "verificationWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/39709870384",
+  "note": "Floot publication history records 2026-10-22 05:53 UTC (minute precision) for the judge red-team remediation, project version 1792638043317. Public browser/frontend HTML verified all six optimized WebP assets, local saved-plan section and optional study link. Public Qloo production status returned ready. Canonical Ella Fitzgerald + Roman Holiday live POST returned HTTP 200, four Qloo-grounded activities and qloo-live provenance at 05:55:25.720Z. The non-default The Hobbit + Kyoto path returned HTTP 409 for nonexact title, then HTTP 200 after the signed human review; Kyoto was not falsely paired with Science Fiction & Fantasy and malformed +young Adult remained unselected at 05:55:50.427Z. Five Floot spec suites, TypeScript checking and GitHub exact-source parity passed; a 20-case synthetic fixture benchmark is structural only. Earlier four-case upstream live sweep had three rate-limit responses and one legitimate insufficient-evidence rejection; it was not counted as a pass. Human target-user study verified response count remains zero. galleryWorkflowRun / Conclusion refer to the earlier October 8 successful historical capture; new gallery capture must be verified separately after merge. Browser clipboard/download/mobile interactions not yet independently verified.",
+  "verifiedAt": "2026-10-22T05:55:50.427Z",
+  "verificationWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/39730434048",
   "verificationWorkflowConclusion": "success"
 }
