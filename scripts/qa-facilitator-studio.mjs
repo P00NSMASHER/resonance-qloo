@@ -48,7 +48,11 @@ try {
  ok((await studio.getByText("¿Prefiere", {exact:false}).count())>0,"Spanish draft prompts visible");
  await studio.getByLabel("Facilitator cue language").selectOption("en");
  await studio.getByRole("button",{name:"Pass / switch topic"}).first().click();
- ok((await studio.getByText("Topic changed at facilitator request", {exact:false}).count())>0,"immediate topic switch displayed");
+ ok((await studio.getByText("Topic declined. Offer a pause", {exact:false}).count())>0,"immediate topic switch displayed");
+ const groupTrack=studio.locator('section[aria-label="Adapted activities"] article').first().locator('[class*="tracks"]');
+ const groupText=await groupTrack.innerText();
+ ok(!groupText.includes("Aretha Franklin") && groupText.includes("Optional pause"),
+   "declined topic is absent from every visible opt-in group track");
  const jsonEvent=page.waitForEvent("download",{timeout:15000});
  await studio.getByRole("button",{name:"Download versioned JSON"}).click();
  const download=await jsonEvent;const file=await download.path();ok(Boolean(file)&&!(await download.failure()),"versioned JSON downloaded");
