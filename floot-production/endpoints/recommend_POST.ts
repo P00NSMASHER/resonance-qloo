@@ -275,7 +275,13 @@ export async function handle(request:Request) {
       successful.map(item=>qlooSessionLogic.extractAffinities(item.value)),
     );
     if (affinities.length < 3) return json({ error:"Qloo returned too little reliable affinity evidence. Try a different set of anchors." },422);
-    const selected=affinities.slice(0,4);
+    // Keep every returned Qloo row in evidence, but reject malformed/non-genre
+    // labels from the actual activity plan. Never manufacture a replacement.
+    const selected=affinities.filter(item =>
+      /^[\p{L}\p{N}]/u.test(item.label.trim()) &&
+      !/\b(visa|mastercard|american express|salmon blt|five star|four star|three star|moderately expensive)\b/i.test(item.label)
+    ).slice(0,4);
+    if(selected.length < 3) return json({error:"Not enough usable cultural genre signals were returned to build a safe session. Try more specific favorites."},422);
     // The raw scores remain attached to individual Qloo results, but a
     // mean across two different tag families would imply false precision.
     const selection={
