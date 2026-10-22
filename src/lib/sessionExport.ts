@@ -65,7 +65,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       ? [`Evidence basis: ${session.evidence.evidenceBasis === 'normalized-score' ? 'Qloo numeric scores' : 'Qloo ranked result order'}`]
       : []),
     ...(source === 'live' && session.evidence?.meanNormalizedScore !== undefined && session.evidence.meanNormalizedScore !== null
-      ? [`Mean selected Qloo score: ${Math.round(session.evidence.meanNormalizedScore * 100)}%`]
+      ? [`Mean selected source score: ${session.evidence.meanNormalizedScore.toFixed(3)} (not a probability)`]
       : []),
     ...(source === 'live' && (
       session.evidence?.explainabilityResultCount !== undefined ||
@@ -120,7 +120,7 @@ export function formatSessionText(session: ExportableSession, source: 'live' | '
       const role = signalNumber
         ? source === 'live' ? `selected Qloo signal #${signalNumber}` : `example plan signal #${signalNumber}`
         : source === 'live' ? 'additional Qloo evidence' : 'additional example evidence';
-      return `- [${role}] ${item.label}: ${item.score === null ? `Rank #${item.rank}` : `${(item.score * 100).toFixed(2)}%`}`;
+      return `- [${role}] ${item.label}: ${session.evidence?.evidenceBasis === 'ranked-order' || item.score === null ? `Rank #${item.rank}` : `Qloo source score ${item.score.toFixed(3)} (not a probability)`}`;
     }),
     ...(session.agentTrace?.length ? [
       '',

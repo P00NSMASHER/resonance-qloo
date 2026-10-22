@@ -46,7 +46,13 @@ export function orchestrateSession(
     .sort((a, b) => b.score - a.score);
 
   const usingScores = !rankedGenreFamilies && scored.length >= 3;
-  const selected = (usingScores ? scored : [...affinities].sort((a,b) => a.rank - b.rank)).slice(0, 4);
+  const ordered=usingScores ? scored : [...affinities].sort((a,b)=>a.rank-b.rank);
+  // The source retains every tag. Only usable genre labels become activities.
+  const suitable=rankedGenreFamilies
+    ? ordered.filter(item=>/^[\p{L}\p{N}]/u.test(item.label.trim()) && !/\b(visa|mastercard|american express|salmon blt|five star|four star|three star|moderately expensive)\b/i.test(item.label))
+    : ordered;
+  const selected=suitable.slice(0,4);
+  if(selected.length<3)throw new Error('QLOO_EVIDENCE_TOO_SPARSE');
   const meanNormalizedScore = usingScores
     ? scored.slice(0, 4).reduce((sum, x) => sum + x.score, 0) / scored.slice(0, 4).length
     : null;
@@ -61,7 +67,6 @@ export function orchestrateSession(
     setting,
     resolvedAnchors.map(anchor => anchor.name),
     durationMinutes,
-    resolvedAnchors.map(anchor => anchor.requestedTypeUrn ?? ''),
   );
   const evidenceBasis = usingScores ? 'normalized-score' : 'ranked-order';
   const exactResolutionCount = resolvedAnchors.filter(anchor => anchor.resolutionMatch === 'exact-name').length;
