@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
+import { Textarea } from "../components/Textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/Select";
 import { Badge } from "../components/Badge";
 import styles from "./_index.module.css";
@@ -32,6 +33,8 @@ const anchorTypes:{ value:AnchorType; label:string }[] = [
   {value:"place",label:"Place"},{value:"podcast",label:"Podcast"},{value:"tv_show",label:"TV show"},
   {value:"videogame",label:"Video game"},
 ];
+const SAVED_PLANS_KEY = "resonance.localSavedPlans.v1";
+type LocalSavedPlan = { id:string; savedAt:string; label:string; text:string };
 const initialAnchors:AnchorDraft[] = [
   { query:"Ella Fitzgerald", type:"artist" },
   { query:"Roman Holiday", type:"movie" },
@@ -101,7 +104,7 @@ function activitySupport(index:number) {
 }
 
 function replacementActivity(index:number,item:RichResult["plan"][number]) {
-  const signal=item.affinityLabel??"the selected signal";
+  const signal=item.affinityLabel||"the supplied favorite";
   const anchor=item.anchorName??"the familiar favorite";
   return [
     `Place an image cue and a short audio cue connected to “${signal}” side by side. Let participants choose one by pointing, listening, speaking, or passing.`,
@@ -201,6 +204,8 @@ export default function HomePage() {
   const [activityEdits,setActivityEdits] = useState<Record<number,string>>({});
   const [editingActivity,setEditingActivity] = useState<number|null>(null);
   const resultRef = useRef<HTMLElement|null>(null);
+  const [exportText,setExportText] = useState("");
+  const [savedPlans,setSavedPlans] = useState<LocalSavedPlan[]>([]);
 
   const usableAnchors = useMemo(() => anchors
     .map(item => ({...item,query:item.query.trim()}))
@@ -226,13 +231,14 @@ export default function HomePage() {
   }
 
   useEffect(() => { void refreshStatus(); },[]);
+  useEffect(() => { try { const raw=window.localStorage.getItem(SAVED_PLANS_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)) setSavedPlans(parsed.filter(p=>typeof p.id==="string"&&typeof p.text==="string"&&p.text.length<120000).slice(0,12)); } catch { setSavedPlans([]); } },[]);
   useEffect(() => {
     if (result) window.requestAnimationFrame(() => resultRef.current?.focus());
   },[result]);
 
   function invalidate() {
     setResult(null); setSource(null); setReview(null); setError(""); setCopied(false);
-    setActivityDecisions({}); setActivityEdits({}); setEditingActivity(null);
+    setActivityDecisions({}); setActivityEdits({}); setEditingActivity(null); setExportText("");
   }
   function changeAnchor(index:number,query:string) {
     invalidate(); setAnchors(current => current.map((item,i) => i === index ? {...item,query} : item));
@@ -322,8 +328,8 @@ export default function HomePage() {
     setResult(demoForContext(energy,setting,durationMinutes)); setSource("demo");
   }
 
-  async function copySession() {
-    if (!result) return;
+  function sessionText():string {
+    if (!result) return "";
     const selected = result.evidence.selectedAffinityLabels;
     const signalOrder = new Map(selected.map((label,index) => [label,index + 1]));
     const lines = [
@@ -343,7 +349,7 @@ export default function HomePage() {
       "Taste evidence:",
       ...result.affinities.map(item => {
         const n = signalOrder.get(item.label);
-        return `- [${n ? `Plan signal #${n}` : "Additional evidence"}] ${item.label}: ${item.score === null ? `Rank #${item.rank ?? "—"}` : formatAffinityScore(item.score)}`;
+        return `- [${n ? `Plan signal #${n}` : "Additional evidence"}] ${item.label}: ${result.evidence.evidenceBasis === "ranked-order" || item.score === null ? `Rank #${item.rank ?? "—"}` : `Qloo source score ${item.score.toFixed(3)} (not a probability)`}`;
       }),
       "",
       "Session plan:",
@@ -357,12 +363,59 @@ export default function HomePage() {
         ...(activityDecisions[index]==="modified"?["   Evidence note: facilitator-authored text was not revalidated or attributed to Qloo."]:activityDecisions[index]==="replaced"?["   Evidence note: participation modality changed; the listed Qloo signal remains the original context."]:[]),
       ]),
     ];
+    return lines.join("\n");
+  }
+
+  async function copySession() {
+    const body=sessionText();
+    if(!body) return;
     try {
-      await navigator.clipboard.writeText(lines.join("\n"));
-      setCopied(true); window.setTimeout(() => setCopied(false),1800);
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(body);
+      setCopied(true);
+      setExportText("");
+      window.setTimeout(()=>setCopied(false),1800);
     } catch {
-      setError("Copy failed. You can still print the session.");
+      setExportText(body);
+      setError("Clipboard access is unavailable. Download the plan, or select the text in the manual-copy field.");
     }
+  }
+
+  function downloadSession(textToDownload?:string) {
+    const body=textToDownload||sessionText();
+    if(!body) return;
+    try {
+      const address=URL.createObjectURL(new Blob([body],{type:"text/plain;charset=utf-8"}));
+      const link=document.createElement("a");
+      link.href=address;
+      link.download="resonance-session.txt";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(address),1200);
+    } catch { setExportText(body); setError("Download unavailable; select the session text below."); }
+  }
+
+  function persistPlans(next:LocalSavedPlan[]) {
+    try {window.localStorage.setItem(SAVED_PLANS_KEY,JSON.stringify(next));setSavedPlans(next);}
+    catch {setError("Local device storage is unavailable. Download a copy instead.");}
+  }
+  function saveSessionLocally() {
+    if(!result) return;
+    const body=sessionText();
+    if(!body) return;
+    const id=typeof crypto.randomUUID==="function"?crypto.randomUUID():String(Date.now());
+    const plan:LocalSavedPlan={id,savedAt:new Date().toISOString(),label:result.requestContext.anchors.map(a=>a.query).join(" + "),text:body};
+    persistPlans([plan,...savedPlans].slice(0,12));
+  }
+  function openSavedPlan(plan:LocalSavedPlan) {
+    setExportText(plan.text);
+    window.requestAnimationFrame(()=>document.getElementById("saved-plan-text")?.focus());
+  }
+  function chooseCategory(type:AnchorType) {
+    invalidate();
+    setAnchors([{query:"",type},{query:"",type:"any"}]);
+    window.requestAnimationFrame(()=>document.getElementById("anchor-input-0")?.focus());
   }
 
   const statusLabel = checkingStatus ? "Checking Qloo…" :
@@ -415,34 +468,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className={styles.heroVisual}>
-          <img className={styles.heroArtwork} src="/_cdn/static/a7409755-726c-4d0f-8cf8-a05b9198ef14-resonance-culture-collage.png" alt="Colorful editorial collage celebrating music, cinema, books, and travel." width="1672" height="941" fetchPriority="high"/>
+          <img className={styles.heroArtwork} src="/_cdn/static/4effafdd-1528-446e-ac70-75c902076370-resonance-hero-optimized.webp" alt="Colorful editorial collage celebrating music, cinema, books, and travel." width="1672" height="941" fetchPriority="high"/>
           <div className={styles.heroCaption}><span>01 / DISCOVER</span><strong>Every favorite starts a story.</strong></div>
           <div className={styles.heroFloatingNote}><Sparkles size={21} aria-hidden="true"/><div><b>A little familiarity.</b><small>A whole world to discover.</small></div></div>
-        </div>
-      </section>
-
-      <section id="explore-culture" className={styles.cultureSection}>
-        <header className={styles.cultureHeading}>
-          <div><span className={styles.sectionKicker}>FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
-          <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
-        </header>
-        <div className={styles.cultureGrid}>
-          <a href="#build-session" className={styles.cultureCard} data-culture="music">
-            <div className={styles.cultureImage}><img src="/_cdn/static/1326b3a8-aed1-425b-b3e8-ba56ee3a5035-resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className={styles.cultureNumber}>01</span></div>
-            <div className={styles.cultureCardBody}><span>MUSIC</span><h3>Songs worth sharing <ArrowRight size={18} aria-hidden="true"/></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
-          </a>
-          <a href="#build-session" className={styles.cultureCard} data-culture="cinema">
-            <div className={styles.cultureImage}><img src="/_cdn/static/6cc8e1cc-089e-4f6e-b6ca-ccc4f70c8d02-resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className={styles.cultureNumber}>02</span></div>
-            <div className={styles.cultureCardBody}><span>CINEMA</span><h3>Follow the story <ArrowRight size={18} aria-hidden="true"/></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
-          </a>
-          <a href="#build-session" className={styles.cultureCard} data-culture="stories">
-            <div className={styles.cultureImage}><img src="/_cdn/static/8b603208-7ec9-4405-9ab6-0f2a226c6b44-resonance-stories.png" width="1672" height="941" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className={styles.cultureNumber}>03</span></div>
-            <div className={styles.cultureCardBody}><span>STORIES</span><h3>Turn the page <ArrowRight size={18} aria-hidden="true"/></h3><p>Let a favorite book become a starting point for conversation.</p></div>
-          </a>
-          <a href="#build-session" className={styles.cultureCard} data-culture="places">
-            <div className={styles.cultureImage}><img src="/_cdn/static/6c910a5b-1c9b-4412-9c07-59ed4ccae456-resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className={styles.cultureNumber}>04</span></div>
-            <div className={styles.cultureCardBody}><span>PLACES</span><h3>Places that matter <ArrowRight size={18} aria-hidden="true"/></h3><p>A familiar place can be the beginning of a conversation.</p></div>
-          </a>
         </div>
       </section>
 
@@ -519,7 +547,13 @@ export default function HomePage() {
             <p>{source==="live"?"Start with the outcome. Open the audit trail only when you want the full evidence path.":result.summary}</p>
           </div>
         </div>
-        <div className={styles.resultActions}><Button variant="outline" onClick={()=>void copySession()}><Copy size={14}/>{copied?"Copied":"Copy session"}</Button><Button variant="outline" onClick={()=>window.print()}><Printer size={14}/> Print</Button><Button variant="outline" onClick={()=>{invalidate();window.scrollTo({top:0,behavior:"smooth"})}}>Start over</Button></div>
+        <div className={styles.resultActions}>
+          <Button variant="outline" onClick={()=>void copySession()}><Copy size={14}/>{copied?"Copied":"Copy session"}</Button>
+          <Button variant="outline" onClick={()=>downloadSession()}>Download .txt</Button>
+          <Button variant="outline" onClick={saveSessionLocally}>Save on this device</Button>
+          <Button variant="outline" onClick={()=>window.print()}><Printer size={14}/> Print</Button>
+          <Button variant="outline" onClick={()=>{invalidate();window.scrollTo({top:0,behavior:"smooth"})}}>Start over</Button>
+        </div>
         {source==="demo" && <div className={styles.demoBanner}><AlertCircle size={17}/><span>Demo mode: these ranks and rationales are illustrative placeholders, not Qloo API results.</span></div>}
 
         <section className={styles.judgeJourney}>
@@ -541,7 +575,7 @@ export default function HomePage() {
 
         <section className={styles.sessionSection}>
           <div className={styles.sectionHeading}><b>03 · Your session</b><h3>A facilitator-ready starting point</h3><p className={styles.archetypeLine}><strong>{qlooSessionLogic.selectSessionArchetype(result.affinities.filter(item => result.evidence.selectedAffinityLabels.includes(item.label)),result.evidence.energy,result.evidence.setting)}</strong> · strategy selected from Qloo evidence; session context breaks ties</p></div>
-          <div className={styles.planGrid}>{result.plan.map((item,index)=>{const Icon=[Music2,Film,Users,Utensils][index%4];const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;const displayedAction=activityEdits[index]??item.action;const decision=activityDecisions[index];return <article key={item.title} className={styles.planCard}><div className={styles.cardIcon}><Icon size={21}/></div><span className={styles.duration}>{item.duration}</span><h3>{item.title}</h3>{editingActivity===index?<div className={styles.activityEditor}><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:"modified"}));setEditingActivity(null)}}>Save modification</button><button type="button" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div>:<p className={styles.sessionAction}>{displayedAction}</p>}<div className={styles.activitySupport}><span><b>Why this fits</b>{item.why}</span><span><b>Materials</b>{activitySupport(index).materials}</span><span><b>Participation options</b>{activitySupport(index).participation}</span></div>{item.affinityLabel&&<div className={styles.sessionSignal}>{decision==="modified"?"Original evidence reference":signal?`Qloo signal #${signal}`:"Qloo signal"} · {item.affinityLabel}{item.anchorName?` · paired with ${item.anchorName}`:""}{decision==="modified"&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==="replaced"&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}<div className={styles.facilitatorControls}><button type="button" aria-pressed={decision==="kept"} className={decision==="kept"?styles.active:""} onClick={()=>setActivityDecisions(current=>({...current,[index]:"kept"}))}>Keep</button><button type="button" aria-pressed={decision==="modified"} className={decision==="modified"?styles.active:""} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??item.action}));setEditingActivity(index)}}>Modify</button><button type="button" aria-pressed={decision==="replaced"} className={decision==="replaced"?styles.active:""} onClick={()=>{setActivityEdits(current=>({...current,[index]:replacementActivity(index,item)}));setActivityDecisions(current=>({...current,[index]:"replaced"}));setEditingActivity(null)}}>Replace</button></div>{decision&&<div className={styles.decisionBadge}>Facilitator: {decision}</div>}</article>})}</div>
+          <div className={styles.planGrid}>{result.plan.map((item,index)=>{const Icon=[Music2,Film,Users,Utensils][index%4];const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;const displayedAction=activityEdits[index]??item.action;const decision=activityDecisions[index];return <article key={item.title} className={styles.planCard}><div className={styles.cardIcon}><Icon size={21}/></div><span className={styles.duration}>{item.duration}</span><h3>{item.title}</h3>{editingActivity===index?<div className={styles.activityEditor}><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:"modified"}));setEditingActivity(null)}}>Save modification</button><button type="button" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div>:<p className={styles.sessionAction}>{displayedAction}</p>}<div className={styles.activitySupport}><span><b>Why this fits</b>{item.why}</span><span><b>Materials</b>{activitySupport(index).materials}</span><span><b>Participation options</b>{activitySupport(index).participation}</span></div>{item.affinityLabel&&<div className={styles.sessionSignal}>{decision==="modified"?"Original evidence reference":signal?`Session-wide Qloo theme #${signal}`:"Session-wide Qloo theme"} · {item.affinityLabel}{item.anchorName?` · starting favorite: ${item.anchorName} (no per-favorite attribution)`:""}{decision==="modified"&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==="replaced"&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}<div className={styles.facilitatorControls}><button type="button" aria-pressed={decision==="kept"} className={decision==="kept"?styles.active:""} onClick={()=>setActivityDecisions(current=>({...current,[index]:"kept"}))}>Keep</button><button type="button" aria-pressed={decision==="modified"} className={decision==="modified"?styles.active:""} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??item.action}));setEditingActivity(index)}}>Modify</button><button type="button" aria-pressed={decision==="replaced"} className={decision==="replaced"?styles.active:""} onClick={()=>{setActivityEdits(current=>({...current,[index]:replacementActivity(index,item)}));setActivityDecisions(current=>({...current,[index]:"replaced"}));setEditingActivity(null)}}>Replace</button></div>{decision&&<div className={styles.decisionBadge}>Facilitator: {decision}</div>}</article>})}</div>
           <div role="status" aria-live="polite" className={styles.approvalSummary}><strong>Facilitator review</strong><span>{approvedCount}/{result.plan.length} activities have a decision · {keptCount} kept · {modifiedCount} modified · {replacedCount} replaced</span>{approvedCount===result.plan.length&&<b>All activity decisions complete</b>}</div>
         </section>
 
@@ -550,13 +584,13 @@ export default function HomePage() {
         <details className={styles.auditTrail}>
           <summary>View evidence &amp; audit trail</summary>
           <div className={styles.auditBody}>
-            <div className={styles.auditIntro}><h3>Full Qloo evidence path</h3><p>Technical provenance is preserved here without competing with the primary session experience.</p></div>
+            <div className={styles.auditIntro}><h3>Full Qloo evidence path</h3><p>Qloo signals apply to the combined set of favorites. An exact-name match does not require a top-result confirmation; zero top-result confirmations is normal when no ambiguous match occurs. Qloo may omit native attribution metadata.</p></div>
             <div className={styles.resultMeta}><span><b>Source</b>{source==="live"?"LIVE QLOO":"ILLUSTRATIVE DEMO"}</span><span><b>Evidence</b>{result.evidence.evidenceBasis==="normalized-score"?"Normalized Qloo score":"Ranked Qloo order"}</span><span><b>Request receipt</b>{result.requestContext.anchors.length} anchors · {result.requestContext.energy} · {result.requestContext.setting} · {result.requestContext.durationMinutes} min</span><span><b>Qloo API</b>{result.provenance.apiOrigin.replace(/^https:\/\//,"")}</span><span><b>Contract</b>{result.provenance.contractVersion}</span><span><b>{result.provenance.generatedAt?"Generated":"Timestamp"}</b>{result.provenance.generatedAt?new Date(result.provenance.generatedAt).toLocaleString():"Static example · no live timestamp"}</span></div>
 
             <section className={styles.evidenceBridge}>
-              <div className={styles.evidenceColumn}><div className={styles.proofTitle}>INPUT EVIDENCE · Resolved favorites</div><div className={styles.chips}>{result.resolvedAnchors.map(item=><span key={item.entityId}><CheckCircle2 size={14}/><strong>{item.name}</strong><em>{item.resolutionMatch==="exact-name"?"Exact name":source==="live"?"Qloo top match · confirmed":"Qloo top match · review"}</em><code>{source==="live"?"Qloo":"Demo"} ID · {item.entityId}</code></span>)}</div>{result.evidence.topResultResolutionCount>0&&<div className={styles.resolutionNote}><b>{source==="live"?"Top matches confirmed":"Review entity matches"}</b><span>{source==="live"?`${result.evidence.topResultResolutionCount} non-exact Qloo top-result match(es) were explicitly confirmed before taste analysis.`:`${result.evidence.topResultResolutionCount} illustrative top-result match(es) should be reviewed.`}</span></div>}</div>
+              <div className={styles.evidenceColumn}><div className={styles.proofTitle}>INPUT EVIDENCE · Resolved favorites</div><div className={styles.chips}>{result.resolvedAnchors.map(item=><span key={item.entityId}><CheckCircle2 size={14}/><strong>{item.name}</strong><em>{item.resolutionMatch==="exact-name"?"Exact name · no review required":source==="live"?"Qloo top match · confirmed":"Qloo top match · review"}</em><code>{source==="live"?"Qloo":"Demo"} ID · {item.entityId}</code></span>)}</div>{result.evidence.topResultResolutionCount>0&&<div className={styles.resolutionNote}><b>{source==="live"?"Top matches confirmed":"Review entity matches"}</b><span>{source==="live"?`${result.evidence.topResultResolutionCount} non-exact Qloo top-result match(es) were explicitly confirmed before taste analysis.`:`${result.evidence.topResultResolutionCount} illustrative top-result match(es) should be reviewed.`}</span></div>}</div>
               <div className={styles.evidenceHandoff}><span>sent together to</span><strong>Qloo taste analysis</strong><ArrowRight size={18}/></div>
-              <div className={styles.evidenceColumn}><div className={styles.evidenceHeading}><div className={styles.proofTitle}>QLOO OUTPUT EVIDENCE · All retained taste signals</div><span className={styles.signalCount}><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> returned</span></div><div className={styles.selectionRule}><b>Selection rule</b><span>{source==="demo"?"Illustrative: take the first ranked signals.":result.evidence.evidenceBasis==="normalized-score"?`Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities.`:`Qloo did not supply enough numeric scores, so preserve its returned order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`}</span></div>{result.evidence.selectedAffinityCount < result.plan.length && <div className={styles.reuseNote}><b>No synthetic signal</b><span>Only {result.evidence.selectedAffinityCount} real selected signals support {result.plan.length} activities, so the last real signal is reused for the closing step instead of inventing another one.</span></div>}<div className={styles.affinityGrid}>{result.affinities.map((item,index)=>{const selected=selectedSet.has(item.label);const signal=selectedOrder.get(item.label);return <div key={item.label} className={selected?styles.affinitySelected:styles.affinitySupporting}><small>{selected?`Plan signal #${signal}`:"Additional evidence"}</small><span>{item.label}</span><b>{item.score===null?`Rank #${item.rank??index+1}`:`${Math.round(item.score*100)}%`}</b></div>})}</div></div>
+              <div className={styles.evidenceColumn}><div className={styles.evidenceHeading}><div className={styles.proofTitle}>QLOO OUTPUT EVIDENCE · All retained taste signals</div><span className={styles.signalCount}><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> returned</span></div><div className={styles.selectionRule}><b>Selection rule</b><span>{source==="demo"?"Illustrative: take the first ranked signals.":result.evidence.evidenceBasis==="normalized-score"?`Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities.`:`The music and media genre families are ranked separately. Choose up to ${result.evidence.selectedAffinityCount} usable tags in interleaved rank order; numeric source values are not comparable probabilities.`}</span></div>{result.evidence.selectedAffinityCount < result.plan.length && <div className={styles.reuseNote}><b>No synthetic signal</b><span>Only {result.evidence.selectedAffinityCount} real selected signals support {result.plan.length} activities, so the last real signal is reused for the closing step instead of inventing another one.</span></div>}<div className={styles.affinityGrid}>{result.affinities.map((item,index)=>{const selected=selectedSet.has(item.label);const signal=selectedOrder.get(item.label);return <div key={item.label} className={selected?styles.affinitySelected:styles.affinitySupporting}><small>{selected?`Plan signal #${signal}`:"Additional evidence"}</small><span>{item.label}</span><b>{result.evidence.evidenceBasis==="ranked-order" || item.score===null?`Rank #${item.rank??index+1}`:`Qloo score ${item.score.toFixed(3)}`}</b></div>})}</div></div>
             </section>
 
             <section className={styles.decisionTrace}><h3>Agent decision trace</h3><p>The audit trail exposes how the session was assembled.</p><div className={styles.metrics}><span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span><span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span><span><b>{result.evidence.topResultResolutionCount}</b>{source==="live"?" top matches confirmed":" top matches to review"}</span><span><b>{result.evidence.categoryHintCount}</b> category hints</span><span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span><span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span><span><b>{source==="live"?result.evidence.explainabilityResultCount:"—"}</b>{source==="live"?" Qloo-explained results":" live explainability"}</span><span><b>{result.evidence.aggregateExplainabilityAvailable?"Yes":"No"}</b> aggregate explainability</span></div><ol>{result.agentTrace.map(step=><li key={step.stage} className={step.status==="warning"?styles.traceWarning:""}><span>{step.stage}</span><p>{step.detail}</p></li>)}</ol></section>
@@ -566,9 +600,40 @@ export default function HomePage() {
         </details>
       </section>}
 
+      <section id="explore-culture" className={styles.cultureSection}>
+        <header className={styles.cultureHeading}>
+          <div><span className={styles.sectionKicker}>FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
+          <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
+        </header>
+        <div className={styles.cultureGrid}>
+          <a href="#build-session" className={styles.cultureCard} data-culture="music" onClick={()=>chooseCategory("artist")}>
+            <div className={styles.cultureImage}><img src="/_cdn/static/cdb6016d-f120-4ae5-9eab-2203c391a16d-resonance-music-optimized.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className={styles.cultureNumber}>01</span></div>
+            <div className={styles.cultureCardBody}><span>MUSIC</span><h3>Songs worth sharing <ArrowRight size={18} aria-hidden="true"/></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
+          </a>
+          <a href="#build-session" className={styles.cultureCard} data-culture="cinema" onClick={()=>chooseCategory("movie")}>
+            <div className={styles.cultureImage}><img src="/_cdn/static/6706b976-330b-44e0-9806-3c736d06be01-resonance-cinema-optimized.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className={styles.cultureNumber}>02</span></div>
+            <div className={styles.cultureCardBody}><span>CINEMA</span><h3>Follow the story <ArrowRight size={18} aria-hidden="true"/></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
+          </a>
+          <a href="#build-session" className={styles.cultureCard} data-culture="stories" onClick={()=>chooseCategory("book")}>
+            <div className={styles.cultureImage}><img src="/_cdn/static/53663e95-0719-46cf-a6ef-d5a76035cb66-resonance-books-optimized.webp" width="1672" height="941" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className={styles.cultureNumber}>03</span></div>
+            <div className={styles.cultureCardBody}><span>STORIES</span><h3>Turn the page <ArrowRight size={18} aria-hidden="true"/></h3><p>Let a favorite book become a starting point for conversation.</p></div>
+          </a>
+          <a href="#build-session" className={styles.cultureCard} data-culture="places" onClick={()=>chooseCategory("destination")}>
+            <div className={styles.cultureImage}><img src="/_cdn/static/8c5d3530-1b4d-4c2b-8600-b36992ac0508-resonance-places-optimized.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className={styles.cultureNumber}>04</span></div>
+            <div className={styles.cultureCardBody}><span>PLACES</span><h3>Places that matter <ArrowRight size={18} aria-hidden="true"/></h3><p>A familiar place can be the beginning of a conversation.</p></div>
+          </a>
+        </div>
+      </section>
+
+      <section className={styles.savedLibrary} aria-labelledby="saved-plans-heading">
+        <div><span className={styles.sectionKicker}>PRIVATELY ON THIS DEVICE</span><h2 id="saved-plans-heading">Your saved session plans</h2><p>Plans stay in this browser's local storage until you remove them or clear browser data. Do not enter resident names or health information.</p></div>
+        {savedPlans.length>0?<div className={styles.savedList}>{savedPlans.map(plan=><div key={plan.id} className={styles.savedRow}><span><strong>{plan.label}</strong><small>{new Date(plan.savedAt).toLocaleDateString()}</small></span><Button variant="outline" onClick={()=>openSavedPlan(plan)}>View text</Button><Button variant="outline" onClick={()=>downloadSession(plan.text)}>Download</Button><Button variant="outline" onClick={()=>persistPlans(savedPlans.filter(x=>x.id!==plan.id))}>Remove</Button></div>)}</div>:<p className={styles.savedEmpty}>No saved plans yet. After building a session, choose “Save on this device.”</p>}
+        {exportText&&<div className={styles.exportFallback}><h3>Manual-copy / saved plan text</h3><p>Select the text below to copy it, or use Download .txt when the clipboard is blocked.</p><Textarea id="saved-plan-text" readOnly value={exportText} rows={8} onFocus={e=>e.currentTarget.select()}/><Button variant="outline" onClick={()=>downloadSession(exportText)}>Download shown text</Button></div>}
+      </section>
+
       <section className={styles.impactStory}>
         <figure className={styles.connectionVisual}>
-          <img src="/_cdn/static/553246a1-bbf0-41ae-a71d-596b769b0481-resonance-connection.png" width="1672" height="941" loading="lazy" decoding="async" alt="Illustrative scene of people sharing a cultural activity."/>
+          <img src="/_cdn/static/8b07b8c9-0569-427d-8574-6f47ed14ec1f-resonance-connection-optimized.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Illustrative scene of people sharing a cultural activity."/>
           <figcaption>Illustrative artwork · not participant photography</figcaption>
         </figure>
         <div className={styles.impactContent}>
@@ -579,7 +644,7 @@ export default function HomePage() {
           <a className={styles.storyCTA} href="#build-session">Find your next connection <ArrowRight size={18} aria-hidden="true"/></a>
         </div>
       </section>
-      <footer><span>Resonance</span><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
+      <footer><span>Resonance</span><a href="/study">Help evaluate Resonance · voluntary anonymous study</a><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
     </main>
   </>;
 }

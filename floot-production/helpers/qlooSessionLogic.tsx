@@ -1,3 +1,4 @@
+import { safePlan } from "./safePlan";
 type AnyObject = Record<string, unknown>;
 
 const QLOO_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -249,7 +250,7 @@ export const qlooSessionLogic = {
     return "Memory & conversation" as const;
   },
 
-  planFromTags(
+  planFromTagsOriginal(
     tags: { label:string; score:number|null; rank?:number }[],
     energy: string,
     setting: string,
@@ -283,5 +284,8 @@ export const qlooSessionLogic = {
       item("Conversation choice",durations[2],thirdAnchor?`Offer two or three conversation directions connecting “${thirdAnchor}” with “${cc},” and let participants choose.`:`Offer two or three conversation directions connected to “${cc},” and let participants choose.`,`“${cc}” extends the known tastes while preserving participant choice.`,thirdAnchor,cc),
       item("Recall & close",durations[3],fourthAnchor?`Reconnect “${fourthAnchor}” with “${d},” invite one final memory or preference, then ask what should return next time.`:`Use “${d}” for one final memory or preference prompt, then ask what should return next time.`,`“${d}” keeps the close inside the Qloo-grounded memory/conversation neighborhood.`,fourthAnchor,d),
     ];
+  },
+  planFromTags(tags:{label:string;score:number|null;rank?:number}[],energy:string,setting:string,anchors:string[]=[],durationMinutes=45,anchorTypes:string[]=[]) {
+    return safePlan(qlooSessionLogic.planFromTagsOriginal(tags,energy,setting,anchors,durationMinutes),anchors,anchorTypes,energy,setting);
   },
 };

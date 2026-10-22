@@ -140,9 +140,11 @@ function replacementActivity(index:number, item:Result['plan'][number]) {
 }
 
 function formatAffinityScore(score:number) {
-  return `${(score * 100).toFixed(2)}%`;
+  return `Qloo source score ${score.toFixed(3)} (not a probability)`;
 }
 
+const SAVED_KEY = 'resonance.localSavedPlans.v1';
+type SavedPlan = { id:string; savedAt:string; label:string; text:string };
 const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
@@ -166,6 +168,8 @@ export default function App() {
   const [resolutionReview, setResolutionReview] = useState<ResolvedAnchor[] | null>(null);
   const [resolutionReviewToken, setResolutionReviewToken] = useState('');
   const resultRef = useRef<HTMLElement | null>(null);
+  const [exportText,setExportText] = useState('');
+  const [savedPlans,setSavedPlans] = useState<SavedPlan[]>([]);
 
   const usableAnchors = useMemo(() => {
     const entries = anchors.map((query,index) => ({
@@ -192,6 +196,11 @@ export default function App() {
   const keptCount = Object.values(activityDecisions).filter(value => value === 'kept').length;
   const modifiedCount = Object.values(activityDecisions).filter(value => value === 'modified').length;
   const replacedCount = Object.values(activityDecisions).filter(value => value === 'replaced').length;
+
+  useEffect(() => {
+    try { const raw=window.localStorage.getItem(SAVED_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)) setSavedPlans(parsed.filter(p=>typeof p.id==='string'&&typeof p.text==='string'&&p.text.length<120000).slice(0,12)); }
+    catch {setSavedPlans([]);}
+  },[]);
 
   useEffect(() => {
     setQlooState('checking');
@@ -326,6 +335,7 @@ export default function App() {
     setSource(null);
     setError('');
     setCopied(false);
+    setExportText('');
     setResolutionReview(null);
     setResolutionReviewToken('');
   }
@@ -386,21 +396,47 @@ export default function App() {
     setSource('demo');
   }
 
-  async function copySession() {
-    if (!result || !source) return;
+  function sessionText():string {
+    if (!result || !source) return '';
+    const reviewedResult={...result,plan:result.plan.map((item,index)=>({...item,action:activityEdits[index]??item.action}))};
+    const lines=result.plan.flatMap((item,index)=>[
+      `- ${item.title}: ${activityDecisions[index]??'not reviewed'}`,
+      `  Materials: ${activitySupport(index).materials}`,
+      `  Participation options: ${activitySupport(index).participation}`,
+    ]);
+    return `${formatSessionText(reviewedResult,source)}\n\nSafety preflight: Check facility policy and food, swallowing, allergy, mobility, fall, or sensory requirements without entering private health data.\n\nFacilitator decisions:\n${lines.join('\n')}`;
+  }
+  async function copySession(){
+    const body=sessionText();if(!body)return;
     try {
-      const reviewedResult = {...result, plan:result.plan.map((item,index)=>({...item,action:activityEdits[index]??item.action}))};
-      const reviewLines = result.plan.flatMap((item,index)=>[
-        `- ${item.title}: ${activityDecisions[index]??'not reviewed'}`,
-        `  Materials: ${activitySupport(index).materials}`,
-        `  Participation options: ${activitySupport(index).participation}`,
-      ]);
-      await navigator.clipboard.writeText(`${formatSessionText(reviewedResult, source)}\n\nSafety preflight: Check facility policy and any relevant food, swallowing, allergy, mobility, fall, or sensory requirements without entering health data in Resonance. Use seated, non-food, or quiet alternatives when needed.\n\nFacilitator decisions:\n${reviewLines.join('\n')}`);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setError('Copy failed. You can still print the session.');
-    }
+      if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(body);
+      setCopied(true);setExportText('');
+      window.setTimeout(()=>setCopied(false),1800);
+    }catch{setExportText(body);setError('Clipboard blocked; download or select text from the manual-copy field.');}
+  }
+  function downloadSession(value?:string){
+    const body=value||sessionText();if(!body)return;
+    try{const url=URL.createObjectURL(new Blob([body],{type:'text/plain;charset=utf-8'}));
+      const a=document.createElement('a');a.href=url;a.download='resonance-session.txt';
+      document.body.appendChild(a);a.click();a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1200);
+    }catch{setExportText(body);setError('Download blocked; select the text below.');}
+  }
+  function persistPlans(next:SavedPlan[]){
+    try{window.localStorage.setItem(SAVED_KEY,JSON.stringify(next));setSavedPlans(next);}
+    catch{setError('Local browser storage unavailable; download a file instead.');}
+  }
+  function saveSessionLocally(){
+    if(!result)return;const body=sessionText();if(!body)return;
+    const id=typeof crypto.randomUUID==='function'?crypto.randomUUID():String(Date.now());
+    const plan:SavedPlan={id,savedAt:new Date().toISOString(),label:result.requestContext.anchors.map(x=>x.query).join(' + '),text:body};
+    persistPlans([plan,...savedPlans].slice(0,12));
+  }
+  function chooseCategory(type:AnchorType){
+    setResult(null);setSource(null);setError('');setExportText('');setActivityDecisions({});setActivityEdits({});
+    setAnchors(['','']);setAnchorTypes([type,'any']);
+    window.requestAnimationFrame(()=>document.getElementById('anchor-0')?.focus());
   }
 
   function startOver() {
@@ -443,31 +479,6 @@ export default function App() {
         <img className="heroArtwork" src="/brand/resonance-culture-collage.png" alt="Colorful editorial collage celebrating music, cinema, books, and travel." width="1672" height="941" fetchPriority="high"/>
         <div className="heroCaption"><span>01 / DISCOVER</span><strong>Every favorite starts a story.</strong></div>
         <div className="heroFloatingNote"><span aria-hidden="true">✦</span><div><b>A little familiarity.</b><small>A whole world to discover.</small></div></div>
-      </div>
-    </section>
-
-    <section id="explore-culture" className="cultureSection">
-      <header className="cultureHeading">
-        <div><span className="sectionKicker">FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
-        <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
-      </header>
-      <div className="cultureGrid">
-        <a href="#build-session" className="cultureCard" data-culture="music">
-          <div className="cultureImage"><img src="/brand/resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className="cultureNumber">01</span></div>
-          <div className="cultureCardBody"><span>MUSIC</span><h3>Songs worth sharing <span aria-hidden="true">→</span></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
-        </a>
-        <a href="#build-session" className="cultureCard" data-culture="cinema">
-          <div className="cultureImage"><img src="/brand/resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className="cultureNumber">02</span></div>
-          <div className="cultureCardBody"><span>CINEMA</span><h3>Follow the story <span aria-hidden="true">→</span></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
-        </a>
-        <a href="#build-session" className="cultureCard" data-culture="stories">
-          <div className="cultureImage"><img src="/brand/resonance-stories.png" width="1672" height="940" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className="cultureNumber">03</span></div>
-          <div className="cultureCardBody"><span>STORIES</span><h3>Turn the page <span aria-hidden="true">→</span></h3><p>Let a favorite book become a starting point for conversation.</p></div>
-        </a>
-        <a href="#build-session" className="cultureCard" data-culture="places">
-          <div className="cultureImage"><img src="/brand/resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className="cultureNumber">04</span></div>
-          <div className="cultureCardBody"><span>PLACES</span><h3>Places that matter <span aria-hidden="true">→</span></h3><p>A familiar place can be the beginning of a conversation.</p></div>
-        </a>
       </div>
     </section>
 
@@ -588,6 +599,8 @@ export default function App() {
       </div>
       <div className="resultActions" aria-label="Session actions">
         <button type="button" className="secondary" onClick={copySession}>{copied ? 'Copied' : 'Copy session'}</button>
+        <button type="button" className="secondary" onClick={()=>downloadSession()}>Download .txt</button>
+        <button type="button" className="secondary" onClick={saveSessionLocally}>Save on this device</button>
         <button type="button" className="secondary" onClick={()=>window.print()}>Print</button>
         <button type="button" className="secondary" onClick={startOver}>Start over</button>
         <span className="copyStatus" role="status" aria-live="polite">{copied ? 'Session copied to clipboard.' : ''}</span>
@@ -657,7 +670,7 @@ export default function App() {
           <h3>{x.title}</h3>
           {editingActivity === index ? <div className="activityEditor"><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:'modified'}));setEditingActivity(null)}}>Save modification</button><button type="button" className="secondary" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div> : <p className="sessionAction">{displayedAction}</p>}
           <div className="activitySupport"><span><b>Why this fits</b>{x.why}</span><span><b>Materials</b>{activitySupport(index).materials}</span><span><b>Participation options</b>{activitySupport(index).participation}</span></div>
-          {x.affinityLabel && <div className="sessionSignal">{decision==='modified'?'Original evidence reference':signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · paired with ${x.anchorName}` : ''}{decision==='modified'&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==='replaced'&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}
+          {x.affinityLabel && <div className="sessionSignal">{decision==='modified'?'Original evidence reference':signalNumber ? `Session-wide Qloo signal #${signalNumber}` : 'Session-wide signal'} · {x.affinityLabel}{x.anchorName ? ` · starting favorite: ${x.anchorName} (no per-favorite attribution)` : ''}{decision==='modified'&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==='replaced'&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}
           <div className="facilitatorControls" aria-label={`Facilitator controls for ${x.title}`}>
             <button type="button" aria-pressed={decision==='kept'} className={decision==='kept'?'active':''} onClick={()=>setActivityDecisions(current=>({...current,[index]:'kept'}))}>Keep</button>
             <button type="button" aria-pressed={decision==='modified'} className={decision==='modified'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??x.action}));setEditingActivity(index)}}>Modify</button>
@@ -678,7 +691,7 @@ export default function App() {
         <summary>View evidence &amp; audit trail</summary>
         <div className="auditIntro">
           <h3>Full Qloo evidence path</h3>
-          <p>Technical provenance is preserved here without competing with the primary session experience.</p>
+          <p>Qloo signals apply to the combined favorites. Exact-name matches do not require a separate top-result confirmation; 0 such confirmations is normal when there is no ambiguity. Qloo may omit native attribution metadata.</p>
         </div>
         <div className="resultMeta" aria-label="Result provenance and evidence">
           <span className={source === 'live' ? 'metaLive' : 'metaDemo'}><b>Source</b>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
@@ -692,15 +705,15 @@ export default function App() {
         <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
           <div className="evidenceColumn">
             <div className="evidenceHeading"><b>Input evidence</b><h3 id="evidence-bridge-title">Resolved favorites</h3></div>
-            <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : source === 'live' ? 'matchConfirmed' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name' : source === 'live' ? 'Qloo top match · confirmed' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
+            <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : source === 'live' ? 'matchConfirmed' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name · no review required' : source === 'live' ? 'Qloo top match · confirmed' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
             {result.evidence.topResultResolutionCount > 0 && <div className="resolutionNote" role="note"><b>{source === 'live' ? 'Top matches confirmed' : 'Review entity matches'}</b><span>{source === 'live' ? `${result.evidence.topResultResolutionCount} non-exact Qloo top-result match${result.evidence.topResultResolutionCount === 1 ? '' : 'es'} were explicitly confirmed before taste analysis.` : `${result.evidence.topResultResolutionCount} resolved anchor${result.evidence.topResultResolutionCount === 1 ? '' : 's'} used Qloo's top returned entity without an exact name match.`}</span></div>}
           </div>
           <div className="evidenceHandoff"><span>sent together to</span><strong>Qloo taste analysis</strong><i aria-hidden="true">→</i></div>
           <div className="evidenceColumn">
             <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'All retained taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> returned</span></div>
-            <div className="selectionRule"><b>Selection rule</b><span>{source === 'demo' ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.` : result.evidence.evidenceBasis === 'normalized-score' ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.` : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`}</span></div>
+            <div className="selectionRule"><b>Selection rule</b><span>{source === 'demo' ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.` : result.evidence.evidenceBasis === 'normalized-score' ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.` : `The music and media genre families are ranked separately. Select up to ${result.evidence.selectedAffinityCount} usable tags in interleaved order; numeric source values are not comparable probabilities.`}</span></div>
             {result.evidence.selectedAffinityCount < result.plan.length && <div className="evidenceReuseNote" role="note"><b>No synthetic signal</b><span>Only {result.evidence.selectedAffinityCount} real selected signals support {result.plan.length} activities, so the last real signal is reused for the closing step instead of inventing another one.</span></div>}
-            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : formatAffinityScore(x.score)}</b></div>})}</div>
+            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{result.evidence.evidenceBasis==='ranked-order' || x.score===null ? `Rank #${x.rank}` : formatAffinityScore(x.score)}</b></div>})}</div>
           </div>
         </section>
 
@@ -730,6 +743,39 @@ export default function App() {
       </details>
     </section>}
 
+    <section id="explore-culture" className="cultureSection">
+      <header className="cultureHeading">
+        <div><span className="sectionKicker">FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
+        <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
+      </header>
+      <div className="cultureGrid">
+        <a href="#build-session" className="cultureCard" data-culture="music" onClick={()=>chooseCategory('artist')}>
+          <div className="cultureImage"><img src="/brand/resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className="cultureNumber">01</span></div>
+          <div className="cultureCardBody"><span>MUSIC</span><h3>Songs worth sharing <span aria-hidden="true">→</span></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="cinema" onClick={()=>chooseCategory('movie')}>
+          <div className="cultureImage"><img src="/brand/resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className="cultureNumber">02</span></div>
+          <div className="cultureCardBody"><span>CINEMA</span><h3>Follow the story <span aria-hidden="true">→</span></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="stories" onClick={()=>chooseCategory('book')}>
+          <div className="cultureImage"><img src="/brand/resonance-stories.png" width="1672" height="940" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className="cultureNumber">03</span></div>
+          <div className="cultureCardBody"><span>STORIES</span><h3>Turn the page <span aria-hidden="true">→</span></h3><p>Let a favorite book become a starting point for conversation.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="places" onClick={()=>chooseCategory('destination')}>
+          <div className="cultureImage"><img src="/brand/resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className="cultureNumber">04</span></div>
+          <div className="cultureCardBody"><span>PLACES</span><h3>Places that matter <span aria-hidden="true">→</span></h3><p>A familiar place can be the beginning of a conversation.</p></div>
+        </a>
+      </div>
+    </section>
+
+    <section className="savedLibrary" aria-labelledby="saved-plans-heading">
+      <span className="sectionKicker">PRIVATELY ON THIS DEVICE</span>
+      <h2 id="saved-plans-heading">Your saved session plans</h2>
+      <p>Saved only to this browser's local storage. Do not enter resident names or health information.</p>
+      {savedPlans.length?<div className="savedList">{savedPlans.map(plan=><div className="savedRow" key={plan.id}><span><strong>{plan.label}</strong><small>{new Date(plan.savedAt).toLocaleDateString()}</small></span><button type="button" className="secondary" onClick={()=>{setExportText(plan.text);window.requestAnimationFrame(()=>document.getElementById('saved-plan-text')?.focus());}}>View text</button><button type="button" className="secondary" onClick={()=>downloadSession(plan.text)}>Download</button><button type="button" className="secondary" onClick={()=>persistPlans(savedPlans.filter(p=>p.id!==plan.id))}>Remove</button></div>)}</div>:<p className="savedEmpty">No saved plans yet. After building one, select Save on this device.</p>}
+      {exportText&&<div className="exportFallback"><h3>Manual-copy / saved plan text</h3><p>Select this text if the clipboard is blocked or download the plan.</p><textarea id="saved-plan-text" readOnly value={exportText} rows={8} onFocus={e=>e.currentTarget.select()}/><button type="button" className="secondary" onClick={()=>downloadSession(exportText)}>Download shown text</button></div>}
+    </section>
+
     <section className="impactStory">
       <figure className="connectionVisual">
         <img src="/brand/resonance-connection.png" width="1672" height="941" loading="lazy" decoding="async" alt="Illustrative scene of people sharing a cultural activity."/>
@@ -743,6 +789,6 @@ export default function App() {
         <a className="storyCTA" href="#build-session">Find your next connection <span aria-hidden="true">→</span></a>
       </div>
     </section>
-    <footer><span>Resonance</span><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
+    <footer><span>Resonance</span><a href="/study">Help evaluate Resonance · voluntary anonymous study</a><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
   </main>;
 }

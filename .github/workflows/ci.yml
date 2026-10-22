@@ -40,6 +40,8 @@ jobs:
         run: npm run study:evidence:selftest
       - name: Unit tests
         run: npm test
+      - name: Diverse input structural benchmark (20 synthetic fixtures)
+        run: npm run quality:benchmark
       - name: Production build
         run: npm run build
       - name: Preview-mode smoke test

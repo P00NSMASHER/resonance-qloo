@@ -73,7 +73,7 @@ describe('session export', () => {
     expect(text).toContain('Illustrative demo — not live Qloo data');
     expect(text).not.toContain('Generated:');
     expect(text).toContain('Jazz: Rank #1');
-    expect(text).toContain('Musicals: 82.00%');
+    expect(text).toContain('Musicals: Rank #2');
   });
 
   it('keeps category hints visible in copied/printed session text', () => {
@@ -141,9 +141,9 @@ describe('session export', () => {
         meanNormalizedScore:0.81,
       },
     };
-    expect(formatSessionText(scored, 'live')).toContain('Mean selected Qloo score: 81%');
-    expect(formatSessionText(session, 'live')).not.toContain('Mean selected Qloo score:');
-    expect(formatSessionText(scored, 'demo')).not.toContain('Mean selected Qloo score:');
+    expect(formatSessionText(scored, 'live')).toContain('Mean selected source score: 0.810 (not a probability)');
+    expect(formatSessionText(session, 'live')).not.toContain('Mean selected source score:');
+    expect(formatSessionText(scored, 'demo')).not.toContain('Mean selected source score:');
   });
 
   it('keeps live Qloo explainability status in exported evidence', () => {
@@ -187,7 +187,7 @@ describe('session export', () => {
   it('distinguishes selected and additional taste evidence in exports', () => {
     const live = formatSessionText(session, 'live');
     expect(live).toContain('[selected Qloo signal #1] Jazz: Rank #1');
-    expect(live).toContain('[selected Qloo signal #2] Musicals: 82.00%');
+    expect(live).toContain('[selected Qloo signal #2] Musicals: Rank #2');
     expect(live).toContain('[additional Qloo evidence] Classic cinema: Rank #3');
 
     const demo = formatSessionText(session, 'demo');

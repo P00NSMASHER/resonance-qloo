@@ -21,13 +21,13 @@ const gitBlobSha = body => {
 };
 
 if (manifest.flootProjectId !== '49082a23-f25f-41f4-a147-f908c8dcc860') failures.push('Unexpected Floot project ID.');
-if (manifest.flootProjectVersion !== '1792634790861') failures.push('Unexpected Floot project version.');
+if (manifest.flootProjectVersion !== '1792638043317') failures.push('Unexpected Floot project version.');
 if (manifest.publishedUrl !== 'https://resonance-qloo.floot.app') failures.push('Unexpected Floot published URL.');
 if (manifest.qlooApiOrigin !== 'https://hackathon.api.qloo.com') failures.push('Unexpected Floot Qloo API origin.');
 if (manifest.deploymentContractVersion !== deployment.version) failures.push('Floot snapshot contract version differs from deployment-contract.json.');
 if (manifest.liveVerification?.flootProjectVersion !== manifest.flootProjectVersion) failures.push('Live Floot verification receipt version differs from the snapshot version.');
 if (manifest.liveVerification?.exactFileCount !== manifest.files.length) failures.push('Live Floot verification receipt file count differs from the manifest file count.');
-if (manifest.liveVerification?.directComparisonStatus !== '29/29 exact') failures.push('Live Floot verification receipt is missing the 29/29 exact direct-comparison status.');
+if (manifest.liveVerification?.directComparisonStatus !== '30/30 exact') failures.push('Live Floot verification receipt is missing the 30/30 exact direct-comparison status.');
 
 for (const entry of manifest.files ?? []) {
   const body = await readSnapshot(entry.path);
@@ -42,6 +42,9 @@ const prodRecommendSchema = await readSnapshot('endpoints/recommend_POST.schema.
 const prodStatus = await readSnapshot('endpoints/status_GET.ts');
 const prodStatusSchema = await readSnapshot('endpoints/status_GET.schema.ts');
 const prodLogic = await readSnapshot('helpers/qlooSessionLogic.tsx');
+const prodSafePlan = await readSnapshot('helpers/safePlan.tsx');
+const canonicalSafePlan = await readRepo('src/lib/safePlan.ts');
+if (prodSafePlan !== canonicalSafePlan) failures.push('Safe semantic planner differs between Floot and portable app.');
 const prodPage = await readSnapshot('pages/_index.tsx');
 const prodCss = await readSnapshot('pages/_index.module.css');
 const prodStudySchema = await readSnapshot('endpoints/study-response_POST.schema.ts');
