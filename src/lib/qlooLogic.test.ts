@@ -147,7 +147,7 @@ describe('Qloo parsing', () => {
       { label:'Italian cuisine', score:null, rank:4 }
     ], 'social', 'small-group');
     expect(plan).toHaveLength(4);
-    expect(plan[0].action).toContain('easy back-and-forth conversation');
+    expect(plan[0].action).toContain('Invite easy discussion.');
   });
 
   it('reuses the last real Qloo signal when only three affinities are available', () => {
