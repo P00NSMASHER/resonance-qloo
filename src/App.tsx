@@ -143,6 +143,8 @@ function formatAffinityScore(score:number) {
   return `${(score * 100).toFixed(2)}%`;
 }
 
+const SAVED_KEY = 'resonance.localSavedPlans.v1';
+type SavedPlan = { id:string; savedAt:string; label:string; text:string };
 const STATUS_REQUEST_TIMEOUT_MS = 12_000;
 const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 
@@ -166,6 +168,8 @@ export default function App() {
   const [resolutionReview, setResolutionReview] = useState<ResolvedAnchor[] | null>(null);
   const [resolutionReviewToken, setResolutionReviewToken] = useState('');
   const resultRef = useRef<HTMLElement | null>(null);
+  const [exportText,setExportText] = useState('');
+  const [savedPlans,setSavedPlans] = useState<SavedPlan[]>([]);
 
   const usableAnchors = useMemo(() => {
     const entries = anchors.map((query,index) => ({
@@ -192,6 +196,11 @@ export default function App() {
   const keptCount = Object.values(activityDecisions).filter(value => value === 'kept').length;
   const modifiedCount = Object.values(activityDecisions).filter(value => value === 'modified').length;
   const replacedCount = Object.values(activityDecisions).filter(value => value === 'replaced').length;
+
+  useEffect(() => {
+    try { const raw=window.localStorage.getItem(SAVED_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)) setSavedPlans(parsed.filter(p=>typeof p.id==='string'&&typeof p.text==='string'&&p.text.length<120000).slice(0,12)); }
+    catch {setSavedPlans([]);}
+  },[]);
 
   useEffect(() => {
     setQlooState('checking');
@@ -326,6 +335,7 @@ export default function App() {
     setSource(null);
     setError('');
     setCopied(false);
+    setExportText('');
     setResolutionReview(null);
     setResolutionReviewToken('');
   }
@@ -386,21 +396,47 @@ export default function App() {
     setSource('demo');
   }
 
-  async function copySession() {
-    if (!result || !source) return;
+  function sessionText():string {
+    if (!result || !source) return '';
+    const reviewedResult={...result,plan:result.plan.map((item,index)=>({...item,action:activityEdits[index]??item.action}))};
+    const lines=result.plan.flatMap((item,index)=>[
+      `- ${item.title}: ${activityDecisions[index]??'not reviewed'}`,
+      `  Materials: ${activitySupport(index).materials}`,
+      `  Participation options: ${activitySupport(index).participation}`,
+    ]);
+    return `${formatSessionText(reviewedResult,source)}\n\nSafety preflight: Check facility policy and food, swallowing, allergy, mobility, fall, or sensory requirements without entering private health data.\n\nFacilitator decisions:\n${lines.join('\n')}`;
+  }
+  async function copySession(){
+    const body=sessionText();if(!body)return;
     try {
-      const reviewedResult = {...result, plan:result.plan.map((item,index)=>({...item,action:activityEdits[index]??item.action}))};
-      const reviewLines = result.plan.flatMap((item,index)=>[
-        `- ${item.title}: ${activityDecisions[index]??'not reviewed'}`,
-        `  Materials: ${activitySupport(index).materials}`,
-        `  Participation options: ${activitySupport(index).participation}`,
-      ]);
-      await navigator.clipboard.writeText(`${formatSessionText(reviewedResult, source)}\n\nSafety preflight: Check facility policy and any relevant food, swallowing, allergy, mobility, fall, or sensory requirements without entering health data in Resonance. Use seated, non-food, or quiet alternatives when needed.\n\nFacilitator decisions:\n${reviewLines.join('\n')}`);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setError('Copy failed. You can still print the session.');
-    }
+      if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(body);
+      setCopied(true);setExportText('');
+      window.setTimeout(()=>setCopied(false),1800);
+    }catch{setExportText(body);setError('Clipboard blocked; download or select text from the manual-copy field.');}
+  }
+  function downloadSession(value?:string){
+    const body=value||sessionText();if(!body)return;
+    try{const url=URL.createObjectURL(new Blob([body],{type:'text/plain;charset=utf-8'}));
+      const a=document.createElement('a');a.href=url;a.download='resonance-session.txt';
+      document.body.appendChild(a);a.click();a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1200);
+    }catch{setExportText(body);setError('Download blocked; select the text below.');}
+  }
+  function persistPlans(next:SavedPlan[]){
+    try{window.localStorage.setItem(SAVED_KEY,JSON.stringify(next));setSavedPlans(next);}
+    catch{setError('Local browser storage unavailable; download a file instead.');}
+  }
+  function saveSessionLocally(){
+    if(!result)return;const body=sessionText();if(!body)return;
+    const id=typeof crypto.randomUUID==='function'?crypto.randomUUID():String(Date.now());
+    const plan:SavedPlan={id,savedAt:new Date().toISOString(),label:result.requestContext.anchors.map(x=>x.query).join(' + '),text:body};
+    persistPlans([plan,...savedPlans].slice(0,12));
+  }
+  function chooseCategory(type:AnchorType){
+    setResult(null);setSource(null);setError('');setExportText('');setActivityDecisions({});setActivityEdits({});
+    setAnchors(['','']);setAnchorTypes([type,'any']);
+    window.requestAnimationFrame(()=>document.getElementById('anchor-0')?.focus());
   }
 
   function startOver() {
