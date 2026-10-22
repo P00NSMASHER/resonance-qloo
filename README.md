@@ -4,9 +4,9 @@
 
 **Qloo-powered cultural intelligence for more personal human connection.**
 
-### Resonance Cultural Atlas identity
+### October 22 visual refresh
 
-**Culture becomes connection.** The public web app now uses an original wave-connection emblem, editorial cultural artwork, a midnight-ink and peacock-teal design system, and a responsive hero leading directly to the functional Qloo session builder.
+**Culture becomes connection.** The public app pairs a deep-teal and warm-ivory palette with expressive serif headlines, six new photographic-style cultural artworks, and a responsive hero leading directly to the functional Qloo session builder. The original wave-connection emblem and Cultural Atlas artwork remain part of the identity.
 
 - [Editable Resonance identity board in Canva](https://www.canva.com/d/qpfmNH8wxTS5pH_)
 - [Visual identity specification and asset provenance](docs/BRAND_IDENTITY.md)
@@ -15,11 +15,17 @@
 Live demo: https://resonance-qloo.floot.app  
 Devpost: https://devpost.com/software/resonance-nud9ek
 
-[Final hackathon submission checklist](docs/HACKATHON_SUBMISSION_GATE.md) · [Devpost edit packet](docs/DEVPOST_EDIT_PACKET.md) · [Copy-ready Devpost text](docs/DEVPOST_SUBMISSION_2026.md) · [Permanent current screenshots](docs/judge-gallery/README.md)
+[Final hackathon submission checklist](docs/HACKATHON_SUBMISSION_GATE.md) · [Devpost edit packet](docs/DEVPOST_EDIT_PACKET.md) · [Copy-ready Devpost text](docs/DEVPOST_SUBMISSION_2026.md) · [Dated judge gallery](docs/judge-gallery/README.md)
 
-## Current judge gallery (permanent)
+## Current published design — October 22, 2026
 
-The published product has been recaptured in desktop and iPhone browser sessions, with the actual live Qloo comparison and facilitator controls. All seven images are now **committed directly to this public repository**; they do not depend on GitHub Actions' seven-day artifact retention.
+![Published Resonance visual refresh, captured October 22, 2026](docs/design-refresh-2026-10-22.jpg)
+
+The public app was verified in the browser at **2026-10-22 02:12:15 UTC**, following the publication recorded by Floot at **02:11 UTC** (minute precision). All eight images loaded, the desktop layout had no horizontal overflow, and the main CTA opened the session builder. An actual live Qloo session returned 16 signals, selected four, and produced four activities. Facilitator review completed **4/4: two kept, one modified, one replaced**. Clipboard copying was not verified. [Source verification CI](https://github.com/P00NSMASHER/resonance-qloo/actions/runs/39709870384) passed all 33 verify-job steps.
+
+## Historical judge gallery — October 8, 2026
+
+The seven images below preserve the **October 8** desktop, iPhone, live-Qloo comparison, facilitator review, and study-page captures. They show the interface and results from that dated run; the screenshot above shows the current redesign. All seven historical images are committed directly to this public repository and do not depend on GitHub Actions' seven-day artifact retention. A new automated gallery capture is expected after the redesign is merged into `main`.
 
 - [Full screenshot gallery, capture metadata and SHA-256 hashes](docs/judge-gallery/README.md)
 - [Desktop Cultural Atlas identity](docs/judge-gallery/00-brand-desktop.png)
@@ -30,11 +36,11 @@ The published product has been recaptured in desktop and iPhone browser sessions
 - [Voluntary research study, desktop](docs/judge-gallery/04-study-desktop.png)
 - [Voluntary research study, iPhone](docs/judge-gallery/04-study-iphone.png)
 
-![Current published Resonance desktop experience](docs/judge-gallery/00-brand-desktop.png)
+![Historical Resonance desktop experience, October 8, 2026](docs/judge-gallery/00-brand-desktop.png)
 
-![Real same-input Qloo comparison in the published product](docs/judge-gallery/02-qloo-transformation.png)
+![Actual same-input Qloo comparison captured October 8, 2026](docs/judge-gallery/02-qloo-transformation.png)
 
-![Actual completed human-control review interface](docs/judge-gallery/03-finished-session.png)
+![Actual completed facilitator review captured October 8, 2026](docs/judge-gallery/03-finished-session.png)
 
 Resonance turns a handful of known cultural favorites—an artist, film, restaurant, brand, book, or place—into a culturally coherent 30-, 45-, or 60-minute engagement plan for senior-living activity teams and families.
 
@@ -44,9 +50,9 @@ The current live Qloo agent turns each selected cultural signal into a concrete 
 
 These deterministic activity suggestions are **not** Qloo assertions about a participant or evidence that the suggested activities improve outcomes. Staff must choose appropriate materials and retain final control. Historical benchmark findings and zero validated human study responses are not rewritten.
 
-## Current verified public Qloo evidence (October 8 release)
+## Archived public Qloo evidence (October 8 release)
 
-The latest live production capture is frozen at [CURRENT QLOO EVIDENCE](docs/LIVE_QLOO_CURRENT_EVIDENCE.json). It is **separate from and newer than** the older unfiltered proof artifacts. The capture resolved Ella Fitzgerald and *Roman Holiday* exactly, returned 16 independent music/media signals and selected **Jazz, Romance, swing, Musical** for a 30-minute facilitator-ready session. Qloo's cross-family rank order is retained; no combined confidence mean is invented.
+The October 8 live production response is frozen at [CURRENT QLOO EVIDENCE](docs/LIVE_QLOO_CURRENT_EVIDENCE.json). It is **separate from and newer than** the older unfiltered proof artifacts. The capture resolved Ella Fitzgerald and *Roman Holiday* exactly, returned 16 independent music/media signals and selected **Jazz, Romance, swing, Musical** for a 30-minute facilitator-ready session. Qloo's cross-family rank order is retained; no combined confidence mean is invented.
 
 The repeatable scripts `npm run evidence:current:capture`, `npm run evidence:current:check`, and `npm run evidence:current:selftest` capture a fresh public response and validate an archived one. The assertion suite rejects altered tags, false Qloo attribution, fabricated duration and missing facilitator cues. A new capture should be reviewed before replacing the frozen artifact, because upstream Qloo signals can legitimately change. Current evidence does **not** represent a measured benefit for real people.
 
