@@ -1,13 +1,16 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "f0c60849d004f0c0afbb5d3df2831db280530f65",
+  "sourceCommit": "934b38d9660a77f8fc48a6541fc904aa39a8f3f3",
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791485788167",
-  "productionManifestSha256": "6a5f83d7f6deab4de097b69547862fe271046271f3ce6da86bbe35017d090b5b",
+  "flootProjectVersion": "1792634790861",
+  "productionManifestSha256": "852d1256b351adf5e8f1ff28875fbea88e01d1e7fa4d69c90e2137b9893bac58",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
   "galleryWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/37257078109",
   "galleryWorkflowConclusion": "success",
-  "builtAt": "2026-10-08T19:02:27.544Z",
+  "builtAt": "2026-10-22T02:11Z",
   "publicUrl": "https://resonance-qloo.floot.app",
-  "note": "Mission 15 release: stopwatch integrity and anonymous study UX were checked by four passing Floot spec suites and main-ready candidate CI #1036 (29/29). Published /study returns HTTP 200, public Qloo remains ready, and deliberately malformed no-consent POST rejects HTTP 400 without creating a participant record. New published study page has source version 1791485788167; manifest lists 29 exact runtime files. Gallery receipt refers to the last successful judge imagery until fresh study-specific browser QA completes. Zero real study responses are claimed."
+  "note": "October 22 photographic editorial refresh. Floot publication history reports 2026-10-22 02:11 UTC with minute precision; builtAt preserves that precision. The public app was browser-verified at 2026-10-22 02:12:15 UTC: all eight images loaded, desktop had no horizontal overflow, and the session-builder CTA worked. An actual live Qloo run returned 16 signals, selected four, and produced four activities; Keep/Modify/Replace review completed 4/4 with two kept, one modified, and one replaced. Clipboard copying was not verified. Source commit 934b38d9660a77f8fc48a6541fc904aa39a8f3f3 passed all 33 verify-job steps in workflow run 39709870384. The current public desktop screenshot is docs/design-refresh-2026-10-22.jpg. galleryWorkflowRun and galleryWorkflowConclusion retain the successful October 8 historical gallery capture; they do not claim a fresh gallery run for this redesign. The next gallery workflow is expected after the main merge. No real-participant outcomes are claimed.",
+  "verifiedAt": "2026-10-22T02:12:15Z",
+  "verificationWorkflowRun": "https://github.com/P00NSMASHER/resonance-qloo/actions/runs/39709870384",
+  "verificationWorkflowConclusion": "success"
 }

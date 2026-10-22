@@ -1,6 +1,6 @@
 # Exact Floot production source
 
-This directory is a public snapshot of the **actual judge-facing Floot source** for Resonance, captured from Floot project version `1791163332024`.
+This directory is a public snapshot of the **actual Floot source** for Resonance, captured from Floot project version `1792634790861`. Source capture and publication are separate: `BUILD_RECEIPT.json` records the last verified published version.
 
 - Floot project ID: `49082a23-f25f-41f4-a147-f908c8dcc860`
 - Published URL: https://resonance-qloo.floot.app
@@ -11,7 +11,7 @@ This directory is a public snapshot of the **actual judge-facing Floot source** 
 
 The snapshot contains every runtime file directly involved in the public Resonance experience plus the anonymous Phase 5 validation surface:
 
-- public page and responsive styling;
+- public page, photographic editorial artwork references and responsive styling;
 - recommendation and status endpoint handlers plus schemas;
 - shared Qloo parsing/selection/session logic;
 - directly imported Button/Input/Select/Badge components and styles;
@@ -41,6 +41,8 @@ This removes the need for judges to infer production behavior from a parallel im
 
 ## Live-byte verification receipt
 
-On 2026-10-04, all 28 manifested runtime files were re-read from live Floot project version `1791163332024` after Phase 10 repairs. Each file was reconstructed in complete line chunks, checked against its live character count, and recorded with a content-addressed Git blob identity.
+On October 22, 2026 UTC, all 29 manifested runtime files were directly read from Floot version `1791670843967`. Each file was reconstructed in complete line chunks and checked against the source character count reported by Floot. The only differences from the preceding repository snapshot were terminal whitespace in three files.
 
-That point-in-time receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not pretend to have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe.
+The photographic editorial refresh then changed only `pages/_index.tsx` and `pages/_index.module.css`. Both files were fully reread from Floot version `1792633710338` and matched the written source byte-for-byte: 48,585 and 58,744 characters respectively. The final CSS-only mobile readiness fix was appended at version `1792634790861`; its ending lines were directly reread and matched against the complete 59,128-character staged file, whose preceding content was unchanged. The TSX file remained unchanged. The remaining 27 runtime files retain the complete direct capture. The committed snapshots use canonical LF endings, as required by the parity verifier.
+
+That point-in-time source receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe. Capturing a source version does not by itself establish that it is publicly deployed.

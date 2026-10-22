@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1791485788167",
+  "flootProjectVersion": "1792634790861",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact Floot runtime slice for the judge experience plus the anonymous Phase 5 validation surface: public pages/styling, status/recommendation/study endpoints and schemas, shared Qloo logic, directly imported UI components/provider glue, and deployed dependency manifest. The new study stopwatch helper is now included in the manifest; the study stylesheet was already included.",
+  "snapshotScope": "Exact Floot runtime slice for the Resonance public homepage, status/recommendation endpoints, anonymous study, directly imported UI components/provider glue, and dependency manifest. The October 22 visual refresh changes only homepage JSX/CSS; server behavior and study logic are retained.",
   "files": [
     {
       "path": "base.css",
@@ -79,8 +79,8 @@
     },
     {
       "path": "endpoints/recommend_POST.ts",
-      "gitBlobSha": "011f6afa68915b3ca8a9cd81b40a177f07897674",
-      "sourceCharCount": 15605
+      "gitBlobSha": "0132b08ba6ed2a31dfcf6bb5f1dbc49cf6e026c9",
+      "sourceCharCount": 15606
     },
     {
       "path": "endpoints/status_GET.schema.ts",
@@ -89,8 +89,8 @@
     },
     {
       "path": "endpoints/status_GET.ts",
-      "gitBlobSha": "6803fde3a90a4370e4c940dc27480950390eab13",
-      "sourceCharCount": 1981
+      "gitBlobSha": "cda065e4c18cac961694ad035ee914ba2703cd3e",
+      "sourceCharCount": 1982
     },
     {
       "path": "endpoints/study-response_POST.schema.ts",
@@ -119,8 +119,8 @@
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "9a0088bdc15dda6131508525582904506b24b8df",
-      "sourceCharCount": 32347
+      "gitBlobSha": "523f27225bc224d8931713b2f509f3cb2c2b31e2",
+      "sourceCharCount": 59128
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -129,8 +129,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "a8550dced6e0faf89c38ab6bbfbe728c452005d6",
-      "sourceCharCount": 43694
+      "gitBlobSha": "0641a7352e8df30967cbda801bc167501342179d",
+      "sourceCharCount": 48585
     },
     {
       "path": "pages/study.module.css",
@@ -154,11 +154,11 @@
     }
   ],
   "liveVerification": {
-    "verifiedDate": "2026-10-08",
-    "flootProjectVersion": "1791485788167",
+    "verifiedDate": "2026-10-22",
+    "flootProjectVersion": "1792634790861",
     "exactFileCount": 29,
-    "verificationMethod": "Updated /study page, stylesheet and new stopwatch helper read directly from Floot version 1791485788167 and source-captured. The other 26 unchanged runtime files retain exact snapshots. CI checks all 29 file hashes.",
+    "verificationMethod": "All 29 runtime files directly read and reconstructed from Floot version 1791670843967 with exact source character counts. After only homepage JSX/CSS changed, both files were read back in complete line chunks from version 1792633710338 and matched the written staging files byte-for-byte. The other 27 runtime files retain their direct source capture. Git snapshots normalize CRLF to LF; raw capture counts are retained separately. This is a source capture, not a claim that this version is published. The final mobile readiness CSS fix was append-only; its complete ending lines were read from Floot version 1792634790861 and matched the 59,128-character staging stylesheet, with the preceding content unchanged.",
     "directComparisonStatus": "29/29 exact",
-    "manifestBlobStatus": "29 runtime snapshots bound to canonical Git blobs; verifier recomputes all hashes"
+    "manifestBlobStatus": "29 exact runtime snapshots bound to canonical Git blobs; verifier recomputes all hashes"
   }
 }
