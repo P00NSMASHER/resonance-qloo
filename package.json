@@ -39,7 +39,8 @@
     "submission:devpost:selftest": "node scripts/check-devpost-public.mjs --selftest",
     "evidence:current:check": "node scripts/check-current-qloo-evidence.mjs",
     "evidence:current:selftest": "node scripts/check-current-qloo-evidence.mjs --selftest",
-    "evidence:current:capture": "node scripts/capture-current-qloo-evidence.mjs"
+    "evidence:current:capture": "node scripts/capture-current-qloo-evidence.mjs",
+    "quality:benchmark": "node --import tsx scripts/benchmark-session-quality.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
