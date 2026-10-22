@@ -66,6 +66,8 @@ jobs:
         run: npm run evidence:current:selftest
       - name: Submission artifact preflight
         run: npm run submission:preflight:offline
+      - name: Judge gallery capture script syntax
+        run: node --check scripts/capture-judge-gallery.mjs
       - name: Durable judge captures and original brand assets
         run: npm run submission:assets:check
       - name: Devpost public-story drift detector self-test (offline)
