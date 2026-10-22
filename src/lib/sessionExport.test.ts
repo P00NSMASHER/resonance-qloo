@@ -73,7 +73,7 @@ describe('session export', () => {
     expect(text).toContain('Illustrative demo — not live Qloo data');
     expect(text).not.toContain('Generated:');
     expect(text).toContain('Jazz: Rank #1');
-    expect(text).toContain('Musicals: 82.00%');
+    expect(text).toContain('Musicals: Rank #2');
   });
 
   it('keeps category hints visible in copied/printed session text', () => {
