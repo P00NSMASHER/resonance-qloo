@@ -81,6 +81,9 @@ for (const {width,height,name} of [
   await studyPage.close();
 }
 
+await page.locator('#preference-status-0').selectOption('declined');
+if(await page.getByRole('button',{name:'Build with live Qloo'}).isEnabled())throw Error('Declined favorite did not block the live agent');
+await page.locator('#preference-status-0').selectOption('uncertain');
 await page.getByRole('button',{name:'Build with live Qloo'}).click();
 await page.getByText('How Qloo changed this session').waitFor({state:'visible',timeout:60_000});
 const qlooSection = page.getByText('How Qloo changed this session').locator('xpath=ancestor::section[1]');
@@ -135,5 +138,40 @@ if(clipboardSimulated){
 }
 
 
+// Synthetic facilitator-persona workflow acceptance; DO NOT submit /study data.
+const studioButton=page.getByRole('button',{name:'Open facilitator adaptations'});
+await studioButton.click();
+const studio=page.locator('section[aria-label="Facilitator Studio"]');
+await studio.getByText('Step 1 — choose duration, access and language').waitFor({state:'visible'});
+await studio.getByLabel('Adapted length').selectOption('5');
+await studio.getByRole('checkbox',{name:/I will ask before starting/}).check();
+if(!(await studio.getByRole('button',{name:'Start / resume'}).isEnabled()))throw Error('Consent check did not enable facilitator pacing');
+await studio.getByRole('button',{name:'Pass / switch topic'}).first().click();
+await studio.getByText(/Topic changed at facilitator request/).waitFor({state:'visible'});
+await studio.getByLabel('Facilitator cue language').selectOption('es');
+await studio.getByText(/¿Prefiere/).first().waitFor({state:'visible'});
+const htmlDownload=page.waitForEvent('download',{timeout:15000});
+await studio.getByRole('button',{name:'Download complete offline plan'}).click();
+const htmlFile=await htmlDownload;
+if(await htmlFile.failure()||htmlFile.suggestedFilename()!=='resonance-offline-plan.html')throw Error('Offline HTML download failed');
+const cardDownload=page.waitForEvent('download',{timeout:15000});
+await studio.getByRole('button',{name:'One-page run sheet / PDF-ready'}).click();
+const cardFile=await cardDownload;
+if(await cardFile.failure()||cardFile.suggestedFilename()!=='resonance-one-page-run-sheet.html')throw Error('One-page run sheet download failed');
+const jsonDownload=page.waitForEvent('download',{timeout:15000});
+await studio.getByRole('button',{name:'Download versioned JSON'}).click();
+const jsonFile=await jsonDownload;
+const jsonPath=await jsonFile.path();
+if(!jsonPath)throw Error('Versioned handoff download missing');
+const importedJson=JSON.parse(await (await import('node:fs/promises')).readFile(jsonPath,'utf8'));
+if(importedJson.schema!=='resonance-facilitator-handoff-v1'||importedJson.sessionMinutes!==5||
+   importedJson.steps?.length!==1||importedJson.steps?.[0]?.durationMinutes!==5)
+   throw Error('Versioned handoff did not preserve 5-minute adaptation and source');
+console.log('Facilitator Studio: consent, declined favorite, topic switch, Spanish draft, 5-minute plan and three offline export formats passed.');
+await page.setViewportSize({width:390,height:844});
+const width=await page.evaluate(()=>({view:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+if(width.scroll>width.view+2)throw Error('Studio mobile overflow: '+JSON.stringify(width));
+await studio.screenshot({path:`${out}/05-facilitator-studio-iphone.png`,animations:'disabled'});
+console.log('Facilitator Studio mobile layout passed:',JSON.stringify(width));
 await browser.close();
 console.log('Captured refreshed judge gallery, live plan review, downloadable export, local save and clipboard recovery from',url);

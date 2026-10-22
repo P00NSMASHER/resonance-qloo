@@ -1,5 +1,7 @@
 # Resonance: 100 synthetic review remediation matrix
 
+**Release:** Floot v`1792674071418` published October 22, 2026 at 13:08 UTC; GitHub CI source checks pass. A dedicated real-browser Facilitator Studio workflow is the remaining technical acceptance gate. Independent clinical/user outcomes, blind plan comparisons, native-speaker checks, and actual accessibility observations are not established.
+
 **SOURCE STATUS: 100 fictional scenarios (50 activity professionals and 50 caregivers) across 20 service settings; 0 observed participants.** Ratings, prevalence estimates and outcomes are not user evidence. The existing negative synthetic baseline comparison remains public.
 
 | ID | Constructed concern | Engineering response | Release condition |

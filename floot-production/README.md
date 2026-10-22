@@ -54,3 +54,7 @@ Floot version `1792674071418` has a new `helpers/safePlan.tsx` module. It preven
 ## 100-scenario feedback remediation — source candidate
 
 Version `1792674071418` includes Facilitator Studio (client-side accessibility presets, consent, preference status, mixed opt-in group tracks, 5/10/15-minute micro-plans, English/Spanish draft guidance, rights-aware media choices, independent offline TXT/HTML/one-page run-sheet export, versioned JSON handoff, limited local anonymous theme tags, import validation and shared-device deletion controls). All outputs remain human-reviewed cultural activity guidance, not clinical recommendations. Twenty synthetic contexts were reviewed; no real user responses are claimed. This snapshot must be published and then verified separately before claiming live acceptance.
+
+## Live release verification, October 22
+
+Floot publication history confirms that project version `1792674071418` went live at `2026-10-22 13:08 UTC`. The published homepage contains preference verification controls and returned HTTP 200; public Qloo status was ready and a canonical Qloo request returned HTTP 200 with `qloo-live` provenance and four timed activities. The updated published receipt is in `BUILD_RECEIPT.json`. The 100 simulated review cases are synthetic design stress tests, not real-person effectiveness data. Studio browser interaction coverage will be assessed by the release gallery CI; no independent user or native-language acceptance is claimed.
