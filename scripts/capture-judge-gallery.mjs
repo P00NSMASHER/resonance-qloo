@@ -24,7 +24,7 @@ const verifyBrand=async (target,label) => {
     viewport:document.documentElement.clientWidth,
     scroll:document.documentElement.scrollWidth,
     iconLoaded:Array.from(document.querySelectorAll('img')).some(x=>x.src.includes('10b9d53a')&&x.complete&&x.naturalWidth>0),
-    artworkLoaded:Array.from(document.querySelectorAll('img')).some(x=>x.src.includes('559ce4f0')&&x.complete&&x.naturalWidth>0),
+    artworkLoaded:Array.from(document.querySelectorAll('img')).some(x=>x.src.includes('a7409755-726c-4d0f-8cf8-a05b9198ef14')&&x.complete&&x.naturalWidth>0),
     heading:Array.from(document.querySelectorAll('h1')).map(x=>x.textContent?.trim()),
   }));
   if(result.scroll>result.viewport+2) throw new Error(`${label} has horizontal overflow: ${JSON.stringify(result)}`);

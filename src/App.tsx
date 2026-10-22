@@ -416,10 +416,18 @@ export default function App() {
   }
 
   return <main className="page" data-deployment-contract={deploymentContract.version}>
-    <header className="siteHeader">
-      <a href="/" className="brand brandLink" aria-label="Resonance home"><img className="brandIcon" src="/brand/resonance-connection-emblem.png" alt="" width="48" height="48"/><span className="brandType">Resonance<small>Culture becomes connection</small></span></a>
-      <div className={`status ${qlooState === 'ready' ? 'live' : qlooState === 'degraded' ? 'degraded' : 'pending'}`} role="status" aria-live="polite">
-        {qlooUi.label}
+    <header className="siteHeader nav">
+      <a href="/" className="brand brandLink" aria-label="Resonance home"><img className="brandIcon brandMark" src="/brand/resonance-connection-emblem.png" alt="" width="48" height="48"/><span className="brandType brandName">Resonance<small>Culture becomes connection</small></span></a>
+      <nav className="navLinks" aria-label="Main navigation">
+        <a href="#explore-culture">Explore culture</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#build-session" className="navCTA">Start a session</a>
+      </nav>
+      <div className="navRight">
+        <span className="hackathonBadge">Qloo Agent Hackathon</span>
+        <div className={`status ${qlooState === 'ready' ? 'live' : qlooState === 'degraded' ? 'degraded' : 'pending'}`} role="status" aria-live="polite">
+          {qlooUi.label}
+        </div>
       </div>
     </header>
 
@@ -427,19 +435,54 @@ export default function App() {
       <div className="heroContent">
         <div className="eyebrow">THE ART OF MEANINGFUL CONNECTION</div>
         <h1 id="hero-title">Culture becomes <em>connection.</em></h1>
-        <p>A favorite song. A beloved film. A place worth remembering. Resonance discovers the cultural threads between them and turns those discoveries into thoughtful moments to share.</p>
-        <div className="heroActions"><a className="heroCTA" href="#build-session">Create a cultural session <span aria-hidden="true">→</span></a><small>Powered by live Qloo cultural intelligence. Guided by people.</small></div>
-        <div className="heroProof"><span>Transparent evidence</span><span>Human-led choices</span><span>No clinical claims</span></div>
+        <p className="heroCopy">A favorite song. A beloved film. A place that matters. Explore cultural connections through Qloo, then shape four activities into a session you can make your own.</p>
+        <div className="heroActions"><a className="heroCTA" href="#build-session">Create a cultural session <span aria-hidden="true">→</span></a><small className="heroAside">Discovery powered by Qloo. Every choice guided by you.</small></div>
+        <div className="heroProof proofRow"><span>Transparent evidence</span><span>Human-led choices</span><span>No clinical claims</span></div>
       </div>
-      <div className="heroVisual"><img src="/brand/resonance-cultural-atlas.png" alt="Vinyl record, film frames, open book and travel map connected by teal ribbons." width="1024" height="576"/><div className="heroCaption"><span>01 / DISCOVER</span><strong>Every favorite starts a story.</strong></div></div>
+      <div className="heroVisual">
+        <img className="heroArtwork" src="/brand/resonance-culture-collage.png" alt="Colorful editorial collage celebrating music, cinema, books, and travel." width="1672" height="941" fetchPriority="high"/>
+        <div className="heroCaption"><span>01 / DISCOVER</span><strong>Every favorite starts a story.</strong></div>
+        <div className="heroFloatingNote"><span aria-hidden="true">✦</span><div><b>A little familiarity.</b><small>A whole world to discover.</small></div></div>
+      </div>
+    </section>
+
+    <section id="explore-culture" className="cultureSection">
+      <header className="cultureHeading">
+        <div><span className="sectionKicker">FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
+        <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
+      </header>
+      <div className="cultureGrid">
+        <a href="#build-session" className="cultureCard" data-culture="music">
+          <div className="cultureImage"><img src="/brand/resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className="cultureNumber">01</span></div>
+          <div className="cultureCardBody"><span>MUSIC</span><h3>Songs worth sharing <span aria-hidden="true">→</span></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="cinema">
+          <div className="cultureImage"><img src="/brand/resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className="cultureNumber">02</span></div>
+          <div className="cultureCardBody"><span>CINEMA</span><h3>Follow the story <span aria-hidden="true">→</span></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="stories">
+          <div className="cultureImage"><img src="/brand/resonance-stories.png" width="1672" height="940" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className="cultureNumber">03</span></div>
+          <div className="cultureCardBody"><span>STORIES</span><h3>Turn the page <span aria-hidden="true">→</span></h3><p>Let a favorite book become a starting point for conversation.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="places">
+          <div className="cultureImage"><img src="/brand/resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className="cultureNumber">04</span></div>
+          <div className="cultureCardBody"><span>PLACES</span><h3>Places that matter <span aria-hidden="true">→</span></h3><p>A familiar place can be the beginning of a conversation.</p></div>
+        </a>
+      </div>
+    </section>
+
+    <section className="builderIntro">
+      <span className="sectionKicker">CREATE A CULTURAL SESSION</span>
+      <h2>Start with what speaks to you.</h2>
+      <p>A few favorites. A little context. A session to make your own.</p>
     </section>
 
     <section id="build-session" className="workspace" aria-label="Resonance session builder">
-      <div className="card">
-        <h2>Give the agent a few cultural anchors</h2>
-        <p className="fieldHint">Use cultural preferences only. Do not enter a resident/person name, email, account ID, health information, location history, or another personal identifier.</p>
-        <div className="inputs">
-          {anchors.map((anchor,index)=><div className="anchorGroup" key={index}>
+      <div className="card formPanel">
+        <div className="panelTop"><div><span className="step">01</span><h2>Your favorites, your starting point.</h2></div></div>
+        <p className="fieldHint hint">Add two to four favorites, then choose the mood, setting, and time. No names or personal health information needed.</p>
+        <div className="inputs anchorGrid">
+          {anchors.map((anchor,index)=><div className="anchorGroup anchorCard" key={index}>
             <label className="anchorField" htmlFor={`anchor-${index}`}>
               <span>Cultural anchor {index + 1}</span>
               <select
@@ -468,7 +511,7 @@ export default function App() {
           <button type="button" className="anchorAdd" disabled={anchors.length >= 4 || loading} onClick={addAnchor}>+ Add another anchor</button>
           <span>{anchors.length}/4 anchors</span>
         </div>
-        <div className="selects">
+        <div className="selects selectGrid">
           <label htmlFor="energy">Energy
             <select id="energy" value={energy} disabled={loading} onChange={e=>updateEnergy(e.target.value)}>
               <option value="calm">Calm & familiar</option>
@@ -491,12 +534,12 @@ export default function App() {
             </select>
           </label>
         </div>
-        <div className="actions">
-          <button disabled={!canRun} onClick={()=>runLive()}>
+        <div className="actions actionRow">
+          <button className="runButton" disabled={!canRun} onClick={()=>runLive()}>
             {loading?'Grounding with Qloo…':qlooUi.liveReady?'Build with live Qloo':'Live Qloo unavailable'}
           </button>
-          <button className="secondary" onClick={loadJudgeExample} disabled={loading}>Fill judge example</button>
-          <button className="secondary" onClick={previewDemo} disabled={loading}>Preview with example data</button>
+          <button className="secondary demoButton" onClick={loadJudgeExample} disabled={loading}>Fill judge example</button>
+          <button className="secondary demoButton" onClick={previewDemo} disabled={loading}>Preview with example data</button>
         </div>
         <small>{qlooUi.helper}</small>
         {(qlooState === 'degraded' || qlooState === 'rate-limited') && <button
@@ -526,9 +569,12 @@ export default function App() {
           </div>
         </section>}
       </div>
-      <aside className="trace" aria-label="Agent loop">
-        <h3>Agent loop</h3>
-        <ol><li>Resolve cultural anchors</li><li>Evaluate Qloo evidence</li><li>Compose for the chosen context</li><li>Explain every recommendation</li></ol>
+      <aside id="how-it-works" className="trace tracePanel" aria-label="Agent loop">
+        <span className="step">AGENT TRACE</span>
+        <h3>From a favorite to a shared moment.</h3>
+        <ol><li><span>1</span><div><b>Resolve</b><small>Resolve anchors to Qloo entity IDs; non-exact matches stop for review.</small></div></li><li><span>2</span><div><b>Evaluate</b><small>Select real numeric scores when present, otherwise preserve Qloo rank order.</small></div></li><li><span>3</span><div><b>Compose</b><small>Map selected evidence into the chosen setting, energy, and duration.</small></div></li><li><span>4</span><div><b>Explain</b><small>Expose the evidence path and rationale for every activity.</small></div></li></ol>
+        <img className="traceArtwork" src="/brand/resonance-cultural-atlas.png" alt="Editorial arrangement of a vinyl record, film frames, an open book and a travel map connected by flowing teal ribbons." width="1024" height="576" loading="lazy" decoding="async"/>
+        <p className="traceFootnote">Every recommendation comes with its evidence.</p>
       </aside>
     </section>
 
@@ -684,6 +730,19 @@ export default function App() {
       </details>
     </section>}
 
-    <section className="impact"><h2>Personalization without a profile, history, or identity graph.</h2><p>Start from a few real favorites instead of a generic age-based activity list. No personal identifiers are required, and Resonance is not a medical tool.</p></section>
+    <section className="impactStory">
+      <figure className="connectionVisual">
+        <img src="/brand/resonance-connection.png" width="1672" height="941" loading="lazy" decoding="async" alt="Illustrative scene of people sharing a cultural activity."/>
+        <figcaption>Illustrative artwork · not participant photography</figcaption>
+      </figure>
+      <div className="impactContent">
+        <span className="sectionKicker">MADE FOR HUMAN CONNECTION</span>
+        <h2>Make room for a meaningful moment.</h2>
+        <p>A session begins with familiar favorites and takes shape through your judgment. See what Qloo discovered, review each activity, and keep, modify, or replace any suggestion before sharing the plan.</p>
+        <div className="impactStats"><div><strong>2–4</strong><span>favorites to begin</span></div><div><strong>4</strong><span>activities to shape</span></div><div><strong>You</strong><span>decide what fits</span></div></div>
+        <a className="storyCTA" href="#build-session">Find your next connection <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+    <footer><span>Resonance</span><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
   </main>;
 }
