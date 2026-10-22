@@ -534,3 +534,27 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
   .navRight { display: flex; flex: 1 0 100%; max-width: none; justify-content: flex-end; align-items: center; margin-top: -3px; }
   .navRight > .status { display: flex; font-size: 10px; max-width: none; }
 }
+
+/* Judge-red-team remediation: faster discovery, accessible saved/export UI. */
+.page footer a{font-size:12px;color:#245c60;text-decoration:underline;text-underline-offset:3px}
+.savedLibrary{margin-top:30px;border:1px solid #d8e1d9;border-radius:22px;padding:clamp(20px,3vw,36px);background:#fffdf8;color:#21444a}
+.savedLibrary h2{font-family:Georgia,serif;font-size:clamp(26px,3vw,37px);font-weight:400;margin:0 0 10px}
+.savedLibrary p{font-size:14px;color:#516b6d;line-height:1.65}
+.savedList{display:grid;gap:10px;margin-top:20px}
+.savedRow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:13px;border:1px solid #e0e9df;border-radius:14px;background:#f5f8f3}
+.savedRow>span{display:grid;gap:4px;flex:1 1 190px;min-width:0;overflow-wrap:anywhere;font-size:14px}
+.savedRow small{color:#576e68}
+.savedRow button{font-size:12px;min-height:42px}
+.savedEmpty{border:1px dashed #cddbd3;border-radius:12px;padding:17px}
+.exportFallback{margin-top:20px;border-top:1px solid #dae5dc;padding-top:18px}
+.exportFallback h3{font-family:Georgia,serif;font-size:22px;margin:0 0 8px}
+.exportFallback textarea{width:100%;font:13px/1.55 ui-monospace,monospace;resize:vertical;max-height:360px;border:1px solid #bfd1c7;border-radius:12px;background:#fff}
+.exportFallback button{margin-top:10px}
+.resultActions{flex-wrap:wrap;gap:10px}
+.resultActions button{min-height:44px}
+.cultureSection{scroll-margin-top:20px}
+.anchorLabel,.selectGrid label>span,.cultureCardBody>span{font-size:11px}
+.tracePanel small,.activitySupport span{font-size:13px}
+.proofRow{font-size:12px}
+@media(max-width:560px){.savedLibrary{padding:20px 16px}.savedRow button{flex:1 1 90px}.anchorLabel,.selectGrid label>span{font-size:12px}.cultureCardBody>span{font-size:10px}.tracePanel small,.activitySupport span{font-size:13px}.proofRow{font-size:10px}}
+@media print{.savedLibrary{display:none!important}.results{box-shadow:none!important}}

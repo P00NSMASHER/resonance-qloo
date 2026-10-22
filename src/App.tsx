@@ -482,31 +482,6 @@ export default function App() {
       </div>
     </section>
 
-    <section id="explore-culture" className="cultureSection">
-      <header className="cultureHeading">
-        <div><span className="sectionKicker">FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
-        <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
-      </header>
-      <div className="cultureGrid">
-        <a href="#build-session" className="cultureCard" data-culture="music" onClick={()=>chooseCategory('artist')}>
-          <div className="cultureImage"><img src="/brand/resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className="cultureNumber">01</span></div>
-          <div className="cultureCardBody"><span>MUSIC</span><h3>Songs worth sharing <span aria-hidden="true">→</span></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
-        </a>
-        <a href="#build-session" className="cultureCard" data-culture="cinema" onClick={()=>chooseCategory('movie')}>
-          <div className="cultureImage"><img src="/brand/resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className="cultureNumber">02</span></div>
-          <div className="cultureCardBody"><span>CINEMA</span><h3>Follow the story <span aria-hidden="true">→</span></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
-        </a>
-        <a href="#build-session" className="cultureCard" data-culture="stories" onClick={()=>chooseCategory('book')}>
-          <div className="cultureImage"><img src="/brand/resonance-stories.png" width="1672" height="940" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className="cultureNumber">03</span></div>
-          <div className="cultureCardBody"><span>STORIES</span><h3>Turn the page <span aria-hidden="true">→</span></h3><p>Let a favorite book become a starting point for conversation.</p></div>
-        </a>
-        <a href="#build-session" className="cultureCard" data-culture="places" onClick={()=>chooseCategory('destination')}>
-          <div className="cultureImage"><img src="/brand/resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className="cultureNumber">04</span></div>
-          <div className="cultureCardBody"><span>PLACES</span><h3>Places that matter <span aria-hidden="true">→</span></h3><p>A familiar place can be the beginning of a conversation.</p></div>
-        </a>
-      </div>
-    </section>
-
     <section className="builderIntro">
       <span className="sectionKicker">CREATE A CULTURAL SESSION</span>
       <h2>Start with what speaks to you.</h2>
@@ -624,6 +599,8 @@ export default function App() {
       </div>
       <div className="resultActions" aria-label="Session actions">
         <button type="button" className="secondary" onClick={copySession}>{copied ? 'Copied' : 'Copy session'}</button>
+        <button type="button" className="secondary" onClick={()=>downloadSession()}>Download .txt</button>
+        <button type="button" className="secondary" onClick={saveSessionLocally}>Save on this device</button>
         <button type="button" className="secondary" onClick={()=>window.print()}>Print</button>
         <button type="button" className="secondary" onClick={startOver}>Start over</button>
         <span className="copyStatus" role="status" aria-live="polite">{copied ? 'Session copied to clipboard.' : ''}</span>
@@ -766,6 +743,39 @@ export default function App() {
       </details>
     </section>}
 
+    <section id="explore-culture" className="cultureSection">
+      <header className="cultureHeading">
+        <div><span className="sectionKicker">FOLLOW WHAT YOU LOVE</span><h2>One favorite. Endless possibilities.</h2></div>
+        <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
+      </header>
+      <div className="cultureGrid">
+        <a href="#build-session" className="cultureCard" data-culture="music" onClick={()=>chooseCategory('artist')}>
+          <div className="cultureImage"><img src="/brand/resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className="cultureNumber">01</span></div>
+          <div className="cultureCardBody"><span>MUSIC</span><h3>Songs worth sharing <span aria-hidden="true">→</span></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="cinema" onClick={()=>chooseCategory('movie')}>
+          <div className="cultureImage"><img src="/brand/resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className="cultureNumber">02</span></div>
+          <div className="cultureCardBody"><span>CINEMA</span><h3>Follow the story <span aria-hidden="true">→</span></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="stories" onClick={()=>chooseCategory('book')}>
+          <div className="cultureImage"><img src="/brand/resonance-stories.png" width="1672" height="940" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className="cultureNumber">03</span></div>
+          <div className="cultureCardBody"><span>STORIES</span><h3>Turn the page <span aria-hidden="true">→</span></h3><p>Let a favorite book become a starting point for conversation.</p></div>
+        </a>
+        <a href="#build-session" className="cultureCard" data-culture="places" onClick={()=>chooseCategory('destination')}>
+          <div className="cultureImage"><img src="/brand/resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className="cultureNumber">04</span></div>
+          <div className="cultureCardBody"><span>PLACES</span><h3>Places that matter <span aria-hidden="true">→</span></h3><p>A familiar place can be the beginning of a conversation.</p></div>
+        </a>
+      </div>
+    </section>
+
+    <section className="savedLibrary" aria-labelledby="saved-plans-heading">
+      <span className="sectionKicker">PRIVATELY ON THIS DEVICE</span>
+      <h2 id="saved-plans-heading">Your saved session plans</h2>
+      <p>Saved only to this browser's local storage. Do not enter resident names or health information.</p>
+      {savedPlans.length?<div className="savedList">{savedPlans.map(plan=><div className="savedRow" key={plan.id}><span><strong>{plan.label}</strong><small>{new Date(plan.savedAt).toLocaleDateString()}</small></span><button type="button" className="secondary" onClick={()=>{setExportText(plan.text);window.requestAnimationFrame(()=>document.getElementById('saved-plan-text')?.focus());}}>View text</button><button type="button" className="secondary" onClick={()=>downloadSession(plan.text)}>Download</button><button type="button" className="secondary" onClick={()=>persistPlans(savedPlans.filter(p=>p.id!==plan.id))}>Remove</button></div>)}</div>:<p className="savedEmpty">No saved plans yet. After building one, select Save on this device.</p>}
+      {exportText&&<div className="exportFallback"><h3>Manual-copy / saved plan text</h3><p>Select this text if the clipboard is blocked or download the plan.</p><textarea id="saved-plan-text" readOnly value={exportText} rows={8} onFocus={e=>e.currentTarget.select()}/><button type="button" className="secondary" onClick={()=>downloadSession(exportText)}>Download shown text</button></div>}
+    </section>
+
     <section className="impactStory">
       <figure className="connectionVisual">
         <img src="/brand/resonance-connection.png" width="1672" height="941" loading="lazy" decoding="async" alt="Illustrative scene of people sharing a cultural activity."/>
@@ -779,6 +789,6 @@ export default function App() {
         <a className="storyCTA" href="#build-session">Find your next connection <span aria-hidden="true">→</span></a>
       </div>
     </section>
-    <footer><span>Resonance</span><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
+    <footer><span>Resonance</span><a href="/study">Help evaluate Resonance · voluntary anonymous study</a><span>Built for the Qloo Agent Hackathon · Cultural guidance, not medical advice.</span></footer>
   </main>;
 }
