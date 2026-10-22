@@ -558,3 +558,10 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 .proofRow{font-size:12px}
 @media(max-width:560px){.savedLibrary{padding:20px 16px}.savedRow button{flex:1 1 90px}.anchorLabel,.selectGrid label>span{font-size:12px}.cultureCardBody>span{font-size:10px}.tracePanel small,.activitySupport span{font-size:13px}.proofRow{font-size:10px}}
 @media print{.savedLibrary{display:none!important}.results{box-shadow:none!important}}
+
+/* Preference verification is human judgment, not source identity matching. */
+.preferenceLabel{display:block;margin-top:9px;font-size:12px;font-weight:750;color:#285c5e}
+.preferenceSelect{display:block;width:100%;min-height:44px;background:#fffefa;border:1px solid #c4d8cf;color:#214850;padding:10px;border-radius:9px;font:13px system-ui,sans-serif}
+.preferenceSelect:focus-visible{outline:3px solid #0d8177;outline-offset:2px}
+.preferenceNote{font-size:12px;line-height:1.6;color:#617678;margin:14px 0}
+@media(max-width:560px){.preferenceLabel{font-size:13px}.preferenceSelect{font-size:14px}}

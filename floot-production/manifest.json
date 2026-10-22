@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1792638043317",
+  "flootProjectVersion": "1792674071418",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
-  "snapshotScope": "Exact Floot runtime slice for Resonance after the judge-red-team remediation. Original study and Qloo safety boundaries remain unchanged; aggregate Qloo tags are not attributed to individual favorites. Optimized image URLs, export recovery, on-device plans and rank-only presentation are included.",
+  "snapshotScope": "Exact 33-file Floot runtime slice for Resonance after 100 synthetic-review coverage: accessibility, preference verification, opt-in group tracks, offline versioned handoffs, short plans, and local consent/feedback controls. Studio actions are facilitator-authored adaptations, not new Qloo evidence.",
   "files": [
     {
       "path": "base.css",
@@ -41,6 +41,16 @@
       "path": "components/Button.tsx",
       "gitBlobSha": "5768177a356c29951b05ca92494bf79745be2cb3",
       "sourceCharCount": 1087
+    },
+    {
+      "path": "components/FacilitatorStudio.module.css",
+      "gitBlobSha": "85c22cebf4802c6eaf817ebb1ce9c91130de2b82",
+      "sourceCharCount": 5658
+    },
+    {
+      "path": "components/FacilitatorStudio.tsx",
+      "gitBlobSha": "03e9991dcf93149a6d8ad1e9d6ea2d317afd6cc3",
+      "sourceCharCount": 18405
     },
     {
       "path": "components/Input.module.css",
@@ -118,14 +128,19 @@
       "sourceCharCount": 4831
     },
     {
+      "path": "helpers/studioLogic.tsx",
+      "gitBlobSha": "bb59f03cdeac7f2e62f3960a5da62ea42a5aae97",
+      "sourceCharCount": 13097
+    },
+    {
       "path": "helpers/studyTiming.tsx",
       "gitBlobSha": "73f1d2bbf36f819ced027eac784dc7ccdbb76d27",
       "sourceCharCount": 824
     },
     {
       "path": "pages/_index.module.css",
-      "gitBlobSha": "c1af0682a45924b1a564ff09ac7a81d3c3d7be9d",
-      "sourceCharCount": 61041
+      "gitBlobSha": "70a75d4d6b1582402b03a522bc8c21763891d293",
+      "sourceCharCount": 61660
     },
     {
       "path": "pages/_index.pageLayout.tsx",
@@ -134,8 +149,8 @@
     },
     {
       "path": "pages/_index.tsx",
-      "gitBlobSha": "f8987909fda794e481a97886ebb605a35ea76aed",
-      "sourceCharCount": 53475
+      "gitBlobSha": "e88f508b2516d4aab2bde40785b327655a6af797",
+      "sourceCharCount": 56581
     },
     {
       "path": "pages/study.module.css",
@@ -160,10 +175,10 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-22",
-    "flootProjectVersion": "1792638043317",
-    "exactFileCount": 30,
-    "verificationMethod": "Five modified or new runtime files were directly reread in complete numbered chunks from Floot project version 1792638043317 with exact character counts and stored as Git blobs. Remaining 25 files are unchanged from the previous source-verified capture. Floot preview checks alone do not prove production publication; a separate live release verification is required.",
-    "directComparisonStatus": "30/30 exact",
-    "manifestBlobStatus": "30 exact runtime snapshots bound to Git object hashes, verified from source"
+    "flootProjectVersion": "1792674071418",
+    "exactFileCount": 33,
+    "verificationMethod": "Five changed/new runtime files were directly read from Floot project version 1792674071418, reconstructed by numbered lines and compared against their character counts and Git blobs; remaining 28 runtime files retain the preceding direct-source capture. This records a candidate source snapshot, not publication.",
+    "directComparisonStatus": "33/33 exact",
+    "manifestBlobStatus": "33 exact runtime file identities, checked by Git blob SHA and source character count."
   }
 }

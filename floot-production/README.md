@@ -1,6 +1,6 @@
 # Exact Floot production source
 
-This directory is a public snapshot of the **actual Floot source** for Resonance, captured from Floot project version `1792638043317`. Source capture and publication are separate: `BUILD_RECEIPT.json` records the last verified published version.
+This directory is a public snapshot of the **actual Floot source** for Resonance, captured from Floot project version `1792674071418`. Source capture and publication are separate: `BUILD_RECEIPT.json` records the last verified published version.
 
 - Floot project ID: `49082a23-f25f-41f4-a147-f908c8dcc860`
 - Published URL: https://resonance-qloo.floot.app
@@ -41,12 +41,16 @@ This removes the need for judges to infer production behavior from a parallel im
 
 ## Live-byte verification receipt
 
-On October 22, 2026 UTC, all 30 manifested runtime files were directly read from Floot version `1791670843967`. Each file was reconstructed in complete line chunks and checked against the source character count reported by Floot. The only differences from the preceding repository snapshot were terminal whitespace in three files.
+On October 22, 2026 UTC, all 33 manifested runtime files were directly read from Floot version `1791670843967`. Each file was reconstructed in complete line chunks and checked against the source character count reported by Floot. The only differences from the preceding repository snapshot were terminal whitespace in three files.
 
-The photographic editorial refresh then changed only `pages/_index.tsx` and `pages/_index.module.css`. Both files were fully reread from Floot version `1792633710338` and matched the written source byte-for-byte: 48,585 and 58,744 characters respectively. The final CSS-only mobile readiness fix was appended at version `1792638043317`; its ending lines were directly reread and matched against the complete 59,128-character staged file, whose preceding content was unchanged. The TSX file remained unchanged. The remaining 27 runtime files retain the complete direct capture. The committed snapshots use canonical LF endings, as required by the parity verifier.
+The photographic editorial refresh then changed only `pages/_index.tsx` and `pages/_index.module.css`. Both files were fully reread from Floot version `1792633710338` and matched the written source byte-for-byte: 48,585 and 58,744 characters respectively. The final CSS-only mobile readiness fix was appended at version `1792674071418`; its ending lines were directly reread and matched against the complete 59,128-character staged file, whose preceding content was unchanged. The TSX file remained unchanged. The remaining 27 runtime files retain the complete direct capture. The committed snapshots use canonical LF endings, as required by the parity verifier.
 
 That point-in-time source receipt is stored in `manifest.json`. CI verifies the receipt belongs to the same Floot project version and covers the complete manifested runtime slice. CI does not have private Floot-source access; public deployment freshness remains independently checked through the live deployment contract/parity probe. Capturing a source version does not by itself establish that it is publicly deployed.
 
 ## Red-team semantic and UX remediation — candidate release
 
-Floot version `1792638043317` has a new `helpers/safePlan.tsx` module. It prevents misleading positional signal attribution, allows anchor-only steps when an aggregate genre is incompatible, retains unselected raw signals, and preserves ambiguity review. Source snapshot contains 30 runtime files; all five new/modified files were reconstructed in numbered chunks and compared to their recorded source lengths and Git blobs. The publisher has not yet attested this candidate as a live release.
+Floot version `1792674071418` has a new `helpers/safePlan.tsx` module. It prevents misleading positional signal attribution, allows anchor-only steps when an aggregate genre is incompatible, retains unselected raw signals, and preserves ambiguity review. Source snapshot contains 30 runtime files; all five new/modified files were reconstructed in numbered chunks and compared to their recorded source lengths and Git blobs. The publisher has not yet attested this candidate as a live release.
+
+## 100-scenario feedback remediation — source candidate
+
+Version `1792674071418` includes Facilitator Studio (client-side accessibility presets, consent, preference status, mixed opt-in group tracks, 5/10/15-minute micro-plans, English/Spanish draft guidance, rights-aware media choices, independent offline TXT/HTML/one-page run-sheet export, versioned JSON handoff, limited local anonymous theme tags, import validation and shared-device deletion controls). All outputs remain human-reviewed cultural activity guidance, not clinical recommendations. Twenty synthetic contexts were reviewed; no real user responses are claimed. This snapshot must be published and then verified separately before claiming live acceptance.

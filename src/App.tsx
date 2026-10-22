@@ -7,6 +7,8 @@ import { hasConsistentRecommendationResult, matchesRecommendationRequestContext 
 import { payloadHasMatchingRequestContext, type RecommendationRequestContext } from './lib/recommendationContext';
 import { buildQlooDelta } from './lib/qlooDelta';
 import { planFromTags, selectSessionArchetype } from './lib/qlooLogic';
+import FacilitatorStudio from './components/FacilitatorStudio';
+import type { PreferenceStatus } from './lib/studioLogic';
 import deploymentContract from '../deployment-contract.json';
 
 type AgentTraceStep = {
@@ -151,6 +153,7 @@ const LIVE_REQUEST_TIMEOUT_MS = 28_000;
 export default function App() {
   const [anchors, setAnchors] = useState(['Ella Fitzgerald','Roman Holiday']);
   const [anchorTypes, setAnchorTypes] = useState<AnchorType[]>(['artist','movie']);
+  const [anchorStatuses,setAnchorStatuses] = useState<PreferenceStatus[]>(['uncertain','uncertain']);
   const [energy, setEnergy] = useState('calm');
   const [setting, setSetting] = useState('small-group');
   const [durationMinutes, setDurationMinutes] = useState(30);
@@ -179,7 +182,8 @@ export default function App() {
     return [...new Map(entries.map(item => [`${item.type}|${item.query.toLocaleLowerCase()}`,item])).values()];
   }, [anchors,anchorTypes]);
   const qlooUi = qlooPresentation(qlooState);
-  const canRun = usableAnchors.length >= 2 && qlooUi.liveReady && !loading;
+  const hasDeclined=anchors.some((a,i)=>a.trim().length>=2&&anchorStatuses[i]==='declined');
+  const canRun = usableAnchors.length >= 2 && !hasDeclined && qlooUi.liveReady && !loading;
   const selectedAffinitySequence = result?.evidence.selectedAffinityLabels ?? [];
   const selectedAffinityLabels = new Set<string>(selectedAffinitySequence);
   const selectedAffinityOrder = new Map<string, number>(
@@ -198,7 +202,7 @@ export default function App() {
   const replacedCount = Object.values(activityDecisions).filter(value => value === 'replaced').length;
 
   useEffect(() => {
-    try { const raw=window.localStorage.getItem(SAVED_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)) setSavedPlans(parsed.filter(p=>typeof p.id==='string'&&typeof p.text==='string'&&p.text.length<120000).slice(0,12)); }
+    try { const raw=window.localStorage.getItem(SAVED_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)){const next=parsed.filter(p=>typeof p.id==='string'&&typeof p.text==='string'&&p.text.length<120000&&Date.parse(p.savedAt)>=Date.now()-30*86400000).slice(0,12);setSavedPlans(next);if(next.length!==parsed.length)localStorage.setItem(SAVED_KEY,JSON.stringify(next));} }
     catch {setSavedPlans([]);}
   },[]);
 
@@ -369,12 +373,14 @@ export default function App() {
     invalidateGeneratedState();
     setAnchors(current => current.length >= 4 ? current : [...current, '']);
     setAnchorTypes(current => current.length >= 4 ? current : [...current, 'any']);
+    setAnchorStatuses(current=>current.length>=4?current:[...current,'uncertain']);
   }
 
   function removeAnchor(index: number) {
     invalidateGeneratedState();
     setAnchors(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
     setAnchorTypes(current => current.length <= 2 ? current : current.filter((_, itemIndex) => itemIndex !== index));
+    setAnchorStatuses(current=>current.length<=2?current:current.filter((_,i)=>i!==index));
   }
 
   function loadJudgeExample() {
@@ -382,6 +388,7 @@ export default function App() {
     setError('');
     setAnchors(['Ella Fitzgerald','Roman Holiday']);
     setAnchorTypes(['artist','movie']);
+    setAnchorStatuses(['uncertain','uncertain']);
     setEnergy('calm');
     setSetting('small-group');
     setDurationMinutes(30);
@@ -392,6 +399,7 @@ export default function App() {
     setResolutionReview(null);
     setAnchors(['Aretha Franklin','The Sound of Music']);
     setAnchorTypes(['artist','movie']);
+    setAnchorStatuses(['uncertain','uncertain']);
     setResult(demoForContext(energy,setting,durationMinutes));
     setSource('demo');
   }
@@ -427,6 +435,11 @@ export default function App() {
     try{window.localStorage.setItem(SAVED_KEY,JSON.stringify(next));setSavedPlans(next);}
     catch{setError('Local browser storage unavailable; download a file instead.');}
   }
+  function clearAllSavedPlans(){
+    if(!window.confirm('Delete all Resonance plans saved in this browser? Downloaded copies are not affected.'))return;
+    try{localStorage.removeItem(SAVED_KEY);setSavedPlans([]);setExportText('');}
+    catch{setError('Could not clear local saved plans.');}
+  }
   function saveSessionLocally(){
     if(!result)return;const body=sessionText();if(!body)return;
     const id=typeof crypto.randomUUID==='function'?crypto.randomUUID():String(Date.now());
@@ -435,7 +448,7 @@ export default function App() {
   }
   function chooseCategory(type:AnchorType){
     setResult(null);setSource(null);setError('');setExportText('');setActivityDecisions({});setActivityEdits({});
-    setAnchors(['','']);setAnchorTypes([type,'any']);
+    setAnchors(['','']);setAnchorTypes([type,'any']);setAnchorStatuses(['uncertain','uncertain']);
     window.requestAnimationFrame(()=>document.getElementById('anchor-0')?.focus());
   }
 
@@ -515,6 +528,14 @@ export default function App() {
                 maxLength={100}
               />
             </label>
+            <label className="preferenceLabel" htmlFor={`preference-status-${index}`}>Is this favorite still welcome today?</label>
+            <select className="preferenceSelect" id={`preference-status-${index}`}
+              disabled={loading} value={anchorStatuses[index]??'uncertain'}
+              onChange={e=>{invalidateGeneratedState();setAnchorStatuses(current=>current.map((x,i)=>i===index?e.target.value as PreferenceStatus:x));}}>
+              <option value="uncertain">Not sure — ask the person</option>
+              <option value="current">Facilitator believes it is current</option>
+              <option value="declined">Declined — remove this favorite</option>
+            </select>
             {anchors.length > 2 && <button type="button" className="anchorRemove" disabled={loading} onClick={()=>removeAnchor(index)} aria-label={`Remove cultural anchor ${index + 1}`}>Remove</button>}
           </div>)}
         </div>
@@ -522,6 +543,8 @@ export default function App() {
           <button type="button" className="anchorAdd" disabled={anchors.length >= 4 || loading} onClick={addAnchor}>+ Add another anchor</button>
           <span>{anchors.length}/4 anchors</span>
         </div>
+        {hasDeclined&&<div className="warning" role="alert">Remove a declined favorite before using Qloo.</div>}
+        <p className="preferenceNote">An old favorite is not current consent. Ask before using the result, and never force a memory or topic.</p>
         <div className="selects selectGrid">
           <label htmlFor="energy">Energy
             <select id="energy" value={energy} disabled={loading} onChange={e=>updateEnergy(e.target.value)}>
@@ -680,6 +703,14 @@ export default function App() {
         </article>})}</div>
         <div className="approvalSummary" role="status" aria-live="polite"><strong>Facilitator review</strong><span>{approvedCount}/{result.plan.length} activities have a decision · {keptCount} kept · {modifiedCount} modified · {replacedCount} replaced</span>{approvedCount===result.plan.length && <b>All activity decisions complete</b>}</div>
       </section>
+      <FacilitatorStudio
+        plan={result.plan.map((step,index)=>({...step,action:activityEdits[index]??step.action}))}
+        anchors={result.resolvedAnchors.map(x=>x.name)}
+        preferenceStatuses={anchorStatuses}
+        source={source==='live'?'qloo-live':'illustrative-demo'}
+        durationMinutes={durationMinutes as 30|45|60}
+        decisions={result.plan.map((_,index)=>activityDecisions[index]??'not reviewed')}
+      />
 
       <div className="interpretationLimit" role="note">
         <b>Interpretation limit</b>
@@ -771,7 +802,8 @@ export default function App() {
     <section className="savedLibrary" aria-labelledby="saved-plans-heading">
       <span className="sectionKicker">PRIVATELY ON THIS DEVICE</span>
       <h2 id="saved-plans-heading">Your saved session plans</h2>
-      <p>Saved only to this browser's local storage. Do not enter resident names or health information.</p>
+      <p>Saved only in this browser for up to 30 days. Other users of a shared device may see them. Delete after handoff; downloads must be deleted separately. Never enter resident names or health records.</p>
+      {savedPlans.length>0&&<button type="button" className="secondary" onClick={clearAllSavedPlans}>Delete all saved plans on this device</button>}
       {savedPlans.length?<div className="savedList">{savedPlans.map(plan=><div className="savedRow" key={plan.id}><span><strong>{plan.label}</strong><small>{new Date(plan.savedAt).toLocaleDateString()}</small></span><button type="button" className="secondary" onClick={()=>{setExportText(plan.text);window.requestAnimationFrame(()=>document.getElementById('saved-plan-text')?.focus());}}>View text</button><button type="button" className="secondary" onClick={()=>downloadSession(plan.text)}>Download</button><button type="button" className="secondary" onClick={()=>persistPlans(savedPlans.filter(p=>p.id!==plan.id))}>Remove</button></div>)}</div>:<p className="savedEmpty">No saved plans yet. After building one, select Save on this device.</p>}
       {exportText&&<div className="exportFallback"><h3>Manual-copy / saved plan text</h3><p>Select this text if the clipboard is blocked or download the plan.</p><textarea id="saved-plan-text" readOnly value={exportText} rows={8} onFocus={e=>e.currentTarget.select()}/><button type="button" className="secondary" onClick={()=>downloadSession(exportText)}>Download shown text</button></div>}
     </section>
