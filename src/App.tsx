@@ -140,7 +140,7 @@ function replacementActivity(index:number, item:Result['plan'][number]) {
 }
 
 function formatAffinityScore(score:number) {
-  return `${(score * 100).toFixed(2)}%`;
+  return `Qloo source score ${score.toFixed(3)} (not a probability)`;
 }
 
 const SAVED_KEY = 'resonance.localSavedPlans.v1';
@@ -488,19 +488,19 @@ export default function App() {
         <p>Music, films, stories, and places. Start somewhere familiar and see where the connections lead.</p>
       </header>
       <div className="cultureGrid">
-        <a href="#build-session" className="cultureCard" data-culture="music">
+        <a href="#build-session" className="cultureCard" data-culture="music" onClick={()=>chooseCategory('artist')}>
           <div className="cultureImage"><img src="/brand/resonance-music.png" width="1672" height="941" loading="lazy" decoding="async" alt="Walnut turntable, vinyl records, and a teal armchair in a warm listening room."/><span className="cultureNumber">01</span></div>
           <div className="cultureCardBody"><span>MUSIC</span><h3>Songs worth sharing <span aria-hidden="true">→</span></h3><p>Bring a favorite artist into the conversation, then explore connections.</p></div>
         </a>
-        <a href="#build-session" className="cultureCard" data-culture="cinema">
+        <a href="#build-session" className="cultureCard" data-culture="cinema" onClick={()=>chooseCategory('movie')}>
           <div className="cultureImage"><img src="/brand/resonance-cinema.png" width="1672" height="941" loading="lazy" decoding="async" alt="Art deco cinema with coral velvet seats, teal walls, and warm brass lights."/><span className="cultureNumber">02</span></div>
           <div className="cultureCardBody"><span>CINEMA</span><h3>Follow the story <span aria-hidden="true">→</span></h3><p>Begin with a beloved film and explore its cultural connections.</p></div>
         </a>
-        <a href="#build-session" className="cultureCard" data-culture="stories">
+        <a href="#build-session" className="cultureCard" data-culture="stories" onClick={()=>chooseCategory('book')}>
           <div className="cultureImage"><img src="/brand/resonance-stories.png" width="1672" height="940" loading="lazy" decoding="async" alt="An open book, colorful clothbound volumes, lavender, and a teal cup in afternoon sunlight."/><span className="cultureNumber">03</span></div>
           <div className="cultureCardBody"><span>STORIES</span><h3>Turn the page <span aria-hidden="true">→</span></h3><p>Let a favorite book become a starting point for conversation.</p></div>
         </a>
-        <a href="#build-session" className="cultureCard" data-culture="places">
+        <a href="#build-session" className="cultureCard" data-culture="places" onClick={()=>chooseCategory('destination')}>
           <div className="cultureImage"><img src="/brand/resonance-places.png" width="1672" height="941" loading="lazy" decoding="async" alt="Sunlit Mediterranean lane with flowering bougainvillea and a distant sea view."/><span className="cultureNumber">04</span></div>
           <div className="cultureCardBody"><span>PLACES</span><h3>Places that matter <span aria-hidden="true">→</span></h3><p>A familiar place can be the beginning of a conversation.</p></div>
         </a>
@@ -693,7 +693,7 @@ export default function App() {
           <h3>{x.title}</h3>
           {editingActivity === index ? <div className="activityEditor"><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:'modified'}));setEditingActivity(null)}}>Save modification</button><button type="button" className="secondary" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div> : <p className="sessionAction">{displayedAction}</p>}
           <div className="activitySupport"><span><b>Why this fits</b>{x.why}</span><span><b>Materials</b>{activitySupport(index).materials}</span><span><b>Participation options</b>{activitySupport(index).participation}</span></div>
-          {x.affinityLabel && <div className="sessionSignal">{decision==='modified'?'Original evidence reference':signalNumber ? `Qloo signal #${signalNumber}` : 'Qloo signal'} · {x.affinityLabel}{x.anchorName ? ` · paired with ${x.anchorName}` : ''}{decision==='modified'&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==='replaced'&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}
+          {x.affinityLabel && <div className="sessionSignal">{decision==='modified'?'Original evidence reference':signalNumber ? `Session-wide Qloo signal #${signalNumber}` : 'Session-wide signal'} · {x.affinityLabel}{x.anchorName ? ` · starting favorite: ${x.anchorName} (no per-favorite attribution)` : ''}{decision==='modified'&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==='replaced'&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}
           <div className="facilitatorControls" aria-label={`Facilitator controls for ${x.title}`}>
             <button type="button" aria-pressed={decision==='kept'} className={decision==='kept'?'active':''} onClick={()=>setActivityDecisions(current=>({...current,[index]:'kept'}))}>Keep</button>
             <button type="button" aria-pressed={decision==='modified'} className={decision==='modified'?'active':''} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??x.action}));setEditingActivity(index)}}>Modify</button>
@@ -714,7 +714,7 @@ export default function App() {
         <summary>View evidence &amp; audit trail</summary>
         <div className="auditIntro">
           <h3>Full Qloo evidence path</h3>
-          <p>Technical provenance is preserved here without competing with the primary session experience.</p>
+          <p>Qloo signals apply to the combined favorites. Exact-name matches do not require a separate top-result confirmation; 0 such confirmations is normal when there is no ambiguity. Qloo may omit native attribution metadata.</p>
         </div>
         <div className="resultMeta" aria-label="Result provenance and evidence">
           <span className={source === 'live' ? 'metaLive' : 'metaDemo'}><b>Source</b>{source === 'live' ? 'LIVE QLOO' : 'ILLUSTRATIVE DEMO'}</span>
@@ -728,15 +728,15 @@ export default function App() {
         <section className="evidenceBridge" aria-labelledby="evidence-bridge-title">
           <div className="evidenceColumn">
             <div className="evidenceHeading"><b>Input evidence</b><h3 id="evidence-bridge-title">Resolved favorites</h3></div>
-            <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : source === 'live' ? 'matchConfirmed' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name' : source === 'live' ? 'Qloo top match · confirmed' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
+            <div className="chips">{result.resolvedAnchors.map(x=><span key={x.entityId}><strong>{x.name}</strong>{x.requestedTypeUrn && <em>{anchorTypeLabelFromUrn(x.requestedTypeUrn) ?? x.requestedTypeUrn}</em>}<em className={x.resolutionMatch === 'exact-name' ? 'matchExact' : source === 'live' ? 'matchConfirmed' : 'matchReview'}>{x.resolutionMatch === 'exact-name' ? 'Exact name · no review required' : source === 'live' ? 'Qloo top match · confirmed' : 'Qloo top match · review'}</em><code className="entityId" title={x.entityId}>{source === 'live' ? 'Qloo ID' : 'Demo ID'} · {x.entityId}</code></span>)}</div>
             {result.evidence.topResultResolutionCount > 0 && <div className="resolutionNote" role="note"><b>{source === 'live' ? 'Top matches confirmed' : 'Review entity matches'}</b><span>{source === 'live' ? `${result.evidence.topResultResolutionCount} non-exact Qloo top-result match${result.evidence.topResultResolutionCount === 1 ? '' : 'es'} were explicitly confirmed before taste analysis.` : `${result.evidence.topResultResolutionCount} resolved anchor${result.evidence.topResultResolutionCount === 1 ? '' : 's'} used Qloo's top returned entity without an exact name match.`}</span></div>}
           </div>
           <div className="evidenceHandoff"><span>sent together to</span><strong>Qloo taste analysis</strong><i aria-hidden="true">→</i></div>
           <div className="evidenceColumn">
             <div className="evidenceHeading"><div><b>{source === 'live' ? 'Qloo output evidence' : 'Illustrative output evidence'}</b><h3>{source==='live'?'All retained taste signals':'Example taste signals'}</h3></div><span className="signalCount"><strong>{result.evidence.selectedAffinityCount}</strong> selected / <strong>{result.evidence.returnedAffinityCount}</strong> returned</span></div>
-            <div className="selectionRule"><b>Selection rule</b><span>{source === 'demo' ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.` : result.evidence.evidenceBasis === 'normalized-score' ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.` : `Qloo did not supply enough numeric scores, so preserve its returned affinity order and select the first ${result.evidence.selectedAffinityCount}. No percentage is invented.`}</span></div>
+            <div className="selectionRule"><b>Selection rule</b><span>{source === 'demo' ? `Illustrative: select the first ${result.evidence.selectedAffinityCount} signals from the example rank order.` : result.evidence.evidenceBasis === 'normalized-score' ? `Select up to ${result.evidence.selectedAffinityCount} highest numeric Qloo affinities. Returned scores determine the order.` : `The music and media genre families are ranked separately. Select up to ${result.evidence.selectedAffinityCount} usable tags in interleaved order; numeric source values are not comparable probabilities.`}</span></div>
             {result.evidence.selectedAffinityCount < result.plan.length && <div className="evidenceReuseNote" role="note"><b>No synthetic signal</b><span>Only {result.evidence.selectedAffinityCount} real selected signals support {result.plan.length} activities, so the last real signal is reused for the closing step instead of inventing another one.</span></div>}
-            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{x.score === null ? `Rank #${x.rank}` : formatAffinityScore(x.score)}</b></div>})}</div>
+            <div className="affinities">{result.affinities.map(x=>{const selected=selectedAffinityLabels.has(x.label);const signalNumber=selectedAffinityOrder.get(x.label);return <div key={x.label} className={selected ? 'selected' : 'supporting'}><small>{selected ? `Plan signal #${signalNumber}` : 'Additional evidence'}</small><span>{x.label}</span><b>{result.evidence.evidenceBasis==='ranked-order' || x.score===null ? `Rank #${x.rank}` : formatAffinityScore(x.score)}</b></div>})}</div>
           </div>
         </section>
 
