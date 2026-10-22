@@ -2,7 +2,7 @@ import {describe,it,expect} from 'vitest';
 import {
   DEFAULT_STUDIO_MODE, STUDIO_VERSION, composeStudioSteps,
   createStudioPacket, safeImportStudioPacket, chooseDurationIndexes,
-  distributeMinutes, studioPacketToText, cleanPublicText,
+  distributeMinutes, studioPacketToText, cleanPublicText, applyDeclinedTopics, looksLikeContactInfo,
 } from "./studioLogic";
 const plan=[
   {title:"Familiar opening",duration:"5 min",action:"Start with Ella Fitzgerald and invite a low-pressure choice.",why:"Session-level music genre.",affinityLabel:"Jazz",anchorName:"Ella Fitzgerald"},
@@ -15,7 +15,7 @@ describe("Facilitator Studio — synthetic acceptance checks, never human resear
     for(const length of [5,10,15,30,45,60] as const){
       const mode={...DEFAULT_STUDIO_MODE,duration:length};
       const result=composeStudioSteps(plan,mode,["Ella Fitzgerald","Kyoto"]);
-      expect(result).toHaveLength(length<=15?length/5:4);
+      expect(result).toHaveLength(length===5?1:length<=15?2:4);
       expect(result.reduce((a,s)=>a+s.durationMinutes,0)).toBe(length);
       expect(result.every(s=>s.permission.includes("Stop or change topic"))).toBe(true);
       expect(result.every(s=>s.sourceWhy.length>0)).toBe(true);
@@ -68,7 +68,7 @@ describe("Facilitator Studio — synthetic acceptance checks, never human resear
     expect(safeImportStudioPacket({schema:"other"})).toBe(null);
     expect(safeImportStudioPacket(null)).toBe(null);
     expect(cleanPublicText("<alert>Person\nline")).toBe("alertPerson line");
-    expect(chooseDurationIndexes(15)).toEqual([0,1,2]);
+    expect(chooseDurationIndexes(15)).toEqual([0,1]);
     expect(distributeMinutes(10,2)).toEqual([5,5]);
   });
   it("regression coverage: 20 constructed contexts, no forced reminiscence",()=>{
@@ -84,9 +84,56 @@ describe("Facilitator Studio — synthetic acceptance checks, never human resear
     expect(pairs).toHaveLength(20);
     for(const pair of pairs){
       const steps=composeStudioSteps(plan,{...DEFAULT_STUDIO_MODE,duration:15},pair);
-      expect(steps).toHaveLength(3);
+      expect(steps).toHaveLength(2);
       expect(steps.every(s=>s.permission.includes("Stop or change topic"))).toBe(true);
       expect(steps.every(s=>!s.prompt.includes("Do you remember when"))).toBe(true);
     }
   });
+  it("separates original Qloo action from a facilitator-authored edit in exported handoffs",()=>{
+    const mode={...DEFAULT_STUDIO_MODE,duration:10 as const};
+    const steps=composeStudioSteps(plan,mode,["Ella Fitzgerald","Kyoto"]);
+    const packet=createStudioPacket({steps,anchors:["Ella Fitzgerald","Kyoto"],mode,source:"qloo-live",
+      decisions:["kept","modified"],edits:{1:"Facilitator changed this into a silent-picture choice."},note:"",now:"2026-10-22T12:00:00Z"});
+    expect(packet.steps[1].sourceAction).toContain("Bridge without forced memory");
+    expect(packet.facilitatorEdits?.[0].decision).toBe("modified");
+    expect(studioPacketToText(packet)).toContain("Facilitator-authored revision");
+    expect(safeImportStudioPacket(JSON.parse(JSON.stringify(packet)))).not.toBe(null);
+  });
+  it("fails closed on forged source, invalid flags, modified durations and oversized imported content",()=>{
+    const mode={...DEFAULT_STUDIO_MODE,duration:10 as const};
+    const base=createStudioPacket({steps:composeStudioSteps(plan,mode,["Ella Fitzgerald","Kyoto"]),
+      anchors:["Ella Fitzgerald","Kyoto"],mode,source:"illustrative-demo"});
+    expect(safeImportStudioPacket({...base,source:"verified clinical"})).toBe(null);
+    expect(safeImportStudioPacket({...base,mode:{...base.mode,aac:"yes"}})).toBe(null);
+    expect(safeImportStudioPacket({...base,anchors:["X".repeat(101)]})).toBe(null);
+    expect(safeImportStudioPacket({...base,steps:[{...base.steps[0],sourceWhy:"X".repeat(4500)}]})).toBe(null);
+    expect(safeImportStudioPacket({...base,sessionMinutes:15})).toBe(null);
+    expect(safeImportStudioPacket({...base,facilitatorEdits:[{index:10,decision:"modified",text:"x"}]})).toBe(null);
+  });
+  it("does not label a preview adaptation as verified live Qloo evidence",()=>{
+    const steps=composeStudioSteps(plan,DEFAULT_STUDIO_MODE,["Ella Fitzgerald","Kyoto"],"illustrative-demo");
+    expect(steps[0].sourceTheme).toContain("Illustrative demo");
+    expect(steps[0].sourceTheme).not.toContain("Aggregate Qloo session theme");
+  });
+
+  it("exports declined topics as neutral alternatives without erasing source audit",()=>{
+    const mode={...DEFAULT_STUDIO_MODE,duration:10 as const};
+    const base=composeStudioSteps(plan,mode,["Ella Fitzgerald","Kyoto"]);
+    const changed=applyDeclinedTopics(base,[1]);
+    expect(base[1].sourceTheme).toContain("No Qloo theme assigned");
+    expect(changed[1].prompt).toContain("different neutral subject");
+    expect(changed[1].sourceAction).toBe(base[1].sourceAction);
+    expect(changed[1].sourceTheme).toContain("Declined during this session");
+    const packet=createStudioPacket({steps:changed,anchors:["Ella Fitzgerald","Kyoto"],mode,source:"qloo-live"});
+    expect(studioPacketToText(packet)).toContain("Topic declined");
+    expect(safeImportStudioPacket(JSON.parse(JSON.stringify(packet)))).not.toBe(null);
+    expect(applyDeclinedTopics(base,[])).toEqual(base);
+  });
+  it("detects obvious contact details in exported notes without claiming full PII detection",()=>{
+    expect(looksLikeContactInfo("Private email test@example.com")).toBe(true);
+    expect(looksLikeContactInfo("Call 570-555-0102")).toBe(true);
+    expect(looksLikeContactInfo("Quiet room; seated; no equipment")).toBe(false);
+  });
+
 });
+

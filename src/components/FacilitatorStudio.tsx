@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_STUDIO_MODE, STUDIO_VERSION, cleanPublicText, composeStudioSteps,
+  applyDeclinedTopics, looksLikeContactInfo,
   createStudioPacket, safeImportStudioPacket, studioPacketToText,
   type PreferenceStatus, type StudioDuration, type StudioMode, type StudioPacket, type StudioSourceStep,
 } from "../lib/studioLogic";
@@ -92,9 +93,10 @@ export default function FacilitatorStudio({
   useEffect(()=>{if(!isRunning)return;const id=window.setInterval(()=>setElapsed(n=>n+1),1000);return()=>window.clearInterval(id);},[isRunning]);
   useEffect(()=>{if(!consentAsked||preferenceStatuses.includes("declined"))setIsRunning(false);},[consentAsked,preferenceStatuses]);
   const steps=useMemo(()=>composeStudioSteps(plan,mode,anchors,source),[plan,mode,anchors,source]);
+  const handoffSteps=useMemo(()=>applyDeclinedTopics(steps,swapped),[steps,swapped]);
   const packet=useMemo(()=>createStudioPacket({
-    steps,anchors,mode,source,decisions,edits,note,
-  }),[steps,anchors,mode,source,decisions,edits,note]);
+    steps:handoffSteps,anchors,mode,source,decisions,edits,note,
+  }),[handoffSteps,anchors,mode,source,decisions,edits,note]);
   const active=steps[Math.min(currentStep,Math.max(steps.length-1,0))];
   const statusText=preferenceStatuses.every(s=>s==="current")?
     "Favorites marked as current by the facilitator (not independently verified)." :
@@ -106,7 +108,7 @@ export default function FacilitatorStudio({
     setMessage("");
   };
   const exportPacket=(format:"json"|"txt"|"html"|"card")=>{
-    if(/(?:[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}|\\b\\d{3}[-. ]?\\d{3}[-. ]?\\d{4}\\b)/i.test(note)){
+    if(looksLikeContactInfo(note)){
       setMessage("The note looks like it contains contact details. Remove them before exporting. This check cannot detect all private information.");
       return;
     }

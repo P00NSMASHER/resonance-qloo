@@ -102,6 +102,23 @@ export function composeStudioSteps(plan:StudioSourceStep[],mode:StudioMode,ancho
     };
   });
 }
+// A facilitator's refusal replaces the actionable prompt in an offline handoff,
+// while retaining the original audit wording in sourceAction/sourceWhy.
+export function applyDeclinedTopics(steps:StudioStep[],declinedIndexes:number[]):StudioStep[]{
+  const denied=new Set(declinedIndexes);
+  return steps.map(step=>!denied.has(step.index)?step:{
+    ...step,
+    intro:"Topic declined. Offer a pause, a neutral color/object choice, or stop; do not return to the declined topic without fresh permission.",
+    prompt:"Would you like a different neutral subject, a short pause, or to finish?",
+    alternative:"Speaking, pointing, eye gaze, observation, and passing are all welcome.",
+    sourceTheme:"Declined during this session. Original aggregate/source information stays in the audit section only; it was not used for this activity.",
+    trackA:"Optional pause or a choice of two neutral objects; participation is voluntary.",
+    trackB:"Optional observation or ending the session; no response required.",
+  });
+}
+export function looksLikeContactInfo(text:string):boolean {
+  return /(?:[A-Z0-9._%+-]+@[A-Z0-9.-]+[.][A-Z]{2,}|\b[0-9]{3}[-. ]?[0-9]{3}[-. ]?[0-9]{4}\b)/i.test(text);
+}
 export type StudioPacket={
   schema:"resonance-facilitator-handoff-v1";
   version:string;generatedAt:string;source:"qloo-live"|"illustrative-demo";
@@ -181,3 +198,4 @@ export function safeImportStudioPacket(value:unknown):StudioPacket|null{
     typeof o.validityNotice!=="string")return null;
   return o as StudioPacket;
 }
+
