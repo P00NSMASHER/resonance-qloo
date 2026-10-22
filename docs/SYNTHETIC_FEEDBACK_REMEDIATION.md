@@ -26,3 +26,6 @@
 | 20 | Long-term variety | Local generic worked/skipped tags, 30-day retention, repeat reminder; no resident profile | Verify repeat prompt without IDs |
 
 This is issue coverage and engineering traceability, **not** a validated real-user study or claim that all human-facing outcomes are solved. Care teams remain responsible for consent, local policies, and participant choice.
+
+## Follow-up screen/export coherence
+The on-screen opt-in group track is neutralized immediately after a topic is declined, matching the versioned export; this is asserted in Playwright QA, without altering Qloo source evidence.

@@ -198,17 +198,17 @@ export default function FacilitatorStudio({
           <button type="button" onClick={()=>{setIsRunning(false);setElapsed(0);setCurrentStep(0)}}>Reset</button>
         </div>
         {steps.map((step,index)=>{
-          const skipped=swapped.includes(step.index);
+          const visibleStep=handoffSteps[index]??step;
           const repeated=tags.some(t=>t.theme===clean(step.sourceTheme).slice(0,90)&&t.tag==="skipped");
           return <article key={step.index} className={styles.stepCard} aria-current={currentStep===index?"step":undefined}>
             <div className={styles.stepHeading}><b>{index+1}. {step.title}</b><span>{step.durationMinutes} min</span></div>
             {repeated&&<p className={styles.caveat}>A similar theme was previously skipped on this device. Ask before repeating it.</p>}
-            <p className={styles.intro}>{skipped?"Topic changed at facilitator request. Offer a neutral choice: observe the room, discuss a color, or simply pass.":step.intro}</p>
-            <p><b>Ask:</b> {skipped?"Would you like another neutral topic, a short pause, or to stop?":step.prompt}</p>
-            <p><b>Accessible alternative:</b> {step.alternative}</p>
-            <p><b>Materials:</b> {step.safeMaterials}</p>
-            <p><b>Permission:</b> {step.permission}</p>
-            {mode.mixedGroup&&<div className={styles.tracks}><p>{step.trackA}</p><p>{step.trackB}</p><p className={styles.caveat}>Let people opt into a track; do not divide people based on assumed tastes or conditions.</p></div>}
+            <p className={styles.intro}>{visibleStep.intro}</p>
+            <p><b>Ask:</b> {visibleStep.prompt}</p>
+            <p><b>Accessible alternative:</b> {visibleStep.alternative}</p>
+            <p><b>Materials:</b> {visibleStep.safeMaterials}</p>
+            <p><b>Permission:</b> {visibleStep.permission}</p>
+            {mode.mixedGroup&&<div className={styles.tracks}><p>{visibleStep.trackA}</p><p>{visibleStep.trackB}</p><p className={styles.caveat}>Let people opt into a track; do not divide people based on assumed tastes or conditions.</p></div>}
             <details><summary>Original Qloo-informed source &amp; rationale (for review)</summary><p>{step.sourceAction}</p><p>{step.sourceWhy}</p><p>{step.sourceTheme}</p>{edits[step.index]&&<p><strong>Separate facilitator edit (not Qloo verified):</strong> {edits[step.index]}</p>}</details>
             <div className={styles.controls}>
               <button type="button" onClick={()=>{setSwapped(v=>v.includes(step.index)?v:[...v,step.index]);setIsRunning(false);setCurrentStep(index);}}>Pass / switch topic</button>
@@ -249,5 +249,6 @@ export default function FacilitatorStudio({
     </div>}
   </section>;
 }
+
 
 
