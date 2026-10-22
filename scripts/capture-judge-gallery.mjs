@@ -72,7 +72,7 @@ await page.getByText('How Qloo changed this session').waitFor({state:'visible',t
 const qlooSection = page.getByText('How Qloo changed this session').locator('xpath=ancestor::section[1]');
 await qlooSection.scrollIntoViewIfNeeded();
 await page.waitForTimeout(300);
-const journeySection = page.getByText('Your favorites').locator('xpath=ancestor::section[1]');
+const journeySection = page.getByText('Your favorites',{exact:true}).locator('xpath=ancestor::section[1]');
 const [journeyBox,qlooBox] = await Promise.all([journeySection.boundingBox(),qlooSection.boundingBox()]);
 if (!journeyBox || !qlooBox) throw new Error('Could not locate Qloo transformation evidence');
 const x = Math.min(journeyBox.x,qlooBox.x);
