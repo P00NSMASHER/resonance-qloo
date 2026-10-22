@@ -501,3 +501,10 @@
 .proofRow{font-size:12px}
 @media(max-width:560px){.savedLibrary{padding:20px 16px}.savedRow button{flex:1 1 90px}.anchorLabel,.selectGrid label>span{font-size:12px}.cultureCardBody>span{font-size:10px}.tracePanel small,.activitySupport span{font-size:13px}.proofRow{font-size:10px}}
 @media print{.savedLibrary{display:none!important}.results{box-shadow:none!important}}
+
+/* Preference confirmation is distinct from a Qloo entity match. */
+.preferenceLabel{display:block;margin-top:8px;color:#285c5e;font-weight:750;font-size:12px;line-height:1.35}
+.preferenceSelect{width:100%;min-height:44px;padding:10px 11px;border-radius:10px;border:1px solid #c4d8cf;background:#fffefa;color:#214850;font:13px/1.4 system-ui,sans-serif;cursor:pointer}
+.preferenceSelect:focus-visible{outline:3px solid #0d8177;outline-offset:2px}
+.preferenceNote{font-size:12px;line-height:1.55;color:#617678;margin:15px 0 4px}
+@media(max-width:560px){.preferenceLabel{font-size:13px}.preferenceSelect{font-size:14px}}

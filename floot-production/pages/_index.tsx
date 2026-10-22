@@ -17,6 +17,8 @@ import {
 } from "../endpoints/recommend_POST.schema";
 import { getStatus, type OutputType as StatusType } from "../endpoints/status_GET.schema";
 import { qlooSessionLogic } from "../helpers/qlooSessionLogic";
+import FacilitatorStudio from "../components/FacilitatorStudio";
+import type { PreferenceStatus } from "../helpers/studioLogic";
 
 type AnchorType = "any"|"artist"|"movie"|"book"|"brand"|"destination"|"place"|"podcast"|"tv_show"|"videogame";
 type AnchorDraft = { query:string; type:AnchorType };
@@ -189,6 +191,7 @@ function isRichLiveResult(value:OutputType, expected:RequestContext, status:Stat
 
 export default function HomePage() {
   const [anchors,setAnchors] = useState<AnchorDraft[]>(initialAnchors);
+  const [anchorStatuses,setAnchorStatuses] = useState<PreferenceStatus[]>(["uncertain","uncertain"]);
   const [energy,setEnergy] = useState<"calm"|"social"|"active">("calm");
   const [setting,setSetting] = useState<"one-on-one"|"small-group"|"community">("small-group");
   const [durationMinutes,setDurationMinutes] = useState<30|45|60>(30);
@@ -217,7 +220,8 @@ export default function HomePage() {
     status.qlooApiOrigin === qlooSessionLogic.apiOrigin &&
     contractMatches
   );
-  const canRun = usableAnchors.length >= 2 && qlooReady && !loading;
+  const hasDeclined=anchors.some((a,i)=>a.query.trim().length>=2&&anchorStatuses[i]==="declined");
+  const canRun = usableAnchors.length >= 2 && !hasDeclined && qlooReady && !loading;
 
   async function refreshStatus(force = false) {
     setCheckingStatus(true);
@@ -231,7 +235,7 @@ export default function HomePage() {
   }
 
   useEffect(() => { void refreshStatus(); },[]);
-  useEffect(() => { try { const raw=window.localStorage.getItem(SAVED_PLANS_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)) setSavedPlans(parsed.filter(p=>typeof p.id==="string"&&typeof p.text==="string"&&p.text.length<120000).slice(0,12)); } catch { setSavedPlans([]); } },[]);
+  useEffect(() => { try { const raw=window.localStorage.getItem(SAVED_PLANS_KEY); const parsed=raw?JSON.parse(raw):[]; if(Array.isArray(parsed)){ const next=parsed.filter(p=>typeof p.id==="string"&&typeof p.text==="string"&&p.text.length<120000&&Date.parse(p.savedAt)>=Date.now()-30*86400000).slice(0,12); setSavedPlans(next); if(next.length!==parsed.length) window.localStorage.setItem(SAVED_PLANS_KEY,JSON.stringify(next)); } } catch { setSavedPlans([]); } },[]);
   useEffect(() => {
     if (result) window.requestAnimationFrame(() => resultRef.current?.focus());
   },[result]);
@@ -242,17 +246,21 @@ export default function HomePage() {
   }
   function changeAnchor(index:number,query:string) {
     invalidate(); setAnchors(current => current.map((item,i) => i === index ? {...item,query} : item));
+    setAnchorStatuses(current=>current.map((state,i)=>i===index?"uncertain":state));
   }
   function changeAnchorType(index:number,type:AnchorType) {
     invalidate(); setAnchors(current => current.map((item,i) => i === index ? {...item,type} : item));
+    setAnchorStatuses(current=>current.map((state,i)=>i===index?"uncertain":state));
   }
   function addAnchor() {
     if (anchors.length >= 4) return;
     invalidate(); setAnchors(current => [...current,{query:"",type:"any"}]);
+    setAnchorStatuses(current=>[...current,"uncertain"]);
   }
   function removeAnchor(index:number) {
     if (anchors.length <= 2) return;
     invalidate(); setAnchors(current => current.filter((_,i) => i !== index));
+    setAnchorStatuses(current=>current.filter((_,i)=>i!==index));
   }
 
   function currentRequestContext():RequestContext {
@@ -317,6 +325,7 @@ export default function HomePage() {
     setEnergy("calm");
     setSetting("small-group");
     setDurationMinutes(30);
+    setAnchorStatuses(["uncertain","uncertain"]);
   }
 
   function previewDemo() {
@@ -326,6 +335,7 @@ export default function HomePage() {
       { query:"The Sound of Music", type:"movie" },
     ]);
     setResult(demoForContext(energy,setting,durationMinutes)); setSource("demo");
+    setAnchorStatuses(["uncertain","uncertain"]);
   }
 
   function sessionText():string {
@@ -400,6 +410,11 @@ export default function HomePage() {
     try {window.localStorage.setItem(SAVED_PLANS_KEY,JSON.stringify(next));setSavedPlans(next);}
     catch {setError("Local device storage is unavailable. Download a copy instead.");}
   }
+  function clearAllSavedPlans() {
+    if (!window.confirm("Delete all Resonance plans saved in this browser? Downloaded or shared copies are not affected.")) return;
+    try { window.localStorage.removeItem(SAVED_PLANS_KEY); setSavedPlans([]); setExportText(""); }
+    catch { setError("Could not clear local saved plans."); }
+  }
   function saveSessionLocally() {
     if(!result) return;
     const body=sessionText();
@@ -415,6 +430,7 @@ export default function HomePage() {
   function chooseCategory(type:AnchorType) {
     invalidate();
     setAnchors([{query:"",type},{query:"",type:"any"}]);
+    setAnchorStatuses(["uncertain","uncertain"]);
     window.requestAnimationFrame(()=>document.getElementById("anchor-input-0")?.focus());
   }
 
@@ -484,7 +500,7 @@ export default function HomePage() {
         <div className={styles.formPanel}>
           <div className={styles.panelTop}>
             <div><span className={styles.step}>01</span><h2>Your favorites, your starting point.</h2></div>
-            <Button variant="outline" className={styles.compactButton} disabled={loading} onClick={()=>{invalidate();setAnchors(initialAnchors)}}>Load example</Button>
+            <Button variant="outline" className={styles.compactButton} disabled={loading} onClick={()=>{invalidate();setAnchors(initialAnchors);setAnchorStatuses(["uncertain","uncertain"])}}>Load example</Button>
           </div>
           <p className={styles.hint}>Add two to four favorites, then choose the mood, setting, and time. No names or personal health information needed.</p>
           <div className={styles.anchorGrid}>
@@ -495,6 +511,13 @@ export default function HomePage() {
                 <SelectContent>{anchorTypes.map(option=><SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectContent>
               </Select>
               <Input id={`anchor-input-${index}`} aria-labelledby={`anchor-label-${index}`} value={anchor.query} disabled={loading} onChange={event=>changeAnchor(index,event.target.value)} placeholder={["Favorite artist","Favorite film","Favorite food, book, brand, or place","Another favorite"][index]} />
+              <label className={styles.preferenceLabel} htmlFor={`preference-status-${index}`}>Is this favorite still welcome today?</label>
+              <select id={`preference-status-${index}`} className={styles.preferenceSelect} value={anchorStatuses[index]??"uncertain"}
+                disabled={loading} onChange={event=>{invalidate();setAnchorStatuses(current=>current.map((status,i)=>i===index?event.target.value as PreferenceStatus:status))}}>
+                <option value="uncertain">Not sure — ask the person</option>
+                <option value="current">Facilitator believes it is current</option>
+                <option value="declined">Declined — remove this favorite</option>
+              </select>
               {anchors.length > 2 && <Button variant="outline" className={styles.removeButton} disabled={loading} onClick={()=>removeAnchor(index)}><Trash2 size={14}/> Remove</Button>}
             </div>)}
           </div>
@@ -517,6 +540,8 @@ export default function HomePage() {
             {!qlooReady && status?.qlooStatus !== "preview" && <Button variant="outline" className={styles.compactButton} disabled={checkingStatus} onClick={()=>void refreshStatus(true)}><RefreshCw size={14}/> Retry Qloo verification</Button>}
           </div>
           {usableAnchors.length < 2 && <div role="status" className={styles.validation}>Enter at least two cultural anchors.</div>}
+          {hasDeclined&&<div role="alert" className={styles.validation}>A favorite is marked declined. Remove it or replace it before using Qloo.</div>}
+          <p className={styles.preferenceNote}>An old favorite is not proof of current consent. If unsure, ask before using the result; never force a memory or topic.</p>
           {error && <div role="alert" className={styles.error}><AlertCircle size={18}/><span>{error}</span></div>}
           {review && <section aria-labelledby="review-heading" className={styles.reviewCard}>
             <b>Qloo match review required</b>
@@ -568,7 +593,7 @@ export default function HomePage() {
           <header><b>Why Qloo matters</b><h3>{source==="live"?"How Qloo changed this session":"How Qloo would change this session"}</h3><p>The baseline below is intentionally competent but limited: it can use only the favorites and category hints supplied. It does not invent adjacent tastes.</p></header>
           <div className={styles.comparisonGrid}>
             <article className={styles.baselineCard}><span>Without Qloo · anchor-only baseline</span><ul>{delta.baseline.map(item=><li key={item.anchor}>{item.action}</li>)}</ul><small>Useful, but confined to what was already typed.</small></article>
-            <article className={styles.withQlooCard}><span>{source==="live"?"With Qloo · live taste graph":"With Qloo · illustrative path"}</span><p>{source==="live"?`Qloo expanded the literal inputs into ${result.evidence.returnedAffinityCount} cross-category signals, selected ${result.evidence.selectedAffinityCount}, and grounded every activity in that additional evidence.`:"The illustrative path shows how adjacent cultural evidence can expand literal favorites into a broader session."}</p><div className={styles.deltaSignals}>{selectedSequence.map(label=><span key={label}>{label}</span>)}</div></article>
+            <article className={styles.withQlooCard}><span>{source==="live"?"With Qloo · live taste graph":"With Qloo · illustrative path"}</span><p>{source==="live"?`Qloo expanded the literal inputs into ${result.evidence.returnedAffinityCount} cross-category signals, selected ${result.evidence.selectedAffinityCount}, and offered optional adjacent themes; some activities intentionally use only supplied favorites when no additional supported link exists.`:"The illustrative path shows how adjacent cultural evidence can expand literal favorites into a broader session."}</p><div className={styles.deltaSignals}>{selectedSequence.map(label=><span key={label}>{label}</span>)}</div></article>
           </div>
           <div className={styles.deltaMetrics}><span><strong>{delta.inputAnchorCount}</strong> favorites supplied</span><span><strong>{delta.returnedSignalCount}</strong> Qloo signals discovered</span><span><strong>{delta.selectedSignalCount}</strong> signals selected</span><span><strong>{delta.activitiesInfluencedCount}</strong> activities influenced</span><span><strong>{delta.selectedSignalsNotNamedInInputs.length}</strong> selected discoveries not named in the inputs</span></div>
         </section>
@@ -578,6 +603,15 @@ export default function HomePage() {
           <div className={styles.planGrid}>{result.plan.map((item,index)=>{const Icon=[Music2,Film,Users,Utensils][index%4];const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;const displayedAction=activityEdits[index]??item.action;const decision=activityDecisions[index];return <article key={item.title} className={styles.planCard}><div className={styles.cardIcon}><Icon size={21}/></div><span className={styles.duration}>{item.duration}</span><h3>{item.title}</h3>{editingActivity===index?<div className={styles.activityEditor}><label htmlFor={`activity-edit-${index}`}>Modify activity</label><textarea id={`activity-edit-${index}`} value={displayedAction} onChange={event=>setActivityEdits(current=>({...current,[index]:event.target.value}))}/><div><button type="button" onClick={()=>{setActivityDecisions(current=>({...current,[index]:"modified"}));setEditingActivity(null)}}>Save modification</button><button type="button" onClick={()=>setEditingActivity(null)}>Cancel</button></div></div>:<p className={styles.sessionAction}>{displayedAction}</p>}<div className={styles.activitySupport}><span><b>Why this fits</b>{item.why}</span><span><b>Materials</b>{activitySupport(index).materials}</span><span><b>Participation options</b>{activitySupport(index).participation}</span></div>{item.affinityLabel&&<div className={styles.sessionSignal}>{decision==="modified"?"Original evidence reference":signal?`Session-wide Qloo theme #${signal}`:"Session-wide Qloo theme"} · {item.affinityLabel}{item.anchorName?` · starting favorite: ${item.anchorName} (no per-favorite attribution)`:""}{decision==="modified"&&<small>Facilitator-authored text is not revalidated or attributed to Qloo.</small>}{decision==="replaced"&&<small>Resonance changed the participation modality while retaining this original signal.</small>}</div>}<div className={styles.facilitatorControls}><button type="button" aria-pressed={decision==="kept"} className={decision==="kept"?styles.active:""} onClick={()=>setActivityDecisions(current=>({...current,[index]:"kept"}))}>Keep</button><button type="button" aria-pressed={decision==="modified"} className={decision==="modified"?styles.active:""} onClick={()=>{setActivityEdits(current=>({...current,[index]:current[index]??item.action}));setEditingActivity(index)}}>Modify</button><button type="button" aria-pressed={decision==="replaced"} className={decision==="replaced"?styles.active:""} onClick={()=>{setActivityEdits(current=>({...current,[index]:replacementActivity(index,item)}));setActivityDecisions(current=>({...current,[index]:"replaced"}));setEditingActivity(null)}}>Replace</button></div>{decision&&<div className={styles.decisionBadge}>Facilitator: {decision}</div>}</article>})}</div>
           <div role="status" aria-live="polite" className={styles.approvalSummary}><strong>Facilitator review</strong><span>{approvedCount}/{result.plan.length} activities have a decision · {keptCount} kept · {modifiedCount} modified · {replacedCount} replaced</span>{approvedCount===result.plan.length&&<b>All activity decisions complete</b>}</div>
         </section>
+        <FacilitatorStudio
+          plan={result.plan}
+          edits={activityEdits}
+          anchors={result.resolvedAnchors.map(x=>x.name)}
+          preferenceStatuses={anchorStatuses}
+          source={source==="live"?"qloo-live":"illustrative-demo"}
+          durationMinutes={durationMinutes}
+          decisions={result.plan.map((_,index)=>activityDecisions[index]??"not reviewed")}
+        />
 
         <div className={styles.interpretation}><b>Interpretation limit</b><p>Qloo affinities are aggregate cultural relationships, not probabilities or claims about an individual. The facilitator can keep, modify, or replace every suggestion before use.</p></div>
 
@@ -595,7 +629,7 @@ export default function HomePage() {
 
             <section className={styles.decisionTrace}><h3>Agent decision trace</h3><p>The audit trail exposes how the session was assembled.</p><div className={styles.metrics}><span><b>{result.evidence.resolvedAnchorCount}</b> anchors resolved</span><span><b>{result.evidence.exactResolutionCount}</b> exact-name matches</span><span><b>{result.evidence.topResultResolutionCount}</b>{source==="live"?" top matches confirmed":" top matches to review"}</span><span><b>{result.evidence.categoryHintCount}</b> category hints</span><span><b>{result.evidence.selectedAffinityCount}</b> signals selected</span><span><b>{result.evidence.returnedAffinityCount}</b> signals returned</span><span><b>{source==="live"?result.evidence.explainabilityResultCount:"—"}</b>{source==="live"?" Qloo-explained results":" live explainability"}</span><span><b>{result.evidence.aggregateExplainabilityAvailable?"Yes":"No"}</b> aggregate explainability</span></div><ol>{result.agentTrace.map(step=><li key={step.stage} className={step.status==="warning"?styles.traceWarning:""}><span>{step.stage}</span><p>{step.detail}</p></li>)}</ol></section>
 
-            <section className={styles.auditRationales}><h3>Activity-to-evidence mapping</h3>{result.plan.map(item=>{const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;return <article key={item.title}><b>{item.title}</b><code>{signal?`Signal #${signal}: `:""}{item.anchorName?`${item.anchorName} + ${item.affinityLabel} → ${item.title}`:`${item.affinityLabel} → ${item.title}`}</code><p>{item.why}</p></article>})}</section>
+            <section className={styles.auditRationales}><h3>Activity-to-evidence mapping</h3>{result.plan.map(item=>{const signal=item.affinityLabel?selectedOrder.get(item.affinityLabel):undefined;return <article key={item.title}><b>{item.title}</b><code>{signal?`Signal #${signal}: `:""}{item.anchorName?`${item.anchorName} · session-wide theme ${item.affinityLabel||"(none assigned)"} → ${item.title}`:`${item.affinityLabel} → ${item.title}`}</code><p>{item.why}</p></article>})}</section>
           </div>
         </details>
       </section>}
@@ -626,7 +660,8 @@ export default function HomePage() {
       </section>
 
       <section className={styles.savedLibrary} aria-labelledby="saved-plans-heading">
-        <div><span className={styles.sectionKicker}>PRIVATELY ON THIS DEVICE</span><h2 id="saved-plans-heading">Your saved session plans</h2><p>Plans stay in this browser's local storage until you remove them or clear browser data. Do not enter resident names or health information.</p></div>
+        <div><span className={styles.sectionKicker}>PRIVATELY ON THIS DEVICE</span><h2 id="saved-plans-heading">Your saved session plans</h2><p>Plans are kept only in this browser for up to 30 days. Other users of a shared device may see them. Delete them after handoff; downloads must be deleted separately. Never enter resident names or health records.</p></div>
+        {savedPlans.length>0&&<Button variant="outline" onClick={clearAllSavedPlans}>Delete all saved plans on this device</Button>}
         {savedPlans.length>0?<div className={styles.savedList}>{savedPlans.map(plan=><div key={plan.id} className={styles.savedRow}><span><strong>{plan.label}</strong><small>{new Date(plan.savedAt).toLocaleDateString()}</small></span><Button variant="outline" onClick={()=>openSavedPlan(plan)}>View text</Button><Button variant="outline" onClick={()=>downloadSession(plan.text)}>Download</Button><Button variant="outline" onClick={()=>persistPlans(savedPlans.filter(x=>x.id!==plan.id))}>Remove</Button></div>)}</div>:<p className={styles.savedEmpty}>No saved plans yet. After building a session, choose “Save on this device.”</p>}
         {exportText&&<div className={styles.exportFallback}><h3>Manual-copy / saved plan text</h3><p>Select the text below to copy it, or use Download .txt when the clipboard is blocked.</p><Textarea id="saved-plan-text" readOnly value={exportText} rows={8} onFocus={e=>e.currentTarget.select()}/><Button variant="outline" onClick={()=>downloadSession(exportText)}>Download shown text</Button></div>}
       </section>
