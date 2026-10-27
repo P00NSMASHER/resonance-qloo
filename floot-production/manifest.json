@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "flootProjectId": "49082a23-f25f-41f4-a147-f908c8dcc860",
-  "flootProjectVersion": "1792674071418",
+  "flootProjectVersion": "1792675362099",
   "publishedUrl": "https://resonance-qloo.floot.app",
   "qlooApiOrigin": "https://hackathon.api.qloo.com",
   "deploymentContractVersion": "2026-10-02.review-origin-v1",
@@ -49,8 +49,8 @@
     },
     {
       "path": "components/FacilitatorStudio.tsx",
-      "gitBlobSha": "03e9991dcf93149a6d8ad1e9d6ea2d317afd6cc3",
-      "sourceCharCount": 18405
+      "gitBlobSha": "853003aa019ac77d0f70778bb7ac6f173660b6eb",
+      "sourceCharCount": 18258
     },
     {
       "path": "components/Input.module.css",
@@ -175,9 +175,9 @@
   ],
   "liveVerification": {
     "verifiedDate": "2026-10-22",
-    "flootProjectVersion": "1792674071418",
+    "flootProjectVersion": "1792675362099",
     "exactFileCount": 33,
-    "verificationMethod": "Five changed/new runtime files were directly read from Floot project version 1792674071418, reconstructed by numbered lines and compared against their character counts and Git blobs; remaining 28 runtime files retain the preceding direct-source capture. This records a candidate source snapshot, not publication.",
+    "verificationMethod": "Only components/FacilitatorStudio.tsx changed after the earlier exact 33-file capture. It was directly reread in full, length 18258 characters, and saved as content-addressed Git blob 853003aa019ac77d0f70778bb7ac6f173660b6eb. The other 32 runtime files are unchanged. This is a candidate source capture, not publication confirmation.",
     "directComparisonStatus": "33/33 exact",
     "manifestBlobStatus": "33 exact runtime file identities, checked by Git blob SHA and source character count."
   }
