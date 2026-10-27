@@ -62,7 +62,8 @@ try {
  ok(packet.steps[0].sourceTheme.includes("Declined during this session"),"declined topic remains declined in exported handoff");
  const input=studio.getByLabel("Open a previously exported handoff on another device");
  await input.setInputFiles(file);
- ok((await studio.getByText(/Imported unverified 15-minute packet/).count())>0,"import is explicitly unverified even when source is declared");
+ await studio.getByText(/Imported unverified 15-minute packet/).waitFor({state:"visible",timeout:5000});
+ ok(true,"import is explicitly unverified even when source is declared");
  const htmlEvent=page.waitForEvent("download",{timeout:15000});
  await studio.getByRole("button",{name:"Download complete offline plan"}).click();
  const htmlDownload=await htmlEvent,html=await readFile(await htmlDownload.path(),"utf8");
