@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import { publishedStatusMatches } from './receipt-status.mjs';
 
 const receipt=JSON.parse(await readFile(new URL('../BUILD_RECEIPT.json',import.meta.url),'utf8'));
 const manifestBytes=await readFile(new URL('../floot-production/manifest.json',import.meta.url));
@@ -17,9 +18,22 @@ if(receipt.deploymentContractVersion!==contract.version) failures.push('deployme
 if(!/^https:\/\/github\.com\/P00NSMASHER\/resonance-qloo\/actions\/runs\/\d+$/.test(receipt.galleryWorkflowRun)||receipt.galleryWorkflowConclusion!=='success') failures.push('gallery workflow receipt invalid');
 if(!Number.isFinite(Date.parse(receipt.builtAt))) failures.push('build timestamp invalid');
 if(!candidate && !process.argv.includes('--offline')) {
-  const response=await fetch(`${receipt.publicUrl}/_api/status`,{headers:{accept:'application/json'},signal:AbortSignal.timeout(15_000)});
-  const body=await response.text();
-  if(!response.ok||!body.includes(receipt.deploymentContractVersion)||!body.includes('ready')) failures.push('live deployment does not match receipt contract/readiness');
+  let deployedStatusVerified=false;
+  try {
+    const response=await fetch(`${receipt.publicUrl}/_api/status`,{
+      headers:{accept:'application/json'},
+      signal:AbortSignal.timeout(15_000),
+    });
+    if(response.ok && /^application\/json\b/i.test(response.headers.get('content-type') || '')) {
+      deployedStatusVerified=publishedStatusMatches(await response.json(), {
+        contractVersion:receipt.deploymentContractVersion,
+        qlooApiOrigin:manifest.qlooApiOrigin,
+      });
+    }
+  } catch {
+    // An unavailable or invalid live API must never produce a green production receipt.
+  }
+  if(!deployedStatusVerified) failures.push('live deployment does not match receipt contract/readiness');
 }
 if(failures.length){failures.forEach(x=>console.error('FAIL:',x));process.exit(1)}
 console.log(candidate
