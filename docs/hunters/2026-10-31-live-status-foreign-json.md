@@ -9,7 +9,7 @@
 `scripts/check-live-qloo.mjs` tries `/api/status` first, then `/_api/status` **only when HTTP/JSON parsing fails**. A successful 200 JSON response from an unrelated frontend router (e.g. `{"service":"frontend-router"}`) prematurely wins even when `/_api/status` contains the verified Resonance status. The script then exits 1, generating a false negative. This is a synthetic repro of a possible routing behavior, **not** evidence of an actual live outage.
 
 ## Behavior change (narrow)
-Only an object with `service: "resonance"` can win endpoint selection. Unrelated, null, or array JSON permits trying the alternate Floot path. Once a genuine Resonance status is returned, all original contract, Qloo origin, live/ready, and connected/configured checks still run. A stale true Resonance contract or degraded status **does not** trigger alternate-route laundering.
+Both `scripts/check-live-qloo.mjs` and `scripts/check-deployment.mjs` now require an object with `service: "resonance"` before endpoint selection. Unrelated, null, or array JSON permits trying the alternate Floot path. Once a genuine Resonance status is returned, all original contract, Qloo origin, live/ready, and connected/configured checks still run. A stale true Resonance contract or degraded status **does not** trigger alternate-route laundering.
 
 ## Adversarial tests
 Extended `scripts/test-live-qloo-check.mjs` with a synthetic HTTP server:
@@ -17,7 +17,7 @@ Extended `scripts/test-live-qloo-check.mjs` with a synthetic HTTP server:
 2. Unrelated JSON at primary, **degraded** secondary must exit 3 (never green).
 3. A genuine, **stale** Resonance primary must fail even when secondary falsely claims ready.
 
-Retain existing positive, preview, rate-limited, degraded, refresh and malformed-contract tests. Run `npm run qloo:live:selftest`; exact-head GitHub CI, security and deployment parity checks remain release gates. No runtime dependencies, customer data or production state changes.
+Extended `scripts/test-deployment-checker.mjs` with corresponding unrelated-primary/valid-Floot-secondary success, stale-secondary failure, and stale-Resonance-primary/green-secondary failure. Retain existing positive, preview, rate-limited, degraded, refresh and malformed-contract tests. Run both `npm run qloo:live:selftest` and `npm run deployment:check:selftest`; exact-head GitHub CI, security and deployment parity checks remain release gates. No runtime dependencies, customer data or production state changes.
 
 ## Public candidates evaluated (source-pinned, no imports)
 - [ajv-validator/ajv](https://github.com/ajv-validator/ajv), MIT license confirmed via repo LICENSE, default master inspected SHA `f177fe323420ccb23e1a79445fd470cbf80aee7c` (2026-04-24), unarchived; adding schema compiler and transitive packages is excessive for checking one identity field.
