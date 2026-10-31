@@ -25,7 +25,17 @@ async function fetchPublicStatus() {
   const failures = [];
   for (const path of ['/api/status','/_api/status']) {
     const requestPath = path + (FORCE_REFRESH ? '?refresh=1' : '');
-    try { return { status:await fetchJson(BASE_URL + requestPath), path, requestPath }; }
+    try {
+      const status = await fetchJson(BASE_URL + requestPath);
+      // Floot can serve a JSON frontend/router response at /api/status while
+      // the real status endpoint remains available at /_api/status. Only a
+      // non-Resonance document permits fallback. A genuine Resonance response
+      // with a stale contract or degraded readiness must still fail closed.
+      if (!status || typeof status !== 'object' || Array.isArray(status) || status.service !== 'resonance') {
+        throw new Error(`${path} returned JSON without the Resonance service identity`);
+      }
+      return { status, path, requestPath };
+    }
     catch (error) { failures.push(`${path}: ${error instanceof Error ? error.message : String(error)}`); }
   }
   throw new Error(failures.join(' | '));
