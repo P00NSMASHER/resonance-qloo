@@ -30,6 +30,7 @@
     "security:dependencies:check": "npm audit --omit=dev --audit-level=high",
     "floot:production:parity": "node scripts/check-floot-production-parity.mjs",
     "build:receipt:check": "node scripts/check-build-receipt.mjs",
+    "build:receipt:selftest": "node --test scripts/test-receipt-status.mjs",
     "study:analyze": "tsx scripts/analyze-study-responses.ts",
     "impact:study": "node --import tsx scripts/summarize-impact-study.mjs",
     "impact:study:selftest": "node scripts/test-impact-study.mjs",

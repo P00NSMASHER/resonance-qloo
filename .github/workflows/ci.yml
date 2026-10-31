@@ -34,6 +34,8 @@ jobs:
         run: npm run floot:production:parity
       - name: Public build receipt
         run: npm run build:receipt:check
+      - name: Production receipt structured-status regression tests
+        run: npm run build:receipt:selftest
       - name: Typecheck
         run: npm run typecheck
       - name: Reviewed study evidence fail-closed self-test
