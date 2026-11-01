@@ -53,6 +53,11 @@ async function fetchJson(url) {
       'user-agent': 'resonance-deployment-check/1.0',
     },
   });
+  // Never treat a status response redirected to another host as evidence for
+  // the deployment being checked, even if it has the expected JSON fields.
+  if (new URL(response.url).origin !== new URL(url).origin) {
+    throw new Error(`${url} redirected to a different origin`);
+  }
   const bodyText = await response.text();
   if (!response.ok) {
     throw new Error(`${url} returned HTTP ${response.status}: ${bodyText.slice(0,160)}`);
@@ -79,6 +84,13 @@ async function fetchPublicStatus() {
   for (const path of ['/api/status','/_api/status']) {
     try {
       const status = await fetchJson(BASE_URL + path);
+      // A frontend/router JSON object may occupy /api/status while Floot
+      // exposes the actual API at /_api/status. Retry only if the service
+      // identity is absent or unrelated; genuine stale/degraded Resonance
+      // statuses must still be evaluated and rejected by contract gates.
+      if (!status || typeof status !== 'object' || Array.isArray(status) || status.service !== 'resonance') {
+        throw new Error(`${path} returned JSON without the Resonance service identity`);
+      }
       return { status, path };
     } catch (error) {
       failures.push(`${path}: ${error instanceof Error ? error.message : String(error)}`);

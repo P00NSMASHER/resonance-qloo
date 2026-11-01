@@ -34,7 +34,7 @@ function runChecker(baseUrl, forceRefresh = false) {
 async function withStatus(mode, fn) {
   const statusPayload = {
     service:'resonance',
-    contractVersion:mode === 'wrong-contract' ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
+    contractVersion:mode.startsWith('wrong-contract') ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
     qlooApiOrigin:EXPECTED_QLOO_API_ORIGIN,
     mode:mode === 'preview' ? 'preview' : 'live',
     qlooStatus:mode === 'preview' ? 'preview' : mode === 'degraded' ? 'degraded' : mode === 'rate-limited' ? 'rate-limited' : 'ready',
@@ -45,6 +45,11 @@ async function withStatus(mode, fn) {
   const server = createServer((req, res) => {
     const requestUrl = new URL(req.url || '/', 'http://localhost');
     if (requestUrl.pathname === '/api/status') {
+      if (mode === 'foreign-json' || mode === 'foreign-json-degraded') {
+        res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ service:'frontend-router', message:'this is not the Resonance status endpoint' }));
+        return;
+      }
       if (mode === 'floot-ready') {
         res.writeHead(200, { 'content-type':'text/html; charset=utf-8' });
         res.end('<!doctype html><title>frontend shell</title>');
@@ -55,9 +60,14 @@ async function withStatus(mode, fn) {
       return;
     }
     if (requestUrl.pathname === '/_api/status') {
-      if (mode === 'floot-ready') {
+      if (['floot-ready','foreign-json','foreign-json-degraded','wrong-contract-valid-alternate'].includes(mode)) {
         res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ json:statusPayload }));
+        const secondary = mode === 'foreign-json-degraded'
+          ? { ...statusPayload, qlooStatus:'degraded', qlooConnected:false }
+          : mode === 'wrong-contract-valid-alternate'
+            ? { ...statusPayload, contractVersion:EXPECTED_CONTRACT_VERSION }
+            : statusPayload;
+        res.end(JSON.stringify({ json:secondary }));
         return;
       }
       res.writeHead(404, { 'content-type':'application/json; charset=utf-8' });
@@ -92,6 +102,18 @@ if (ready.code !== 0 || !ready.stdout.includes('Live Qloo readiness passed via /
 const flootReady = await withStatus('floot-ready', runChecker);
 if (flootReady.code !== 0 || !flootReady.stdout.includes('Live Qloo readiness passed via /_api/status')) {
   throw new Error(`Expected Floot wrapped ready status to pass. stdout=${flootReady.stdout} stderr=${flootReady.stderr}`);
+}
+
+// A JSON object from the frontend router is not the Resonance status contract:
+ // fall through to Floot's documented /_api/status route rather than fail falsely.
+const foreignJson = await withStatus('foreign-json', runChecker);
+if (foreignJson.code !== 0 || !foreignJson.stdout.includes('Live Qloo readiness passed via /_api/status')) {
+  throw new Error(`Expected unrelated JSON at /api/status to use the verified fallback. stdout=${foreignJson.stdout} stderr=${foreignJson.stderr}`);
+}
+
+const foreignJsonDegraded = await withStatus('foreign-json-degraded', runChecker);
+if (foreignJsonDegraded.code !== 3 || !foreignJsonDegraded.stderr.includes('NOT READY [verification-failed]')) {
+  throw new Error(`Expected degraded secondary status to fail closed. stdout=${foreignJsonDegraded.stdout} stderr=${foreignJsonDegraded.stderr}`);
 }
 
 const refreshedReady = await withStatus('ready', baseUrl => runChecker(baseUrl, true));
@@ -141,6 +163,13 @@ if (
   !rateOutput.includes('qlooStatus=rate-limited')
 ) {
   throw new Error(`Expected rate-limited status to exit 4 with retry guidance. stdout=${rateLimited.stdout} stderr=${rateLimited.stderr}`);
+}
+
+// A genuine Resonance status with a stale contract must not be hidden by
+// a healthy alternate route. It is a release mismatch, not a routing failure.
+const wrongContractValidAlternate = await withStatus('wrong-contract-valid-alternate', runChecker);
+if (wrongContractValidAlternate.code === 0 || !wrongContractValidAlternate.stderr.includes('contractVersion=')) {
+  throw new Error(`Expected stale primary contract to fail despite an alternate green status. stdout=${wrongContractValidAlternate.stdout} stderr=${wrongContractValidAlternate.stderr}`);
 }
 
 const wrongContract = await withStatus('wrong-contract', runChecker);

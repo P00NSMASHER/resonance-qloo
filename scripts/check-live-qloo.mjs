@@ -13,6 +13,11 @@ async function fetchJson(url) {
     signal:AbortSignal.timeout(10000),
     headers:{ accept:'application/json', 'user-agent':'resonance-live-readiness-check/1.0' },
   });
+  // Never treat a status response redirected to another host as evidence for
+  // the deployment being checked, even if it has the expected JSON fields.
+  if (new URL(response.url).origin !== new URL(url).origin) {
+    throw new Error(`${url} redirected to a different origin`);
+  }
   const bodyText = await response.text();
   if (!response.ok) throw new Error(`${url} returned HTTP ${response.status}: ${bodyText.slice(0,160)}`);
   const contentType = response.headers.get('content-type') || '';
@@ -25,7 +30,17 @@ async function fetchPublicStatus() {
   const failures = [];
   for (const path of ['/api/status','/_api/status']) {
     const requestPath = path + (FORCE_REFRESH ? '?refresh=1' : '');
-    try { return { status:await fetchJson(BASE_URL + requestPath), path, requestPath }; }
+    try {
+      const status = await fetchJson(BASE_URL + requestPath);
+      // Floot can serve a JSON frontend/router response at /api/status while
+      // the real status endpoint remains available at /_api/status. Only a
+      // non-Resonance document permits fallback. A genuine Resonance response
+      // with a stale contract or degraded readiness must still fail closed.
+      if (!status || typeof status !== 'object' || Array.isArray(status) || status.service !== 'resonance') {
+        throw new Error(`${path} returned JSON without the Resonance service identity`);
+      }
+      return { status, path, requestPath };
+    }
     catch (error) { failures.push(`${path}: ${error instanceof Error ? error.message : String(error)}`); }
   }
   throw new Error(failures.join(' | '));

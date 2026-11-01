@@ -35,9 +35,9 @@ const markers = [
   'Static example · no live timestamp',
 ];
 
-function runChecker(baseUrl) {
+function runChecker(baseUrl, scriptPath = checkerPath) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [checkerPath], {
+    const child = spawn(process.execPath, [scriptPath], {
       env: {
         ...process.env,
         RESONANCE_BASE_URL: baseUrl,
@@ -60,13 +60,18 @@ async function withMockDeployment(mode, fn) {
   const server = createServer((req, res) => {
     const statusPayload = {
       service:'resonance',
-      contractVersion: mode === 'wrong-contract' ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
+      contractVersion: ['wrong-contract','wrong-contract-alternate','foreign-json-stale-secondary'].includes(mode) ? 'stale-contract' : EXPECTED_CONTRACT_VERSION,
       qlooApiOrigin:EXPECTED_QLOO_API_ORIGIN,
       mode:'preview',
       qlooStatus:'preview',
     };
 
     if (req.url === '/api/status') {
+      if (mode === 'foreign-json' || mode === 'foreign-json-stale-secondary') {
+        res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ service:'frontend-router', message:'unrelated JSON frontend shell' }));
+        return;
+      }
       if (mode === 'html-status' || mode === 'floot-superjson') {
         res.writeHead(200, { 'content-type':'text/html; charset=utf-8' });
         res.end('<!doctype html><title>frontend shell</title>');
@@ -78,9 +83,12 @@ async function withMockDeployment(mode, fn) {
     }
 
     if (req.url === '/_api/status') {
-      if (mode === 'floot-superjson') {
+      if (['floot-superjson','foreign-json','foreign-json-stale-secondary','wrong-contract-alternate'].includes(mode)) {
         res.writeHead(200, { 'content-type':'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ json:statusPayload }));
+        const secondary = mode === 'wrong-contract-alternate'
+          ? { ...statusPayload, contractVersion:EXPECTED_CONTRACT_VERSION }
+          : statusPayload;
+        res.end(JSON.stringify({ json:secondary }));
         return;
       }
       if (mode === 'html-status') {
@@ -144,6 +152,52 @@ async function withMockDeployment(mode, fn) {
   }
 }
 
+// A syntactically perfect status document from a different origin must never
+// serve as evidence that the checked deployment is ready or current.
+async function withCrossOriginStatusRedirect(fn) {
+  const forgedStatus = {
+    service: 'resonance',
+    contractVersion: EXPECTED_CONTRACT_VERSION,
+    qlooApiOrigin: EXPECTED_QLOO_API_ORIGIN,
+    mode: 'live',
+    qlooStatus: 'ready',
+    qlooConfigured: true,
+    qlooConnected: true,
+  };
+  const outsider = createServer((_req, res) => {
+    res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify(forgedStatus));
+  });
+  outsider.listen(0, '127.0.0.1');
+  await once(outsider, 'listening');
+  const outsiderUrl = `http://127.0.0.1:${outsider.address().port}/status`;
+
+  const origin = createServer((req, res) => {
+    if (req.url === '/api/status') {
+      res.writeHead(302, { location: outsiderUrl }).end();
+    } else if (req.url === '/_api/status') {
+      res.writeHead(404, { 'content-type': 'application/json' }).end('{"error":"missing"}');
+    } else if (req.url === '/') {
+      res.writeHead(200, { 'content-type': 'text/html' })
+        .end('<!doctype html><script src="/_assets/app.js"></script>');
+    } else if (req.url === '/_assets/app.js') {
+      res.writeHead(200, { 'content-type': 'text/javascript' })
+        .end(markers.map(marker => JSON.stringify(marker)).join(';\\n'));
+    } else {
+      res.writeHead(404).end('Not found');
+    }
+  });
+  origin.listen(0, '127.0.0.1');
+  await once(origin, 'listening');
+  try {
+    return await fn(`http://127.0.0.1:${origin.address().port}`);
+  } finally {
+    await Promise.all([origin, outsider].map(server =>
+      new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()))
+    ));
+  }
+}
+
 const current = await withMockDeployment('current', runChecker);
 if (current.code !== 0 || !current.stdout.includes('Public deployment frontend + backend parity passed.')) {
   throw new Error(`Expected current deployment to pass. stdout=${current.stdout} stderr=${current.stderr}`);
@@ -156,6 +210,20 @@ if (
   !floot.stdout.includes('Public deployment frontend + backend parity passed.')
 ) {
   throw new Error(`Expected Floot SuperJSON deployment to pass. stdout=${floot.stdout} stderr=${floot.stderr}`);
+}
+
+const foreignJson = await withMockDeployment('foreign-json', runChecker);
+if (
+  foreignJson.code !== 0 ||
+  !foreignJson.stdout.includes('Public backend status passed via /_api/status') ||
+  !foreignJson.stdout.includes('Public deployment frontend + backend parity passed.')
+) {
+  throw new Error(`Expected unrelated JSON at primary route to use valid alternate Floot route. stdout=${foreignJson.stdout} stderr=${foreignJson.stderr}`);
+}
+
+const foreignJsonStale = await withMockDeployment('foreign-json-stale-secondary', runChecker);
+if (foreignJsonStale.code === 0 || !foreignJsonStale.stderr.includes('Public backend contract version')) {
+  throw new Error(`Expected stale alternate Resonance contract to fail closed. stdout=${foreignJsonStale.stdout} stderr=${foreignJsonStale.stderr}`);
 }
 
 const flootDynamic = await withMockDeployment('floot-dynamic', runChecker);
@@ -177,6 +245,11 @@ if (
   throw new Error(`Expected wrong deployment contract to fail clearly. stdout=${wrongContract.stdout} stderr=${wrongContract.stderr}`);
 }
 
+const wrongContractAlternate = await withMockDeployment('wrong-contract-alternate', runChecker);
+if (wrongContractAlternate.code === 0 || !wrongContractAlternate.stderr.includes('Public backend contract version')) {
+  throw new Error(`Expected stale primary contract to fail despite green alternate route. stdout=${wrongContractAlternate.stdout} stderr=${wrongContractAlternate.stderr}`);
+}
+
 const staleBackend = await withMockDeployment('html-status', runChecker);
 const staleOutput = staleBackend.stdout + '\n' + staleBackend.stderr;
 if (staleBackend.code === 0 || !staleOutput.includes('instead of JSON') || !staleOutput.includes('may be stale')) {
@@ -187,6 +260,16 @@ const missingMarker = await withMockDeployment('missing-marker', runChecker);
 const missingOutput = missingMarker.stdout + '\n' + missingMarker.stderr;
 if (missingMarker.code === 0 || !missingOutput.includes('MISSING: Confirm matches & build')) {
   throw new Error(`Expected missing judge marker to fail clearly. stdout=${missingMarker.stdout} stderr=${missingMarker.stderr}`);
+}
+
+const redirectedStatus = await withCrossOriginStatusRedirect(async baseUrl => ({
+  deployment: await runChecker(baseUrl),
+  live: await runChecker(baseUrl, fileURLToPath(new URL('./check-live-qloo.mjs', import.meta.url))),
+}));
+for (const [checker, outcome] of Object.entries(redirectedStatus)) {
+  if (outcome.code === 0 || !outcome.stderr.includes('redirected to a different origin')) {
+    throw new Error(`Expected ${checker} to reject forged off-origin JSON after HTTP 302. stdout=${outcome.stdout} stderr=${outcome.stderr}`);
+  }
 }
 
 console.log('Deployment checker self-test passed.');
