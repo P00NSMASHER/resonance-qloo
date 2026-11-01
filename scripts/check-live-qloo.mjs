@@ -13,6 +13,11 @@ async function fetchJson(url) {
     signal:AbortSignal.timeout(10000),
     headers:{ accept:'application/json', 'user-agent':'resonance-live-readiness-check/1.0' },
   });
+  // Never treat a status response redirected to another host as evidence for
+  // the deployment being checked, even if it has the expected JSON fields.
+  if (new URL(response.url).origin !== new URL(url).origin) {
+    throw new Error(`${url} redirected to a different origin`);
+  }
   const bodyText = await response.text();
   if (!response.ok) throw new Error(`${url} returned HTTP ${response.status}: ${bodyText.slice(0,160)}`);
   const contentType = response.headers.get('content-type') || '';
