@@ -35,9 +35,9 @@ const markers = [
   'Static example · no live timestamp',
 ];
 
-function runChecker(baseUrl) {
+function runChecker(baseUrl, scriptPath = checkerPath) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [checkerPath], {
+    const child = spawn(process.execPath, [scriptPath], {
       env: {
         ...process.env,
         RESONANCE_BASE_URL: baseUrl,
@@ -152,6 +152,52 @@ async function withMockDeployment(mode, fn) {
   }
 }
 
+// A syntactically perfect status document from a different origin must never
+// serve as evidence that the checked deployment is ready or current.
+async function withCrossOriginStatusRedirect(fn) {
+  const forgedStatus = {
+    service: 'resonance',
+    contractVersion: EXPECTED_CONTRACT_VERSION,
+    qlooApiOrigin: EXPECTED_QLOO_API_ORIGIN,
+    mode: 'live',
+    qlooStatus: 'ready',
+    qlooConfigured: true,
+    qlooConnected: true,
+  };
+  const outsider = createServer((_req, res) => {
+    res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify(forgedStatus));
+  });
+  outsider.listen(0, '127.0.0.1');
+  await once(outsider, 'listening');
+  const outsiderUrl = `http://127.0.0.1:${outsider.address().port}/status`;
+
+  const origin = createServer((req, res) => {
+    if (req.url === '/api/status') {
+      res.writeHead(302, { location: outsiderUrl }).end();
+    } else if (req.url === '/_api/status') {
+      res.writeHead(404, { 'content-type': 'application/json' }).end('{"error":"missing"}');
+    } else if (req.url === '/') {
+      res.writeHead(200, { 'content-type': 'text/html' })
+        .end('<!doctype html><script src="/_assets/app.js"></script>');
+    } else if (req.url === '/_assets/app.js') {
+      res.writeHead(200, { 'content-type': 'text/javascript' })
+        .end(markers.map(marker => JSON.stringify(marker)).join(';\\n'));
+    } else {
+      res.writeHead(404).end('Not found');
+    }
+  });
+  origin.listen(0, '127.0.0.1');
+  await once(origin, 'listening');
+  try {
+    return await fn(`http://127.0.0.1:${origin.address().port}`);
+  } finally {
+    await Promise.all([origin, outsider].map(server =>
+      new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()))
+    ));
+  }
+}
+
 const current = await withMockDeployment('current', runChecker);
 if (current.code !== 0 || !current.stdout.includes('Public deployment frontend + backend parity passed.')) {
   throw new Error(`Expected current deployment to pass. stdout=${current.stdout} stderr=${current.stderr}`);
@@ -214,6 +260,16 @@ const missingMarker = await withMockDeployment('missing-marker', runChecker);
 const missingOutput = missingMarker.stdout + '\n' + missingMarker.stderr;
 if (missingMarker.code === 0 || !missingOutput.includes('MISSING: Confirm matches & build')) {
   throw new Error(`Expected missing judge marker to fail clearly. stdout=${missingMarker.stdout} stderr=${missingMarker.stderr}`);
+}
+
+const redirectedStatus = await withCrossOriginStatusRedirect(async baseUrl => ({
+  deployment: await runChecker(baseUrl),
+  live: await runChecker(baseUrl, fileURLToPath(new URL('./check-live-qloo.mjs', import.meta.url))),
+}));
+for (const [checker, outcome] of Object.entries(redirectedStatus)) {
+  if (outcome.code === 0 || !outcome.stderr.includes('redirected to a different origin')) {
+    throw new Error(`Expected ${checker} to reject forged off-origin JSON after HTTP 302. stdout=${outcome.stdout} stderr=${outcome.stderr}`);
+  }
 }
 
 console.log('Deployment checker self-test passed.');
